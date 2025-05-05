@@ -1,0 +1,222 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Laporan Audit Sistem Informasi{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-12 col-lg-10">
+        <div class="card shadow-lg p-4">
+            <h3 class="text-center mb-4">Laporan Audit Sistem Informasi</h3>
+            <form method="POST" action="/submit/laporan-audit-sistem" enctype="multipart/form-data" id="auditSistemForm">
+                <!-- Basic Information Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Informasi Dasar</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun)</label>
+                                <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
+                                    <option value="">-- Pilih Tahun --</option>
+                                    {% for year in range(2020, 2026) %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP)</label>
+                                <input type="text" class="form-control" id="nama_penyelenggara" name="nama_penyelenggara" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                                <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                                <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="tanggal_selesai" class="form-label">Tanggal Selesai Audit</label>
+                                <input type="date" class="form-control" id="tanggal_selesai" name="tanggal_selesai" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="nama_auditor" class="form-label">Nama Auditor</label>
+                                <input type="text" class="form-control" id="nama_auditor" name="nama_auditor" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security Pillars Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Pilar Keamanan Sistem Informasi</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="confidentiality" class="form-label">Confidentiality</label>
+                                <input type="number" class="form-control" id="confidentiality" name="confidentiality" min="1" max="5" required>
+                                <div class="form-text">Skala 1-5 (1 = Terendah, 5 = Tertinggi)</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="integrity" class="form-label">Integrity</label>
+                                <input type="number" class="form-control" id="integrity" name="integrity" min="1" max="5" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="availability" class="form-label">Availability</label>
+                                <input type="number" class="form-control" id="availability" name="availability" min="1" max="5" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="authenticity" class="form-label">Authenticity</label>
+                                <input type="number" class="form-control" id="authenticity" name="authenticity" min="1" max="5" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="non_repudiation" class="form-label">Non Repudiation</label>
+                                <input type="number" class="form-control" id="non_repudiation" name="non_repudiation" min="1" max="5" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Findings Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Temuan Audit</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="jumlah_temuan" class="form-label">Jumlah Temuan</label>
+                                <input type="number" class="form-control" id="jumlah_temuan" name="jumlah_temuan" min="0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="temuan_diselesaikan" class="form-label">Jumlah Temuan Diselesaikan</label>
+                                <input type="number" class="form-control" id="temuan_diselesaikan" name="temuan_diselesaikan" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Conclusion Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Kesimpulan/Opini Auditor</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="kesimpulan" class="form-label">Kesimpulan Audit</label>
+                            <textarea class="form-control" id="kesimpulan" name="kesimpulan" rows="5" required></textarea>
+                            <div class="form-text">Ringkasan hasil audit dan opini auditor</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Document Upload Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Dokumen Pendukung</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Audit</label>
+                            <input type="file" class="form-control" id="dokumen_laporan" name="dokumen_laporan" accept=".pdf,.doc,.docx,.jpg,.png" required>
+                            <div class="form-text">Format: PDF, DOC, DOCX, JPG, PNG (Maks. 10MB)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="dokumen_pendukung" class="form-label">Dokumen Pendukung Lainnya</label>
+                            <input type="file" class="form-control" id="dokumen_pendukung" name="dokumen_pendukung" accept=".pdf,.doc,.docx,.jpg,.png">
+                            <div class="form-text">Bukti temuan atau dokumen pendukung lainnya (Opsional)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                    <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        margin-bottom: 1.5rem;
+    }
+    .card-header {
+        font-weight: 600;
+        padding: 1rem 1.25rem;
+    }
+    .form-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Date validation - report date shouldn't be in the future
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('tanggal_surat').max = today;
+    document.getElementById('tanggal_selesai').max = today;
+    
+    // Validate audit completion date is after report date
+    document.getElementById('auditSistemForm').addEventListener('submit', function(e) {
+        const tanggalSurat = new Date(document.getElementById('tanggal_surat').value);
+        const tanggalSelesai = new Date(document.getElementById('tanggal_selesai').value);
+        
+        if (tanggalSelesai < tanggalSurat) {
+            e.preventDefault();
+            alert('Tanggal selesai audit tidak boleh sebelum tanggal surat');
+            return false;
+        }
+        
+        // Validate security pillars ratings (1-5)
+        const pillars = ['confidentiality', 'integrity', 'availability', 'authenticity', 'non_repudiation'];
+        for (const pillar of pillars) {
+            const value = parseInt(document.getElementById(pillar).value);
+            if (value < 1 || value > 5) {
+                e.preventDefault();
+                alert(`Nilai untuk ${pillar} harus antara 1-5`);
+                return false;
+            }
+        }
+        
+        // Validate findings resolved <= total findings
+        const totalFindings = parseInt(document.getElementById('jumlah_temuan').value);
+        const resolvedFindings = parseInt(document.getElementById('temuan_diselesaikan').value);
+        if (resolvedFindings > totalFindings) {
+            e.preventDefault();
+            alert('Jumlah temuan diselesaikan tidak boleh melebihi jumlah temuan');
+            return false;
+        }
+        
+        // Validate file size for main document
+        const fileInput = document.getElementById('dokumen_laporan');
+        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
+            e.preventDefault();
+            alert('Ukuran file dokumen laporan melebihi 10MB');
+            return false;
+        }
+        
+        // Validate file size for supporting document
+        const supportFileInput = document.getElementById('dokumen_pendukung');
+        if (supportFileInput.files[0] && supportFileInput.files[0].size > 10 * 1024 * 1024) {
+            e.preventDefault();
+            alert('Ukuran file dokumen pendukung melebihi 10MB');
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Input Laporan Keuangan{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Form Input Laporan Keuangan</h2>
+
+    <!-- Informasi Umum -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            Informasi Perusahaan
+        </div>
+        <div class="card-body">
+            <form id="informasiPerusahaanForm">
+                <div class="mb-3">
+                    <label class="form-label">Nama Perusahaan (PT)</label>
+                    <input type="text" class="form-control" name="nama_pt" placeholder="Contoh: PT Tranglo Indonesia" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Kuartal</label>
+                    <select class="form-control" name="kuartal" required>
+                        <option value="Q1">Q1</option>
+                        <option value="Q2">Q2</option>
+                        <option value="Q3">Q3</option>
+                        <option value="Q4">Q4</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tahun</label>
+                    <input type="number" class="form-control" name="tahun" min="2000" max="2100" placeholder="2024" required>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Form Laporan Laba Rugi -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            Laporan Laba Rugi
+        </div>
+        <div class="card-body">
+            <form id="labaRugiForm">
+                <div class="mb-3">
+                    <label class="form-label">Pendapatan Usaha</label>
+                    <input type="number" class="form-control" name="pendapatan_usaha" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Beban Usaha</label>
+                    <input type="number" class="form-control" name="beban_usaha" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Penghasilan Lain-lain</label>
+                    <input type="number" class="form-control" name="penghasilan_lain" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Pendapatan Komprehensif Lainnya</label>
+                    <input type="number" class="form-control" name="pendapatan_komprehensif" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Simpan Laporan Laba Rugi</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Form Laporan Posisi Keuangan -->
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            Laporan Posisi Keuangan
+        </div>
+        <div class="card-body">
+            <form id="posisiKeuanganForm">
+                <h5>Aset</h5>
+                <div class="mb-3">
+                    <label class="form-label">Kas dan Bank</label>
+                    <input type="number" class="form-control" name="kas_dan_bank" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Piutang</label>
+                    <input type="number" class="form-control" name="piutang" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Aset Lancar Lainnya</label>
+                    <input type="number" class="form-control" name="aset_lancar_lainnya" required>
+                </div>
+
+                <h5>Liabilitas</h5>
+                <div class="mb-3">
+                    <label class="form-label">Utang</label>
+                    <input type="number" class="form-control" name="utang" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Liabilitas Lancar Lainnya</label>
+                    <input type="number" class="form-control" name="liabilitas_lancar" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Liabilitas Jangka Panjang</label>
+                    <input type="number" class="form-control" name="liabilitas_panjang" required>
+                </div>
+
+                <h5>Ekuitas</h5>
+                <div class="mb-3">
+                    <label class="form-label">Modal Saham</label>
+                    <input type="number" class="form-control" name="modal_saham" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Laba/Rugi Tahun Berjalan</label>
+                    <input type="number" class="form-control" name="laba_rugi_tahun" required>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Simpan Laporan Posisi Keuangan</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

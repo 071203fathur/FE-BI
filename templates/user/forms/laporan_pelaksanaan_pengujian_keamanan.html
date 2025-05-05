@@ -1,0 +1,205 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Laporan Pelaksanaan Pengujian Keamanan (Penetration Test){% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-12 col-lg-10">
+        <div class="card shadow-lg p-4">
+            <h3 class="text-center mb-4">Laporan Pelaksanaan Pengujian Keamanan (Penetration Test)</h3>
+            <form method="POST" action="/submit/laporan-penetration-test" enctype="multipart/form-data" id="penetrationTestForm">
+                <!-- Basic Information Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Informasi Dasar</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun)</label>
+                                <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
+                                    <option value="">-- Pilih Tahun --</option>
+                                    {% for year in range(2020, 2026) %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="triwulan_laporan" class="form-label">Periode Laporan (Triwulan)</label>
+                                <select class="form-select" id="triwulan_laporan" name="triwulan_laporan" required>
+                                    <option value="">-- Pilih Triwulan --</option>
+                                    <option value="Triwulan I">Triwulan I</option>
+                                    <option value="Triwulan II">Triwulan II</option>
+                                    <option value="Triwulan III">Triwulan III</option>
+                                    <option value="Triwulan IV">Triwulan IV</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP)</label>
+                                <input type="text" class="form-control" id="nama_penyelenggara" name="nama_penyelenggara" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                                <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                                <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="tanggal_selesai_audit" class="form-label">Tanggal Selesai Audit</label>
+                                <input type="date" class="form-control" id="tanggal_selesai_audit" name="tanggal_selesai_audit" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Findings Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Temuan Keamanan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label for="temuan_low" class="form-label">Temuan Low</label>
+                                <input type="number" class="form-control" id="temuan_low" name="temuan_low" min="0" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="temuan_medium" class="form-label">Temuan Medium</label>
+                                <input type="number" class="form-control" id="temuan_medium" name="temuan_medium" min="0" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="temuan_high" class="form-label">Temuan High</label>
+                                <input type="number" class="form-control" id="temuan_high" name="temuan_high" min="0" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="temuan_critical" class="form-label">Temuan Critical</label>
+                                <input type="number" class="form-control" id="temuan_critical" name="temuan_critical" min="0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="jumlah_temuan" class="form-label">Jumlah Temuan</label>
+                                <input type="number" class="form-control" id="jumlah_temuan" name="jumlah_temuan" min="0" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="jumlah_temuan_diselesaikan" class="form-label">Jumlah Temuan Diselesaikan</label>
+                                <input type="number" class="form-control" id="jumlah_temuan_diselesaikan" name="jumlah_temuan_diselesaikan" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Conclusion Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Kesimpulan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="kesimpulan_auditor" class="form-label">Kesimpulan/Opini Auditor</label>
+                            <textarea class="form-control" id="kesimpulan_auditor" name="kesimpulan_auditor" rows="5" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Document Upload Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Dokumen Pendukung</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Lengkap</label>
+                            <input type="file" class="form-control" id="dokumen_laporan" name="dokumen_laporan" accept=".pdf,.doc,.docx" required>
+                            <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                    <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        margin-bottom: 1.5rem;
+    }
+    .card-header {
+        font-weight: 600;
+        padding: 1rem 1.25rem;
+    }
+    .form-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-calculate total findings
+    const calculateTotalFindings = () => {
+        const low = parseInt(document.getElementById('temuan_low').value) || 0;
+        const medium = parseInt(document.getElementById('temuan_medium').value) || 0;
+        const high = parseInt(document.getElementById('temuan_high').value) || 0;
+        const critical = parseInt(document.getElementById('temuan_critical').value) || 0;
+        
+        const total = low + medium + high + critical;
+        document.getElementById('jumlah_temuan').value = total;
+    };
+    
+    // Add event listeners to all finding fields
+    document.getElementById('temuan_low').addEventListener('change', calculateTotalFindings);
+    document.getElementById('temuan_medium').addEventListener('change', calculateTotalFindings);
+    document.getElementById('temuan_high').addEventListener('change', calculateTotalFindings);
+    document.getElementById('temuan_critical').addEventListener('change', calculateTotalFindings);
+    
+    // Date validation - report date shouldn't be in the future
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('tanggal_surat').max = today;
+    document.getElementById('tanggal_selesai_audit').max = today;
+    
+    // Form validation
+    document.getElementById('penetrationTestForm').addEventListener('submit', function(e) {
+        // Validate report year
+        const tahun = document.getElementById('tahun_laporan').value;
+        const currentYear = new Date().getFullYear();
+        
+        if (tahun > currentYear) {
+            e.preventDefault();
+            alert('Tahun laporan tidak boleh melebihi tahun berjalan');
+            return false;
+        }
+        
+        // Validate that resolved findings don't exceed total findings
+        const totalFindings = parseInt(document.getElementById('jumlah_temuan').value) || 0;
+        const resolvedFindings = parseInt(document.getElementById('jumlah_temuan_diselesaikan').value) || 0;
+        
+        if (resolvedFindings > totalFindings) {
+            e.preventDefault();
+            alert('Jumlah temuan yang diselesaikan tidak boleh melebihi total temuan');
+            return false;
+        }
+        
+        // Validate file size
+        const fileInput = document.getElementById('dokumen_laporan');
+        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
+            e.preventDefault();
+            alert('Ukuran file dokumen laporan melebihi 10MB');
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}

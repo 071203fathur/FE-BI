@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard Admin{% endblock %}
+
+{% block content %}
+<h1>Dashboard Admin</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nama Bank</th>
+            <th>Kategori</th>
+            <th>No Izin</th>
+            <th>Tanggal Izin</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bank in banks %}
+        <tr>
+            <td>{{ bank.id }}</td>
+            <td>{{ bank.nama }}</td>
+            <td>{{ bank.kategori }}</td>
+            <td>{{ bank.no_izin }}</td>
+            <td>{{ bank.tgl_izin }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

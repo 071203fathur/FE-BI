@@ -1,0 +1,257 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Laporan Penanganan Pengaduan Konsumen{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-12 col-lg-10">
+        <div class="card shadow-lg p-4">
+            <h3 class="text-center mb-4">Laporan Penanganan dan Penyelesaian Pengaduan Konsumen</h3>
+            <form method="POST" action="/submit/laporan-pengaduan-konsumen" enctype="multipart/form-data" id="complaintReportForm">
+                <!-- Basic Information Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Informasi Pelapor</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="tahun" class="form-label">Tahun Laporan</label>
+                                <select class="form-select" id="tahun" name="tahun" required>
+                                    <option value="">-- Pilih Tahun --</option>
+                                    {% for year in range(2020, 2026) %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="triwulan" class="form-label">Periode Laporan (Triwulan)</label>
+                                <select class="form-select" id="triwulan" name="triwulan" required>
+                                    <option value="">-- Pilih Triwulan --</option>
+                                    <option value="1">Triwulan I</option>
+                                    <option value="2">Triwulan II</option>
+                                    <option value="3">Triwulan III</option>
+                                    <option value="4">Triwulan IV</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="penyelenggara" class="form-label">Nama Penyelenggara (PJP)</label>
+                                <select class="form-select" id="penyelenggara" name="penyelenggara" required>
+                                    <option value="">-- Pilih Penyelenggara --</option>
+                                    <option value="PT A">PT A</option>
+                                    <option value="PT B">PT B</option>
+                                    <option value="PT C">PT C</option>
+                                    <option value="Yayasan X">Yayasan X</option>
+                                    <option value="Yayasan Y">Yayasan Y</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                                <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                                <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Complaint Statistics Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Statistik Pengaduan Konsumen</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="jumlah_pengaduan" class="form-label">Jumlah Pengaduan Konsumen</label>
+                                <input type="number" class="form-control" id="jumlah_pengaduan" name="jumlah_pengaduan" min="0" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="pengaduan_diselesaikan" class="form-label">Jumlah Pengaduan Diselesaikan</label>
+                                <input type="number" class="form-control" id="pengaduan_diselesaikan" name="pengaduan_diselesaikan" min="0" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="pengaduan_belum_diselesaikan" class="form-label">Jumlah Pengaduan Belum Diselesaikan</label>
+                                <input type="number" class="form-control" id="pengaduan_belum_diselesaikan" name="pengaduan_belum_diselesaikan" min="0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="total_nilai_pengaduan" class="form-label">Total Nilai Pengaduan Konsumen (Rp)</label>
+                                <input type="number" class="form-control" id="total_nilai_pengaduan" name="total_nilai_pengaduan" min="0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="persentase_pengaduan" class="form-label">Persentase Pengaduan vs Total Transaksi Berhasil (%)</label>
+                                <input type="number" class="form-control" id="persentase_pengaduan" name="persentase_pengaduan" min="0" max="100" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Complaint Resolution Channels Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Saluran Penyelesaian Pengaduan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="diteruskan_bi" class="form-label">Diteruskan ke Bank Indonesia</label>
+                                <input type="number" class="form-control" id="diteruskan_bi" name="diteruskan_bi" min="0" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="diteruskan_ojk" class="form-label">Diteruskan ke OJK</label>
+                                <input type="number" class="form-control" id="diteruskan_ojk" name="diteruskan_ojk" min="0" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="diteruskan_laps_sjk" class="form-label">Diteruskan ke LAPS SJK</label>
+                                <input type="number" class="form-control" id="diteruskan_laps_sjk" name="diteruskan_laps_sjk" min="0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="diteruskan_pengadilan" class="form-label">Diteruskan ke Pengadilan</label>
+                                <input type="number" class="form-control" id="diteruskan_pengadilan" name="diteruskan_pengadilan" min="0" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="diteruskan_arbitrase" class="form-label">Diteruskan ke Arbitrase</label>
+                                <input type="number" class="form-control" id="diteruskan_arbitrase" name="diteruskan_arbitrase" min="0" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="diselesaikan_lainnya" class="form-label">Diselesaikan dengan Cara Lainnya</label>
+                                <input type="number" class="form-control" id="diselesaikan_lainnya" name="diselesaikan_lainnya" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attachment Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Bukti Penyampaian</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="bukti_upload" class="form-label">Screenshot Bukti Upload</label>
+                            <input type="file" class="form-control" id="bukti_upload" name="bukti_upload" accept=".jpg,.jpeg,.png,.pdf" required>
+                            <div class="form-text">Format: JPG, PNG, PDF (Maks. 5MB)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="keterangan" class="form-label">Keterangan Tambahan</label>
+                            <textarea class="form-control" id="keterangan" name="keterangan" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                    <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        margin-bottom: 1.5rem;
+    }
+    .card-header {
+        font-weight: 600;
+        padding: 1rem 1.25rem;
+    }
+    .form-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Format number inputs with thousand separators
+    const numberInputs = document.querySelectorAll('input[type="number"]');
+    numberInputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value && !isNaN(this.value)) {
+                this.value = parseInt(this.value).toLocaleString('id-ID');
+            }
+        });
+        
+        input.addEventListener('focus', function() {
+            if (this.value) {
+                this.value = this.value.replace(/\./g, '');
+            }
+        });
+    });
+    
+    // Date validation - report date shouldn't be in the future
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('tanggal_surat').max = today;
+    
+    // Form validation
+    document.getElementById('complaintReportForm').addEventListener('submit', function(e) {
+        // Validate report period
+        const tahun = document.getElementById('tahun').value;
+        const currentYear = new Date().getFullYear();
+        
+        if (tahun > currentYear) {
+            e.preventDefault();
+            alert('Tahun laporan tidak boleh melebihi tahun berjalan');
+            return false;
+        }
+        
+        // Validate complaint numbers consistency
+        const totalComplaints = parseInt(document.getElementById('jumlah_pengaduan').value) || 0;
+        const resolved = parseInt(document.getElementById('pengaduan_diselesaikan').value) || 0;
+        const unresolved = parseInt(document.getElementById('pengaduan_belum_diselesaikan').value) || 0;
+        
+        if (resolved + unresolved !== totalComplaints) {
+            e.preventDefault();
+            alert('Jumlah pengaduan yang diselesaikan + belum diselesaikan harus sama dengan total pengaduan');
+            return false;
+        }
+        
+        // Validate resolution channels sum
+        const resolutionChannels = [
+            'diteruskan_bi', 'diteruskan_ojk', 'diteruskan_laps_sjk',
+            'diteruskan_pengadilan', 'diteruskan_arbitrase', 'diselesaikan_lainnya'
+        ];
+        
+        let resolutionSum = 0;
+        resolutionChannels.forEach(channel => {
+            resolutionSum += parseInt(document.getElementById(channel).value) || 0;
+        });
+        
+        if (resolutionSum !== totalComplaints) {
+            e.preventDefault();
+            alert('Total semua saluran penyelesaian harus sama dengan jumlah pengaduan');
+            return false;
+        }
+        
+        // Validate file size
+        const fileInput = document.getElementById('bukti_upload');
+        if (fileInput.files[0] && fileInput.files[0].size > 5 * 1024 * 1024) {
+            e.preventDefault();
+            alert('Ukuran file bukti upload melebihi 5MB');
+            return false;
+        }
+    });
+    
+    // Auto-calculate unresolved complaints
+    document.getElementById('pengaduan_diselesaikan').addEventListener('change', function() {
+        const total = parseInt(document.getElementById('jumlah_pengaduan').value) || 0;
+        const resolved = parseInt(this.value) || 0;
+        document.getElementById('pengaduan_belum_diselesaikan').value = total - resolved;
+    });
+});
+</script>
+{% endblock %}

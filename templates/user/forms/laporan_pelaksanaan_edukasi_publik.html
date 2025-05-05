@@ -1,0 +1,222 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Laporan Pelaksanaan Edukasi Publik{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-12 col-lg-10">
+        <div class="card shadow-lg p-4">
+            <h3 class="text-center mb-4">Laporan Pelaksanaan Edukasi Publik</h3>
+            <form method="POST" action="/submit/laporan-edukasi-publik" enctype="multipart/form-data" id="edukasiPublikForm">
+                <!-- Basic Information Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Informasi Dasar</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun)</label>
+                                <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
+                                    <option value="">-- Pilih Tahun --</option>
+                                    {% for year in range(2020, 2026) %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP)</label>
+                                <input type="text" class="form-control" id="nama_penyelenggara" name="nama_penyelenggara" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                                <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                                <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="bentuk_aktivitas" class="form-label">Bentuk Aktivitas</label>
+                                <select class="form-select" id="bentuk_aktivitas" name="bentuk_aktivitas" required>
+                                    <option value="">-- Pilih Bentuk --</option>
+                                    <option value="Sosialisasi">Sosialisasi</option>
+                                    <option value="Seminar">Seminar</option>
+                                    <option value="Workshop">Workshop</option>
+                                    <option value="Pelatihan">Pelatihan</option>
+                                    <option value="Media Sosial">Media Sosial</option>
+                                    <option value="Kampanye">Kampanye</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="provinsi" class="form-label">Provinsi</label>
+                                <input type="text" class="form-control" id="provinsi" name="provinsi" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Education Details Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Detail Edukasi</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="sasaran_edukasi" class="form-label">Sasaran Edukasi</label>
+                                <select class="form-select" id="sasaran_edukasi" name="sasaran_edukasi" required>
+                                    <option value="">-- Pilih Sasaran --</option>
+                                    <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
+                                    <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
+                                    <option value="Usaha Mikro">Usaha Mikro</option>
+                                    <option value="Usaha Kecil">Usaha Kecil</option>
+                                    <option value="Usaha Menengah">Usaha Menengah</option>
+                                    <option value="Masyarakat Umum">Masyarakat Umum</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="jumlah_peserta" class="form-label">Jumlah Peserta</label>
+                                <input type="number" class="form-control" id="jumlah_peserta" name="jumlah_peserta" min="0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="materi_edukasi" class="form-label">Materi atau Konten Edukasi</label>
+                            <select class="form-select" id="materi_edukasi" name="materi_edukasi" required>
+                                <option value="">-- Pilih Materi --</option>
+                                <option value="Pemahaman Produk/Jasa">Pemahaman Produk/Jasa</option>
+                                <option value="Manfaat dan Risiko">Manfaat dan Risiko</option>
+                                <option value="Hak dan Kewajiban Konsumen">Hak dan Kewajiban Konsumen</option>
+                                <option value="Istilah Transaksi">Istilah Transaksi</option>
+                                <option value="Tips Aman Bertransaksi">Tips Aman Bertransaksi</option>
+                                <option value="Tata Cara Pengaduan">Tata Cara Pengaduan</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="frekuensi" class="form-label">Frekuensi</label>
+                                <input type="number" class="form-control" id="frekuensi" name="frekuensi" min="1" required>
+                                <div class="form-text">Jumlah kali kegiatan dilaksanakan</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="kanal_edukasi" class="form-label">Kanal Edukasi</label>
+                                <select class="form-select" id="kanal_edukasi" name="kanal_edukasi" required>
+                                    <option value="">-- Pilih Kanal --</option>
+                                    <option value="Online">Online</option>
+                                    <option value="Offline">Offline</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Evaluation Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Evaluasi dan Kendala</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="evaluasi" class="form-label">Evaluasi</label>
+                            <textarea class="form-control" id="evaluasi" name="evaluasi" rows="3" required></textarea>
+                            <div class="form-text">Hasil evaluasi dari kegiatan edukasi yang dilakukan</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="kendala" class="form-label">Kendala Dihadapi</label>
+                            <textarea class="form-control" id="kendala" name="kendala" rows="3"></textarea>
+                            <div class="form-text">Kendala yang dihadapi selama pelaksanaan kegiatan</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Document Upload Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Dokumen Pendukung</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Kegiatan</label>
+                            <input type="file" class="form-control" id="dokumen_laporan" name="dokumen_laporan" accept=".pdf,.doc,.docx,.jpg,.png" required>
+                            <div class="form-text">Format: PDF, DOC, DOCX, JPG, PNG (Maks. 10MB)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="dokumen_pendukung" class="form-label">Dokumen Pendukung Lainnya</label>
+                            <input type="file" class="form-control" id="dokumen_pendukung" name="dokumen_pendukung" accept=".pdf,.doc,.docx,.jpg,.png">
+                            <div class="form-text">Foto, sertifikat, atau dokumen pendukung lainnya (Opsional)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                    <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        margin-bottom: 1.5rem;
+    }
+    .card-header {
+        font-weight: 600;
+        padding: 1rem 1.25rem;
+    }
+    .form-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Date validation - report date shouldn't be in the future
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('tanggal_surat').max = today;
+    
+    // Form validation
+    document.getElementById('edukasiPublikForm').addEventListener('submit', function(e) {
+        // Validate report year
+        const tahun = document.getElementById('tahun_laporan').value;
+        const currentYear = new Date().getFullYear();
+        
+        if (tahun > currentYear) {
+            e.preventDefault();
+            alert('Tahun laporan tidak boleh melebihi tahun berjalan');
+            return false;
+        }
+        
+        // Validate file size for main document
+        const fileInput = document.getElementById('dokumen_laporan');
+        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
+            e.preventDefault();
+            alert('Ukuran file dokumen laporan melebihi 10MB');
+            return false;
+        }
+        
+        // Validate file size for supporting document
+        const supportFileInput = document.getElementById('dokumen_pendukung');
+        if (supportFileInput.files[0] && supportFileInput.files[0].size > 10 * 1024 * 1024) {
+            e.preventDefault();
+            alert('Ukuran file dokumen pendukung melebihi 10MB');
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}

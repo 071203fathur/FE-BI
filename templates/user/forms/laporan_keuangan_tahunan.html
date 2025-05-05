@@ -1,0 +1,183 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Laporan Keuangan Tahunan Audited{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-12 col-md-10 col-lg-8">
+        <div class="card shadow-lg p-5">
+            <h3 class="text-center mb-4">Laporan Keuangan Tahunan Audited</h3>
+            <form method="POST" action="/submit/laporan-keuangan-audited" enctype="multipart/form-data" id="auditForm">
+                <!-- Tahun Laporan -->
+                <div class="mb-3">
+                    <label for="tahun" class="form-label">Periode Laporan</label>
+                    <select class="form-select form-select-lg" id="tahun" name="tahun" required>
+                        <option value="">-- Pilih Tahun --</option>
+                        {% for year in range(2018, 2026) %}
+                        <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Nama Penyelenggara -->
+                <div class="mb-3">
+                    <label for="penyelenggara" class="form-label">Nama Penyelenggara</label>
+                    <select class="form-select form-select-lg" id="penyelenggara" name="penyelenggara" required>
+                        <option value="">-- Pilih Penyelenggara --</option>
+                        <option value="Penyelenggara A">Penyelenggara A</option>
+                        <option value="Penyelenggara B">Penyelenggara B</option>
+                        <option value="Penyelenggara C">Penyelenggara C</option>
+                    </select>
+                </div>
+
+                <!-- Nomor Surat -->
+                <div class="mb-3">
+                    <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                    <input type="text" class="form-control form-control-lg" id="nomor_surat" name="nomor_surat" required>
+                </div>
+
+                <!-- Modal Disetor -->
+                <div class="mb-3">
+                    <label for="modal_disetor" class="form-label">Modal Disetor (Rp)</label>
+                    <input type="number" class="form-control form-control-lg" id="modal_disetor" name="modal_disetor" required>
+                    <div class="form-text">Masukkan nilai dalam Rupiah tanpa tanda titik atau koma</div>
+                </div>
+
+                <!-- Jenis Audit (Conditional) -->
+                <div class="mb-3">
+                    <label for="jenis_audit" class="form-label">Jenis Audit</label>
+                    <select class="form-select form-select-lg" id="jenis_audit" name="jenis_audit" required>
+                        <option value="">-- Pilih Jenis Audit --</option>
+                        <option value="internal">Internal</option>
+                        <option value="eksternal">Eksternal</option>
+                    </select>
+                </div>
+
+                <!-- Kantor Akuntan Publik (Conditional) -->
+                <div class="mb-3" id="kantor_akuntan_group" style="display: none;">
+                    <label for="kantor_akuntan" class="form-label">Nama Kantor Akuntan Publik</label>
+                    <input type="text" class="form-control form-control-lg" id="kantor_akuntan" name="kantor_akuntan">
+                </div>
+
+                <!-- Tanggal Opini (Conditional) -->
+                <div class="mb-3" id="tanggal_opini_group" style="display: none;">
+                    <label for="tanggal_opini" class="form-label">Tanggal Opini</label>
+                    <input type="date" class="form-control form-control-lg" id="tanggal_opini" name="tanggal_opini">
+                </div>
+
+                <!-- Financial Data -->
+                <div class="mb-3">
+                    <label for="pendapatan" class="form-label">Pendapatan (Rp)</label>
+                    <input type="number" class="form-control form-control-lg" id="pendapatan" name="pendapatan" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="beban_operasional" class="form-label">Beban Operasional (Rp)</label>
+                    <input type="number" class="form-control form-control-lg" id="beban_operasional" name="beban_operasional" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="laba" class="form-label">Laba (Rp)</label>
+                    <input type="number" class="form-control form-control-lg" id="laba" name="laba" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="rugi" class="form-label">Rugi (Rp)</label>
+                    <input type="number" class="form-control form-control-lg" id="rugi" name="rugi" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="total_aset" class="form-label">Total Aset (Rp)</label>
+                    <input type="number" class="form-control form-control-lg" id="total_aset" name="total_aset" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="total_liabilitas" class="form-label">Total Liabilitas (Rp)</label>
+                    <input type="number" class="form-control form-control-lg" id="total_liabilitas" name="total_liabilitas" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="equity" class="form-label">Equity (Rp)</label>
+                    <input type="number" class="form-control form-control-lg" id="equity" name="equity" required>
+                </div>
+
+                <!-- File Upload -->
+                <div class="mb-4">
+                    <label for="file_laporan" class="form-label">Upload Laporan Keuangan Audited</label>
+                    <input type="file" class="form-control form-control-lg" id="file_laporan" name="file_laporan" accept=".pdf,.doc,.docx,.xls,.xlsx" required>
+                    <div class="form-text">Format file: PDF, DOC, DOCX, XLS, XLSX (Maks. 10MB)</div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg px-5">Kirim Laporan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modalDisetorInput = document.getElementById('modal_disetor');
+    const jenisAuditSelect = document.getElementById('jenis_audit');
+    const kantorAkuntanGroup = document.getElementById('kantor_akuntan_group');
+    const tanggalOpiniGroup = document.getElementById('tanggal_opini_group');
+    const kantorAkuntanInput = document.getElementById('kantor_akuntan');
+    const tanggalOpiniInput = document.getElementById('tanggal_opini');
+
+    // Handle modal disetor change
+    modalDisetorInput.addEventListener('change', function() {
+        const modalDisetor = parseFloat(this.value) || 0;
+        
+        if (modalDisetor > 500000000) {
+            jenisAuditSelect.value = 'eksternal';
+            jenisAuditSelect.disabled = true;
+            toggleAuditorFields(true);
+        } else {
+            jenisAuditSelect.disabled = false;
+        }
+    });
+
+    // Handle jenis audit change
+    jenisAuditSelect.addEventListener('change', function() {
+        toggleAuditorFields(this.value === 'eksternal');
+    });
+
+    function toggleAuditorFields(show) {
+        if (show) {
+            kantorAkuntanGroup.style.display = 'block';
+            tanggalOpiniGroup.style.display = 'block';
+            kantorAkuntanInput.required = true;
+            tanggalOpiniInput.required = true;
+        } else {
+            kantorAkuntanGroup.style.display = 'none';
+            tanggalOpiniGroup.style.display = 'none';
+            kantorAkuntanInput.required = false;
+            tanggalOpiniInput.required = false;
+            kantorAkuntanInput.value = '';
+            tanggalOpiniInput.value = '';
+        }
+    }
+
+    // Form validation
+    document.getElementById('auditForm').addEventListener('submit', function(e) {
+        const modalDisetor = parseFloat(modalDisetorInput.value) || 0;
+        const jenisAudit = jenisAuditSelect.value;
+        
+        // Validate if modal > 500jt must be eksternal
+        if (modalDisetor > 500000000 && jenisAudit !== 'eksternal') {
+            e.preventDefault();
+            alert('Untuk modal disetor di atas Rp500.000.000, jenis audit harus Eksternal');
+            jenisAuditSelect.focus();
+        }
+    });
+});
+</script>
+
+<style>
+    .form-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}

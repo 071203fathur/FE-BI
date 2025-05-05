@@ -1,0 +1,77 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Form Laporan DTTOT{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-12 col-md-10 col-lg-8">
+        <div class="card shadow-lg p-5">
+            <h3 class="text-center mb-4">Form Laporan DTTOT</h3>
+            <form method="POST" action="/submit/laporan-dttot" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="tahun" class="form-label">Tahun Laporan</label>
+                    <select class="form-select form-select-lg" id="tahun" name="tahun" required>
+                        <option value="">-- Pilih Tahun --</option>
+                        {% for year in range(2020, 2026) %}
+                        <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="periode" class="form-label">Periode Laporan</label>
+                    <select class="form-select form-select-lg" id="periode" name="periode" required>
+                        <option value="">-- Pilih Periode --</option>
+                        <option value="Triwulan I">Triwulan I</option>
+                        <option value="Triwulan II">Triwulan II</option>
+                        <option value="Triwulan III">Triwulan III</option>
+                        <option value="Triwulan IV">Triwulan IV</option>
+                        <option value="Semester I">Semester I</option>
+                        <option value="Semester II">Semester II</option>
+                        <option value="Tahunan">Tahunan</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="penyelenggara" class="form-label">Nama Penyelenggara</label>
+                    <select class="form-select form-select-lg" id="penyelenggara" name="penyelenggara" required>
+                        <option value="">-- Pilih Penyelenggara --</option>
+                        <option value="Penyelenggara A">Penyelenggara A</option>
+                        <option value="Penyelenggara B">Penyelenggara B</option>
+                        <option value="Penyelenggara C">Penyelenggara C</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                    <input type="text" class="form-control form-control-lg" id="nomor_surat" name="nomor_surat" required>
+                </div>
+                <div class="mb-3">
+                    <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                    <input type="date" class="form-control form-control-lg" id="tanggal_surat" name="tanggal_surat" required>
+                </div>
+                <div class="mb-3">
+                    <label for="jumlah_terduga" class="form-label">Jumlah Terduga Teroris</label>
+                    <input type="number" class="form-control form-control-lg" id="jumlah_terduga" name="jumlah_terduga" required>
+                </div>
+                <div class="mb-3">
+                    <label for="organisasi_teroris" class="form-label">Organisasi Teroris</label>
+                    <input type="text" class="form-control form-control-lg" id="organisasi_teroris" name="organisasi_teroris" required>
+                </div>
+                <div class="mb-3">
+                    <label for="perihal" class="form-label">Perihal</label>
+                    <input type="text" class="form-control form-control-lg" id="perihal" name="perihal" required>
+                </div>
+                <div class="mb-3">
+                    <label for="keterangan" class="form-label">Keterangan</label>
+                    <textarea class="form-control form-control-lg" id="keterangan" name="keterangan" rows="3" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="file_laporan" class="form-label">Upload File Laporan DTTOT</label>
+                    <input type="file" class="form-control form-control-lg" id="file_laporan" name="file_laporan" accept=".pdf,.doc,.docx" required>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg px-5">Kirim Laporan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

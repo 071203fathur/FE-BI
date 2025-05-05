@@ -1,0 +1,65 @@
+{% extends "user/base.html" %}
+
+{% block title %}Dashboard User{% endblock %}
+
+{% block content %}
+<h2 style="text-align: center;">Selamat Datang di Dashboard User</h2>
+
+<!-- JAM DIGITAL BESAR DI TENGAH -->
+<div style="text-align: center; margin: 30px 0;">
+  <h1 id="clock" style="font-size: 48px; font-weight: bold; color: #2c3e50;"></h1>
+</div>
+
+<p>Berikut adalah daftar deadline pengumpulan laporan. Pastikan semua laporan diunggah sebelum batas waktu.</p>
+
+<h3>Laporan Insidental</h3>
+<ul>
+  <li>Laporan perubahan pengurus - Deadline: 30 April 2025 (6 hari lagi)</li>
+  <li>Laporan perubahan alamat - Deadline: 30 April 2025 (6 hari lagi)</li>
+  <li>Laporan perubahan pemegang saham - Deadline: 5 Mei 2025 (11 hari lagi)</li>
+  <li>Laporan perubahan modal - Deadline: 10 Mei 2025 (16 hari lagi)</li>
+</ul>
+
+<h3>Laporan Bulanan</h3>
+<ul>
+  <li>Laporan fraud - Deadline: 30 April 2025 (6 hari lagi)</li>
+  <li>Laporan Transaksi Dana Bukan Bank - Deadline: 30 April 2025 (6 hari lagi)</li>
+  <li>Laporan gangguan IT - Deadline: 30 April 2025 (6 hari lagi)</li>
+  <li>Laporan kerjasama P2P - Deadline: 30 April 2025 (6 hari lagi)</li>
+  <li>Laporan DTTOT - Deadline: 30 April 2025 (6 hari lagi)</li>
+</ul>
+
+<h3>Laporan Triwulanan</h3>
+<ul>
+  <li>Laporan keuangan triwulan - Deadline: 15 Mei 2025 (21 hari lagi)</li>
+  <li>Laporan keluhan nasabah dan perlindungan konsumen - Deadline: 15 Mei 2025 (21 hari lagi)</li>
+  <li>Laporan Pengaduan Perlindungan Nasabah - Deadline: 15 Mei 2025 (21 hari lagi)</li>
+  <li>Laporan SKSP - Deadline: 15 Mei 2025 (21 hari lagi)</li>
+</ul>
+
+<h3>Laporan Tahunan</h3>
+<ul>
+  <li>Laporan keuangan tahunan - Deadline: 30 Juni 2025 (67 hari lagi)</li>
+  <li>Laporan APU PPT - Deadline: 30 Juni 2025 (67 hari lagi)</li>
+  <li>Laporan Rencana Edukasi Publik - Deadline: 30 Juni 2025 (67 hari lagi)</li>
+  <li>Laporan Pelaksanaan Edukasi Publik - Deadline: 30 Juni 2025 (67 hari lagi)</li>
+  <li>Laporan Tahunan Sistem Pembayaran - Deadline: 30 Juni 2025 (67 hari lagi)</li>
+  <li>Laporan Manajemen dan Hasil Pengawasan Dewan Komisaris - Deadline: 30 Juni 2025 (67 hari lagi)</li>
+  <li>Laporan Keuangan Audited - Deadline: 30 Juni 2025 (67 hari lagi)</li>
+  <li>Laporan Audit Sistem Informasi - Deadline: 30 Juni 2025 (67 hari lagi)</li>
+  <li>Laporan Pelaksanaan Pengujian Keamanan (Penetration Test) - Deadline: 30 Juni 2025 (67 hari lagi)</li>
+</ul>
+
+<!-- Script Jam -->
+<script>
+  function updateClock() {
+    const now = new Date();
+    const jam = now.toLocaleTimeString('id-ID');
+    document.getElementById('clock').textContent = jam;
+  }
+
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
+
+{% endblock %}

@@ -1,0 +1,337 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Laporan APU PPT (Anti Pencucian Uang dan Pencegahan Pendanaan Terorisme){% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-12 col-lg-10">
+        <div class="card shadow-lg p-4">
+            <h3 class="text-center mb-4">Laporan APU PPT (Anti Pencucian Uang dan Pencegahan Pendanaan Terorisme)</h3>
+            <form method="POST" action="/submit/laporan-apu-ppt" enctype="multipart/form-data" id="apuPptReportForm">
+                <!-- Basic Information Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Informasi Dasar</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun)</label>
+                                <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
+                                    <option value="">-- Pilih Tahun --</option>
+                                    {% for year in range(2020, 2026) %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP)</label>
+                                <input type="text" class="form-control" id="nama_penyelenggara" name="nama_penyelenggara" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                                <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                                <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="nama_petugas" class="form-label">Nama Petugas APU PPT</label>
+                                <input type="text" class="form-control" id="nama_petugas" name="nama_petugas" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="sk_penunjukkan" class="form-label">SK-Penunjukkan APU PPT</label>
+                                <input type="text" class="form-control" id="sk_penunjukkan" name="sk_penunjukkan" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User IDs Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Identitas Pengguna Sistem</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label for="user_id_goaml" class="form-label">User ID GoAML</label>
+                                <input type="text" class="form-control" id="user_id_goaml" name="user_id_goaml" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="user_id_sipesat" class="form-label">User ID SIPESAT</label>
+                                <input type="text" class="form-control" id="user_id_sipesat" name="user_id_sipesat" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="user_id_pep" class="form-label">User ID PEP</label>
+                                <input type="text" class="form-control" id="user_id_pep" name="user_id_pep" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="user_id_sipendar" class="form-label">User ID SIPENDAR</label>
+                                <input type="text" class="form-control" id="user_id_sipendar" name="user_id_sipendar" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Report Statistics Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Statistik Laporan ke PPATK</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="jumlah_ltkt" class="form-label">Jumlah Laporan LTKT</label>
+                                <input type="number" class="form-control" id="jumlah_ltkt" name="jumlah_ltkt" min="0" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="jumlah_ltkm" class="form-label">Jumlah Laporan LTKM</label>
+                                <input type="number" class="form-control" id="jumlah_ltkm" name="jumlah_ltkm" min="0" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="jumlah_ltkl" class="form-label">Jumlah Laporan LTKL</label>
+                                <input type="number" class="form-control" id="jumlah_ltkl" name="jumlah_ltkl" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- SIPESAT Quarterly Reports Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Laporan SIPESAT Triwulanan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="triwulan_1" name="triwulan_1">
+                                    <label class="form-check-label" for="triwulan_1">
+                                        Triwulan I (Jan-Mar)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="triwulan_2" name="triwulan_2">
+                                    <label class="form-check-label" for="triwulan_2">
+                                        Triwulan II (Apr-Jun)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="triwulan_3" name="triwulan_3">
+                                    <label class="form-check-label" for="triwulan_3">
+                                        Triwulan III (Jul-Sep)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="triwulan_4" name="triwulan_4">
+                                    <label class="form-check-label" for="triwulan_4">
+                                        Triwulan IV (Okt-Dec)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Blocking/Deletion Reports Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Laporan Pemblokiran/Penghapusan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="dttot_reported" name="dttot_reported">
+                                    <label class="form-check-label" for="dttot_reported">
+                                        DTTOT - Telah Melaporkan Surat dan Berita Acara Pemblokiran/Penghapusan
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="dppspm_reported" name="dppspm_reported">
+                                    <label class="form-check-label" for="dppspm_reported">
+                                        DPPSPM - Telah Melaporkan Surat dan Berita Acara Pemblokiran/Penghapusan
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Policy and Procedures Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Kebijakan dan Prosedur</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="tanggung_jawab_direksi" class="form-label">Tanggung Jawab Direksi dan Pengawasan Aktif Dewan Komisaris</label>
+                            <textarea class="form-control" id="tanggung_jawab_direksi" name="tanggung_jawab_direksi" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="kebijakan_prosedur" class="form-label">Kebijakan dan Prosedur Tertulis</label>
+                            <textarea class="form-control" id="kebijakan_prosedur" name="kebijakan_prosedur" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="metode_pmpj" class="form-label">Metode Pelaksanaan Prinsip Mengenali Pengguna Jasa (PMPJ)</label>
+                            <textarea class="form-control" id="metode_pmpj" name="metode_pmpj" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="manajemen_risiko" class="form-label">Proses Manajemen Risiko</label>
+                            <textarea class="form-control" id="manajemen_risiko" name="manajemen_risiko" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="manajemen_sdm" class="form-label">Manajemen Sumber Daya Manusia</label>
+                            <textarea class="form-control" id="manajemen_sdm" name="manajemen_sdm" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="sistem_pengendalian" class="form-label">Sistem Pengendalian Intern</label>
+                            <textarea class="form-control" id="sistem_pengendalian" name="sistem_pengendalian" rows="3" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Data Input Information Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Informasi Penginput Data</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nama_penginput" class="form-label">Nama penginput data dan upload dokumen Laporan Tahunan</label>
+                                <input type="text" class="form-control" id="nama_penginput" name="nama_penginput" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email_penginput" class="form-label">Email penginput data</label>
+                                <input type="email" class="form-control" id="email_penginput" name="email_penginput" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email_perusahaan" class="form-label">Email perusahaan</label>
+                                <input type="email" class="form-control" id="email_perusahaan" name="email_perusahaan" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="nomor_hp" class="form-label">Nomor HP penginput data dan informasi</label>
+                                <input type="tel" class="form-control" id="nomor_hp" name="nomor_hp" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Document Upload Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Dokumen Pendukung</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Tahunan APU, PPT, dan PPSPM yang telah ditandatangani</label>
+                            <input type="file" class="form-control" id="dokumen_laporan" name="dokumen_laporan" accept=".pdf,.doc,.docx" required>
+                            <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Declaration Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Pernyataan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="declaration" name="declaration" required>
+                                <label class="form-check-label" for="declaration">
+                                    Sehubungan dengan penyampaian Laporan Tahunan APU, PPT, dan PPSPM Tahunan yang telah disampaikan, dengan ini saya mewakili Perusahaan menyatakan data dan informasi pada isian tersebut dengan lengkap dan benar. 
+                                    Apabila data/informasi yang diisi tidak lengkap dan tidak akurat, maka laporan yang disampaikan akan dianggap salah dan tidak disampaikan.
+                                    Dalam hal terdapat perubahan, maka saya, mewakili perusahaan akan melakukan update data dan informasi tersebut.
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                    <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        margin-bottom: 1.5rem;
+    }
+    .card-header {
+        font-weight: 600;
+        padding: 1rem 1.25rem;
+    }
+    .form-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    .form-check-label {
+        font-weight: normal;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Date validation - report date shouldn't be in the future
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('tanggal_surat').max = today;
+    
+    // Form validation
+    document.getElementById('apuPptReportForm').addEventListener('submit', function(e) {
+        // Validate report year
+        const tahun = document.getElementById('tahun_laporan').value;
+        const currentYear = new Date().getFullYear();
+        
+        if (tahun > currentYear) {
+            e.preventDefault();
+            alert('Tahun laporan tidak boleh melebihi tahun berjalan');
+            return false;
+        }
+        
+        // Validate declaration checkbox
+        if (!document.getElementById('declaration').checked) {
+            e.preventDefault();
+            alert('Anda harus menyetujui pernyataan sebelum mengirim laporan');
+            return false;
+        }
+        
+        // Validate file size
+        const fileInput = document.getElementById('dokumen_laporan');
+        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
+            e.preventDefault();
+            alert('Ukuran file dokumen laporan melebihi 10MB');
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Laporan Gangguan IT{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-12 col-lg-8">
+        <div class="card shadow-lg p-4">
+            <h3 class="text-center mb-4">Formulir Laporan Gangguan IT</h3>
+            <form method="POST" action="/submit/laporan-gangguan-it" enctype="multipart/form-data" id="itIssueForm">
+                <!-- Basic Information Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Informasi Pelapor</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="penyelenggara" class="form-label">Nama Penyelenggara (PJP)</label>
+                                <select class="form-select" id="penyelenggara" name="penyelenggara" required>
+                                    <option value="">-- Pilih Penyelenggara --</option>
+                                    <option value="Bank A">Bank A</option>
+                                    <option value="Bank B">Bank B</option>
+                                    <option value="Non-Bank X">Non-Bank X</option>
+                                    <option value="Non-Bank Y">Non-Bank Y</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                                <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                                <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Incident Details Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Detail Gangguan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="waktu_kejadian" class="form-label">Waktu Kejadian</label>
+                                <input type="datetime-local" class="form-control" id="waktu_kejadian" name="waktu_kejadian" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="jenis_gangguan" class="form-label">Jenis Gangguan</label>
+                                <select class="form-select" id="jenis_gangguan" name="jenis_gangguan" required>
+                                    <option value="">-- Pilih Jenis Gangguan --</option>
+                                    <option value="Jaringan">Gangguan Jaringan</option>
+                                    <option value="Server">Gangguan Server</option>
+                                    <option value="Aplikasi">Gangguan Aplikasi</option>
+                                    <option value="Database">Gangguan Database</option>
+                                    <option value="Keamanan">Gangguan Keamanan</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="ringkasan" class="form-label">Ringkasan Gangguan</label>
+                            <textarea class="form-control" id="ringkasan" name="ringkasan" rows="4" required></textarea>
+                            <div class="form-text">Jelaskan secara detail gejala gangguan yang terjadi</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resolution Details Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Upaya Penanganan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="upaya_perbaikan" class="form-label">Upaya Perbaikan</label>
+                            <textarea class="form-control" id="upaya_perbaikan" name="upaya_perbaikan" rows="4" required></textarea>
+                            <div class="form-text">Jelaskan langkah-langkah yang telah dilakukan untuk mengatasi gangguan</div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="status_penyelesaian" class="form-label">Status Penyelesaian</label>
+                                <select class="form-select" id="status_penyelesaian" name="status_penyelesaian" required>
+                                    <option value="">-- Pilih Status --</option>
+                                    <option value="Dalam Investigasi">Dalam Investigasi</option>
+                                    <option value="Dalam Perbaikan">Dalam Perbaikan</option>
+                                    <option value="Terselesaikan">Terselesaikan</option>
+                                    <option value="Belum Terselesaikan">Belum Terselesaikan</option>
+                                    <option value="Eskalasi">Memerlukan Eskalasi</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="tanggal_penyelesaian" class="form-label">Tanggal Penyelesaian (jika sudah selesai)</label>
+                                <input type="datetime-local" class="form-control" id="tanggal_penyelesaian" name="tanggal_penyelesaian">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attachment Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Lampiran</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="lampiran" class="form-label">Upload Dokumen Pendukung</label>
+                            <input type="file" class="form-control" id="lampiran" name="lampiran" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png">
+                            <div class="form-text">Format: PDF, DOC, XLS, JPG, PNG (Maks. 5MB)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                    <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        margin-bottom: 1.5rem;
+    }
+    .card-header {
+        font-weight: 600;
+        padding: 1rem 1.25rem;
+    }
+    .form-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    textarea {
+        min-height: 120px;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Conditional field for resolution date
+    const statusSelect = document.getElementById('status_penyelesaian');
+    const resolutionDate = document.getElementById('tanggal_penyelesaian');
+    
+    statusSelect.addEventListener('change', function() {
+        if (this.value === 'Terselesaikan') {
+            resolutionDate.required = true;
+            resolutionDate.disabled = false;
+        } else {
+            resolutionDate.required = false;
+            resolutionDate.disabled = true;
+            resolutionDate.value = '';
+        }
+    });
+    
+    // Form validation
+    document.getElementById('itIssueForm').addEventListener('submit', function(e) {
+        // Additional validation can be added here
+        const incidentTime = new Date(document.getElementById('waktu_kejadian').value);
+        const now = new Date();
+        
+        if (incidentTime > now) {
+            e.preventDefault();
+            alert('Waktu kejadian tidak boleh lebih baru dari waktu saat ini');
+            return false;
+        }
+        
+        if (statusSelect.value === 'Terselesaikan' && !resolutionDate.value) {
+            e.preventDefault();
+            alert('Harap isi tanggal penyelesaian untuk status "Terselesaikan"');
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}
