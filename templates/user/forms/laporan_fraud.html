@@ -69,7 +69,7 @@
                     <label for="tahun" class="form-label">Tahun Laporan</label>
                     <select class="form-select form-select-lg" id="tahun" name="tahun" required>
                         <option value="">-- Pilih Tahun --</option>
-                        {% for year in range(2015, 2030) %}
+                        {% for year in range(2015, 2050) %}
                             <option value="{{ year }}" 
                                 {% if request.form and request.form.tahun == year|string %}selected{% endif %}>
                                 {{ year }}
@@ -90,90 +90,6 @@
                         {% endfor %}
                     </select>
                 </div>
-                <!-- <div class="mb-3">
-                    <label for="penyelenggara" class="form-label">Nama Penyelenggara</label>
-                    <select class="form-select form-select-lg" id="penyelenggara" name="penyelenggara" required>
-                        <option value="">-- Pilih Penyelenggara --</option>
-                        <option value="PT. Kredigram Pembayaran Elektronis">PT. Kredigram Pembayaran Elektronis</option>
-                        <option value="PT. Syaftraco (d/h CV. Syaftraco)">PT. Syaftraco (d/h CV. Syaftraco)</option>
-                        <option value="PT. Agung Remittance Global">PT. Agung Remittance Global</option>
-                        <option value="PT. Tiki Jalur Nugraha Ekakurir">PT. Tiki Jalur Nugraha Ekakurir</option>
-                        <option value="PT. VIT Remittance Indonesia">PT. VIT Remittance Indonesia</option>
-                        <option value="PT. Madame Express Remitindo">PT. Madame Express Remitindo</option>
-                        <option value="PT. EMQ Indonesia Asia">PT. EMQ Indonesia Asia</option>
-                        <option value="PT. Pacto">PT. Pacto</option>
-                        <option value="PT. Eka Bakti Amerta Yoga Sejahtera">PT. Eka Bakti Amerta Yoga Sejahtera</option>
-                        <option value="PT. Indomarco Prismatama">PT. Indomarco Prismatama</option>
-                        <option value="PT. VIP Remittance">PT. VIP Remittance</option>
-                        <option value="PT. Dhasatra Moneytransfer">PT. Dhasatra Moneytransfer</option>
-                        <option value="PT. Priority Valasindo Remittance (d/h Sdr. Suwandi)">PT. Priority Valasindo Remittance (d/h Sdr. Suwandi)</option>
-                        <option value="PT. Artha Semesta Utama">PT. Artha Semesta Utama</option>
-                        <option value="Perusahaan Umum Pegadaian">Perusahaan Umum Pegadaian</option>
-                        <option value="PT. Berkat Gerizim">PT. Berkat Gerizim</option>
-                        <option value="PT. Adisena Mitra Usaha">PT. Adisena Mitra Usaha</option>
-                        <option value="PT. Kangaroo Ausindo">PT. Kangaroo Ausindo</option>
-                        <option value="PT. Wintrust Indonesia">PT. Wintrust Indonesia</option>
-                        <option value="PT. MM Indonesia">PT. MM Indonesia</option>
-                        <option value="PT. Prima Express Remit">PT. Prima Express Remit</option>
-                        <option value="PT. Aryadana (d/h CV. Aryadana)">PT. Aryadana (d/h CV. Aryadana)</option>
-                        <option value="PT. Uang Kita">PT. Uang Kita</option>
-                        <option value="PT. Indo Koala Remittance">PT. Indo Koala Remittance</option>
-                        <option value="PT. GPL Remittance Indonesia">PT. GPL Remittance Indonesia</option>
-                        <option value="PT. Andalusia Antar Benua">PT. Andalusia Antar Benua</option>
-                        <option value="PT. Hayyu Indo (d/h PT. Omni Pay Transfer Dana)">PT. Hayyu Indo (d/h PT. Omni Pay Transfer Dana)</option>
-                        <option value="PT. Mobile Coin Asia">PT. Mobile Coin Asia</option>
-                        <option value="PT. Tranglo Indonesia">PT. Tranglo Indonesia</option>
-                        <option value="PT. Berkah Sinar Abadi">PT. Berkah Sinar Abadi</option>
-                        <option value="PT. Peniti Money Remittance">PT. Peniti Money Remittance</option>
-                        <option value="PT. Lumbung Berkah Abadi">PT. Lumbung Berkah Abadi</option>
-                        <option value="PT. Able Remittance">PT. Able Remittance</option>
-                        <option value="PT. Remitindo Dolarasia Sejahtera">PT. Remitindo Dolarasia Sejahtera</option>
-                        <option value="PT. First Money">PT. First Money</option>
-                        <option value="PT. Immer">PT. Immer</option>
-                        <option value="KSP Sahabat Mitra Sejati">KSP Sahabat Mitra Sejati</option>
-                        <option value="PT. Duit Sono Sini Remittance">PT. Duit Sono Sini Remittance</option>
-                        <option value="PT. Wallex Teknologi Berkat">PT. Wallex Teknologi Berkat</option>
-                        <option value="PT. Sumber Alfaria Trijaya">PT. Sumber Alfaria Trijaya</option>
-                        <option value="PT. Intrajasa Teknosolusi">PT. Intrajasa Teknosolusi</option>
-                        <option value="PT. Solusi Multi Artha">PT. Solusi Multi Artha</option>
-                        <option value="PT. Western Union Indonesia">PT. Western Union Indonesia</option>
-                        <option value="PT. Moneygram Payment Systems Indonesia">PT. Moneygram Payment Systems Indonesia</option>
-                        <option value="PT. Teleanjar Indonesia">PT. Teleanjar Indonesia</option>
-                        <option value="PT. Jasa Kembar Kilat">PT. Jasa Kembar Kilat</option>
-                        <option value="PT. Nusa Ekspresstama Remmitance">PT. Nusa Ekspresstama Remmitance</option>
-                        <option value="PT. Kawan Hai Hai Remittance">PT. Kawan Hai Hai Remittance</option>
-                        <option value="PT. Pelangi Indodata">PT. Pelangi Indodata</option>
-                        <option value="PT. Midi Utama Indonesia, Tbk">PT. Midi Utama Indonesia, Tbk</option>
-                        <option value="PT. ZND Asia Utama">PT. ZND Asia Utama</option>
-                        <option value="PT. Dompet Harapan Bangsa">PT. Dompet Harapan Bangsa</option>
-                        <option value="PT. Nium Mitra Indonesia (sebelumnya PT. Instarem Mitra Indonesia)">PT. Nium Mitra Indonesia (sebelumnya PT. Instarem Mitra Indonesia)</option>
-                        <option value="PT Zen Etransfer Nusantara">PT Zen Etransfer Nusantara</option>
-                        <option value="KSP Indosurya Cipta">KSP Indosurya Cipta</option>
-                        <option value="PT. Sunrate Commercial Services">PT. Sunrate Commercial Services</option>
-                        <option value="PT. Asia Pelangi Remiten">PT. Asia Pelangi Remiten</option>
-                        <option value="PT. Pelita Transfer Nusantara">PT. Pelita Transfer Nusantara</option>
-                        <option value="PT. Indogo Express Remitance">PT. Indogo Express Remitance</option>
-                        <option value="PT. Asia Fintek Teknologi">PT. Asia Fintek Teknologi</option>
-                        <option value="PT. Dhanapatra Loka Abadi">PT. Dhanapatra Loka Abadi</option>
-                        <option value="PT. Remit Ekspres Indonesia">PT. Remit Ekspres Indonesia</option>
-                        <option value="PT. Inti Pratama Internasional">PT. Inti Pratama Internasional</option>
-                        <option value="PT. Wise Payments Indonesia">PT. Wise Payments Indonesia</option>
-                        <option value="PT. Moneta Pembayaran Teknologi">PT. Moneta Pembayaran Teknologi</option>
-                        <option value="PT. Giat Bangun Indonesia">PT. Giat Bangun Indonesia</option>
-                        <option value="PT. Silot Technology Indonesia">PT. Silot Technology Indonesia</option>
-                        <option value="PT. Paramas Murni Jaya">PT. Paramas Murni Jaya</option>
-                        <option value="PT. Achilles Financial Systems">PT. Achilles Financial Systems</option>
-                        <option value="PT. Payquest Network Indonesia">PT. Payquest Network Indonesia</option>
-                        <option value="PT. Nandy Dana Ekspres">PT. Nandy Dana Ekspres</option>
-                        <option value="PT. Pundimas Sentral Dana">PT. Pundimas Sentral Dana</option>
-                        <option value="PT. Durian Pay Indonesia">PT. Durian Pay Indonesia</option>
-                        <option value="PT. Brankas Teknologi Indonesia">PT. Brankas Teknologi Indonesia</option>
-                        <option value="PT. Smart Fintech For You">PT. Smart Fintech For You</option>
-                        <option value="PT. Infra Digital Nusantara">PT. Infra Digital Nusantara</option>
-                        <option value="PT. Tolong Transfer Paman Ryan">PT. Tolong Transfer Paman Ryan</option>
-                        <option value="PT. Kiriman Dana Pandai">PT. Kiriman Dana Pandai</option>
-                    </select>
-                </div> -->
                 <div class="mb-3">
                     <label for="nomor_surat" class="form-label">Nomor Surat</label>
                     <input type="text" class="form-control form-control-lg" id="nomor_surat" name="nomor_surat" 

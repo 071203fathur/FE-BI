@@ -19,21 +19,15 @@
                     </select>
                 </div>
 
-                <!-- Nama Penyelenggara -->
-                <div class="mb-3">
-                    <label for="penyelenggara" class="form-label">Nama Penyelenggara</label>
-                    <select class="form-select form-select-lg" id="penyelenggara" name="penyelenggara" required>
-                        <option value="">-- Pilih Penyelenggara --</option>
-                        <option value="Penyelenggara A">Penyelenggara A</option>
-                        <option value="Penyelenggara B">Penyelenggara B</option>
-                        <option value="Penyelenggara C">Penyelenggara C</option>
-                    </select>
-                </div>
-
                 <!-- Nomor Surat -->
                 <div class="mb-3">
                     <label for="nomor_surat" class="form-label">Nomor Surat</label>
                     <input type="text" class="form-control form-control-lg" id="nomor_surat" name="nomor_surat" required>
+                </div>
+                <div class="mb-3">
+                    <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                    <input type="date" class="form-control form-control-lg" id="tanggal_surat" name="tanggal_surat" 
+                           value="{{ request.form.tanggal_surat if request.form }}" required>
                 </div>
 
                 <!-- Modal Disetor -->

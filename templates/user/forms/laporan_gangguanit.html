@@ -15,14 +15,31 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label for="penyelenggara" class="form-label">Nama Penyelenggara (PJP)</label>
-                                <select class="form-select" id="penyelenggara" name="penyelenggara" required>
-                                    <option value="">-- Pilih Penyelenggara --</option>
-                                    <option value="Bank A">Bank A</option>
-                                    <option value="Bank B">Bank B</option>
-                                    <option value="Non-Bank X">Non-Bank X</option>
-                                    <option value="Non-Bank Y">Non-Bank Y</option>
+                            <div class="col-md-6 mb-3">
+                                <label for="tahun" class="form-label">Tahun Laporan</label>
+                                <select class="form-select" id="tahun" name="tahun" required>
+                                    <option value="">-- Pilih Tahun --</option>
+                                    {% for year in range(2020, 20250) %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="periode" class="form-label">Periode Laporan (Bulan)</label>
+                                <select class="form-select" id="periode" name="periode" required>
+                                    <option value="">-- Pilih Bulan --</option>
+                                    <option value="1">Januari</option>
+                                    <option value="2">Februari</option>
+                                    <option value="3">Maret</option>
+                                    <option value="4">April</option>
+                                    <option value="5">Mei</option>
+                                    <option value="6">Juni</option>
+                                    <option value="7">Juli</option>
+                                    <option value="8">Agustus</option>
+                                    <option value="9">September</option>
+                                    <option value="10">Oktober</option>
+                                    <option value="11">November</option>
+                                    <option value="12">Desember</option>
                                 </select>
                             </div>
                         </div>

@@ -48,6 +48,11 @@
                     <label for="nomor_surat" class="form-label">Nomor Surat</label>
                     <input type="text" class="form-control form-control-lg" id="nomor_surat" name="nomor_surat" required>
                 </div>
+                <div class="mb-3">
+                    <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                    <input type="date" class="form-control form-control-lg" id="tanggal_surat" name="tanggal_surat" 
+                           value="{{ request.form.tanggal_surat if request.form }}" required>
+                </div>
 
                 <!-- Modal Disetor -->
                 <div class="mb-3">

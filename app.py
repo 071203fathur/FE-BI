@@ -144,29 +144,36 @@ def submit_laporan_fraud():
         "keterangan_tindak_lanjut": request.form.get("tindak_lanjut")
     }
     
+    
     files = {}
     file = request.files.get("file_laporan")
     if file:
-        files = {"file_laporan": (file.filename, file.stream, file.mimetype)}
+        files = {"file": (file.filename, file.stream, file.mimetype)}
     
     try:
         response = requests.post(
-            f"{API_BASE_URL}laporan/fraud/",
+            f"{API_BASE_URL}laporan/fraud/submit",
             data=form_data,
             files=files,
             headers=headers
         )
         
         if response.status_code == 201:
-            return {"success": True, "message": "Laporan berhasil dikirim!"}
+            # Ambil seluruh data dari respons
+            response_data = response.json()
+            return {
+                "success": True,
+                "message": "Laporan berhasil dikirim!",
+                "data": response_data.get("data", {})  # Kembalikan data yang dikirim oleh backend
+            }
         else:
             error_data = response.json()
             error_message = error_data.get("message", "Gagal mengirim laporan. Silakan coba lagi.")
             return {"success": False, "message": error_message}
-            
-    except requests.exceptions.RequestException as e:
-        return {"success": False, "message": f"Gagal terhubung ke server. Silakan coba lagi nanti. {e}"}
-
+    except Exception as e:
+        return {"success": False, "message": f"Gagal terhubung ke server. Silakan coba lagi nanti. {e}"}    
+    # except requests.exceptions.RequestException as e:
+    #     return {"success": False, "message": f"Gagal terhubung ke server. Silakan coba lagi nanti. {e}"}
 
 @app.route("/form/laporan-fraud")
 def form_laporan_fraud():
