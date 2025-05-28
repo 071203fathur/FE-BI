@@ -8,7 +8,6 @@
         <div class="card shadow-lg p-5">
             <h3 class="text-center mb-4">Laporan Keuangan Tahunan Audited</h3>
             <form method="POST" action="/submit/laporan-keuangan-audited" enctype="multipart/form-data" id="auditForm">
-                <!-- Tahun Laporan -->
                 <div class="mb-3">
                     <label for="tahun" class="form-label">Periode Laporan</label>
                     <select class="form-select form-select-lg" id="tahun" name="tahun" required>
@@ -19,7 +18,6 @@
                     </select>
                 </div>
 
-                <!-- Nomor Surat -->
                 <div class="mb-3">
                     <label for="nomor_surat" class="form-label">Nomor Surat</label>
                     <input type="text" class="form-control form-control-lg" id="nomor_surat" name="nomor_surat" required>
@@ -30,14 +28,12 @@
                            value="{{ request.form.tanggal_surat if request.form }}" required>
                 </div>
 
-                <!-- Modal Disetor -->
                 <div class="mb-3">
                     <label for="modal_disetor" class="form-label">Modal Disetor (Rp)</label>
                     <input type="number" class="form-control form-control-lg" id="modal_disetor" name="modal_disetor" required>
                     <div class="form-text">Masukkan nilai dalam Rupiah tanpa tanda titik atau koma</div>
                 </div>
 
-                <!-- Jenis Audit (Conditional) -->
                 <div class="mb-3">
                     <label for="jenis_audit" class="form-label">Jenis Audit</label>
                     <select class="form-select form-select-lg" id="jenis_audit" name="jenis_audit" required>
@@ -47,19 +43,21 @@
                     </select>
                 </div>
 
-                <!-- Kantor Akuntan Publik (Conditional) -->
                 <div class="mb-3" id="kantor_akuntan_group" style="display: none;">
                     <label for="kantor_akuntan" class="form-label">Nama Kantor Akuntan Publik</label>
                     <input type="text" class="form-control form-control-lg" id="kantor_akuntan" name="kantor_akuntan">
                 </div>
 
-                <!-- Tanggal Opini (Conditional) -->
                 <div class="mb-3" id="tanggal_opini_group" style="display: none;">
                     <label for="tanggal_opini" class="form-label">Tanggal Opini</label>
                     <input type="date" class="form-control form-control-lg" id="tanggal_opini" name="tanggal_opini">
                 </div>
 
-                <!-- Financial Data -->
+                <div class="mb-3" id="opini_group" style="display: none;">
+                    <label for="opini" class="form-label">Opini</label>
+                    <textarea class="form-control form-control-lg" id="opini" name="opini" rows="3"></textarea>
+                </div>
+
                 <div class="mb-3">
                     <label for="pendapatan" class="form-label">Pendapatan (Rp)</label>
                     <input type="number" class="form-control form-control-lg" id="pendapatan" name="pendapatan" required>
@@ -91,11 +89,10 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="equity" class="form-label">Equity (Rp)</label>
-                    <input type="number" class="form-control form-control-lg" id="equity" name="equity" required>
+                    <label for="total_equitas" class="form-label">Total Equitas (Rp)</label>
+                    <input type="number" class="form-control form-control-lg" id="total_equitas" name="total_equitas" required>
                 </div>
 
-                <!-- File Upload -->
                 <div class="mb-4">
                     <label for="file_laporan" class="form-label">Upload Laporan Keuangan Audited</label>
                     <input type="file" class="form-control form-control-lg" id="file_laporan" name="file_laporan" accept=".pdf,.doc,.docx,.xls,.xlsx" required>
@@ -116,8 +113,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const jenisAuditSelect = document.getElementById('jenis_audit');
     const kantorAkuntanGroup = document.getElementById('kantor_akuntan_group');
     const tanggalOpiniGroup = document.getElementById('tanggal_opini_group');
+    const opiniGroup = document.getElementById('opini_group'); // New: Opini group
     const kantorAkuntanInput = document.getElementById('kantor_akuntan');
     const tanggalOpiniInput = document.getElementById('tanggal_opini');
+    const opiniInput = document.getElementById('opini'); // New: Opini input
 
     // Handle modal disetor change
     modalDisetorInput.addEventListener('change', function() {
@@ -141,15 +140,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if (show) {
             kantorAkuntanGroup.style.display = 'block';
             tanggalOpiniGroup.style.display = 'block';
+            opiniGroup.style.display = 'block'; // New: Show opini field
             kantorAkuntanInput.required = true;
             tanggalOpiniInput.required = true;
+            opiniInput.required = true; // New: Make opini required
         } else {
             kantorAkuntanGroup.style.display = 'none';
             tanggalOpiniGroup.style.display = 'none';
+            opiniGroup.style.display = 'none'; // New: Hide opini field
             kantorAkuntanInput.required = false;
             tanggalOpiniInput.required = false;
+            opiniInput.required = false; // New: Make opini not required
             kantorAkuntanInput.value = '';
             tanggalOpiniInput.value = '';
+            opiniInput.value = ''; // New: Clear opini value
         }
     }
 

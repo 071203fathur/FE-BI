@@ -8,7 +8,6 @@
         <div class="card shadow-lg p-4">
             <h3 class="text-center mb-4">Formulir Laporan Gangguan IT</h3>
             <form method="POST" action="/submit/laporan-gangguan-it" enctype="multipart/form-data" id="itIssueForm">
-                <!-- Basic Information Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Informasi Pelapor</h5>
@@ -57,72 +56,72 @@
                     </div>
                 </div>
                 
-                <!-- Incident Details Section -->
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Detail Gangguan</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="waktu_kejadian" class="form-label">Waktu Kejadian</label>
-                                <input type="datetime-local" class="form-control" id="waktu_kejadian" name="waktu_kejadian" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="jenis_gangguan" class="form-label">Jenis Gangguan</label>
-                                <select class="form-select" id="jenis_gangguan" name="jenis_gangguan" required>
-                                    <option value="">-- Pilih Jenis Gangguan --</option>
-                                    <option value="Jaringan">Gangguan Jaringan</option>
-                                    <option value="Server">Gangguan Server</option>
-                                    <option value="Aplikasi">Gangguan Aplikasi</option>
-                                    <option value="Database">Gangguan Database</option>
-                                    <option value="Keamanan">Gangguan Keamanan</option>
-                                    <option value="Lainnya">Lainnya</option>
-                                </select>
-                            </div>
+                <div id="itDisturbanceContainer">
+                    <div class="card mb-4 it-disturbance-item">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Detail Gangguan <span class="disturbance-number">1</span></h5>
+                            <button type="button" class="btn btn-danger btn-sm remove-disturbance" style="display:none;">Hapus</button>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="ringkasan" class="form-label">Ringkasan Gangguan</label>
-                            <textarea class="form-control" id="ringkasan" name="ringkasan" rows="4" required></textarea>
-                            <div class="form-text">Jelaskan secara detail gejala gangguan yang terjadi</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Resolution Details Section -->
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Upaya Penanganan</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="upaya_perbaikan" class="form-label">Upaya Perbaikan</label>
-                            <textarea class="form-control" id="upaya_perbaikan" name="upaya_perbaikan" rows="4" required></textarea>
-                            <div class="form-text">Jelaskan langkah-langkah yang telah dilakukan untuk mengatasi gangguan</div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="status_penyelesaian" class="form-label">Status Penyelesaian</label>
-                                <select class="form-select" id="status_penyelesaian" name="status_penyelesaian" required>
-                                    <option value="">-- Pilih Status --</option>
-                                    <option value="Dalam Investigasi">Dalam Investigasi</option>
-                                    <option value="Dalam Perbaikan">Dalam Perbaikan</option>
-                                    <option value="Terselesaikan">Terselesaikan</option>
-                                    <option value="Belum Terselesaikan">Belum Terselesaikan</option>
-                                    <option value="Eskalasi">Memerlukan Eskalasi</option>
-                                </select>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="waktu_kejadian_1" class="form-label">Waktu Kejadian</label>
+                                    <input type="datetime-local" class="form-control" id="waktu_kejadian_1" name="waktu_kejadian_1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="jenis_gangguan_1" class="form-label">Jenis Gangguan</label>
+                                    <select class="form-select" id="jenis_gangguan_1" name="jenis_gangguan_1" required>
+                                        <option value="">-- Pilih Jenis Gangguan --</option>
+                                        <option value="Jaringan">Gangguan Jaringan</option>
+                                        <option value="Server">Gangguan Server</option>
+                                        <option value="Aplikasi">Gangguan Aplikasi</option>
+                                        <option value="Database">Gangguan Database</option>
+                                        <option value="Keamanan">Gangguan Keamanan</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="tanggal_penyelesaian" class="form-label">Tanggal Penyelesaian (jika sudah selesai)</label>
-                                <input type="datetime-local" class="form-control" id="tanggal_penyelesaian" name="tanggal_penyelesaian">
+                            
+                            <div class="mb-3">
+                                <label for="ringkasan_1" class="form-label">Ringkasan Gangguan</label>
+                                <textarea class="form-control" id="ringkasan_1" name="ringkasan_1" rows="4" required></textarea>
+                                <div class="form-text">Jelaskan secara detail gejala gangguan yang terjadi</div>
+                            </div>
+
+                            <div class="mt-4">
+                                <h6 class="mb-0">Upaya Penanganan</h6>
+                            </div>
+                            <div class="mb-3">
+                                <label for="upaya_perbaikan_1" class="form-label">Upaya Perbaikan</label>
+                                <textarea class="form-control" id="upaya_perbaikan_1" name="upaya_perbaikan_1" rows="4" required></textarea>
+                                <div class="form-text">Jelaskan langkah-langkah yang telah dilakukan untuk mengatasi gangguan</div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="status_penyelesaian_1" class="form-label">Status Penyelesaian</label>
+                                    <select class="form-select status-select" id="status_penyelesaian_1" name="status_penyelesaian_1" required>
+                                        <option value="">-- Pilih Status --</option>
+                                        <option value="Dalam Investigasi">Dalam Investigasi</option>
+                                        <option value="Dalam Perbaikan">Dalam Perbaikan</option>
+                                        <option value="Terselesaikan">Terselesaikan</option>
+                                        <option value="Belum Terselesaikan">Belum Terselesaikan</option>
+                                        <option value="Eskalasi">Memerlukan Eskalasi</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="tanggal_penyelesaian_1" class="form-label">Tanggal Penyelesaian (jika sudah selesai)</label>
+                                    <input type="datetime-local" class="form-control resolution-date" id="tanggal_penyelesaian_1" name="tanggal_penyelesaian_1">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="d-grid gap-2 mb-4">
+                    <button type="button" class="btn btn-info" id="addDisturbance">Tambah Gangguan IT</button>
+                </div>
                 
-                <!-- Attachment Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Lampiran</h5>
@@ -136,7 +135,6 @@
                     </div>
                 </div>
                 
-                <!-- Submit Button -->
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
                     <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
@@ -165,12 +163,15 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Conditional field for resolution date
-    const statusSelect = document.getElementById('status_penyelesaian');
-    const resolutionDate = document.getElementById('tanggal_penyelesaian');
-    
-    statusSelect.addEventListener('change', function() {
-        if (this.value === 'Terselesaikan') {
+    let disturbanceCount = 1;
+
+    // Function to handle conditional field for resolution date
+    function setupConditionalFields(container) {
+        const statusSelect = container.querySelector('.status-select');
+        const resolutionDate = container.querySelector('.resolution-date');
+        
+        // Initial state
+        if (statusSelect.value === 'Terselesaikan') {
             resolutionDate.required = true;
             resolutionDate.disabled = false;
         } else {
@@ -178,24 +179,97 @@ document.addEventListener('DOMContentLoaded', function() {
             resolutionDate.disabled = true;
             resolutionDate.value = '';
         }
+
+        statusSelect.addEventListener('change', function() {
+            if (this.value === 'Terselesaikan') {
+                resolutionDate.required = true;
+                resolutionDate.disabled = false;
+            } else {
+                resolutionDate.required = false;
+                resolutionDate.disabled = true;
+                resolutionDate.value = '';
+            }
+        });
+    }
+
+    // Initial setup for the first disturbance item
+    setupConditionalFields(document.querySelector('.it-disturbance-item'));
+
+    // Add new disturbance item
+    document.getElementById('addDisturbance').addEventListener('click', function() {
+        disturbanceCount++;
+        const originalItem = document.querySelector('.it-disturbance-item');
+        const newItem = originalItem.cloneNode(true); // Deep clone
+
+        // Update IDs and names for new item
+        newItem.querySelectorAll('[id]').forEach(element => {
+            const originalId = element.id;
+            const newId = originalId.replace(/_(\d+)$/, '_' + disturbanceCount);
+            element.id = newId;
+            if (element.name) {
+                element.name = element.name.replace(/_(\d+)$/, '_' + disturbanceCount);
+            }
+            // Clear values for cloned inputs
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.value = '';
+            } else if (element.tagName === 'SELECT') {
+                element.selectedIndex = 0;
+            }
+        });
+
+        // Update disturbance number
+        newItem.querySelector('.disturbance-number').textContent = disturbanceCount;
+
+        // Show remove button for new items
+        const removeButton = newItem.querySelector('.remove-disturbance');
+        removeButton.style.display = 'inline-block';
+        removeButton.addEventListener('click', function() {
+            newItem.remove();
+            // Re-number existing items after removal
+            document.querySelectorAll('.it-disturbance-item').forEach((item, index) => {
+                item.querySelector('.disturbance-number').textContent = index + 1;
+                // If only one item left, hide its remove button
+                if (document.querySelectorAll('.it-disturbance-item').length === 1) {
+                    item.querySelector('.remove-disturbance').style.display = 'none';
+                }
+            });
+            disturbanceCount = document.querySelectorAll('.it-disturbance-item').length;
+        });
+
+        // Re-setup conditional fields for the new item
+        setupConditionalFields(newItem);
+
+        document.getElementById('itDisturbanceContainer').appendChild(newItem);
     });
-    
+
     // Form validation
     document.getElementById('itIssueForm').addEventListener('submit', function(e) {
-        // Additional validation can be added here
-        const incidentTime = new Date(document.getElementById('waktu_kejadian').value);
-        const now = new Date();
-        
-        if (incidentTime > now) {
+        let isValid = true;
+        document.querySelectorAll('.it-disturbance-item').forEach(item => {
+            const incidentTimeInput = item.querySelector('[id^="waktu_kejadian_"]');
+            const statusSelect = item.querySelector('.status-select');
+            const resolutionDateInput = item.querySelector('.resolution-date');
+
+            if (incidentTimeInput) {
+                const incidentTime = new Date(incidentTimeInput.value);
+                const now = new Date();
+                
+                if (incidentTime > now) {
+                    isValid = false;
+                    alert('Waktu kejadian tidak boleh lebih baru dari waktu saat ini pada gangguan ' + item.querySelector('.disturbance-number').textContent);
+                    return; // Exit forEach early
+                }
+            }
+
+            if (statusSelect && statusSelect.value === 'Terselesaikan' && resolutionDateInput && !resolutionDateInput.value) {
+                isValid = false;
+                alert('Harap isi tanggal penyelesaian untuk status "Terselesaikan" pada gangguan ' + item.querySelector('.disturbance-number').textContent);
+                return; // Exit forEach early
+            }
+        });
+
+        if (!isValid) {
             e.preventDefault();
-            alert('Waktu kejadian tidak boleh lebih baru dari waktu saat ini');
-            return false;
-        }
-        
-        if (statusSelect.value === 'Terselesaikan' && !resolutionDate.value) {
-            e.preventDefault();
-            alert('Harap isi tanggal penyelesaian untuk status "Terselesaikan"');
-            return false;
         }
     });
 });

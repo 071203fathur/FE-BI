@@ -7,8 +7,7 @@
     <div class="col-12 col-lg-10">
         <div class="card shadow-lg p-4">
             <h3 class="text-center mb-4">Laporan Audit Sistem Informasi</h3>
-            <form method="POST" action="/submit/laporan-audit-sistem" enctype="multipart/form-data" id="auditSistemForm">
-                <!-- Basic Information Section -->
+            <form method="POST" action="/submit/laporan-auditsi" enctype="multipart/form-data" id="auditSistemForm">
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Informasi Dasar</h5>
@@ -51,7 +50,6 @@
                     </div>
                 </div>
                 
-                <!-- Security Pillars Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Pilar Keamanan Sistem Informasi</h5>
@@ -86,7 +84,6 @@
                     </div>
                 </div>
                 
-                <!-- Findings Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Temuan Audit</h5>
@@ -102,10 +99,20 @@
                                 <input type="number" class="form-control" id="temuan_diselesaikan" name="temuan_diselesaikan" min="0" required>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label for="jumlah_temuan_belum_terselesaikan" class="form-label">Berapa Banyak Temuan yang Belum Terselesaikan?</label>
+                            <input type="number" class="form-control" id="jumlah_temuan_belum_terselesaikan" name="jumlah_temuan_belum_terselesaikan" min="0">
+                        </div>
+
+                        <div id="unresolvedFindingsContainer">
+                            </div>
+
+                        <div class="d-grid gap-2 mt-3">
+                            <button type="button" class="btn btn-secondary" id="addUnresolvedFinding">Tambah Temuan Belum Terselesaikan</button>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Conclusion Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Kesimpulan/Opini Auditor</h5>
@@ -119,7 +126,6 @@
                     </div>
                 </div>
                 
-                <!-- Document Upload Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Dokumen Pendukung</h5>
@@ -139,7 +145,6 @@
                     </div>
                 </div>
                 
-                <!-- Submit Button -->
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
                     <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
@@ -161,6 +166,22 @@
         font-size: 0.8rem;
         color: #6c757d;
     }
+    textarea {
+        min-height: 100px;
+    }
+    .unresolved-finding-item {
+        border: 1px solid #e0e0e0;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        background-color: #f9f9f9;
+        position: relative;
+    }
+    .unresolved-finding-item .remove-finding {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
 </style>
 
 <script>
@@ -169,6 +190,82 @@ document.addEventListener('DOMContentLoaded', function() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('tanggal_surat').max = today;
     document.getElementById('tanggal_selesai').max = today;
+    
+    // Dynamic fields for unresolved findings
+    let unresolvedFindingCount = 0;
+    const unresolvedFindingsContainer = document.getElementById('unresolvedFindingsContainer');
+    const addUnresolvedFindingButton = document.getElementById('addUnresolvedFinding');
+    const jumlahTemuanBelumTerselesaikanInput = document.getElementById('jumlah_temuan_belum_terselesaikan');
+
+    function addUnresolvedFindingField() {
+        unresolvedFindingCount++;
+
+        const newItem = document.createElement('div');
+        newItem.classList.add('unresolved-finding-item');
+        newItem.innerHTML = `
+            <button type="button" class="btn btn-danger btn-sm remove-finding" style="display:none;">X</button>
+            <h6 class="mb-3">Temuan Belum Terselesaikan <span class="finding-number">${unresolvedFindingCount}</span></h6>
+            <div class="mb-3">
+                <label for="deskripsi_temuan_${unresolvedFindingCount}" class="form-label">Deskripsi Temuan</label>
+                <textarea class="form-control" id="deskripsi_temuan_${unresolvedFindingCount}" name="deskripsi_temuan_${unresolvedFindingCount}" rows="2" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="tindak_lanjut_${unresolvedFindingCount}" class="form-label">Tindak Lanjut</label>
+                <textarea class="form-control" id="tindak_lanjut_${unresolvedFindingCount}" name="tindak_lanjut_${unresolvedFindingCount}" rows="2" required></textarea>
+            </div>
+        `;
+        unresolvedFindingsContainer.appendChild(newItem);
+
+        // Show remove button if more than one item
+        if (unresolvedFindingCount > 1) {
+            newItem.querySelector('.remove-finding').style.display = 'block';
+        }
+
+        // Add event listener for remove button
+        newItem.querySelector('.remove-finding').addEventListener('click', function() {
+            newItem.remove();
+            unresolvedFindingCount--;
+            // Re-number existing items
+            document.querySelectorAll('.unresolved-finding-item').forEach((item, index) => {
+                item.querySelector('.finding-number').textContent = index + 1;
+                // Hide remove button if only one item left
+                if (unresolvedFindingCount === 1) {
+                    item.querySelector('.remove-finding').style.display = 'none';
+                }
+            });
+            // Update the count input
+            jumlahTemuanBelumTerselesaikanInput.value = unresolvedFindingCount;
+        });
+        // Update the count input
+        jumlahTemuanBelumTerselesaikanInput.value = unresolvedFindingCount;
+    }
+
+    addUnresolvedFindingButton.addEventListener('click', addUnresolvedFindingField);
+
+    // Sync `jumlah_temuan_belum_terselesaikan` with dynamic fields
+    jumlahTemuanBelumTerselesaikanInput.addEventListener('change', function() {
+        const targetCount = parseInt(this.value) || 0;
+        while (unresolvedFindingCount < targetCount) {
+            addUnresolvedFindingField();
+        }
+        while (unresolvedFindingCount > targetCount && unresolvedFindingCount > 0) {
+            unresolvedFindingsContainer.lastElementChild.remove();
+            unresolvedFindingCount--;
+        }
+        // Ensure remove button visibility is correct after manual change
+        document.querySelectorAll('.unresolved-finding-item').forEach((item, index) => {
+            if (unresolvedFindingCount === 1) {
+                item.querySelector('.remove-finding').style.display = 'none';
+            } else {
+                item.querySelector('.remove-finding').style.display = 'block';
+            }
+        });
+    });
+
+    // Initial check for remove button visibility if there's only one item initially
+    if (unresolvedFindingCount === 1) {
+        document.querySelector('.unresolved-finding-item .remove-finding').style.display = 'none';
+    }
     
     // Validate audit completion date is after report date
     document.getElementById('auditSistemForm').addEventListener('submit', function(e) {
@@ -214,6 +311,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (supportFileInput.files[0] && supportFileInput.files[0].size > 10 * 1024 * 1024) {
             e.preventDefault();
             alert('Ukuran file dokumen pendukung melebihi 10MB');
+            return false;
+        }
+
+        // Validate that the number of dynamic fields matches the input count
+        const declaredCount = parseInt(jumlahTemuanBelumTerselesaikanInput.value) || 0;
+        if (unresolvedFindingCount !== declaredCount) {
+            e.preventDefault();
+            alert('Jumlah temuan belum terselesaikan tidak sesuai dengan jumlah entri yang ditambahkan. Harap sesuaikan.');
             return false;
         }
     });

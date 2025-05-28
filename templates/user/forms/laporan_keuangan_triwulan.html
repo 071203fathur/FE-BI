@@ -9,7 +9,6 @@
             <h3 class="text-center mb-4">Laporan Keuangan Triwulan</h3>
             <form method="POST" action="/submit/laporan-keuangan-triwulan" enctype="multipart/form-data" id="triwulanForm">
                 
-                <!-- Tahun Laporan -->
                 <div class="mb-3">
                     <label for="tahun" class="form-label">Tahun Laporan</label>
                     <select class="form-select form-select-lg" id="tahun" name="tahun" required>
@@ -20,7 +19,6 @@
                     </select>
                 </div>
 
-                <!-- Triwulan -->
                 <div class="mb-3">
                     <label for="triwulan" class="form-label">Triwulan</label>
                     <select class="form-select form-select-lg" id="triwulan" name="triwulan" required>
@@ -32,7 +30,6 @@
                     </select>
                 </div>
 
-                <!-- Nama Penyelenggara -->
                 <div class="mb-3">
                     <label for="penyelenggara" class="form-label">Nama Penyelenggara</label>
                     <select class="form-select form-select-lg" id="penyelenggara" name="penyelenggara" required>
@@ -43,7 +40,6 @@
                     </select>
                 </div>
 
-                <!-- Nomor Surat -->
                 <div class="mb-3">
                     <label for="nomor_surat" class="form-label">Nomor Surat</label>
                     <input type="text" class="form-control form-control-lg" id="nomor_surat" name="nomor_surat" required>
@@ -54,14 +50,12 @@
                            value="{{ request.form.tanggal_surat if request.form }}" required>
                 </div>
 
-                <!-- Modal Disetor -->
                 <div class="mb-3">
                     <label for="modal_disetor" class="form-label">Modal Disetor (Rp)</label>
                     <input type="number" class="form-control form-control-lg" id="modal_disetor" name="modal_disetor" required>
                     <div class="form-text">Masukkan nilai dalam Rupiah tanpa tanda titik atau koma</div>
                 </div>
 
-                <!-- Financial Data -->
                 <div class="mb-3">
                     <label for="pendapatan" class="form-label">Pendapatan (Rp)</label>
                     <input type="number" class="form-control form-control-lg" id="pendapatan" name="pendapatan" required>
@@ -93,11 +87,10 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="equity" class="form-label">Equity (Rp)</label>
+                    <label for="equity" class="form-label">Total Equitas (Rp)</label>
                     <input type="number" class="form-control form-control-lg" id="equity" name="equity" required>
                 </div>
 
-                <!-- File Upload -->
                 <div class="mb-4">
                     <label for="file_laporan" class="form-label">Upload Laporan Keuangan</label>
                     <input type="file" class="form-control form-control-lg" id="file_laporan" name="file_laporan" accept=".pdf,.doc,.docx,.xls,.xlsx" required>
