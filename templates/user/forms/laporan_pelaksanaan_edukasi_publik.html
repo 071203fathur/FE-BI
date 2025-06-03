@@ -6,9 +6,56 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10">
         <div class="card shadow-lg p-4">
+            <div class="modal fade" id="successModalPelaksanaanEdukasi" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">Sukses!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="successMessagePelaksanaanEdukasi">Laporan berhasil dikirim!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="errorModalPelaksanaanEdukasi" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">Error!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="errorMessagePelaksanaanEdukasi">Terjadi kesalahan saat mengirim laporan.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="loadingModalPelaksanaanEdukasi" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center py-4">
+                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
+                            <p class="text-muted small">Harap tunggu sebentar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h3 class="text-center mb-4">Laporan Pelaksanaan Edukasi Publik</h3>
-            <form method="POST" action="/submit/laporan-edukasi-publik" enctype="multipart/form-data" id="edukasiPublikForm">
-                <!-- Basic Information Section -->
+            <form method="POST" action="{{ url_for('submit_laporan_pelaksanaan_edukasi_publik') }}" enctype="multipart/form-data" id="pelaksanaanEdukasiPublikForm">
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Informasi Dasar</h5>
@@ -16,31 +63,31 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun)</label>
+                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
                                     <option value="">-- Pilih Tahun --</option>
-                                    {% for year in range(2020, 2026) %}
+                                    {% for year in range(2020, 2027) %}
                                     <option value="{{ year }}">{{ year }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP)</label>
+                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP) <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nama_penyelenggara" name="nama_penyelenggara" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                                <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
                             </div>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="bentuk_aktivitas" class="form-label">Bentuk Aktivitas</label>
+                                <label for="bentuk_aktivitas" class="form-label">Bentuk Aktivitas <span class="text-danger">*</span></label>
                                 <select class="form-select" id="bentuk_aktivitas" name="bentuk_aktivitas" required>
                                     <option value="">-- Pilih Bentuk --</option>
                                     <option value="Sosialisasi">Sosialisasi</option>
@@ -53,14 +100,13 @@
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="provinsi" class="form-label">Provinsi</label>
+                                <label for="provinsi" class="form-label">Provinsi <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="provinsi" name="provinsi" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Education Details Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Detail Edukasi</h5>
@@ -68,7 +114,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="sasaran_edukasi" class="form-label">Sasaran Edukasi</label>
+                                <label for="sasaran_edukasi" class="form-label">Sasaran Edukasi <span class="text-danger">*</span></label>
                                 <select class="form-select" id="sasaran_edukasi" name="sasaran_edukasi" required>
                                     <option value="">-- Pilih Sasaran --</option>
                                     <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
@@ -81,13 +127,13 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="jumlah_peserta" class="form-label">Jumlah Peserta</label>
+                                <label for="jumlah_peserta" class="form-label">Jumlah Peserta <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="jumlah_peserta" name="jumlah_peserta" min="0" required>
                             </div>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="materi_edukasi" class="form-label">Materi atau Konten Edukasi</label>
+                            <label for="materi_edukasi" class="form-label">Materi atau Konten Edukasi <span class="text-danger">*</span></label>
                             <select class="form-select" id="materi_edukasi" name="materi_edukasi" required>
                                 <option value="">-- Pilih Materi --</option>
                                 <option value="Pemahaman Produk/Jasa">Pemahaman Produk/Jasa</option>
@@ -102,12 +148,12 @@
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="frekuensi" class="form-label">Frekuensi</label>
+                                <label for="frekuensi" class="form-label">Frekuensi <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="frekuensi" name="frekuensi" min="1" required>
                                 <div class="form-text">Jumlah kali kegiatan dilaksanakan</div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="kanal_edukasi" class="form-label">Kanal Edukasi</label>
+                                <label for="kanal_edukasi" class="form-label">Kanal Edukasi <span class="text-danger">*</span></label>
                                 <select class="form-select" id="kanal_edukasi" name="kanal_edukasi" required>
                                     <option value="">-- Pilih Kanal --</option>
                                     <option value="Online">Online</option>
@@ -119,14 +165,13 @@
                     </div>
                 </div>
                 
-                <!-- Evaluation Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Evaluasi dan Kendala</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="evaluasi" class="form-label">Evaluasi</label>
+                            <label for="evaluasi" class="form-label">Evaluasi <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="evaluasi" name="evaluasi" rows="3" required></textarea>
                             <div class="form-text">Hasil evaluasi dari kegiatan edukasi yang dilakukan</div>
                         </div>
@@ -139,14 +184,13 @@
                     </div>
                 </div>
                 
-                <!-- Document Upload Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Dokumen Pendukung</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Kegiatan</label>
+                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Kegiatan <span class="text-danger">*</span></label>
                             <input type="file" class="form-control" id="dokumen_laporan" name="dokumen_laporan" accept=".pdf,.doc,.docx,.jpg,.png" required>
                             <div class="form-text">Format: PDF, DOC, DOCX, JPG, PNG (Maks. 10MB)</div>
                         </div>
@@ -154,14 +198,16 @@
                         <div class="mb-3">
                             <label for="dokumen_pendukung" class="form-label">Dokumen Pendukung Lainnya</label>
                             <input type="file" class="form-control" id="dokumen_pendukung" name="dokumen_pendukung" accept=".pdf,.doc,.docx,.jpg,.png">
-                            <div class="form-text">Foto, sertifikat, atau dokumen pendukung lainnya (Opsional)</div>
+                            <div class="form-text">Foto, sertifikat, atau dokumen pendukung lainnya (Opsional, Maks. 10MB)</div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Submit Button -->
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="submit-text">Kirim Laporan</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
                     <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
                 </div>
             </form>
@@ -181,41 +227,102 @@
         font-size: 0.8rem;
         color: #6c757d;
     }
+    .btn-primary .spinner-border {
+        vertical-align: middle;
+        margin-left: 5px;
+    }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Date validation - report date shouldn't be in the future
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('tanggal_surat').max = today;
+    const form = document.getElementById('pelaksanaanEdukasiPublikForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const submitText = submitButton.querySelector('.submit-text');
+    const submitSpinner = submitButton.querySelector('.spinner-border');
     
-    // Form validation
-    document.getElementById('edukasiPublikForm').addEventListener('submit', function(e) {
-        // Validate report year
+    const loadingModalElement = document.getElementById('loadingModalPelaksanaanEdukasi');
+    const successModalElement = document.getElementById('successModalPelaksanaanEdukasi');
+    const errorModalElement = document.getElementById('errorModalPelaksanaanEdukasi');
+
+    const loadingModal = new bootstrap.Modal(loadingModalElement);
+    const successModal = new bootstrap.Modal(successModalElement);
+    const errorModal = new bootstrap.Modal(errorModalElement);
+    
+    const successMessageElement = document.getElementById('successMessagePelaksanaanEdukasi');
+    const errorMessageElement = document.getElementById('errorMessagePelaksanaanEdukasi');
+
+    const tanggalSuratInput = document.getElementById('tanggal_surat');
+    if(tanggalSuratInput) {
+        const today = new Date().toISOString().split('T')[0];
+        tanggalSuratInput.max = today;
+    }
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let formIsValid = true;
+        
         const tahun = document.getElementById('tahun_laporan').value;
         const currentYear = new Date().getFullYear();
-        
-        if (tahun > currentYear) {
-            e.preventDefault();
-            alert('Tahun laporan tidak boleh melebihi tahun berjalan');
-            return false;
+        if (parseInt(tahun) > currentYear) {
+            errorMessageElement.textContent = 'Tahun laporan tidak boleh melebihi tahun berjalan.';
+            errorModal.show();
+            formIsValid = false;
         }
         
-        // Validate file size for main document
         const fileInput = document.getElementById('dokumen_laporan');
-        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
-            e.preventDefault();
-            alert('Ukuran file dokumen laporan melebihi 10MB');
-            return false;
+        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) { // 10MB
+            errorMessageElement.textContent = 'Ukuran file dokumen laporan melebihi 10MB.';
+            errorModal.show();
+            formIsValid = false;
         }
         
-        // Validate file size for supporting document
         const supportFileInput = document.getElementById('dokumen_pendukung');
-        if (supportFileInput.files[0] && supportFileInput.files[0].size > 10 * 1024 * 1024) {
-            e.preventDefault();
-            alert('Ukuran file dokumen pendukung melebihi 10MB');
-            return false;
+        if (supportFileInput.files[0] && supportFileInput.files[0].size > 10 * 1024 * 1024) { // 10MB
+            errorMessageElement.textContent = 'Ukuran file dokumen pendukung melebihi 10MB.';
+            errorModal.show();
+            formIsValid = false;
         }
+
+        if (!formIsValid) return;
+
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+        
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
+                successModal.show();
+                form.reset();
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show();
+        });
     });
 });
 </script>

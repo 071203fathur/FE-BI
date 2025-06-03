@@ -6,23 +6,68 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10">
         <div class="card shadow-lg p-4">
+            <div class="modal fade" id="successModalManajemen" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">Sukses!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="successMessageManajemen">Laporan berhasil dikirim!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="errorModalManajemen" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">Error!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="errorMessageManajemen">Terjadi kesalahan saat mengirim laporan.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="loadingModalManajemen" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center py-4">
+                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
+                            <p class="text-muted small">Harap tunggu sebentar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h3 class="text-center mb-4">Laporan Manajemen</h3>
-            <form method="POST" action="/submit/laporan-manajemen" enctype="multipart/form-data" id="managementForm">
-                <!-- Basic Information -->
+            <form method="POST" action="{{ url_for('submit_laporan_manajemen') }}" enctype="multipart/form-data" id="managementForm">
                 <div class="row mb-4">
                     <div class="col-md-6 mb-3">
-                        <label for="tahun" class="form-label">Tahun Laporan</label>
+                        <label for="tahun" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
                         <select class="form-select form-select-lg" id="tahun" name="tahun" required>
                             <option value="">-- Pilih Tahun --</option>
-                            <option value="2021">2021</option>
-                            <option value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
+                            {% for year_option in range(current_year - 5, current_year + 2) %}
+                            <option value="{{ year_option }}" {% if year_option == current_year %}selected{% endif %}>{{ year_option }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="penyelenggara" class="form-label">Nama Penyelenggara</label>
+                        <label for="penyelenggara" class="form-label">Nama Penyelenggara <span class="text-danger">*</span></label>
                         <select class="form-select form-select-lg" id="penyelenggara" name="penyelenggara" required>
                             <option value="">-- Pilih Penyelenggara --</option>
                             <option value="PT A">PT A</option>
@@ -34,19 +79,17 @@
                     </div>
                 </div>
 
-                <!-- Rest of your form remains exactly the same -->
                 <div class="row mb-4">
                     <div class="col-md-6 mb-3">
-                        <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                        <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-lg" id="nomor_surat" name="nomor_surat" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                        <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
                         <input type="date" class="form-control form-control-lg" id="tanggal_surat" name="tanggal_surat" required>
                     </div>
                 </div>
 
-                <!-- Komisaris Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Komposisi Komisaris</h5>
@@ -54,38 +97,20 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="jumlah_komisaris" class="form-label">Jumlah Komisaris</label>
-                                <input type="number" class="form-control" id="jumlah_komisaris" name="jumlah_komisaris" min="1" required>
+                                <label for="jumlah_komisaris" class="form-label">Jumlah Komisaris <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="jumlah_komisaris" name="jumlah_komisaris" min="0" required>
                             </div>
                         </div>
 
                         <div id="komisaris-container">
-                            <div class="komisaris-item mb-3">
-                                <div class="row">
-                                    <div class="col-md-6 mb-2">
-                                        <label class="form-label">Nama Komisaris</label>
-                                        <input type="text" class="form-control" name="nama_komisaris[]" required>
-                                    </div>
-                                    <div class="col-md-5 mb-2">
-                                        <label class="form-label">Keterangan/Jabatan</label>
-                                        <input type="text" class="form-control" name="keterangan_komisaris[]" required>
-                                    </div>
-                                    <div class="col-md-1 mb-2 d-flex align-items-center">
-                                        <button type="button" class="btn btn-sm btn-outline-danger remove-item">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
 
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="tambah-komisaris">
+                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="tambah-komisaris">
                             <i class="bi bi-plus-circle"></i> Tambah Komisaris
                         </button>
                     </div>
                 </div>
 
-                <!-- Direksi Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Komposisi Direksi</h5>
@@ -93,57 +118,38 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="jumlah_direksi" class="form-label">Jumlah Direksi</label>
-                                <input type="number" class="form-control" id="jumlah_direksi" name="jumlah_direksi" min="1" required>
+                                <label for="jumlah_direksi" class="form-label">Jumlah Direksi <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="jumlah_direksi" name="jumlah_direksi" min="0" required>
                             </div>
                         </div>
 
                         <div id="direksi-container">
-                            <div class="direksi-item mb-3">
-                                <div class="row">
-                                    <div class="col-md-6 mb-2">
-                                        <label class="form-label">Nama Direksi</label>
-                                        <input type="text" class="form-control" name="nama_direksi[]" required>
-                                    </div>
-                                    <div class="col-md-5 mb-2">
-                                        <label class="form-label">Keterangan/Jabatan</label>
-                                        <input type="text" class="form-control" name="keterangan_direksi[]" required>
-                                    </div>
-                                    <div class="col-md-1 mb-2 d-flex align-items-center">
-                                        <button type="button" class="btn btn-sm btn-outline-danger remove-item">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
 
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="tambah-direksi">
+                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="tambah-direksi">
                             <i class="bi bi-plus-circle"></i> Tambah Direksi
                         </button>
                     </div>
                 </div>
 
-                <!-- Ownership Section -->
                 <div class="row mb-4">
                     <div class="col-md-6 mb-3">
-                        <label for="kepemilikan_domestik" class="form-label">Persentase Kepemilikan Domestik (%)</label>
+                        <label for="kepemilikan_domestik" class="form-label">Persentase Kepemilikan Domestik (%) <span class="text-danger">*</span></label>
                         <input type="number" class="form-control form-control-lg" id="kepemilikan_domestik" 
                                name="kepemilikan_domestik" min="0" max="100" step="0.01" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="kepemilikan_asing" class="form-label">Persentase Kepemilikan Asing (%)</label>
+                        <label for="kepemilikan_asing" class="form-label">Persentase Kepemilikan Asing (%) <span class="text-danger">*</span></label>
                         <input type="number" class="form-control form-control-lg" id="kepemilikan_asing" 
                                name="kepemilikan_asing" min="0" max="100" step="0.01" required>
                     </div>
                 </div>
 
-                <!-- Summary Section -->
                 <div class="mb-4">
-                    <label for="ringkasan" class="form-label">Ringkasan Laporan Manajemen</label>
+                    <label for="ringkasan" class="form-label">Ringkasan Laporan Manajemen <span class="text-danger">*</span></label>
                     <textarea class="form-control form-control-lg" id="ringkasan" name="ringkasan" 
-                              rows="5" minlength="10" maxlength="300" required></textarea>
-                    <div class="form-text">Minimal 10 karakter, maksimal 300 karakter. <span id="char-count">0</span>/300</div>
+                              rows="5" minlength="10" maxlength="1000" required></textarea>
+                    <div class="form-text">Minimal 10 karakter, maksimal 1000 karakter. <span id="char-count">0</span>/1000</div>
                 </div>
 
                 <div class="mb-4">
@@ -151,110 +157,23 @@
                     <textarea class="form-control form-control-lg" id="keterangan" name="keterangan" rows="3"></textarea>
                 </div>
 
-                <!-- File Upload -->
                 <div class="mb-4">
-                    <label for="file_laporan" class="form-label">Upload File Laporan</label>
+                    <label for="file_laporan" class="form-label">Upload File Laporan <span class="text-danger">*</span></label>
                     <input type="file" class="form-control form-control-lg" id="file_laporan" 
                            name="file_laporan" accept=".pdf,.doc,.docx" required>
                     <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="submit-text">Kirim Laporan</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Character counter for summary
-    const ringkasan = document.getElementById('ringkasan');
-    const charCount = document.getElementById('char-count');
-    
-    ringkasan.addEventListener('input', function() {
-        charCount.textContent = this.value.length;
-    });
-    
-    // Add komisaris field
-    let komisarisCount = 1;
-    document.getElementById('tambah-komisaris').addEventListener('click', function() {
-        komisarisCount++;
-        const newItem = document.createElement('div');
-        newItem.className = 'komisaris-item mb-3';
-        newItem.innerHTML = `
-            <div class="row">
-                <div class="col-md-6 mb-2">
-                    <input type="text" class="form-control" name="nama_komisaris[]" placeholder="Nama Komisaris" required>
-                </div>
-                <div class="col-md-5 mb-2">
-                    <input type="text" class="form-control" name="keterangan_komisaris[]" placeholder="Keterangan" required>
-                </div>
-                <div class="col-md-1 mb-2 d-flex align-items-center">
-                    <button type="button" class="btn btn-sm btn-outline-danger remove-item">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-        document.getElementById('komisaris-container').appendChild(newItem);
-        document.getElementById('jumlah_komisaris').value = komisarisCount;
-    });
-    
-    // Add direksi field
-    let direksiCount = 1;
-    document.getElementById('tambah-direksi').addEventListener('click', function() {
-        direksiCount++;
-        const newItem = document.createElement('div');
-        newItem.className = 'direksi-item mb-3';
-        newItem.innerHTML = `
-            <div class="row">
-                <div class="col-md-6 mb-2">
-                    <input type="text" class="form-control" name="nama_direksi[]" placeholder="Nama Direksi" required>
-                </div>
-                <div class="col-md-5 mb-2">
-                    <input type="text" class="form-control" name="keterangan_direksi[]" placeholder="Keterangan" required>
-                </div>
-                <div class="col-md-1 mb-2 d-flex align-items-center">
-                    <button type="button" class="btn btn-sm btn-outline-danger remove-item">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-        document.getElementById('direksi-container').appendChild(newItem);
-        document.getElementById('jumlah_direksi').value = direksiCount;
-    });
-    
-    // Remove item
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('remove-item')) {
-            const item = e.target.closest('.komisaris-item, .direksi-item');
-            if (item.classList.contains('komisaris-item')) {
-                komisarisCount--;
-                document.getElementById('jumlah_komisaris').value = komisarisCount;
-            } else {
-                direksiCount--;
-                document.getElementById('jumlah_direksi').value = direksiCount;
-            }
-            item.remove();
-        }
-    });
-    
-    // Validate ownership percentages
-    document.getElementById('managementForm').addEventListener('submit', function(e) {
-        const domestic = parseFloat(document.getElementById('kepemilikan_domestik').value) || 0;
-        const foreign = parseFloat(document.getElementById('kepemilikan_asing').value) || 0;
-        
-        if (Math.round((domestic + foreign) * 100) / 100 !== 100) {
-            e.preventDefault();
-            alert('Total kepemilikan domestik dan asing harus tepat 100%');
-        }
-    });
-});
-</script>
 
 <style>
     .form-text {
@@ -267,5 +186,200 @@ document.addEventListener('DOMContentLoaded', function() {
     .remove-item {
         padding: 0.25rem 0.5rem;
     }
+    .btn-primary .spinner-border {
+        vertical-align: middle;
+        margin-left: 5px;
+    }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('managementForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const submitText = submitButton.querySelector('.submit-text');
+    const submitSpinner = submitButton.querySelector('.spinner-border');
+    
+    const loadingModalElement = document.getElementById('loadingModalManajemen');
+    const successModalElement = document.getElementById('successModalManajemen');
+    const errorModalElement = document.getElementById('errorModalManajemen');
+
+    const loadingModal = new bootstrap.Modal(loadingModalElement);
+    const successModal = new bootstrap.Modal(successModalElement);
+    const errorModal = new bootstrap.Modal(errorModalElement);
+    
+    const successMessageElement = document.getElementById('successMessageManajemen');
+    const errorMessageElement = document.getElementById('errorMessageManajemen');
+
+    const ringkasan = document.getElementById('ringkasan');
+    const charCount = document.getElementById('char-count');
+    
+    if(ringkasan && charCount) {
+        ringkasan.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+        });
+    }
+    
+    const tanggalSuratInput = document.getElementById('tanggal_surat');
+    if(tanggalSuratInput){
+        const today = new Date().toISOString().split('T')[0];
+        tanggalSuratInput.max = today;
+    }
+
+    function addManagementMember(containerId, type, countInputId) {
+        const container = document.getElementById(containerId);
+        const currentCount = container.children.length;
+        const newItem = document.createElement('div');
+        newItem.className = type + '-item mb-3 border p-3 rounded';
+        newItem.innerHTML = `
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Nama ${type.charAt(0).toUpperCase() + type.slice(1)} <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="nama_${type}[]" required>
+                </div>
+                <div class="col-md-5 mb-2">
+                    <label class="form-label">Keterangan/Jabatan <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="keterangan_${type}[]" required>
+                </div>
+                <div class="col-md-1 mb-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-item" title="Hapus ${type}">
+                        <i class="bi bi-trash"></i> Hapus
+                    </button>
+                </div>
+            </div>
+        `;
+        container.appendChild(newItem);
+        document.getElementById(countInputId).value = container.children.length;
+
+        newItem.querySelector('.remove-item').addEventListener('click', function() {
+            newItem.remove();
+            document.getElementById(countInputId).value = container.children.length;
+        });
+    }
+    
+    const jumlahKomisarisInput = document.getElementById('jumlah_komisaris');
+    const komisarisContainer = document.getElementById('komisaris-container');
+    document.getElementById('tambah-komisaris').addEventListener('click', function() {
+        addManagementMember('komisaris-container', 'komisaris', 'jumlah_komisaris');
+    });
+     // Sync input number with dynamic fields for Komisaris
+    if(jumlahKomisarisInput) {
+        jumlahKomisarisInput.addEventListener('change', function() {
+            const targetCount = parseInt(this.value) || 0;
+            const currentCount = komisarisContainer.children.length;
+            if (targetCount > currentCount) {
+                for (let i = currentCount; i < targetCount; i++) {
+                    addManagementMember('komisaris-container', 'komisaris', 'jumlah_komisaris');
+                }
+            } else if (targetCount < currentCount) {
+                for (let i = currentCount; i > targetCount; i--) {
+                    if (komisarisContainer.lastElementChild) komisarisContainer.lastElementChild.remove();
+                }
+            }
+            this.value = komisarisContainer.children.length; // Update count based on actual fields
+        });
+    }
+
+
+    const jumlahDireksiInput = document.getElementById('jumlah_direksi');
+    const direksiContainer = document.getElementById('direksi-container');
+    document.getElementById('tambah-direksi').addEventListener('click', function() {
+         addManagementMember('direksi-container', 'direksi', 'jumlah_direksi');
+    });
+    // Sync input number with dynamic fields for Direksi
+    if(jumlahDireksiInput) {
+        jumlahDireksiInput.addEventListener('change', function() {
+            const targetCount = parseInt(this.value) || 0;
+            const currentCount = direksiContainer.children.length;
+            if (targetCount > currentCount) {
+                for (let i = currentCount; i < targetCount; i++) {
+                    addManagementMember('direksi-container', 'direksi', 'jumlah_direksi');
+                }
+            } else if (targetCount < currentCount) {
+                for (let i = currentCount; i > targetCount; i--) {
+                    if (direksiContainer.lastElementChild) direksiContainer.lastElementChild.remove();
+                }
+            }
+             this.value = direksiContainer.children.length; // Update count based on actual fields
+        });
+    }
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let formIsValid = true;
+        
+        const domestic = parseFloat(document.getElementById('kepemilikan_domestik').value) || 0;
+        const foreign = parseFloat(document.getElementById('kepemilikan_asing').value) || 0;
+        
+        if (Math.round((domestic + foreign) * 100) / 100 !== 100) {
+            errorMessageElement.textContent = 'Total kepemilikan domestik dan asing harus tepat 100%.';
+            errorModal.show();
+            formIsValid = false;
+        }
+
+        const fileLaporanInput = document.getElementById('file_laporan');
+        if (fileLaporanInput.files[0] && fileLaporanInput.files[0].size > 10 * 1024 * 1024) { // 10MB
+            errorMessageElement.textContent = 'Ukuran file laporan melebihi 10MB.';
+            errorModal.show();
+            formIsValid = false;
+        }
+        
+        // Validate jumlah komisaris/direksi matches the dynamic fields
+        if (parseInt(jumlahKomisarisInput.value) !== komisarisContainer.children.length) {
+            errorMessageElement.textContent = 'Jumlah komisaris tidak sesuai dengan detail yang diinput.';
+            errorModal.show();
+            formIsValid = false;
+        }
+        if (parseInt(jumlahDireksiInput.value) !== direksiContainer.children.length) {
+            errorMessageElement.textContent = 'Jumlah direksi tidak sesuai dengan detail yang diinput.';
+            errorModal.show();
+            formIsValid = false;
+        }
+
+
+        if (!formIsValid) return;
+
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+        
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
+                successModal.show();
+                form.reset();
+                document.getElementById('komisaris-container').innerHTML = ''; // Clear dynamic fields
+                document.getElementById('direksi-container').innerHTML = '';
+                if(charCount) charCount.textContent = '0'; // Reset char counter
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show();
+        });
+    });
+});
+</script>
 {% endblock %}

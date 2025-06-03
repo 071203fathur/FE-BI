@@ -1,14 +1,61 @@
 {% extends 'user/base.html' %}
 
-{% block title %}Laporan APU PPT (Anti Pencucian Uang dan Pencegahan Pendanaan Terorisme){% endblock %}
+{% block title %}Laporan APU PPT{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10">
         <div class="card shadow-lg p-4">
+            <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">Sukses!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="successMessage">Laporan berhasil dikirim!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">Error!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="errorMessage">Terjadi kesalahan saat mengirim laporan.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center py-4">
+                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
+                            <p class="text-muted small">Harap tunggu sebentar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h3 class="text-center mb-4">Laporan APU PPT (Anti Pencucian Uang dan Pencegahan Pendanaan Terorisme)</h3>
-            <form method="POST" action="/submit/laporan-apu-ppt" enctype="multipart/form-data" id="apuPptReportForm">
-                <!-- Basic Information Section -->
+            <form method="POST" action="{{ url_for('submit_laporan_apuppt') }}" enctype="multipart/form-data" id="apuPptReportForm">
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Informasi Dasar</h5>
@@ -16,7 +63,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun)</label>
+                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
                                     <option value="">-- Pilih Tahun --</option>
                                     {% for year in range(2020, 2026) %}
@@ -25,33 +72,32 @@
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP)</label>
+                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP) <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nama_penyelenggara" name="nama_penyelenggara" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                                <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
                             </div>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="nama_petugas" class="form-label">Nama Petugas APU PPT</label>
+                                <label for="nama_petugas" class="form-label">Nama Petugas APU PPT <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nama_petugas" name="nama_petugas" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="sk_penunjukkan" class="form-label">SK-Penunjukkan APU PPT</label>
+                                <label for="sk_penunjukkan" class="form-label">SK-Penunjukkan APU PPT <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="sk_penunjukkan" name="sk_penunjukkan" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- User IDs Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Identitas Pengguna Sistem</h5>
@@ -59,26 +105,25 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <label for="user_id_goaml" class="form-label">User ID GoAML</label>
+                                <label for="user_id_goaml" class="form-label">User ID GoAML <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="user_id_goaml" name="user_id_goaml" required>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label for="user_id_sipesat" class="form-label">User ID SIPESAT</label>
+                                <label for="user_id_sipesat" class="form-label">User ID SIPESAT <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="user_id_sipesat" name="user_id_sipesat" required>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label for="user_id_pep" class="form-label">User ID PEP</label>
+                                <label for="user_id_pep" class="form-label">User ID PEP <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="user_id_pep" name="user_id_pep" required>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label for="user_id_sipendar" class="form-label">User ID SIPENDAR</label>
+                                <label for="user_id_sipendar" class="form-label">User ID SIPENDAR <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="user_id_sipendar" name="user_id_sipendar" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Report Statistics Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Statistik Laporan ke PPATK</h5>
@@ -86,22 +131,21 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="jumlah_ltkt" class="form-label">Jumlah Laporan LTKT</label>
+                                <label for="jumlah_ltkt" class="form-label">Jumlah Laporan LTKT <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="jumlah_ltkt" name="jumlah_ltkt" min="0" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="jumlah_ltkm" class="form-label">Jumlah Laporan LTKM</label>
+                                <label for="jumlah_ltkm" class="form-label">Jumlah Laporan LTKM <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="jumlah_ltkm" name="jumlah_ltkm" min="0" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="jumlah_ltkl" class="form-label">Jumlah Laporan LTKL</label>
+                                <label for="jumlah_ltkl" class="form-label">Jumlah Laporan LTKL <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="jumlah_ltkl" name="jumlah_ltkl" min="0" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- SIPESAT Quarterly Reports Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Laporan SIPESAT Triwulanan</h5>
@@ -110,7 +154,7 @@
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="triwulan_1" name="triwulan_1">
+                                    <input class="form-check-input" type="checkbox" id="triwulan_1" name="triwulan_1" value="true">
                                     <label class="form-check-label" for="triwulan_1">
                                         Triwulan I (Jan-Mar)
                                     </label>
@@ -118,7 +162,7 @@
                             </div>
                             <div class="col-md-3 mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="triwulan_2" name="triwulan_2">
+                                    <input class="form-check-input" type="checkbox" id="triwulan_2" name="triwulan_2" value="true">
                                     <label class="form-check-label" for="triwulan_2">
                                         Triwulan II (Apr-Jun)
                                     </label>
@@ -126,7 +170,7 @@
                             </div>
                             <div class="col-md-3 mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="triwulan_3" name="triwulan_3">
+                                    <input class="form-check-input" type="checkbox" id="triwulan_3" name="triwulan_3" value="true">
                                     <label class="form-check-label" for="triwulan_3">
                                         Triwulan III (Jul-Sep)
                                     </label>
@@ -134,7 +178,7 @@
                             </div>
                             <div class="col-md-3 mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="triwulan_4" name="triwulan_4">
+                                    <input class="form-check-input" type="checkbox" id="triwulan_4" name="triwulan_4" value="true">
                                     <label class="form-check-label" for="triwulan_4">
                                         Triwulan IV (Okt-Dec)
                                     </label>
@@ -144,7 +188,6 @@
                     </div>
                 </div>
                 
-                <!-- Blocking/Deletion Reports Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Laporan Pemblokiran/Penghapusan</h5>
@@ -153,7 +196,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="dttot_reported" name="dttot_reported">
+                                    <input class="form-check-input" type="checkbox" id="dttot_reported" name="dttot_reported" value="true">
                                     <label class="form-check-label" for="dttot_reported">
                                         DTTOT - Telah Melaporkan Surat dan Berita Acara Pemblokiran/Penghapusan
                                     </label>
@@ -161,7 +204,7 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="dppspm_reported" name="dppspm_reported">
+                                    <input class="form-check-input" type="checkbox" id="dppspm_reported" name="dppspm_reported" value="true">
                                     <label class="form-check-label" for="dppspm_reported">
                                         DPPSPM - Telah Melaporkan Surat dan Berita Acara Pemblokiran/Penghapusan
                                     </label>
@@ -171,45 +214,43 @@
                     </div>
                 </div>
                 
-                <!-- Policy and Procedures Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Kebijakan dan Prosedur</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="tanggung_jawab_direksi" class="form-label">Tanggung Jawab Direksi dan Pengawasan Aktif Dewan Komisaris</label>
+                            <label for="tanggung_jawab_direksi" class="form-label">Tanggung Jawab Direksi dan Pengawasan Aktif Dewan Komisaris <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="tanggung_jawab_direksi" name="tanggung_jawab_direksi" rows="3" required></textarea>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="kebijakan_prosedur" class="form-label">Kebijakan dan Prosedur Tertulis</label>
+                            <label for="kebijakan_prosedur" class="form-label">Kebijakan dan Prosedur Tertulis <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="kebijakan_prosedur" name="kebijakan_prosedur" rows="3" required></textarea>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="metode_pmpj" class="form-label">Metode Pelaksanaan Prinsip Mengenali Pengguna Jasa (PMPJ)</label>
+                            <label for="metode_pmpj" class="form-label">Metode Pelaksanaan Prinsip Mengenali Pengguna Jasa (PMPJ) <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="metode_pmpj" name="metode_pmpj" rows="3" required></textarea>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="manajemen_risiko" class="form-label">Proses Manajemen Risiko</label>
+                            <label for="manajemen_risiko" class="form-label">Proses Manajemen Risiko <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="manajemen_risiko" name="manajemen_risiko" rows="3" required></textarea>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="manajemen_sdm" class="form-label">Manajemen Sumber Daya Manusia</label>
+                            <label for="manajemen_sdm" class="form-label">Manajemen Sumber Daya Manusia <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="manajemen_sdm" name="manajemen_sdm" rows="3" required></textarea>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="sistem_pengendalian" class="form-label">Sistem Pengendalian Intern</label>
+                            <label for="sistem_pengendalian" class="form-label">Sistem Pengendalian Intern <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="sistem_pengendalian" name="sistem_pengendalian" rows="3" required></textarea>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Data Input Information Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Informasi Penginput Data</h5>
@@ -217,43 +258,41 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="nama_penginput" class="form-label">Nama penginput data dan upload dokumen Laporan Tahunan</label>
+                                <label for="nama_penginput" class="form-label">Nama penginput data dan upload dokumen Laporan Tahunan <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nama_penginput" name="nama_penginput" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="email_penginput" class="form-label">Email penginput data</label>
+                                <label for="email_penginput" class="form-label">Email penginput data <span class="text-danger">*</span></label>
                                 <input type="email" class="form-control" id="email_penginput" name="email_penginput" required>
                             </div>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="email_perusahaan" class="form-label">Email perusahaan</label>
+                                <label for="email_perusahaan" class="form-label">Email perusahaan <span class="text-danger">*</span></label>
                                 <input type="email" class="form-control" id="email_perusahaan" name="email_perusahaan" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="nomor_hp" class="form-label">Nomor HP penginput data dan informasi</label>
+                                <label for="nomor_hp" class="form-label">Nomor HP penginput data dan informasi <span class="text-danger">*</span></label>
                                 <input type="tel" class="form-control" id="nomor_hp" name="nomor_hp" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Document Upload Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Dokumen Pendukung</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Tahunan APU, PPT, dan PPSPM yang telah ditandatangani</label>
+                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Tahunan APU, PPT, dan PPSPM yang telah ditandatangani <span class="text-danger">*</span></label>
                             <input type="file" class="form-control" id="dokumen_laporan" name="dokumen_laporan" accept=".pdf,.doc,.docx" required>
                             <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Declaration Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Pernyataan</h5>
@@ -272,9 +311,11 @@
                     </div>
                 </div>
                 
-                <!-- Submit Button -->
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="submit-text">Kirim Laporan</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
                     <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
                 </div>
             </form>
@@ -297,40 +338,107 @@
     .form-check-label {
         font-weight: normal;
     }
+    .btn-primary .spinner-border {
+        vertical-align: middle;
+        margin-left: 5px;
+    }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('apuPptReportForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const submitText = submitButton.querySelector('.submit-text');
+    const submitSpinner = submitButton.querySelector('.spinner-border');
+
+    const loadingModalElement = document.getElementById('loadingModal');
+    const successModalElement = document.getElementById('successModal');
+    const errorModalElement = document.getElementById('errorModal');
+
+    const loadingModal = new bootstrap.Modal(loadingModalElement);
+    const successModal = new bootstrap.Modal(successModalElement);
+    const errorModal = new bootstrap.Modal(errorModalElement);
+
+    const successMessageElement = document.getElementById('successMessage');
+    const errorMessageElement = document.getElementById('errorMessage');
+
     // Date validation - report date shouldn't be in the future
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('tanggal_surat').max = today;
+    const tanggalSuratInput = document.getElementById('tanggal_surat');
+    if (tanggalSuratInput) {
+        tanggalSuratInput.max = today;
+    }
     
-    // Form validation
-    document.getElementById('apuPptReportForm').addEventListener('submit', function(e) {
-        // Validate report year
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Basic client-side validation
         const tahun = document.getElementById('tahun_laporan').value;
         const currentYear = new Date().getFullYear();
         
         if (tahun > currentYear) {
-            e.preventDefault();
-            alert('Tahun laporan tidak boleh melebihi tahun berjalan');
+            errorMessageElement.textContent = 'Tahun laporan tidak boleh melebihi tahun berjalan.';
+            errorModal.show();
             return false;
         }
         
-        // Validate declaration checkbox
         if (!document.getElementById('declaration').checked) {
-            e.preventDefault();
-            alert('Anda harus menyetujui pernyataan sebelum mengirim laporan');
+            errorMessageElement.textContent = 'Anda harus menyetujui pernyataan sebelum mengirim laporan.';
+            errorModal.show();
             return false;
         }
         
-        // Validate file size
         const fileInput = document.getElementById('dokumen_laporan');
-        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
-            e.preventDefault();
-            alert('Ukuran file dokumen laporan melebihi 10MB');
+        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) { // 10MB
+            errorMessageElement.textContent = 'Ukuran file dokumen laporan melebihi 10MB.';
+            errorModal.show();
             return false;
         }
+
+        // Show loading state
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+        
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json' // Expect JSON response
+            }
+        })
+        .then(response => {
+            // Hide loading state immediately after getting response header
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            return response.json(); // Process the response as JSON
+        })
+        .then(data => {
+            if (data.success) {
+                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
+                successModal.show();
+                form.reset(); // Reset form on success
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan. Silakan coba lagi.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Hide loading state on network error or other issues
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server. Silakan coba lagi nanti.';
+            errorModal.show();
+        });
     });
 });
 </script>

@@ -6,21 +6,69 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-md-10 col-lg-8">
         <div class="card shadow-lg p-5">
+            <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">Sukses!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="successMessage">Laporan berhasil dikirim!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">Error!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="errorMessage">Terjadi kesalahan saat mengirim laporan.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center py-4">
+                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
+                            <p class="text-muted small">Harap tunggu sebentar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h3 class="text-center mb-4">Laporan Keuangan Triwulan</h3>
-            <form method="POST" action="/submit/laporan-keuangan-triwulan" enctype="multipart/form-data" id="triwulanForm">
+            <form method="POST" action="{{ url_for('submit_laporan_keuangan_triwulan') }}" enctype="multipart/form-data" id="triwulanForm">
                 
                 <div class="mb-3">
-                    <label for="tahun" class="form-label">Tahun Laporan</label>
+                    <label for="tahun" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
                     <select class="form-select form-select-lg" id="tahun" name="tahun" required>
                         <option value="">-- Pilih Tahun --</option>
-                        {% for year in range(2018, 2026) %}
+                        {% for year in range(2018, 2027) %}
                         <option value="{{ year }}">{{ year }}</option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <div class="mb-3">
-                    <label for="triwulan" class="form-label">Triwulan</label>
+                    <label for="triwulan" class="form-label">Triwulan <span class="text-danger">*</span></label>
                     <select class="form-select form-select-lg" id="triwulan" name="triwulan" required>
                         <option value="">-- Pilih Triwulan --</option>
                         <option value="Q1">Triwulan 1 (Jan - Mar)</option>
@@ -31,7 +79,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="penyelenggara" class="form-label">Nama Penyelenggara</label>
+                    <label for="penyelenggara" class="form-label">Nama Penyelenggara <span class="text-danger">*</span></label>
                     <select class="form-select form-select-lg" id="penyelenggara" name="penyelenggara" required>
                         <option value="">-- Pilih Penyelenggara --</option>
                         <option value="Penyelenggara A">Penyelenggara A</option>
@@ -41,64 +89,66 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                    <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
                     <input type="text" class="form-control form-control-lg" id="nomor_surat" name="nomor_surat" required>
                 </div>
                 <div class="mb-3">
-                    <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
-                    <input type="date" class="form-control form-control-lg" id="tanggal_surat" name="tanggal_surat" 
-                           value="{{ request.form.tanggal_surat if request.form }}" required>
+                    <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control form-control-lg" id="tanggal_surat" name="tanggal_surat" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="modal_disetor" class="form-label">Modal Disetor (Rp)</label>
+                    <label for="modal_disetor" class="form-label">Modal Disetor (Rp) <span class="text-danger">*</span></label>
                     <input type="number" class="form-control form-control-lg" id="modal_disetor" name="modal_disetor" required>
                     <div class="form-text">Masukkan nilai dalam Rupiah tanpa tanda titik atau koma</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="pendapatan" class="form-label">Pendapatan (Rp)</label>
+                    <label for="pendapatan" class="form-label">Pendapatan (Rp) <span class="text-danger">*</span></label>
                     <input type="number" class="form-control form-control-lg" id="pendapatan" name="pendapatan" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="beban_operasional" class="form-label">Beban Operasional (Rp)</label>
+                    <label for="beban_operasional" class="form-label">Beban Operasional (Rp) <span class="text-danger">*</span></label>
                     <input type="number" class="form-control form-control-lg" id="beban_operasional" name="beban_operasional" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="laba" class="form-label">Laba (Rp)</label>
+                    <label for="laba" class="form-label">Laba (Rp) <span class="text-danger">*</span></label>
                     <input type="number" class="form-control form-control-lg" id="laba" name="laba" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="rugi" class="form-label">Rugi (Rp)</label>
+                    <label for="rugi" class="form-label">Rugi (Rp) <span class="text-danger">*</span></label>
                     <input type="number" class="form-control form-control-lg" id="rugi" name="rugi" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="total_aset" class="form-label">Total Aset (Rp)</label>
+                    <label for="total_aset" class="form-label">Total Aset (Rp) <span class="text-danger">*</span></label>
                     <input type="number" class="form-control form-control-lg" id="total_aset" name="total_aset" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="total_liabilitas" class="form-label">Total Liabilitas (Rp)</label>
+                    <label for="total_liabilitas" class="form-label">Total Liabilitas (Rp) <span class="text-danger">*</span></label>
                     <input type="number" class="form-control form-control-lg" id="total_liabilitas" name="total_liabilitas" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="equity" class="form-label">Total Equitas (Rp)</label>
+                    <label for="equity" class="form-label">Total Equitas (Rp) <span class="text-danger">*</span></label>
                     <input type="number" class="form-control form-control-lg" id="equity" name="equity" required>
                 </div>
 
                 <div class="mb-4">
-                    <label for="file_laporan" class="form-label">Upload Laporan Keuangan</label>
+                    <label for="file_laporan" class="form-label">Upload Laporan Keuangan <span class="text-danger">*</span></label>
                     <input type="file" class="form-control form-control-lg" id="file_laporan" name="file_laporan" accept=".pdf,.doc,.docx,.xls,.xlsx" required>
                     <div class="form-text">Format file: PDF, DOC, DOCX, XLS, XLSX (Maks. 10MB)</div>
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-lg px-5">Kirim Laporan</button>
+                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                        <span class="submit-text">Kirim Laporan</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -110,5 +160,87 @@
         font-size: 0.875rem;
         color: #6c757d;
     }
+    .btn-primary .spinner-border {
+        vertical-align: middle;
+        margin-left: 5px;
+    }
 </style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('triwulanForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const submitText = submitButton.querySelector('.submit-text');
+    const submitSpinner = submitButton.querySelector('.spinner-border');
+    
+    const loadingModalElement = document.getElementById('loadingModal');
+    const successModalElement = document.getElementById('successModal');
+    const errorModalElement = document.getElementById('errorModal');
+
+    const loadingModal = new bootstrap.Modal(loadingModalElement);
+    const successModal = new bootstrap.Modal(successModalElement);
+    const errorModal = new bootstrap.Modal(errorModalElement);
+    
+    const successMessageElement = document.getElementById('successMessage');
+    const errorMessageElement = document.getElementById('errorMessage');
+    
+    const tanggalSuratInput = document.getElementById('tanggal_surat');
+    if(tanggalSuratInput){
+        const today = new Date().toISOString().split('T')[0];
+        tanggalSuratInput.max = today;
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let formIsValid = true;
+
+        const fileLaporanInput = document.getElementById('file_laporan');
+        if (fileLaporanInput.files[0] && fileLaporanInput.files[0].size > 10 * 1024 * 1024) { // 10MB
+            errorMessageElement.textContent = 'Ukuran file laporan melebihi 10MB.';
+            errorModal.show();
+            formIsValid = false;
+        }
+
+        if (!formIsValid) return;
+
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+        
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
+                successModal.show();
+                form.reset();
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show();
+        });
+    });
+});
+</script>
 {% endblock %}

@@ -6,8 +6,56 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-8">
         <div class="card shadow-lg p-4">
+            <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">Sukses!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="successMessage">Laporan berhasil dikirim!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">Error!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="errorMessage">Terjadi kesalahan saat mengirim laporan.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center py-4">
+                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
+                            <p class="text-muted small">Harap tunggu sebentar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h3 class="text-center mb-4">Formulir Laporan Gangguan IT</h3>
-            <form method="POST" action="/submit/laporan-gangguan-it" enctype="multipart/form-data" id="itIssueForm">
+            <form method="POST" action="{{ url_for('submit_laporan_gangguanit') }}" enctype="multipart/form-data" id="itIssueForm">
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Informasi Pelapor</h5>
@@ -15,16 +63,16 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="tahun" class="form-label">Tahun Laporan</label>
+                                <label for="tahun" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
                                 <select class="form-select" id="tahun" name="tahun" required>
                                     <option value="">-- Pilih Tahun --</option>
-                                    {% for year in range(2020, 20250) %}
+                                    {% for year in range(2020, 2027) %}
                                     <option value="{{ year }}">{{ year }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="periode" class="form-label">Periode Laporan (Bulan)</label>
+                                <label for="periode" class="form-label">Periode Laporan (Bulan) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="periode" name="periode" required>
                                     <option value="">-- Pilih Bulan --</option>
                                     <option value="1">Januari</option>
@@ -45,11 +93,11 @@
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                                <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
                             </div>
                         </div>
@@ -65,11 +113,11 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="waktu_kejadian_1" class="form-label">Waktu Kejadian</label>
+                                    <label for="waktu_kejadian_1" class="form-label">Waktu Kejadian <span class="text-danger">*</span></label>
                                     <input type="datetime-local" class="form-control" id="waktu_kejadian_1" name="waktu_kejadian_1" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="jenis_gangguan_1" class="form-label">Jenis Gangguan</label>
+                                    <label for="jenis_gangguan_1" class="form-label">Jenis Gangguan <span class="text-danger">*</span></label>
                                     <select class="form-select" id="jenis_gangguan_1" name="jenis_gangguan_1" required>
                                         <option value="">-- Pilih Jenis Gangguan --</option>
                                         <option value="Jaringan">Gangguan Jaringan</option>
@@ -83,7 +131,7 @@
                             </div>
                             
                             <div class="mb-3">
-                                <label for="ringkasan_1" class="form-label">Ringkasan Gangguan</label>
+                                <label for="ringkasan_1" class="form-label">Ringkasan Gangguan <span class="text-danger">*</span></label>
                                 <textarea class="form-control" id="ringkasan_1" name="ringkasan_1" rows="4" required></textarea>
                                 <div class="form-text">Jelaskan secara detail gejala gangguan yang terjadi</div>
                             </div>
@@ -92,14 +140,14 @@
                                 <h6 class="mb-0">Upaya Penanganan</h6>
                             </div>
                             <div class="mb-3">
-                                <label for="upaya_perbaikan_1" class="form-label">Upaya Perbaikan</label>
+                                <label for="upaya_perbaikan_1" class="form-label">Upaya Perbaikan <span class="text-danger">*</span></label>
                                 <textarea class="form-control" id="upaya_perbaikan_1" name="upaya_perbaikan_1" rows="4" required></textarea>
                                 <div class="form-text">Jelaskan langkah-langkah yang telah dilakukan untuk mengatasi gangguan</div>
                             </div>
                             
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="status_penyelesaian_1" class="form-label">Status Penyelesaian</label>
+                                    <label for="status_penyelesaian_1" class="form-label">Status Penyelesaian <span class="text-danger">*</span></label>
                                     <select class="form-select status-select" id="status_penyelesaian_1" name="status_penyelesaian_1" required>
                                         <option value="">-- Pilih Status --</option>
                                         <option value="Dalam Investigasi">Dalam Investigasi</option>
@@ -136,7 +184,10 @@
                 </div>
                 
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="submit-text">Kirim Laporan</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
                     <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
                 </div>
             </form>
@@ -159,29 +210,38 @@
     textarea {
         min-height: 120px;
     }
+    .btn-primary .spinner-border {
+        vertical-align: middle;
+        margin-left: 5px;
+    }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('itIssueForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const submitText = submitButton.querySelector('.submit-text');
+    const submitSpinner = submitButton.querySelector('.spinner-border');
+    
+    const loadingModalElement = document.getElementById('loadingModal');
+    const successModalElement = document.getElementById('successModal');
+    const errorModalElement = document.getElementById('errorModal');
+
+    const loadingModal = new bootstrap.Modal(loadingModalElement);
+    const successModal = new bootstrap.Modal(successModalElement);
+    const errorModal = new bootstrap.Modal(errorModalElement);
+    
+    const successMessageElement = document.getElementById('successMessage');
+    const errorMessageElement = document.getElementById('errorMessage');
+
     let disturbanceCount = 1;
 
-    // Function to handle conditional field for resolution date
     function setupConditionalFields(container) {
         const statusSelect = container.querySelector('.status-select');
         const resolutionDate = container.querySelector('.resolution-date');
         
-        // Initial state
-        if (statusSelect.value === 'Terselesaikan') {
-            resolutionDate.required = true;
-            resolutionDate.disabled = false;
-        } else {
-            resolutionDate.required = false;
-            resolutionDate.disabled = true;
-            resolutionDate.value = '';
-        }
-
-        statusSelect.addEventListener('change', function() {
-            if (this.value === 'Terselesaikan') {
+        function toggleResolutionDate() {
+            if (statusSelect.value === 'Terselesaikan') {
                 resolutionDate.required = true;
                 resolutionDate.disabled = false;
             } else {
@@ -189,19 +249,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 resolutionDate.disabled = true;
                 resolutionDate.value = '';
             }
-        });
+        }
+        toggleResolutionDate(); // Initial state
+        statusSelect.addEventListener('change', toggleResolutionDate);
     }
 
-    // Initial setup for the first disturbance item
     setupConditionalFields(document.querySelector('.it-disturbance-item'));
 
-    // Add new disturbance item
     document.getElementById('addDisturbance').addEventListener('click', function() {
         disturbanceCount++;
         const originalItem = document.querySelector('.it-disturbance-item');
-        const newItem = originalItem.cloneNode(true); // Deep clone
+        const newItem = originalItem.cloneNode(true); 
 
-        // Update IDs and names for new item
         newItem.querySelectorAll('[id]').forEach(element => {
             const originalId = element.id;
             const newId = originalId.replace(/_(\d+)$/, '_' + disturbanceCount);
@@ -209,7 +268,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (element.name) {
                 element.name = element.name.replace(/_(\d+)$/, '_' + disturbanceCount);
             }
-            // Clear values for cloned inputs
             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
                 element.value = '';
             } else if (element.tagName === 'SELECT') {
@@ -217,18 +275,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Update disturbance number
         newItem.querySelector('.disturbance-number').textContent = disturbanceCount;
-
-        // Show remove button for new items
         const removeButton = newItem.querySelector('.remove-disturbance');
         removeButton.style.display = 'inline-block';
         removeButton.addEventListener('click', function() {
             newItem.remove();
-            // Re-number existing items after removal
             document.querySelectorAll('.it-disturbance-item').forEach((item, index) => {
                 item.querySelector('.disturbance-number').textContent = index + 1;
-                // If only one item left, hide its remove button
                 if (document.querySelectorAll('.it-disturbance-item').length === 1) {
                     item.querySelector('.remove-disturbance').style.display = 'none';
                 }
@@ -236,41 +289,153 @@ document.addEventListener('DOMContentLoaded', function() {
             disturbanceCount = document.querySelectorAll('.it-disturbance-item').length;
         });
 
-        // Re-setup conditional fields for the new item
         setupConditionalFields(newItem);
-
         document.getElementById('itDisturbanceContainer').appendChild(newItem);
     });
+    
+    const tanggalSuratInput = document.getElementById('tanggal_surat');
+    if(tanggalSuratInput){
+        const today = new Date().toISOString().split('T')[0];
+        tanggalSuratInput.max = today;
+    }
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let formIsValid = true;
 
-    // Form validation
-    document.getElementById('itIssueForm').addEventListener('submit', function(e) {
-        let isValid = true;
         document.querySelectorAll('.it-disturbance-item').forEach(item => {
             const incidentTimeInput = item.querySelector('[id^="waktu_kejadian_"]');
             const statusSelect = item.querySelector('.status-select');
             const resolutionDateInput = item.querySelector('.resolution-date');
+            const incidentTime = new Date(incidentTimeInput.value);
+            const now = new Date();
 
-            if (incidentTimeInput) {
-                const incidentTime = new Date(incidentTimeInput.value);
-                const now = new Date();
-                
-                if (incidentTime > now) {
-                    isValid = false;
-                    alert('Waktu kejadian tidak boleh lebih baru dari waktu saat ini pada gangguan ' + item.querySelector('.disturbance-number').textContent);
-                    return; // Exit forEach early
-                }
+            if (incidentTime > now) {
+                errorMessageElement.textContent = 'Waktu kejadian tidak boleh lebih baru dari waktu saat ini pada gangguan ' + item.querySelector('.disturbance-number').textContent;
+                errorModal.show();
+                formIsValid = false;
+                return; 
             }
 
-            if (statusSelect && statusSelect.value === 'Terselesaikan' && resolutionDateInput && !resolutionDateInput.value) {
-                isValid = false;
-                alert('Harap isi tanggal penyelesaian untuk status "Terselesaikan" pada gangguan ' + item.querySelector('.disturbance-number').textContent);
-                return; // Exit forEach early
+            if (statusSelect.value === 'Terselesaikan' && !resolutionDateInput.value) {
+                errorMessageElement.textContent = 'Harap isi tanggal penyelesaian untuk status "Terselesaikan" pada gangguan ' + item.querySelector('.disturbance-number').textContent;
+                errorModal.show();
+                formIsValid = false;
+                return; 
+            }
+            if (resolutionDateInput.value && new Date(resolutionDateInput.value) < incidentTime) {
+                 errorMessageElement.textContent = 'Tanggal penyelesaian tidak boleh sebelum waktu kejadian pada gangguan ' + item.querySelector('.disturbance-number').textContent;
+                errorModal.show();
+                formIsValid = false;
+                return;
             }
         });
 
-        if (!isValid) {
-            e.preventDefault();
+        const lampiranInput = document.getElementById('lampiran');
+        if (lampiranInput.files[0] && lampiranInput.files[0].size > 5 * 1024 * 1024) { // 5MB
+            errorMessageElement.textContent = 'Ukuran file lampiran melebihi 5MB.';
+            errorModal.show();
+            formIsValid = false;
         }
+
+        if (!formIsValid) return;
+
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+        
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
+                successModal.show();
+                form.reset();
+                // Reset dynamic fields
+                document.getElementById('itDisturbanceContainer').innerHTML = `
+                    <div class="card mb-4 it-disturbance-item">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Detail Gangguan <span class="disturbance-number">1</span></h5>
+                            <button type="button" class="btn btn-danger btn-sm remove-disturbance" style="display:none;">Hapus</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="waktu_kejadian_1" class="form-label">Waktu Kejadian <span class="text-danger">*</span></label>
+                                    <input type="datetime-local" class="form-control" id="waktu_kejadian_1" name="waktu_kejadian_1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="jenis_gangguan_1" class="form-label">Jenis Gangguan <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="jenis_gangguan_1" name="jenis_gangguan_1" required>
+                                        <option value="">-- Pilih Jenis Gangguan --</option>
+                                        <option value="Jaringan">Gangguan Jaringan</option>
+                                        <option value="Server">Gangguan Server</option>
+                                        <option value="Aplikasi">Gangguan Aplikasi</option>
+                                        <option value="Database">Gangguan Database</option>
+                                        <option value="Keamanan">Gangguan Keamanan</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ringkasan_1" class="form-label">Ringkasan Gangguan <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="ringkasan_1" name="ringkasan_1" rows="4" required></textarea>
+                                <div class="form-text">Jelaskan secara detail gejala gangguan yang terjadi</div>
+                            </div>
+                            <div class="mt-4"><h6 class="mb-0">Upaya Penanganan</h6></div>
+                            <div class="mb-3">
+                                <label for="upaya_perbaikan_1" class="form-label">Upaya Perbaikan <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="upaya_perbaikan_1" name="upaya_perbaikan_1" rows="4" required></textarea>
+                                <div class="form-text">Jelaskan langkah-langkah yang telah dilakukan untuk mengatasi gangguan</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="status_penyelesaian_1" class="form-label">Status Penyelesaian <span class="text-danger">*</span></label>
+                                    <select class="form-select status-select" id="status_penyelesaian_1" name="status_penyelesaian_1" required>
+                                        <option value="">-- Pilih Status --</option>
+                                        <option value="Dalam Investigasi">Dalam Investigasi</option>
+                                        <option value="Dalam Perbaikan">Dalam Perbaikan</option>
+                                        <option value="Terselesaikan">Terselesaikan</option>
+                                        <option value="Belum Terselesaikan">Belum Terselesaikan</option>
+                                        <option value="Eskalasi">Memerlukan Eskalasi</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="tanggal_penyelesaian_1" class="form-label">Tanggal Penyelesaian (jika sudah selesai)</label>
+                                    <input type="datetime-local" class="form-control resolution-date" id="tanggal_penyelesaian_1" name="tanggal_penyelesaian_1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                disturbanceCount = 1;
+                setupConditionalFields(document.querySelector('.it-disturbance-item'));
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show();
+        });
     });
 });
 </script>

@@ -6,8 +6,56 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10">
         <div class="card shadow-lg p-4">
+            <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">Sukses!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="successMessage">Laporan berhasil dikirim!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">Error!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="errorMessage">Terjadi kesalahan saat mengirim laporan.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center py-4">
+                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
+                            <p class="text-muted small">Harap tunggu sebentar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h3 class="text-center mb-4">Laporan Audit Sistem Informasi</h3>
-            <form method="POST" action="/submit/laporan-auditsi" enctype="multipart/form-data" id="auditSistemForm">
+            <form method="POST" action="{{ url_for('submit_laporan_auditsi') }}" enctype="multipart/form-data" id="auditSistemForm">
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Informasi Dasar</h5>
@@ -15,7 +63,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun)</label>
+                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
                                     <option value="">-- Pilih Tahun --</option>
                                     {% for year in range(2020, 2026) %}
@@ -24,26 +72,26 @@
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP)</label>
+                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP) <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nama_penyelenggara" name="nama_penyelenggara" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                                <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
                             </div>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="tanggal_selesai" class="form-label">Tanggal Selesai Audit</label>
+                                <label for="tanggal_selesai" class="form-label">Tanggal Selesai Audit <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="tanggal_selesai" name="tanggal_selesai" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="nama_auditor" class="form-label">Nama Auditor</label>
+                                <label for="nama_auditor" class="form-label">Nama Auditor <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nama_auditor" name="nama_auditor" required>
                             </div>
                         </div>
@@ -57,27 +105,27 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="confidentiality" class="form-label">Confidentiality</label>
+                                <label for="confidentiality" class="form-label">Confidentiality <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="confidentiality" name="confidentiality" min="1" max="5" required>
                                 <div class="form-text">Skala 1-5 (1 = Terendah, 5 = Tertinggi)</div>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="integrity" class="form-label">Integrity</label>
+                                <label for="integrity" class="form-label">Integrity <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="integrity" name="integrity" min="1" max="5" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="availability" class="form-label">Availability</label>
+                                <label for="availability" class="form-label">Availability <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="availability" name="availability" min="1" max="5" required>
                             </div>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="authenticity" class="form-label">Authenticity</label>
+                                <label for="authenticity" class="form-label">Authenticity <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="authenticity" name="authenticity" min="1" max="5" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="non_repudiation" class="form-label">Non Repudiation</label>
+                                <label for="non_repudiation" class="form-label">Non Repudiation <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="non_repudiation" name="non_repudiation" min="1" max="5" required>
                             </div>
                         </div>
@@ -91,24 +139,24 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="jumlah_temuan" class="form-label">Jumlah Temuan</label>
+                                <label for="jumlah_temuan" class="form-label">Jumlah Temuan <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="jumlah_temuan" name="jumlah_temuan" min="0" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="temuan_diselesaikan" class="form-label">Jumlah Temuan Diselesaikan</label>
+                                <label for="temuan_diselesaikan" class="form-label">Jumlah Temuan Diselesaikan <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="temuan_diselesaikan" name="temuan_diselesaikan" min="0" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="jumlah_temuan_belum_terselesaikan" class="form-label">Berapa Banyak Temuan yang Belum Terselesaikan?</label>
-                            <input type="number" class="form-control" id="jumlah_temuan_belum_terselesaikan" name="jumlah_temuan_belum_terselesaikan" min="0">
+                            <label for="jumlah_temuan_belum_terselesaikan" class="form-label">Berapa Banyak Temuan yang Belum Terselesaikan? <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="jumlah_temuan_belum_terselesaikan" name="jumlah_temuan_belum_terselesaikan" min="0" required>
                         </div>
 
                         <div id="unresolvedFindingsContainer">
                             </div>
 
                         <div class="d-grid gap-2 mt-3">
-                            <button type="button" class="btn btn-secondary" id="addUnresolvedFinding">Tambah Temuan Belum Terselesaikan</button>
+                            <button type="button" class="btn btn-secondary" id="addUnresolvedFinding">Tambah Detail Temuan Belum Terselesaikan</button>
                         </div>
                     </div>
                 </div>
@@ -119,7 +167,7 @@
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="kesimpulan" class="form-label">Kesimpulan Audit</label>
+                            <label for="kesimpulan" class="form-label">Kesimpulan Audit <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="kesimpulan" name="kesimpulan" rows="5" required></textarea>
                             <div class="form-text">Ringkasan hasil audit dan opini auditor</div>
                         </div>
@@ -132,7 +180,7 @@
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Audit</label>
+                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Audit <span class="text-danger">*</span></label>
                             <input type="file" class="form-control" id="dokumen_laporan" name="dokumen_laporan" accept=".pdf,.doc,.docx,.jpg,.png" required>
                             <div class="form-text">Format: PDF, DOC, DOCX, JPG, PNG (Maks. 10MB)</div>
                         </div>
@@ -140,13 +188,16 @@
                         <div class="mb-3">
                             <label for="dokumen_pendukung" class="form-label">Dokumen Pendukung Lainnya</label>
                             <input type="file" class="form-control" id="dokumen_pendukung" name="dokumen_pendukung" accept=".pdf,.doc,.docx,.jpg,.png">
-                            <div class="form-text">Bukti temuan atau dokumen pendukung lainnya (Opsional)</div>
+                            <div class="form-text">Bukti temuan atau dokumen pendukung lainnya (Opsional, Maks. 10MB)</div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                     <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="submit-text">Kirim Laporan</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
                     <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
                 </div>
             </form>
@@ -182,14 +233,36 @@
         top: 10px;
         right: 10px;
     }
+     .btn-primary .spinner-border {
+        vertical-align: middle;
+        margin-left: 5px;
+    }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Date validation - report date shouldn't be in the future
+    const form = document.getElementById('auditSistemForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const submitText = submitButton.querySelector('.submit-text');
+    const submitSpinner = submitButton.querySelector('.spinner-border');
+    
+    const loadingModalElement = document.getElementById('loadingModal');
+    const successModalElement = document.getElementById('successModal');
+    const errorModalElement = document.getElementById('errorModal');
+
+    const loadingModal = new bootstrap.Modal(loadingModalElement);
+    const successModal = new bootstrap.Modal(successModalElement);
+    const errorModal = new bootstrap.Modal(errorModalElement);
+    
+    const successMessageElement = document.getElementById('successMessage');
+    const errorMessageElement = document.getElementById('errorMessage');
+
+    // Date validation
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('tanggal_surat').max = today;
-    document.getElementById('tanggal_selesai').max = today;
+    const tanggalSuratInput = document.getElementById('tanggal_surat');
+    const tanggalSelesaiInput = document.getElementById('tanggal_selesai');
+    if (tanggalSuratInput) tanggalSuratInput.max = today;
+    if (tanggalSelesaiInput) tanggalSelesaiInput.max = today;
     
     // Dynamic fields for unresolved findings
     let unresolvedFindingCount = 0;
@@ -197,131 +270,151 @@ document.addEventListener('DOMContentLoaded', function() {
     const addUnresolvedFindingButton = document.getElementById('addUnresolvedFinding');
     const jumlahTemuanBelumTerselesaikanInput = document.getElementById('jumlah_temuan_belum_terselesaikan');
 
-    function addUnresolvedFindingField() {
-        unresolvedFindingCount++;
-
+    function createUnresolvedFindingField(index) {
         const newItem = document.createElement('div');
         newItem.classList.add('unresolved-finding-item');
         newItem.innerHTML = `
-            <button type="button" class="btn btn-danger btn-sm remove-finding" style="display:none;">X</button>
-            <h6 class="mb-3">Temuan Belum Terselesaikan <span class="finding-number">${unresolvedFindingCount}</span></h6>
+            <button type="button" class="btn btn-danger btn-sm remove-finding" title="Hapus Temuan Ini">X</button>
+            <h6 class="mb-3">Detail Temuan Belum Terselesaikan <span class="finding-number">${index + 1}</span></h6>
             <div class="mb-3">
-                <label for="deskripsi_temuan_${unresolvedFindingCount}" class="form-label">Deskripsi Temuan</label>
-                <textarea class="form-control" id="deskripsi_temuan_${unresolvedFindingCount}" name="deskripsi_temuan_${unresolvedFindingCount}" rows="2" required></textarea>
+                <label for="deskripsi_temuan_${index}" class="form-label">Deskripsi Temuan <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="deskripsi_temuan_${index}" name="deskripsi_temuan_${index}" rows="2" required></textarea>
             </div>
             <div class="mb-3">
-                <label for="tindak_lanjut_${unresolvedFindingCount}" class="form-label">Tindak Lanjut</label>
-                <textarea class="form-control" id="tindak_lanjut_${unresolvedFindingCount}" name="tindak_lanjut_${unresolvedFindingCount}" rows="2" required></textarea>
+                <label for="tindak_lanjut_${index}" class="form-label">Rencana Tindak Lanjut <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="tindak_lanjut_${index}" name="tindak_lanjut_${index}" rows="2" required></textarea>
             </div>
         `;
-        unresolvedFindingsContainer.appendChild(newItem);
-
-        // Show remove button if more than one item
-        if (unresolvedFindingCount > 1) {
-            newItem.querySelector('.remove-finding').style.display = 'block';
-        }
-
-        // Add event listener for remove button
+        
         newItem.querySelector('.remove-finding').addEventListener('click', function() {
             newItem.remove();
-            unresolvedFindingCount--;
-            // Re-number existing items
-            document.querySelectorAll('.unresolved-finding-item').forEach((item, index) => {
-                item.querySelector('.finding-number').textContent = index + 1;
-                // Hide remove button if only one item left
-                if (unresolvedFindingCount === 1) {
-                    item.querySelector('.remove-finding').style.display = 'none';
-                }
-            });
-            // Update the count input
-            jumlahTemuanBelumTerselesaikanInput.value = unresolvedFindingCount;
+            updateUnresolvedFindingFields();
         });
-        // Update the count input
-        jumlahTemuanBelumTerselesaikanInput.value = unresolvedFindingCount;
+        return newItem;
     }
 
-    addUnresolvedFindingButton.addEventListener('click', addUnresolvedFindingField);
+    // ... [kode selanjutnya tetap sama]
 
-    // Sync `jumlah_temuan_belum_terselesaikan` with dynamic fields
-    jumlahTemuanBelumTerselesaikanInput.addEventListener('change', function() {
-        const targetCount = parseInt(this.value) || 0;
-        while (unresolvedFindingCount < targetCount) {
-            addUnresolvedFindingField();
-        }
-        while (unresolvedFindingCount > targetCount && unresolvedFindingCount > 0) {
-            unresolvedFindingsContainer.lastElementChild.remove();
-            unresolvedFindingCount--;
-        }
-        // Ensure remove button visibility is correct after manual change
-        document.querySelectorAll('.unresolved-finding-item').forEach((item, index) => {
-            if (unresolvedFindingCount === 1) {
-                item.querySelector('.remove-finding').style.display = 'none';
-            } else {
-                item.querySelector('.remove-finding').style.display = 'block';
-            }
-        });
-    });
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let formIsValid = true;
 
-    // Initial check for remove button visibility if there's only one item initially
-    if (unresolvedFindingCount === 1) {
-        document.querySelector('.unresolved-finding-item .remove-finding').style.display = 'none';
-    }
-    
-    // Validate audit completion date is after report date
-    document.getElementById('auditSistemForm').addEventListener('submit', function(e) {
-        const tanggalSurat = new Date(document.getElementById('tanggal_surat').value);
-        const tanggalSelesai = new Date(document.getElementById('tanggal_selesai').value);
-        
-        if (tanggalSelesai < tanggalSurat) {
-            e.preventDefault();
-            alert('Tanggal selesai audit tidak boleh sebelum tanggal surat');
-            return false;
+        if (tanggalSelesaiInput.value && tanggalSuratInput.value && new Date(tanggalSelesaiInput.value) < new Date(tanggalSuratInput.value)) {
+            errorMessageElement.textContent = 'Tanggal selesai audit tidak boleh sebelum tanggal surat.';
+            errorModal.show();
+            formIsValid = false;
         }
         
-        // Validate security pillars ratings (1-5)
         const pillars = ['confidentiality', 'integrity', 'availability', 'authenticity', 'non_repudiation'];
         for (const pillar of pillars) {
             const value = parseInt(document.getElementById(pillar).value);
-            if (value < 1 || value > 5) {
-                e.preventDefault();
-                alert(`Nilai untuk ${pillar} harus antara 1-5`);
-                return false;
+            if (isNaN(value) || value < 1 || value > 5) {
+                errorMessageElement.textContent = 'Nilai untuk ' + pillar + ' harus antara 1-5.';
+                errorModal.show();
+                formIsValid = false;
+                break;
             }
         }
         
-        // Validate findings resolved <= total findings
         const totalFindings = parseInt(document.getElementById('jumlah_temuan').value);
         const resolvedFindings = parseInt(document.getElementById('temuan_diselesaikan').value);
         if (resolvedFindings > totalFindings) {
-            e.preventDefault();
-            alert('Jumlah temuan diselesaikan tidak boleh melebihi jumlah temuan');
-            return false;
+            errorMessageElement.textContent = 'Jumlah temuan diselesaikan tidak boleh melebihi jumlah temuan.';
+            errorModal.show();
+            formIsValid = false;
         }
         
-        // Validate file size for main document
-        const fileInput = document.getElementById('dokumen_laporan');
-        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
-            e.preventDefault();
-            alert('Ukuran file dokumen laporan melebihi 10MB');
-            return false;
-        }
-        
-        // Validate file size for supporting document
-        const supportFileInput = document.getElementById('dokumen_pendukung');
-        if (supportFileInput.files[0] && supportFileInput.files[0].size > 10 * 1024 * 1024) {
-            e.preventDefault();
-            alert('Ukuran file dokumen pendukung melebihi 10MB');
-            return false;
+        const declaredUnresolvedCount = parseInt(jumlahTemuanBelumTerselesaikanInput.value) || 0;
+        const actualUnresolvedFields = unresolvedFindingsContainer.children.length;
+        if (declaredUnresolvedCount !== actualUnresolvedFields) {
+            errorMessageElement.textContent = 'Jumlah temuan belum terselesaikan tidak sesuai dengan jumlah detail yang diinput. Harap periksa kembali atau klik tombol "Tambah Detail" sesuai jumlah yang Anda masukkan.';
+            errorModal.show();
+            formIsValid = false;
         }
 
-        // Validate that the number of dynamic fields matches the input count
-        const declaredCount = parseInt(jumlahTemuanBelumTerselesaikanInput.value) || 0;
-        if (unresolvedFindingCount !== declaredCount) {
-            e.preventDefault();
-            alert('Jumlah temuan belum terselesaikan tidak sesuai dengan jumlah entri yang ditambahkan. Harap sesuaikan.');
-            return false;
+
+        const fileLaporan = document.getElementById('dokumen_laporan');
+        if (fileLaporan.files[0] && fileLaporan.files[0].size > 10 * 1024 * 1024) {
+            errorMessageElement.textContent = 'Ukuran file dokumen laporan melebihi 10MB.';
+            errorModal.show();
+            formIsValid = false;
         }
+        
+        const filePendukung = document.getElementById('dokumen_pendukung');
+        if (filePendukung.files[0] && filePendukung.files[0].size > 10 * 1024 * 1024) {
+            errorMessageElement.textContent = 'Ukuran file dokumen pendukung melebihi 10MB.';
+            errorModal.show();
+            formIsValid = false;
+        }
+
+        if (!formIsValid) return;
+
+        // Show loading state
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+        
+        const formData = new FormData(this);
+        // Append dynamic fields correctly for backend if needed as a list of objects
+        // For now, Flask's request.form.get(f"deskripsi_temuan_{i}") will handle individual fields.
+        // If API expects a JSON list, construct it here before sending.
+        // Example:
+        // let unresolvedDetails = [];
+        // for (let i = 0; i < actualUnresolvedFields; i++) {
+        // unresolvedDetails.push({
+        // deskripsi: formData.get(\`deskripsi_temuan_\${i}\`),
+        // tindak_lanjut: formData.get(\`tindak_lanjut_\${i}\`)
+        // });
+        // }
+        // formData.append('unresolved_findings_list', JSON.stringify(unresolvedDetails));
+        // Then ensure backend parses this 'unresolved_findings_list'
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
+                successModal.show();
+                form.reset();
+                // Clear dynamic fields manually
+                unresolvedFindingsContainer.innerHTML = ''; 
+                updateUnresolvedFindingFields();
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show();
+        });
     });
+     // Initialize dynamic fields based on current value (e.g., if form is repopulated after error)
+    if (jumlahTemuanBelumTerselesaikanInput.value > 0) {
+        const initialCount = parseInt(jumlahTemuanBelumTerselesaikanInput.value);
+        for (let i = 0; i < initialCount; i++) {
+            unresolvedFindingsContainer.appendChild(createUnresolvedFindingField(i));
+        }
+        updateUnresolvedFindingFields();
+    } else {
+        updateUnresolvedFindingFields(); // Call to set count to 0 if input is empty/0
+    }
 });
 </script>
 {% endblock %}

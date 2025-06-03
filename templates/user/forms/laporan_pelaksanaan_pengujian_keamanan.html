@@ -1,14 +1,61 @@
 {% extends 'user/base.html' %}
 
-{% block title %}Laporan Pelaksanaan Pengujian Keamanan (Penetration Test){% endblock %}
+{% block title %}Laporan Pelaksanaan Pengujian Keamanan{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10">
         <div class="card shadow-lg p-4">
+            <div class="modal fade" id="successModalPengujian" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">Sukses!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="successMessagePengujian">Laporan berhasil dikirim!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="errorModalPengujian" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">Error!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="errorMessagePengujian">Terjadi kesalahan saat mengirim laporan.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="loadingModalPengujian" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center py-4">
+                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
+                            <p class="text-muted small">Harap tunggu sebentar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h3 class="text-center mb-4">Laporan Pelaksanaan Pengujian Keamanan (Penetration Test)</h3>
-            <form method="POST" action="/submit/laporan-penetration-test" enctype="multipart/form-data" id="penetrationTestForm">
-                <!-- Basic Information Section -->
+            <form method="POST" action="{{ url_for('submit_laporan_pelaksanaan_pengujian_keamanan') }}" enctype="multipart/form-data" id="penetrationTestForm">
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Informasi Dasar</h5>
@@ -16,16 +63,16 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun)</label>
+                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
                                     <option value="">-- Pilih Tahun --</option>
-                                    {% for year in range(2020, 2026) %}
+                                    {% for year in range(2020, 2027) %}
                                     <option value="{{ year }}">{{ year }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="triwulan_laporan" class="form-label">Periode Laporan (Triwulan)</label>
+                                <label for="triwulan_laporan" class="form-label">Periode Laporan (Triwulan) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="triwulan_laporan" name="triwulan_laporan" required>
                                     <option value="">-- Pilih Triwulan --</option>
                                     <option value="Triwulan I">Triwulan I</option>
@@ -35,29 +82,28 @@
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP)</label>
+                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP) <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nama_penyelenggara" name="nama_penyelenggara" required>
                             </div>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                                <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="tanggal_selesai_audit" class="form-label">Tanggal Selesai Audit</label>
+                                <label for="tanggal_selesai_audit" class="form-label">Tanggal Selesai Pengujian <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="tanggal_selesai_audit" name="tanggal_selesai_audit" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Findings Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Temuan Keamanan</h5>
@@ -65,66 +111,66 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <label for="temuan_low" class="form-label">Temuan Low</label>
-                                <input type="number" class="form-control" id="temuan_low" name="temuan_low" min="0" required>
+                                <label for="temuan_low" class="form-label">Temuan Low <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="temuan_low" name="temuan_low" min="0" value="0" required>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label for="temuan_medium" class="form-label">Temuan Medium</label>
-                                <input type="number" class="form-control" id="temuan_medium" name="temuan_medium" min="0" required>
+                                <label for="temuan_medium" class="form-label">Temuan Medium <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="temuan_medium" name="temuan_medium" min="0" value="0" required>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label for="temuan_high" class="form-label">Temuan High</label>
-                                <input type="number" class="form-control" id="temuan_high" name="temuan_high" min="0" required>
+                                <label for="temuan_high" class="form-label">Temuan High <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="temuan_high" name="temuan_high" min="0" value="0" required>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label for="temuan_critical" class="form-label">Temuan Critical</label>
-                                <input type="number" class="form-control" id="temuan_critical" name="temuan_critical" min="0" required>
+                                <label for="temuan_critical" class="form-label">Temuan Critical <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="temuan_critical" name="temuan_critical" min="0" value="0" required>
                             </div>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="jumlah_temuan" class="form-label">Jumlah Temuan</label>
+                                <label for="jumlah_temuan" class="form-label">Jumlah Temuan (Otomatis)</label>
                                 <input type="number" class="form-control" id="jumlah_temuan" name="jumlah_temuan" min="0" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="jumlah_temuan_diselesaikan" class="form-label">Jumlah Temuan Diselesaikan</label>
-                                <input type="number" class="form-control" id="jumlah_temuan_diselesaikan" name="jumlah_temuan_diselesaikan" min="0" required>
+                                <label for="jumlah_temuan_diselesaikan" class="form-label">Jumlah Temuan Diselesaikan <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="jumlah_temuan_diselesaikan" name="jumlah_temuan_diselesaikan" min="0" value="0" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Conclusion Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Kesimpulan</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="kesimpulan_auditor" class="form-label">Kesimpulan/Opini Auditor</label>
+                            <label for="kesimpulan_auditor" class="form-label">Kesimpulan/Opini Penguji <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="kesimpulan_auditor" name="kesimpulan_auditor" rows="5" required></textarea>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Document Upload Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Dokumen Pendukung</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Lengkap</label>
+                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Lengkap <span class="text-danger">*</span></label>
                             <input type="file" class="form-control" id="dokumen_laporan" name="dokumen_laporan" accept=".pdf,.doc,.docx" required>
                             <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Submit Button -->
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                     <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="submit-text">Kirim Laporan</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
                     <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
                 </div>
             </form>
@@ -144,61 +190,135 @@
         font-size: 0.8rem;
         color: #6c757d;
     }
+    .btn-primary .spinner-border {
+        vertical-align: middle;
+        margin-left: 5px;
+    }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto-calculate total findings
-    const calculateTotalFindings = () => {
-        const low = parseInt(document.getElementById('temuan_low').value) || 0;
-        const medium = parseInt(document.getElementById('temuan_medium').value) || 0;
-        const high = parseInt(document.getElementById('temuan_high').value) || 0;
-        const critical = parseInt(document.getElementById('temuan_critical').value) || 0;
+    const form = document.getElementById('penetrationTestForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const submitText = submitButton.querySelector('.submit-text');
+    const submitSpinner = submitButton.querySelector('.spinner-border');
+    
+    const loadingModalElement = document.getElementById('loadingModalPengujian');
+    const successModalElement = document.getElementById('successModalPengujian');
+    const errorModalElement = document.getElementById('errorModalPengujian');
+
+    const loadingModal = new bootstrap.Modal(loadingModalElement);
+    const successModal = new bootstrap.Modal(successModalElement);
+    const errorModal = new bootstrap.Modal(errorModalElement);
+    
+    const successMessageElement = document.getElementById('successMessagePengujian');
+    const errorMessageElement = document.getElementById('errorMessagePengujian');
+
+    const temuanLowInput = document.getElementById('temuan_low');
+    const temuanMediumInput = document.getElementById('temuan_medium');
+    const temuanHighInput = document.getElementById('temuan_high');
+    const temuanCriticalInput = document.getElementById('temuan_critical');
+    const jumlahTemuanInput = document.getElementById('jumlah_temuan');
+    const jumlahTemuanDiselesaikanInput = document.getElementById('jumlah_temuan_diselesaikan');
+
+    function calculateTotalFindings() {
+        const low = parseInt(temuanLowInput.value) || 0;
+        const medium = parseInt(temuanMediumInput.value) || 0;
+        const high = parseInt(temuanHighInput.value) || 0;
+        const critical = parseInt(temuanCriticalInput.value) || 0;
+        jumlahTemuanInput.value = low + medium + high + critical;
+    }
+    
+    [temuanLowInput, temuanMediumInput, temuanHighInput, temuanCriticalInput].forEach(input => {
+        input.addEventListener('input', calculateTotalFindings);
+    });
+    calculateTotalFindings(); // Initial calculation
+
+    const tanggalSuratInput = document.getElementById('tanggal_surat');
+    const tanggalSelesaiAuditInput = document.getElementById('tanggal_selesai_audit');
+    if(tanggalSuratInput) {
+        const today = new Date().toISOString().split('T')[0];
+        tanggalSuratInput.max = today;
+    }
+    if(tanggalSelesaiAuditInput) {
+        const today = new Date().toISOString().split('T')[0];
+        tanggalSelesaiAuditInput.max = today;
+    }
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let formIsValid = true;
         
-        const total = low + medium + high + critical;
-        document.getElementById('jumlah_temuan').value = total;
-    };
-    
-    // Add event listeners to all finding fields
-    document.getElementById('temuan_low').addEventListener('change', calculateTotalFindings);
-    document.getElementById('temuan_medium').addEventListener('change', calculateTotalFindings);
-    document.getElementById('temuan_high').addEventListener('change', calculateTotalFindings);
-    document.getElementById('temuan_critical').addEventListener('change', calculateTotalFindings);
-    
-    // Date validation - report date shouldn't be in the future
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('tanggal_surat').max = today;
-    document.getElementById('tanggal_selesai_audit').max = today;
-    
-    // Form validation
-    document.getElementById('penetrationTestForm').addEventListener('submit', function(e) {
-        // Validate report year
         const tahun = document.getElementById('tahun_laporan').value;
         const currentYear = new Date().getFullYear();
-        
-        if (tahun > currentYear) {
-            e.preventDefault();
-            alert('Tahun laporan tidak boleh melebihi tahun berjalan');
-            return false;
+        if (parseInt(tahun) > currentYear) {
+            errorMessageElement.textContent = 'Tahun laporan tidak boleh melebihi tahun berjalan.';
+            errorModal.show();
+            formIsValid = false;
         }
         
-        // Validate that resolved findings don't exceed total findings
-        const totalFindings = parseInt(document.getElementById('jumlah_temuan').value) || 0;
-        const resolvedFindings = parseInt(document.getElementById('jumlah_temuan_diselesaikan').value) || 0;
-        
+        if (tanggalSelesaiAuditInput.value && tanggalSuratInput.value && new Date(tanggalSelesaiAuditInput.value) < new Date(tanggalSuratInput.value)) {
+            errorMessageElement.textContent = 'Tanggal selesai pengujian tidak boleh sebelum tanggal surat.';
+            errorModal.show();
+            formIsValid = false;
+        }
+
+        const totalFindings = parseInt(jumlahTemuanInput.value) || 0;
+        const resolvedFindings = parseInt(jumlahTemuanDiselesaikanInput.value) || 0;
         if (resolvedFindings > totalFindings) {
-            e.preventDefault();
-            alert('Jumlah temuan yang diselesaikan tidak boleh melebihi total temuan');
-            return false;
+            errorMessageElement.textContent = 'Jumlah temuan yang diselesaikan tidak boleh melebihi total temuan.';
+            errorModal.show();
+            formIsValid = false;
         }
         
-        // Validate file size
         const fileInput = document.getElementById('dokumen_laporan');
-        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
-            e.preventDefault();
-            alert('Ukuran file dokumen laporan melebihi 10MB');
-            return false;
+        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) { // 10MB
+            errorMessageElement.textContent = 'Ukuran file dokumen laporan melebihi 10MB.';
+            errorModal.show();
+            formIsValid = false;
         }
+
+        if (!formIsValid) return;
+
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+        
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
+                successModal.show();
+                form.reset();
+                calculateTotalFindings(); // Recalculate total after reset
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show();
+        });
     });
 });
 </script>

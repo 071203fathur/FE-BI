@@ -1,0 +1,350 @@
+{% extends "user/base.html" %}
+
+{% block title %}Laporan Tahunan Sistem Pembayaran{% endblock %}
+
+{% block extra_head %}
+<style>
+    .card-header {
+        font-weight: 600;
+    }
+    .form-section {
+        margin-bottom: 2rem;
+    }
+    .form-subsection-header {
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        color: #0056b3; /* Warna biru BI */
+    }
+    .small-text {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+    /* Tambahkan styling lain jika diperlukan */
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <h2 class="text-center mb-4">Laporan Tahunan Sistem Pembayaran</h2>
+
+    <form method="POST" action="{{ url_for('submit_laporan_tahunan_sp') }}" enctype="multipart/form-data" id="laporanTahunanSPForm">
+        
+        <div class="card form-section shadow-sm">
+            <div class="card-header bg-primary text-white">
+                Informasi Umum Laporan
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="tahun_laporan" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
+                        <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
+                            <option value="">-- Pilih Tahun --</option>
+                            {% for year in range(2020, 2027) %} {# Sesuaikan range tahun jika perlu #}
+                            <option value="{{ year }}">{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="nama_pjp_pip_laporan" class="form-label">Nama PJP/PIP Pelapor <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nama_pjp_pip_laporan" name="nama_pjp_pip_laporan" placeholder="Nama PJP/PIP" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nomor_surat_pengantar" class="form-label">Nomor Surat Pengantar <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nomor_surat_pengantar" name="nomor_surat_pengantar" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="tanggal_surat_pengantar" class="form-label">Tanggal Surat Pengantar <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="tanggal_surat_pengantar" name="tanggal_surat_pengantar" required>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nama_pejabat_penandatangan" class="form-label">Nama Pejabat Penandatangan <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nama_pejabat_penandatangan" name="nama_pejabat_penandatangan" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="jabatan_pejabat_penandatangan" class="form-label">Jabatan Pejabat Penandatangan <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="jabatan_pejabat_penandatangan" name="jabatan_pejabat_penandatangan" required>
+                    </div>
+                </div>
+                <div class="row">
+                     <div class="col-md-6 mb-3">
+                        <label for="email_pic" class="form-label">Email PIC <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="email_pic" name="email_pic" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="telepon_pic" class="form-label">Telepon PIC <span class="text-danger">*</span></label>
+                        <input type="tel" class="form-control" id="telepon_pic" name="telepon_pic" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card form-section shadow-sm">
+            <div class="card-header bg-info text-white">
+                I. Executive Summary
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="executive_summary" class="form-label">Ringkasan Eksekutif <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="executive_summary" name="executive_summary" rows="5" placeholder="Penjelasan umum mengenai hasil/realisasi pengembangan aktivitas, produk, dan/atau kerja sama yang telah dicapai di tahun berjalan maupun rencana pengembangan serta target usaha di tahun depan." required></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card form-section shadow-sm">
+            <div class="card-header bg-info text-white">
+                II. Kelembagaan dan Profil
+            </div>
+            <div class="card-body">
+                <h5 class="form-subsection-header">2.1 Perizinan</h5>
+                <div class="mb-3">
+                    <label for="perizinan_penjelasan" class="form-label">Penjelasan Umum Perizinan <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="perizinan_penjelasan" name="perizinan_penjelasan" rows="3" placeholder="Penjelasan mengenai seluruh perizinan yang dimiliki terkait SP, termasuk peran, aktivitas, dan kategori izin PJP/PIP serta perijinan APMK/UE/Proprietary Channel yang dimiliki." required></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="perizinan_kategori_izin" class="form-label">Kategori Izin PJP/PIP</label>
+                        <input type="text" class="form-control" id="perizinan_kategori_izin" name="perizinan_kategori_izin" placeholder="Contoh: KI1, KI2, KI3, PIP">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="perizinan_klasifikasi" class="form-label">Klasifikasi PJP/PIP</label>
+                        <input type="text" class="form-control" id="perizinan_klasifikasi" name="perizinan_klasifikasi" placeholder="Contoh: PSPS, PSPK, PSPU">
+                    </div>
+                </div>
+                <p class="small-text">Detail perizinan (nomor, tanggal, produk) dapat dilampirkan atau diinput dalam format tabel jika API mendukung.</p>
+
+                <h5 class="form-subsection-header">2.2 Kepemilikan dan Pengendalian</h5>
+                <div class="mb-3">
+                    <label for="kepemilikan_penjelasan" class="form-label">Penjelasan Kepemilikan dan Pengendalian <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="kepemilikan_penjelasan" name="kepemilikan_penjelasan" rows="3" placeholder="Penjelasan mengenai kepemilikan dan pengendalian PJP/PIP sampai dengan ultimate shareholder serta informasi mengenai status kepemilikan (asing/WNI) dan grup terkait (konglomerasi)." required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="kepemilikan_upload_bagan" class="form-label">Upload Bagan Struktur Kepemilikan</label>
+                    <input type="file" class="form-control" id="kepemilikan_upload_bagan" name="kepemilikan_upload_bagan">
+                    <div class="small-text">Format: PDF, JPG, PNG. Maks 5MB.</div>
+                </div>
+
+                <h5 class="form-subsection-header">2.3 Kepengurusan</h5>
+                <div class="mb-3">
+                    <label for="kepengurusan_penjelasan" class="form-label">Penjelasan Struktur Kepengurusan <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="kepengurusan_penjelasan" name="kepengurusan_penjelasan" rows="3" placeholder="Penjelasan mengenai struktur kepengurusan (Direksi dan Komisaris) termasuk informasi mengenai pengurus yang belum definitif (dalam proses persetujuan)." required></textarea>
+                </div>
+                <p class="small-text">Detail nama pengurus, jabatan, domisili, rangkap jabatan, status dapat dilampirkan atau diinput dalam format tabel.</p>
+
+                <h5 class="form-subsection-header">2.4 Jaringan Usaha</h5>
+                <div class="mb-3">
+                    <label for="jaringan_usaha_penjelasan" class="form-label">Penjelasan Jaringan Usaha <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="jaringan_usaha_penjelasan" name="jaringan_usaha_penjelasan" rows="2" placeholder="Penjelasan mengenai jumlah jaringan kantor yang dimiliki." required></textarea>
+                </div>
+                 <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="jaringan_jumlah_total" class="form-label">Jumlah Total Jaringan Kantor</label>
+                        <input type="number" class="form-control" id="jaringan_jumlah_total" name="jaringan_jumlah_total" min="0">
+                    </div>
+                 </div>
+            </div>
+        </div>
+
+        <div class="card form-section shadow-sm">
+            <div class="card-header bg-info text-white">
+                III. Realisasi Kinerja Tahun Laporan (<span class="tahun_laporan_text"></span>)
+            </div>
+            <div class="card-body">
+                <h5 class="form-subsection-header">3.1 Realisasi Produk, Aktivitas, dan Pengembangan SP</h5>
+                <div class="mb-3">
+                    <label for="realisasi_produk_aktivitas_pengembangan_sp" class="form-label">Penjelasan Realisasi <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="realisasi_produk_aktivitas_pengembangan_sp" name="realisasi_produk_aktivitas_pengembangan_sp" rows="4" placeholder="Penjelasan mencakup nama produk/aktivitas/kerjasama, uraian dan target waktu sesuai rencana serta uraian realisasi dan waktu realisasi, serta keterangan apabila terdapat penundaan/pembatalan." required></textarea>
+                </div>
+
+                <h5 class="form-subsection-header">3.2 Realisasi Kerja Sama SP</h5>
+                <div class="mb-3">
+                    <label for="realisasi_kerjasama_sp" class="form-label">Penjelasan Realisasi Kerjasama <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="realisasi_kerjasama_sp" name="realisasi_kerjasama_sp" rows="4" placeholder="Kerja sama dengan pihak lain baik yang dilakukan dengan PJP dan/atau PIP lainnya; dan/atau Penyelenggara Penunjang." required></textarea>
+                </div>
+
+                <h5 class="form-subsection-header">3.3 Kinerja Keuangan Tahun Laporan (<span class="tahun_laporan_text"></span>)</h5>
+                <div class="mb-3">
+                    <label for="kinerja_keuangan_penjelasan" class="form-label">Ringkasan Kinerja Keuangan <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="kinerja_keuangan_penjelasan" name="kinerja_keuangan_penjelasan" rows="3" placeholder="Ringkasan penyajian pos-pos tertentu laporan keuangan untuk seluruh kegiatan perusahaan dan untuk aktivitas SP secara triwulanan, dengan memperhatikan aspek pemenuhan kecukupan permodalan." required></textarea>
+                </div>
+                <p class="small-text">Detail laporan keuangan (Neraca, Laba/Rugi, Rasio Keuangan, Info UE) per triwulan dapat dilampirkan.</p>
+                <div class="mb-3">
+                    <label for="upload_lapkeu_realisasi" class="form-label">Upload Dokumen Pendukung Kinerja Keuangan (Laporan Keuangan Triwulanan, dll)</label>
+                    <input type="file" class="form-control" id="upload_lapkeu_realisasi" name="upload_lapkeu_realisasi" multiple>
+                     <div class="small-text">Format: PDF, XLSX. Maks 10MB per file.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card form-section shadow-sm">
+            <div class="card-header bg-info text-white">
+                IV. Strategi dan Proyeksi Usaha Tahun Berikutnya (<span class="tahun_proyeksi_text"></span>)
+            </div>
+            <div class="card-body">
+                <h5 class="form-subsection-header">4.1 Visi, Misi, dan Arah Strategi SP</h5>
+                <div class="mb-3">
+                    <label for="proyeksi_visi_misi_strategi" class="form-label">Visi, Misi, dan Arah Strategi <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="proyeksi_visi_misi_strategi" name="proyeksi_visi_misi_strategi" rows="4" placeholder="Penjelasan mengenai arah pengembangan strategi terkait dengan sistem pembayaran." required></textarea>
+                </div>
+
+                <h5 class="form-subsection-header">4.2 SWOT Analysis</h5>
+                 <div class="mb-3">
+                    <label for="proyeksi_swot" class="form-label">Analisis SWOT <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="proyeksi_swot" name="proyeksi_swot" rows="4" placeholder="Penjelasan mengenai kajian internal (Strengths, Weaknesses) dan analisis eksternal (Opportunities, Threats)." required></textarea>
+                </div>
+
+                <h5 class="form-subsection-header">4.3 Langkah-Langkah Strategis SP</h5>
+                <div class="mb-3">
+                    <label for="proyeksi_langkah_strategis" class="form-label">Langkah-Langkah Strategis <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="proyeksi_langkah_strategis" name="proyeksi_langkah_strategis" rows="3" placeholder="Penjelasan mengenai langkah-langkah strategis yang akan ditempuh." required></textarea>
+                </div>
+
+                <h5 class="form-subsection-header">4.4 Rencana Penerapan MRSI</h5>
+                <div class="mb-3">
+                    <label for="proyeksi_rencana_mrsi" class="form-label">Rencana Penerapan Manajemen Risiko dan Sistem Informasi <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="proyeksi_rencana_mrsi" name="proyeksi_rencana_mrsi" rows="3" placeholder="Penjelasan mengenai rencana penerapan manajemen risiko dan sistem informasi terutama untuk pemenuhan ketentuan Bank Indonesia." required></textarea>
+                </div>
+                
+                <h5 class="form-subsection-header">4.5 Permodalan</h5>
+                <div class="mb-3">
+                    <label for="proyeksi_permodalan_kecukupan" class="form-label">Proyeksi Kecukupan Permodalan <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="proyeksi_permodalan_kecukupan" name="proyeksi_permodalan_kecukupan" rows="3" placeholder="Penjelasan mengenai proyeksi kecukupan permodalan sesuai ketentuan BI." required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="proyeksi_permodalan_aksi_korporasi" class="form-label">Rencana Aksi Korporasi terkait Permodalan</label>
+                    <textarea class="form-control" id="proyeksi_permodalan_aksi_korporasi" name="proyeksi_permodalan_aksi_korporasi" rows="3" placeholder="Penjelasan rinci atas rencana aksi korporasi (merger, akuisisi, dll.) dan dampaknya."></textarea>
+                </div>
+
+                <h5 class="form-subsection-header">4.6 Proyeksi Kinerja Keuangan</h5>
+                 <div class="mb-3">
+                    <label for="proyeksi_kinerja_keuangan_penjelasan" class="form-label">Ringkasan Proyeksi Kinerja Keuangan <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="proyeksi_kinerja_keuangan_penjelasan" name="proyeksi_kinerja_keuangan_penjelasan" rows="3" placeholder="Ringkasan proyeksi pos-pos tertentu laporan keuangan (seluruh kegiatan dan aktivitas SP)." required></textarea>
+                </div>
+                <p class="small-text">Detail proyeksi keuangan dapat dilampirkan.</p>
+                 <div class="mb-3">
+                    <label for="upload_lapkeu_proyeksi" class="form-label">Upload Dokumen Pendukung Proyeksi Keuangan</label>
+                    <input type="file" class="form-control" id="upload_lapkeu_proyeksi" name="upload_lapkeu_proyeksi" multiple>
+                    <div class="small-text">Format: PDF, XLSX. Maks 10MB per file.</div>
+                </div>
+
+                <h5 class="form-subsection-header">4.7 Target Usaha</h5>
+                <div class="mb-3">
+                    <label for="proyeksi_target_nasabah_pengguna" class="form-label">Target Nasabah/Pengguna <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="proyeksi_target_nasabah_pengguna" name="proyeksi_target_nasabah_pengguna" rows="3" placeholder="Penjelasan mengenai target pengguna sistem pembayaran perusahaan." required></textarea>
+                </div>
+                 <div class="mb-3">
+                    <label for="proyeksi_pengembangan_jaringan_kantor" class="form-label">Rencana Pengembangan Jaringan Kantor</label>
+                    <textarea class="form-control" id="proyeksi_pengembangan_jaringan_kantor" name="proyeksi_pengembangan_jaringan_kantor" rows="3" placeholder="Penjelasan mengenai rencana pengembangan jaringan kantor."></textarea>
+                </div>
+
+                <h5 class="form-subsection-header">4.8 Rencana Produk, Aktivitas, dan Pengembangan SP</h5>
+                <div class="mb-3">
+                    <label for="proyeksi_rencana_produk_aktivitas_pengembangan_sp" class="form-label">Penjelasan Rencana <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="proyeksi_rencana_produk_aktivitas_pengembangan_sp" name="proyeksi_rencana_produk_aktivitas_pengembangan_sp" rows="4" placeholder="Penjelasan mengenai rencana nama produk/aktivitas/pengembangan, uraian dan target waktu pelaksanaan." required></textarea>
+                </div>
+
+                <h5 class="form-subsection-header">4.9 Rencana Kerja Sama SP</h5>
+                <div class="mb-3">
+                    <label for="proyeksi_rencana_kerjasama_sp" class="form-label">Penjelasan Rencana Kerjasama <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="proyeksi_rencana_kerjasama_sp" name="proyeksi_rencana_kerjasama_sp" rows="4" placeholder="Penjelasan mengenai rencana kerjasama, uraian dan target waktu pelaksanaan." required></textarea>
+                </div>
+
+                <h5 class="form-subsection-header">4.10 Rencana Strategis dan Pengembangan IT</h5>
+                <div class="mb-3">
+                    <label for="proyeksi_rencana_strategis_it" class="form-label">Rencana Strategis dan Pengembangan IT <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="proyeksi_rencana_strategis_it" name="proyeksi_rencana_strategis_it" rows="4" placeholder="Penjelasan secara umum (ringkasan) mengenai rencana pembangunan infrastruktur dan sistem pendukung, pemanfaatan teknologi informasi, dan penambahan dan penyempurnaan teknologi informasi eksisting." required></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card form-section shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                Lampiran
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="lampiran_profil_penyelenggara_sp" class="form-label">1. Profil Penyelenggara Sistem Pembayaran (termasuk Branding, Produk, Proses Bisnis, Struktur Organisasi SP, Pengembangan Kompetensi SDM) <span class="text-danger">*</span></label>
+                    <input type="file" class="form-control" id="lampiran_profil_penyelenggara_sp" name="lampiran_profil_penyelenggara_sp" required>
+                    <div class="small-text">Format: PDF, DOCX. Maks 10MB. Sesuai format pada Lampiran PDF Panduan.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="lampiran_profil_it" class="form-label">2. Profil IT <span class="text-danger">*</span></label>
+                    <input type="file" class="form-control" id="lampiran_profil_it" name="lampiran_profil_it" required>
+                    <div class="small-text">Format: PDF, DOCX. Maks 10MB. Sesuai format pada Lampiran PDF Panduan.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="lampiran_tambahan" class="form-label">Dokumen Pendukung Lainnya (jika ada)</label>
+                    <input type="file" class="form-control" id="lampiran_tambahan" name="lampiran_tambahan" multiple>
+                    <div class="small-text">Format: PDF, DOCX, XLSX, JPG, PNG. Maks 10MB per file.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-lg btn-primary">Kirim Laporan Tahunan SP</button>
+            <button type="reset" class="btn btn-lg btn-outline-secondary">Reset Form</button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tahunLaporanSelect = document.getElementById('tahun_laporan');
+    const tahunLaporanTextElements = document.querySelectorAll('.tahun_laporan_text');
+    const tahunProyeksiTextElements = document.querySelectorAll('.tahun_proyeksi_text');
+
+    function updateTahunText() {
+        const selectedYear = tahunLaporanSelect.value;
+        if (selectedYear) {
+            tahunLaporanTextElements.forEach(el => el.textContent = selectedYear);
+            tahunProyeksiTextElements.forEach(el => el.textContent = parseInt(selectedYear) + 1);
+        } else {
+            tahunLaporanTextElements.forEach(el => el.textContent = '[Tahun Laporan]');
+            tahunProyeksiTextElements.forEach(el => el.textContent = '[Tahun Proyeksi]');
+        }
+    }
+
+    if (tahunLaporanSelect) {
+        tahunLaporanSelect.addEventListener('change', updateTahunText);
+        updateTahunText(); // Initial call
+    }
+
+    const form = document.getElementById('laporanTahunanSPForm');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            // Tambahkan validasi custom jika perlu
+            // Contoh: Validasi ukuran file
+            const fileInputs = form.querySelectorAll('input[type="file"]');
+            let formIsValid = true;
+            fileInputs.forEach(input => {
+                if (input.files.length > 0) {
+                    for (let i = 0; i < input.files.length; i++) {
+                        const file = input.files[i];
+                        if (file.size > 10 * 1024 * 1024) { // 10 MB
+                            alert(`File "${file.name}" terlalu besar. Maksimum 10MB.`);
+                            formIsValid = false;
+                            break;
+                        }
+                    }
+                }
+                if (!formIsValid) return;
+            });
+
+            if (!formIsValid) {
+                event.preventDefault();
+            } else {
+                // Tampilkan konfirmasi sebelum submit (opsional)
+                if (!confirm('Apakah Anda yakin ingin mengirim laporan ini? Pastikan semua data sudah benar.')) {
+                    event.preventDefault();
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

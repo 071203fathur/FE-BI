@@ -6,67 +6,213 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-md-10 col-lg-8">
         <div class="card shadow-lg p-5">
+             <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">Sukses!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="successMessage">Laporan berhasil dikirim!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">Error!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="errorMessage">Terjadi kesalahan saat mengirim laporan.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center py-4">
+                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
+                            <p class="text-muted small">Harap tunggu sebentar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h3 class="text-center mb-4">Form Laporan DTTOT</h3>
-            <form method="POST" action="/submit/laporan-dttot" enctype="multipart/form-data">
+            <form method="POST" action="{{ url_for('submit_laporan_dttot') }}" enctype="multipart/form-data" id="dttotForm">
                 <div class="mb-3">
-                    <label for="tahun" class="form-label">Tahun Laporan</label>
+                    <label for="tahun" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
                     <select class="form-select form-select-lg" id="tahun" name="tahun" required>
                         <option value="">-- Pilih Tahun --</option>
-                        {% for year in range(2020, 2026) %}
+                        {% for year in range(2020, 2027) %}
                         <option value="{{ year }}">{{ year }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="periode" class="form-label">Periode Laporan</label>
+                    <label for="periode" class="form-label">Periode Laporan <span class="text-danger">*</span></label>
                     <select class="form-select form-select-lg" id="periode" name="periode" required>
                         <option value="">-- Pilih Periode --</option>
                         <option value="Januari">Januari</option>
-                        <option value="Triwulan II">Februari</option>
-                        <option value="Triwulan III">Triwulan III</option>
-                        <option value="Triwulan IV">Triwulan IV</option>
-                        <option value="Semester I">Semester I</option>
-                        <option value="Semester II">Semester II</option>
-                        <option value="Tahunan">Tahunan</option>
-                    </select>
+                        <option value="Februari">Februari</option>
+                        <option value="Maret">Maret</option>
+                        <option value="April">April</option>
+                        <option value="Mei">Mei</option>
+                        <option value="Juni">Juni</option>
+                        <option value="Juli">Juli</option>
+                        <option value="Agustus">Agustus</option>
+                        <option value="September">September</option>
+                        <option value="Oktober">Oktober</option>
+                        <option value="November">November</option>
+                        <option value="Desember">Desember</option>
+                        </select>
                 </div>
                 <div class="mb-3">
-                    <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                    <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
                     <input type="text" class="form-control form-control-lg" id="nomor_surat" name="nomor_surat" required>
                 </div>
                 <div class="mb-3">
-                    <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                    <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
                     <input type="date" class="form-control form-control-lg" id="tanggal_surat" name="tanggal_surat" required>
                 </div>
                 <div class="mb-3">
-                    <label for="nomor_surat_kepolisian" class="form-label">Nomor Surat Kepolisian</label>
+                    <label for="nomor_surat_kepolisian" class="form-label">Nomor Surat Kepolisian <span class="text-danger">*</span></label>
                     <input type="text" class="form-control form-control-lg" id="nomor_surat_kepolisian" name="nomor_surat_kepolisian" required>
                 </div>
                 <div class="mb-3">
-                    <label for="jumlah_terduga" class="form-label">Jumlah Terduga Teroris</label>
-                    <input type="number" class="form-control form-control-lg" id="jumlah_terduga" name="jumlah_terduga" required>
+                    <label for="jumlah_terduga" class="form-label">Jumlah Terduga Teroris <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control form-control-lg" id="jumlah_terduga" name="jumlah_terduga" min="0" required>
                 </div>
                 <div class="mb-3">
-                    <label for="organisasi_teroris" class="form-label">Organisasi Teroris</label>
+                    <label for="organisasi_teroris" class="form-label">Organisasi Teroris <span class="text-danger">*</span></label>
                     <input type="text" class="form-control form-control-lg" id="organisasi_teroris" name="organisasi_teroris" required>
                 </div>
                 <div class="mb-3">
-                    <label for="perihal" class="form-label">Perihal</label>
+                    <label for="perihal" class="form-label">Perihal <span class="text-danger">*</span></label>
                     <input type="text" class="form-control form-control-lg" id="perihal" name="perihal" required>
                 </div>
                 <div class="mb-3">
-                    <label for="keterangan" class="form-label">Keterangan</label>
+                    <label for="keterangan" class="form-label">Keterangan <span class="text-danger">*</span></label>
                     <textarea class="form-control form-control-lg" id="keterangan" name="keterangan" rows="3" required></textarea>
                 </div>
                 <div class="mb-4">
-                    <label for="file_laporan" class="form-label">Upload File Laporan DTTOT</label>
+                    <label for="file_laporan" class="form-label">Upload File Laporan DTTOT <span class="text-danger">*</span></label>
                     <input type="file" class="form-control form-control-lg" id="file_laporan" name="file_laporan" accept=".pdf,.doc,.docx" required>
+                     <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
                 </div>
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-lg px-5">Kirim Laporan</button>
+                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                        <span class="submit-text">Kirim Laporan</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<style>
+    .btn-primary .spinner-border {
+        vertical-align: middle;
+        margin-left: 5px;
+    }
+    .form-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('dttotForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const submitText = submitButton.querySelector('.submit-text');
+    const submitSpinner = submitButton.querySelector('.spinner-border');
+    
+    const loadingModalElement = document.getElementById('loadingModal');
+    const successModalElement = document.getElementById('successModal');
+    const errorModalElement = document.getElementById('errorModal');
+
+    const loadingModal = new bootstrap.Modal(loadingModalElement);
+    const successModal = new bootstrap.Modal(successModalElement);
+    const errorModal = new bootstrap.Modal(errorModalElement);
+    
+    const successMessageElement = document.getElementById('successMessage');
+    const errorMessageElement = document.getElementById('errorMessage');
+
+    const tanggalSuratInput = document.getElementById('tanggal_surat');
+    if(tanggalSuratInput){
+        const today = new Date().toISOString().split('T')[0];
+        tanggalSuratInput.max = today;
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let formIsValid = true;
+
+        const fileInput = document.getElementById('file_laporan');
+        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) { // 10MB
+            errorMessageElement.textContent = 'Ukuran file lampiran melebihi 10MB.';
+            errorModal.show();
+            formIsValid = false;
+        }
+        
+        if (!formIsValid) return;
+
+        // Show loading state
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+        
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
+                successModal.show();
+                form.reset();
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show();
+        });
+    });
+});
+</script>
 {% endblock %}

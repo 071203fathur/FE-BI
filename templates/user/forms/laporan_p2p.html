@@ -6,9 +6,56 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10">
         <div class="card shadow-lg p-4">
+            <div class="modal fade" id="successModalP2P" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">Sukses!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="successMessageP2P">Laporan berhasil dikirim!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="errorModalP2P" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">Error!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="errorMessageP2P">Terjadi kesalahan saat mengirim laporan.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="loadingModalP2P" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center py-4">
+                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
+                            <p class="text-muted small">Harap tunggu sebentar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h3 class="text-center mb-4">Laporan Kerjasama P2P</h3>
-            <form method="POST" action="/submit/laporan-kerjasama-p2p" enctype="multipart/form-data" id="p2pCooperationForm">
-                <!-- Basic Information Section -->
+            <form method="POST" action="{{ url_for('submit_laporan_p2p') }}" enctype="multipart/form-data" id="p2pCooperationForm">
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Informasi Laporan</h5>
@@ -16,16 +63,16 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="tahun" class="form-label">Tahun Laporan</label>
+                                <label for="tahun" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
                                 <select class="form-select" id="tahun" name="tahun" required>
                                     <option value="">-- Pilih Tahun --</option>
-                                    {% for year in range(2020, 2026) %}
+                                    {% for year in range(2020, 2027) %}
                                     <option value="{{ year }}">{{ year }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="periode" class="form-label">Periode Laporan (Bulan)</label>
+                                <label for="periode" class="form-label">Periode Laporan (Bulan) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="periode" name="periode" required>
                                     <option value="">-- Pilih Bulan --</option>
                                     <option value="Januari">Januari</option>
@@ -43,43 +90,39 @@
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="jumlah_perusahaan" class="form-label">Jumlah Perusahaan Kerjasama</label>
+                                <label for="jumlah_perusahaan" class="form-label">Jumlah Perusahaan Kerjasama <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="jumlah_perusahaan" name="jumlah_perusahaan" min="0" required>
                             </div>
                         </div>
                         
                         <div class="row">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
-                                    <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="nomor_surat" class="form-label">Nomor Surat</label>
-                                    <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
                             </div>
-
+                            <div class="col-md-6 mb-3">
+                                <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Company Cooperation List Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Daftar Perusahaan Kerjasama P2P</h5>
                     </div>
                     <div class="card-body">
                         <div id="companyListContainer">
-                            <!-- Dynamic company list will be added here -->
                             <div class="company-item mb-4 p-3 border rounded">
+                                <h6 class="mb-3">Perusahaan Kerjasama #<span class="company-number">1</span></h6>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="nama_perusahaan_1" class="form-label">Nama Perusahaan</label>
+                                        <label for="nama_perusahaan_1" class="form-label">Nama Perusahaan <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="nama_perusahaan_1" name="nama_perusahaan[]" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label for="peran_pjp_1" class="form-label">Peran PJP</label>
+                                        <label for="peran_pjp_1" class="form-label">Peran PJP <span class="text-danger">*</span></label>
                                         <select class="form-select" id="peran_pjp_1" name="peran_pjp[]" required>
                                             <option value="">-- Pilih Peran --</option>
                                             <option value="Penyelenggara">Penyelenggara</option>
@@ -91,7 +134,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="tanggal_kerjasama_1" class="form-label">Tanggal Kerjasama</label>
+                                        <label for="tanggal_kerjasama_1" class="form-label">Tanggal Kerjasama <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" id="tanggal_kerjasama_1" name="tanggal_kerjasama[]" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -99,7 +142,7 @@
                                         <input type="text" class="form-control" id="keterangan_1" name="keterangan[]">
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-outline-danger btn-sm remove-company">Hapus</button>
+                                <button type="button" class="btn btn-outline-danger btn-sm remove-company" style="display: none;">Hapus</button>
                             </div>
                         </div>
                         
@@ -109,28 +152,29 @@
                     </div>
                 </div>
                 
-                <!-- Attachment Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Lampiran</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="dokumen_kerjasama" class="form-label">Dokumen Kerjasama</label>
+                            <label for="dokumen_kerjasama" class="form-label">Dokumen Kerjasama <span class="text-danger">*</span></label>
                             <input type="file" class="form-control" id="dokumen_kerjasama" name="dokumen_kerjasama" accept=".pdf,.doc,.docx" required>
                             <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="keterangan" class="form-label">Keterangan Tambahan</label>
-                            <textarea class="form-control" id="keterangan" name="keterangan" rows="3"></textarea>
+                            <label for="keterangan_umum" class="form-label">Keterangan Tambahan (Umum)</label>
+                            <textarea class="form-control" id="keterangan_umum" name="keterangan_umum" rows="3"></textarea>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Submit Button -->
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">Kirim Laporan</button>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="submit-text">Kirim Laporan</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
                     <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
                 </div>
             </form>
@@ -152,34 +196,79 @@
     }
     .company-item {
         position: relative;
-        padding-bottom: 2.5rem;
+        padding-bottom: 1rem; /* Adjusted padding */
     }
     .remove-company {
-        position: absolute;
-        right: 1rem;
-        bottom: 1rem;
+       /* position: absolute; Remove absolute positioning to keep it in flow */
+       /* right: 1rem; */
+       /* bottom: 1rem; */
+       margin-top: 0.5rem; /* Add some margin */
+    }
+    .btn-primary .spinner-border {
+        vertical-align: middle;
+        margin-left: 5px;
     }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    let companyCounter = 1;
+    const form = document.getElementById('p2pCooperationForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const submitText = submitButton.querySelector('.submit-text');
+    const submitSpinner = submitButton.querySelector('.spinner-border');
     
-    // Add company form
-    document.getElementById('addCompanyBtn').addEventListener('click', function() {
-        companyCounter++;
-        
-        const newCompany = document.createElement('div');
-        newCompany.className = 'company-item mb-4 p-3 border rounded';
-        newCompany.innerHTML = `
+    const loadingModalElement = document.getElementById('loadingModalP2P');
+    const successModalElement = document.getElementById('successModalP2P');
+    const errorModalElement = document.getElementById('errorModalP2P');
+
+    const loadingModal = new bootstrap.Modal(loadingModalElement);
+    const successModal = new bootstrap.Modal(successModalElement);
+    const errorModal = new bootstrap.Modal(errorModalElement);
+    
+    const successMessageElement = document.getElementById('successMessageP2P');
+    const errorMessageElement = document.getElementById('errorMessageP2P');
+
+    let companyCounter = 1;
+    const companyListContainer = document.getElementById('companyListContainer');
+    const jumlahPerusahaanInput = document.getElementById('jumlah_perusahaan');
+
+    function updateCompanyNumbersAndRemoveButtons() {
+        const items = companyListContainer.querySelectorAll('.company-item');
+        items.forEach((item, index) => {
+            item.querySelector('.company-number').textContent = index + 1;
+            const removeBtn = item.querySelector('.remove-company');
+            if (items.length > 1) {
+                removeBtn.style.display = 'inline-block';
+            } else {
+                removeBtn.style.display = 'none';
+            }
+            // Update IDs and names for dynamic fields
+            item.querySelectorAll('input, select').forEach(input => {
+                const oldId = input.id;
+                const oldName = input.name;
+                if (oldId) input.id = oldId.replace(/_[\d]+$/, '_' + (index + 1));
+                if (oldName) input.name = oldName.replace(/\[\]$/, '_' + (index + 1)).replace(/_[\d]+$/, '_' + (index + 1));
+            });
+        });
+        if (jumlahPerusahaanInput) {
+            jumlahPerusahaanInput.value = items.length;
+        }
+        companyCounter = items.length;
+    }
+    
+    function createCompanyItem(index) {
+        const newItem = document.createElement('div');
+        newItem.className = 'company-item mb-4 p-3 border rounded';
+        newItem.innerHTML = `
+            <h6 class="mb-3">Perusahaan Kerjasama #<span class="company-number">${index + 1}</span></h6>
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="nama_perusahaan_${companyCounter}" class="form-label">Nama Perusahaan</label>
-                    <input type="text" class="form-control" id="nama_perusahaan_${companyCounter}" name="nama_perusahaan[]" required>
+                    <label for="nama_perusahaan_${index + 1}" class="form-label">Nama Perusahaan <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="nama_perusahaan_${index + 1}" name="nama_perusahaan[]" required>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="peran_pjp_${companyCounter}" class="form-label">Peran PJP</label>
-                    <select class="form-select" id="peran_pjp_${companyCounter}" name="peran_pjp[]" required>
+                    <label for="peran_pjp_${index + 1}" class="form-label">Peran PJP <span class="text-danger">*</span></label>
+                    <select class="form-select" id="peran_pjp_${index + 1}" name="peran_pjp[]" required>
                         <option value="">-- Pilih Peran --</option>
                         <option value="Penyelenggara">Penyelenggara</option>
                         <option value="Mitra">Mitra</option>
@@ -190,69 +279,139 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="tanggal_kerjasama_${companyCounter}" class="form-label">Tanggal Kerjasama</label>
-                    <input type="date" class="form-control" id="tanggal_kerjasama_${companyCounter}" name="tanggal_kerjasama[]" required>
+                    <label for="tanggal_kerjasama_${index + 1}" class="form-label">Tanggal Kerjasama <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="tanggal_kerjasama_${index + 1}" name="tanggal_kerjasama[]" required>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="keterangan_${companyCounter}" class="form-label">Keterangan</label>
-                    <input type="text" class="form-control" id="keterangan_${companyCounter}" name="keterangan[]">
+                    <label for="keterangan_${index + 1}" class="form-label">Keterangan</label>
+                    <input type="text" class="form-control" id="keterangan_${index + 1}" name="keterangan[]">
                 </div>
             </div>
             <button type="button" class="btn btn-outline-danger btn-sm remove-company">Hapus</button>
         `;
-        
-        document.getElementById('companyListContainer').appendChild(newCompany);
-        
-        // Update company count
-        document.getElementById('jumlah_perusahaan').value = companyCounter;
+        newItem.querySelector('.remove-company').addEventListener('click', function() {
+            newItem.remove();
+            updateCompanyNumbersAndRemoveButtons();
+        });
+        return newItem;
+    }
+
+    document.getElementById('addCompanyBtn').addEventListener('click', function() {
+        companyListContainer.appendChild(createCompanyItem(companyListContainer.children.length));
+        updateCompanyNumbersAndRemoveButtons();
     });
     
-    // Remove company form
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('remove-company')) {
-            if (document.querySelectorAll('.company-item').length > 1) {
-                e.target.closest('.company-item').remove();
-                companyCounter--;
-                document.getElementById('jumlah_perusahaan').value = companyCounter;
-            } else {
-                alert('Minimal harus ada satu perusahaan');
+    if (jumlahPerusahaanInput) {
+        jumlahPerusahaanInput.addEventListener('change', function() {
+            const targetCount = parseInt(this.value) || 0;
+            const currentCount = companyListContainer.children.length;
+
+            if (targetCount > currentCount) {
+                for (let i = currentCount; i < targetCount; i++) {
+                    companyListContainer.appendChild(createCompanyItem(i));
+                }
+            } else if (targetCount < currentCount) {
+                for (let i = currentCount; i > targetCount; i--) {
+                    if (companyListContainer.lastElementChild) {
+                        companyListContainer.lastElementChild.remove();
+                    }
+                }
             }
+            updateCompanyNumbersAndRemoveButtons();
+        });
+        // Initial sync if the input has a value (e.g. from server-side rendering or error repopulation)
+        if (parseInt(jumlahPerusahaanInput.value) > 1 && companyListContainer.children.length === 1) {
+             const initialCount = parseInt(jumlahPerusahaanInput.value);
+             for (let i = 1; i < initialCount; i++) { // Start from 1 because one item is already there
+                companyListContainer.appendChild(createCompanyItem(i));
+             }
         }
-    });
+    }
+    updateCompanyNumbersAndRemoveButtons(); // Initial call to set button visibility
+
+    const tanggalSuratInput = document.getElementById('tanggal_surat');
+    if(tanggalSuratInput){
+        const today = new Date().toISOString().split('T')[0];
+        tanggalSuratInput.max = today;
+    }
     
-    // Date validation - report date shouldn't be in the future
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('tanggal_surat').max = today;
-    
-    // Form validation
-    document.getElementById('p2pCooperationForm').addEventListener('submit', function(e) {
-        // Validate report period
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let formIsValid = true;
+        
         const tahun = document.getElementById('tahun').value;
         const currentYear = new Date().getFullYear();
-        
-        if (tahun > currentYear) {
-            e.preventDefault();
-            alert('Tahun laporan tidak boleh melebihi tahun berjalan');
-            return false;
+        if (parseInt(tahun) > currentYear) {
+            errorMessageElement.textContent = 'Tahun laporan tidak boleh melebihi tahun berjalan.';
+            errorModal.show();
+            formIsValid = false;
         }
         
-        // Validate file size
         const fileInput = document.getElementById('dokumen_kerjasama');
-        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
-            e.preventDefault();
-            alert('Ukuran file lampiran melebihi 10MB');
-            return false;
+        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) { // 10MB
+            errorMessageElement.textContent = 'Ukuran file lampiran melebihi 10MB.';
+            errorModal.show();
+            formIsValid = false;
         }
         
-        // Validate company count matches
-        const companyCount = parseInt(document.getElementById('jumlah_perusahaan').value);
-        const actualCompanyCount = document.querySelectorAll('.company-item').length;
-        
-        if (companyCount !== actualCompanyCount) {
-            e.preventDefault();
-            alert('Jumlah perusahaan yang dimasukkan tidak sesuai dengan yang dideklarasikan');
-            return false;
+        const companyCountDeclared = parseInt(jumlahPerusahaanInput.value) || 0;
+        const actualCompanyCount = companyListContainer.children.length;
+        if (companyCountDeclared !== actualCompanyCount) {
+            errorMessageElement.textContent = 'Jumlah perusahaan yang dideklarasikan tidak sesuai dengan detail yang diinput.';
+            errorModal.show();
+            formIsValid = false;
         }
+        if (actualCompanyCount === 0 && companyCountDeclared > 0) {
+             errorMessageElement.textContent = 'Harap tambahkan detail perusahaan kerjasama sesuai jumlah yang dideklarasikan.';
+            errorModal.show();
+            formIsValid = false;
+        }
+
+
+        if (!formIsValid) return;
+
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+        
+        const formData = new FormData(this);
+        // Backend needs to handle 'nama_perusahaan[]', 'peran_pjp[]' etc. as lists
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
+                successModal.show();
+                form.reset();
+                companyListContainer.innerHTML = ''; // Clear dynamic fields
+                companyListContainer.appendChild(createCompanyItem(0)); // Add back one initial item
+                updateCompanyNumbersAndRemoveButtons();
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show();
+        });
     });
 });
 </script>
