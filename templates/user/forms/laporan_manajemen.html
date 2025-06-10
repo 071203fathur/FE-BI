@@ -6,6 +6,7 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10">
         <div class="card shadow-lg p-4">
+            <!-- Modals for Success, Error, Loading -->
             <div class="modal fade" id="successModalManajemen" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -57,24 +58,13 @@
             <h3 class="text-center mb-4">Laporan Manajemen</h3>
             <form method="POST" action="{{ url_for('submit_laporan_manajemen') }}" enctype="multipart/form-data" id="managementForm">
                 <div class="row mb-4">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-12 mb-3">
                         <label for="tahun" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
                         <select class="form-select form-select-lg" id="tahun" name="tahun" required>
                             <option value="">-- Pilih Tahun --</option>
                             {% for year_option in range(current_year - 5, current_year + 2) %}
                             <option value="{{ year_option }}" {% if year_option == current_year %}selected{% endif %}>{{ year_option }}</option>
                             {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="penyelenggara" class="form-label">Nama Penyelenggara <span class="text-danger">*</span></label>
-                        <select class="form-select form-select-lg" id="penyelenggara" name="penyelenggara" required>
-                            <option value="">-- Pilih Penyelenggara --</option>
-                            <option value="PT A">PT A</option>
-                            <option value="PT B">PT B</option>
-                            <option value="PT C">PT C</option>
-                            <option value="Yayasan X">Yayasan X</option>
-                            <option value="Yayasan Y">Yayasan Y</option>
                         </select>
                     </div>
                 </div>

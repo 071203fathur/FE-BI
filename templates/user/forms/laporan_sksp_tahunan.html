@@ -55,14 +55,14 @@
             </div>
 
             <h3 class="text-center mb-4">Formulir Standar Kompetensi Sistem Pembayaran (Tahunan)</h3>
-            <form method="POST" action="{{ url_for('submit_standar_kompetensi_tahunan') }}" enctype="multipart/form-data" id="competencyFormTahunan">
+            <form method="POST" action="{{ url_for('submit_laporan_sksp_tahunan') }}" enctype="multipart/form-data" id="competencyFormTahunan">
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Informasi Dasar</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label for="tahun" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
                                 <select class="form-select" id="tahun" name="tahun" required>
                                     <option value="">-- Pilih Tahun --</option>
@@ -71,20 +71,10 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label for="periode" class="form-label">Periode Laporan (Tahunan) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="periode" name="periode" required>
                                     <option value="Tahunan">Tahunan</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="penyelenggara" class="form-label">Nama Penyelenggara <span class="text-danger">*</span></label>
-                                <select class="form-select" id="penyelenggara" name="penyelenggara" required>
-                                    <option value="">-- Pilih Penyelenggara --</option>
-                                    <option value="Bank A">Bank A</option>
-                                    <option value="Bank B">Bank B</option>
-                                    <option value="Non-Bank X">Non-Bank X</option>
-                                    <option value="Non-Bank Y">Non-Bank Y</option>
                                 </select>
                             </div>
                         </div>

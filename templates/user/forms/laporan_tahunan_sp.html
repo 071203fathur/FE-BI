@@ -6,6 +6,8 @@
 <style>
     .card-header {
         font-weight: 600;
+        background-color: #0056b3; /* Warna biru BI */
+        color: white;
     }
     .form-section {
         margin-bottom: 2rem;
@@ -25,11 +27,29 @@
         vertical-align: middle;
         margin-left: 5px;
     }
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .table thead th {
+        background-color: #e9ecef;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    /* Style for repeatable sections */
+    .repeatable-item {
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #f8f9fa;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container mt-4 mb-5">
+     <!-- Success Modal -->
      <div class="modal fade" id="successModalTahunanSP" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -47,6 +67,7 @@
         </div>
     </div>
 
+    <!-- Error Modal -->
     <div class="modal fade" id="errorModalTahunanSP" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -64,6 +85,7 @@
         </div>
     </div>
 
+    <!-- Loading Modal -->
     <div class="modal fade" id="loadingModalTahunanSP" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -78,12 +100,31 @@
         </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title">Konfirmasi Pengiriman</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin mengirim laporan ini? Pastikan semua data sudah benar.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="confirmSendButton">Kirim</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <h2 class="text-center mb-4">Laporan Tahunan Sistem Pembayaran</h2>
 
     <form method="POST" action="{{ url_for('submit_laporan_tahunan_sp') }}" enctype="multipart/form-data" id="laporanTahunanSPForm">
         
         <div class="card form-section shadow-sm">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header">
                 Informasi Umum Laporan
             </div>
             <div class="card-body">
@@ -96,10 +137,6 @@
                             <option value="{{ year }}">{{ year }}</option>
                             {% endfor %}
                         </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="nama_pjp_pip_laporan" class="form-label">Nama PJP/PIP Pelapor <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="nama_pjp_pip_laporan" name="nama_pjp_pip_laporan" placeholder="Nama PJP/PIP" required>
                     </div>
                 </div>
                 <div class="row">
@@ -136,7 +173,7 @@
         </div>
 
         <div class="card form-section shadow-sm">
-            <div class="card-header bg-info text-white">
+            <div class="card-header">
                 I. Executive Summary
             </div>
             <div class="card-body">
@@ -148,7 +185,7 @@
         </div>
 
         <div class="card form-section shadow-sm">
-            <div class="card-header bg-info text-white">
+            <div class="card-header">
                 II. Kelembagaan dan Profil
             </div>
             <div class="card-body">
@@ -180,12 +217,31 @@
                     <div class="small-text">Format: PDF, JPG, PNG. Maks 5MB.</div>
                 </div>
 
+                <h5 class="form-subsection-header">Manajemen Risiko Sistem Pembayaran (MERSI)</h5>
+                <div id="mersi-container">
+                    <!-- Dynamic MERSI fields will be added here -->
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary" id="add-mersi-btn">Tambah Data MERSI</button>
+                <hr class="my-3">
+
+                <h5 class="form-subsection-header">Detail Kepemilikan Saham</h5>
+                <div id="shareholder-container">
+                    <!-- Dynamic shareholder fields will be added here -->
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary" id="add-shareholder-btn">Tambah Pemegang Saham</button>
+                <hr class="my-3">
+
                 <h5 class="form-subsection-header">2.3 Kepengurusan</h5>
                 <div class="mb-3">
                     <label for="kepengurusan_penjelasan" class="form-label">Penjelasan Struktur Kepengurusan <span class="text-danger">*</span></label>
                     <textarea class="form-control" id="kepengurusan_penjelasan" name="kepengurusan_penjelasan" rows="3" placeholder="Penjelasan mengenai struktur kepengurusan (Direksi dan Komisaris) termasuk informasi mengenai pengurus yang belum definitif (dalam proses persetujuan)." required></textarea>
                 </div>
-                <p class="small-text">Detail nama pengurus, jabatan, domisili, rangkap jabatan, status dapat dilampirkan atau diinput dalam format tabel.</p>
+                <div id="management-container">
+                    <!-- Dynamic management fields will be added here -->
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary" id="add-management-btn">Tambah Pengurus</button>
+                <p class="small-text mt-3">Detail nama pengurus, jabatan, domisili, rangkap jabatan, status dapat dilampirkan atau diinput dalam format tabel.</p>
+                <hr class="my-3">
 
                 <h5 class="form-subsection-header">2.4 Jaringan Usaha</h5>
                 <div class="mb-3">
@@ -197,12 +253,20 @@
                         <label for="jaringan_jumlah_total" class="form-label">Jumlah Total Jaringan Kantor</label>
                         <input type="number" class="form-control" id="jaringan_jumlah_total" name="jaringan_jumlah_total" min="0">
                     </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="jaringan_jumlah_kantor_cabang" class="form-label">Jumlah Kantor Cabang</label>
+                        <input type="number" class="form-control" id="jaringan_jumlah_kantor_cabang" name="jaringan_jumlah_kantor_cabang" min="0">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="jaringan_jumlah_titik_layanan" class="form-label">Jumlah Titik Layanan</label>
+                        <input type="number" class="form-control" id="jaringan_jumlah_titik_layanan" name="jaringan_jumlah_titik_layanan" min="0">
+                    </div>
                  </div>
             </div>
         </div>
 
         <div class="card form-section shadow-sm">
-            <div class="card-header bg-info text-white">
+            <div class="card-header">
                 III. Realisasi Kinerja Tahun Laporan (<span class="tahun_laporan_text"></span>)
             </div>
             <div class="card-body">
@@ -214,9 +278,14 @@
 
                 <h5 class="form-subsection-header">3.2 Realisasi Kerja Sama SP</h5>
                 <div class="mb-3">
-                    <label for="realisasi_kerjasama_sp" class="form-label">Penjelasan Realisasi Kerjasama <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="realisasi_kerjasama_sp" name="realisasi_kerjasama_sp" rows="4" placeholder="Kerja sama dengan pihak lain baik yang dilakukan dengan PJP dan/atau PIP lainnya; dan/atau Penyelenggara Penunjang." required></textarea>
+                    <label for="realisasi_kerjasama_sp_penjelasan" class="form-label">Penjelasan Realisasi Kerjasama <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="realisasi_kerjasama_sp_penjelasan" name="realisasi_kerjasama_sp_penjelasan" rows="4" placeholder="Kerja sama dengan pihak lain baik yang dilakukan dengan PJP dan/atau PIP lainnya; dan/atau Penyelenggara Penunjang." required></textarea>
                 </div>
+                <div id="cooperation-container">
+                    <!-- Dynamic cooperation fields will be added here -->
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary" id="add-cooperation-btn">Tambah Kerja Sama</button>
+                <hr class="my-3">
 
                 <h5 class="form-subsection-header">3.3 Kinerja Keuangan Tahun Laporan (<span class="tahun_laporan_text"></span>)</h5>
                 <div class="mb-3">
@@ -224,6 +293,82 @@
                     <textarea class="form-control" id="kinerja_keuangan_penjelasan" name="kinerja_keuangan_penjelasan" rows="3" placeholder="Ringkasan penyajian pos-pos tertentu laporan keuangan untuk seluruh kegiatan perusahaan dan untuk aktivitas SP secara triwulanan, dengan memperhatikan aspek pemenuhan kecukupan permodalan." required></textarea>
                 </div>
                 <p class="small-text">Detail laporan keuangan (Neraca, Laba/Rugi, Rasio Keuangan, Info UE) per triwulan dapat dilampirkan.</p>
+                
+                <div class="mb-3">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="financial_year_1" class="form-label">Tahun Data Keuangan 1</label>
+                            <input type="number" class="form-control" id="financial_year_1" name="financial_year_1" placeholder="Ex: 2023" min="2000" max="2100">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="financial_year_2" class="form-label">Tahun Data Keuangan 2</label>
+                            <input type="number" class="form-control" id="financial_year_2" name="financial_year_2" placeholder="Ex: 2024" min="2000" max="2100">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Pos Keuangan</th>
+                                    <th id="header-year-1">Tahun 1</th>
+                                    <th id="header-year-2">Tahun 2</th>
+                                    <th>Perubahan (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="financial-data-body">
+                                <!-- Rows will be dynamically generated and updated by JS -->
+                                <tr>
+                                    <td>Modal (Rp)</td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="modal_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="modal_year_2" value="0"></td>
+                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td>Pendapatan (Rp)</td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="pendapatan_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="pendapatan_year_2" value="0"></td>
+                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td>Beban Operasional (Rp)</td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="beban_operasional_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="beban_operasional_year_2" value="0"></td>
+                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td>Laba (Rp)</td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="laba_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="laba_year_2" value="0"></td>
+                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td>Rugi (Rp)</td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="rugi_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="rugi_year_2" value="0"></td>
+                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td>Total Aset (Rp)</td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="total_aset_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="total_aset_year_2" value="0"></td>
+                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td>Total Liabilitas (Rp)</td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="total_liabilitas_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="total_liabilitas_year_2" value="0"></td>
+                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td>Total Ekuitas (Rp)</td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="total_ekuitas_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="total_ekuitas_year_2" value="0"></td>
+                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div class="mb-3">
                     <label for="upload_lapkeu_realisasi" class="form-label">Upload Dokumen Pendukung Kinerja Keuangan (Laporan Keuangan Triwulanan, dll)</label>
                     <input type="file" class="form-control" id="upload_lapkeu_realisasi" name="upload_lapkeu_realisasi" multiple>
@@ -233,7 +378,7 @@
         </div>
 
         <div class="card form-section shadow-sm">
-            <div class="card-header bg-info text-white">
+            <div class="card-header">
                 IV. Strategi dan Proyeksi Usaha Tahun Berikutnya (<span class="tahun_proyeksi_text"></span>)
             </div>
             <div class="card-body">
@@ -314,7 +459,7 @@
         </div>
         
         <div class="card form-section shadow-sm">
-            <div class="card-header bg-secondary text-white">
+            <div class="card-header">
                 Lampiran
             </div>
             <div class="card-body">
@@ -356,10 +501,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingModalElement = document.getElementById('loadingModalTahunanSP');
     const successModalElement = document.getElementById('successModalTahunanSP');
     const errorModalElement = document.getElementById('errorModalTahunanSP');
+    const confirmationModalElement = document.getElementById('confirmationModal');
+    const confirmSendButton = document.getElementById('confirmSendButton');
 
     const loadingModal = new bootstrap.Modal(loadingModalElement);
     const successModal = new bootstrap.Modal(successModalElement);
     const errorModal = new bootstrap.Modal(errorModalElement);
+    const confirmationModal = new bootstrap.Modal(confirmationModalElement);
     
     const successMessageElement = document.getElementById('successMessageTahunanSP');
     const errorMessageElement = document.getElementById('errorMessageTahunanSP');
@@ -390,15 +538,19 @@ document.addEventListener('DOMContentLoaded', function() {
         tanggalSuratPengantarInput.max = today;
     }
 
+    // Handle form submission via custom confirmation modal
     form.addEventListener('submit', function(event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent default form submission initially
+        
         let formIsValid = true;
         
+        // File size validation
         const fileInputs = form.querySelectorAll('input[type="file"]');
-        fileInputs.forEach(input => {
+        for (let i = 0; i < fileInputs.length; i++) {
+            const input = fileInputs[i];
             if (input.files.length > 0) {
-                for (let i = 0; i < input.files.length; i++) {
-                    const file = input.files[i];
+                for (let j = 0; j < input.files.length; j++) {
+                    const file = input.files[j];
                     if (file.size > 10 * 1024 * 1024) { // 10 MB
                         errorMessageElement.textContent = 'File "' + file.name + '" terlalu besar. Maksimum 10MB.';
                         errorModal.show();
@@ -407,23 +559,61 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             }
-            if (!formIsValid) return;
-        });
-
-        if (!formIsValid) return;
-        
-        if (!confirm('Apakah Anda yakin ingin mengirim laporan ini? Pastikan semua data sudah benar.')) {
-            return;
+            if (!formIsValid) break;
         }
 
+        if (!formIsValid) return;
+
+        // Show custom confirmation modal instead of browser's confirm
+        confirmationModal.show();
+    });
+
+    // Handle click on the custom confirmation button
+    confirmSendButton.addEventListener('click', function() {
+        confirmationModal.hide(); // Hide confirmation modal
+        
         submitButton.disabled = true;
         submitText.textContent = 'Mengirim...';
         submitSpinner.classList.remove('d-none');
         loadingModal.show();
 
-        const formData = new FormData(this);
-        
-        fetch(this.action, {
+        const formData = new FormData(form);
+
+        // Dynamically collect repeatable fields
+        // Shareholders
+        document.querySelectorAll('.shareholder-item').forEach((item, index) => {
+            formData.append(`shareholders[${index}][name]`, item.querySelector('[name^="shareholder_name_"]').value);
+            formData.append(`shareholders[${index}][nominal_saham]`, item.querySelector('[name^="shareholder_nominal_saham_"]').value);
+            formData.append(`shareholders[${index}][lembar_saham]`, item.querySelector('[name^="shareholder_lembar_saham_"]').value);
+            formData.append(`shareholders[${index}][persentase_saham]`, item.querySelector('[name^="shareholder_persentase_saham_"]').value);
+            formData.append(`shareholders[${index}][type]`, item.querySelector('[name^="shareholder_type_"]:checked').value);
+            const jenisSeriSaham = item.querySelector('[name^="shareholder_jenis_seri_saham_"]');
+            if (jenisSeriSaham) {
+                formData.append(`shareholders[${index}][jenis_seri_saham]`, jenisSeriSaham.value);
+            }
+        });
+
+        // MERSI
+        document.querySelectorAll('.mersi-item').forEach((item, index) => {
+            formData.append(`mersi[${index}][title]`, item.querySelector('[name^="mersi_title_"]').value);
+            formData.append(`mersi[${index}][content]`, item.querySelector('[name^="mersi_content_"]').value);
+        });
+
+        // Management
+        document.querySelectorAll('.management-item').forEach((item, index) => {
+            formData.append(`management[${index}][name]`, item.querySelector('[name^="management_name_"]').value);
+            formData.append(`management[${index}][position]`, item.querySelector('[name^="management_position_"]').value);
+            formData.append(`management[${index}][nationality]`, item.querySelector('[name^="management_nationality_"]:checked').value);
+        });
+
+        // Cooperation
+        document.querySelectorAll('.cooperation-item').forEach((item, index) => {
+            formData.append(`cooperation[${index}][partner_name]`, item.querySelector('[name^="cooperation_partner_name_"]').value);
+            formData.append(`cooperation[${index}][scope]`, item.querySelector('[name^="cooperation_scope_"]').value);
+            formData.append(`cooperation[${index}][type]`, item.querySelector('[name^="cooperation_type_"]:checked').value);
+        });
+
+        fetch(form.action, {
             method: 'POST',
             body: formData,
             headers: { 'Accept': 'application/json' }
@@ -441,6 +631,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 successModal.show();
                 form.reset();
                 updateTahunText(); // Reset dynamic year text
+                // Clear dynamic fields
+                document.getElementById('shareholder-container').innerHTML = '';
+                document.getElementById('mersi-container').innerHTML = '';
+                document.getElementById('management-container').innerHTML = '';
+                document.getElementById('cooperation-container').innerHTML = '';
+                updateFinancialTableHeaders(); // Reset financial table headers
+                calculateAllPercentages(); // Recalculate percentages
             } else {
                 errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
                 errorModal.show();
@@ -456,6 +653,240 @@ document.addEventListener('DOMContentLoaded', function() {
             errorModal.show();
         });
     });
+
+    // --- Dynamic Field Logic ---
+
+    // MERSI
+    const mersiContainer = document.getElementById('mersi-container');
+    document.getElementById('add-mersi-btn').addEventListener('click', addMersiField);
+
+    let mersiCount = 0;
+    function addMersiField() {
+        mersiCount++;
+        const div = document.createElement('div');
+        div.classList.add('repeatable-item', 'mersi-item');
+        div.innerHTML = `
+            <h6>Data MERSI #${mersiCount}</h6>
+            <div class="mb-3">
+                <label for="mersi_title_${mersiCount}" class="form-label">Judul/Topik Risiko SP</label>
+                <input type="text" class="form-control" id="mersi_title_${mersiCount}" name="mersi_title_${mersiCount}" required>
+            </div>
+            <div class="mb-3">
+                <label for="mersi_content_${mersiCount}" class="form-label">Uraian Risiko SP</label>
+                <textarea class="form-control" id="mersi_content_${mersiCount}" name="mersi_content_${mersiCount}" rows="3" required></textarea>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-mersi-btn">Hapus</button>
+        `;
+        mersiContainer.appendChild(div);
+        div.querySelector('.remove-mersi-btn').addEventListener('click', function() {
+            div.remove();
+            mersiCount--; // Decrement count on removal
+            // Re-index displayed numbers (optional, but good for UX)
+            document.querySelectorAll('.mersi-item h6').forEach((el, idx) => {
+                el.textContent = `Data MERSI #${idx + 1}`;
+            });
+        });
+    }
+
+    // Shareholder
+    const shareholderContainer = document.getElementById('shareholder-container');
+    document.getElementById('add-shareholder-btn').addEventListener('click', addShareholderField);
+
+    let shareholderCount = 0;
+    function addShareholderField() {
+        shareholderCount++;
+        const div = document.createElement('div');
+        div.classList.add('repeatable-item', 'shareholder-item');
+        div.innerHTML = `
+            <h6>Pemegang Saham #${shareholderCount}</h6>
+            <div class="mb-3">
+                <label for="shareholder_name_${shareholderCount}" class="form-label">Nama Perorangan/PT <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="shareholder_name_${shareholderCount}" name="shareholder_name_${shareholderCount}" required>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="shareholder_nominal_saham_${shareholderCount}" class="form-label">Nominal Saham (Rp) <span class="text-danger">*</span></label>
+                    <input type="number" step="0.01" class="form-control" id="shareholder_nominal_saham_${shareholderCount}" name="shareholder_nominal_saham_${shareholderCount}" required min="0">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="shareholder_lembar_saham_${shareholderCount}" class="form-label">Jumlah Lembar Saham <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="shareholder_lembar_saham_${shareholderCount}" name="shareholder_lembar_saham_${shareholderCount}" required min="0">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="shareholder_persentase_saham_${shareholderCount}" class="form-label">Persentase Saham (%) <span class="text-danger">*</span></label>
+                    <input type="number" step="0.01" class="form-control" id="shareholder_persentase_saham_${shareholderCount}" name="shareholder_persentase_saham_${shareholderCount}" required min="0" max="100">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Jenis Kepemilikan <span class="text-danger">*</span></label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="shareholder_type_${shareholderCount}" id="shareholder_type_asing_${shareholderCount}" value="asing" required>
+                    <label class="form-check-label" for="shareholder_type_asing_${shareholderCount}">Asing</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="shareholder_type_${shareholderCount}" id="shareholder_type_domestik_${shareholderCount}" value="domestik" required>
+                    <label class="form-check-label" for="shareholder_type_domestik_${shareholderCount}">Domestik</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="shareholder_jenis_seri_saham_${shareholderCount}" class="form-label">Jenis Seri Saham (Opsional)</label>
+                <input type="text" class="form-control" id="shareholder_jenis_seri_saham_${shareholderCount}" name="shareholder_jenis_seri_saham_${shareholderCount}">
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-shareholder-btn">Hapus</button>
+        `;
+        shareholderContainer.appendChild(div);
+        div.querySelector('.remove-shareholder-btn').addEventListener('click', function() {
+            div.remove();
+            shareholderCount--;
+            document.querySelectorAll('.shareholder-item h6').forEach((el, idx) => {
+                el.textContent = `Pemegang Saham #${idx + 1}`;
+            });
+        });
+    }
+
+    // Management
+    const managementContainer = document.getElementById('management-container');
+    document.getElementById('add-management-btn').addEventListener('click', addManagementField);
+
+    let managementCount = 0;
+    function addManagementField() {
+        managementCount++;
+        const div = document.createElement('div');
+        div.classList.add('repeatable-item', 'management-item');
+        div.innerHTML = `
+            <h6>Pengurus #${managementCount}</h6>
+            <div class="mb-3">
+                <label for="management_name_${managementCount}" class="form-label">Nama <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="management_name_${managementCount}" name="management_name_${managementCount}" required>
+            </div>
+            <div class="mb-3">
+                <label for="management_position_${managementCount}" class="form-label">Jabatan <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="management_position_${managementCount}" name="management_position_${managementCount}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Kewarganegaraan <span class="text-danger">*</span></label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="management_nationality_${managementCount}" id="management_nationality_wna_${managementCount}" value="WNA" required>
+                    <label class="form-check-label" for="management_nationality_wna_${managementCount}">WNA</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="management_nationality_${managementCount}" id="management_nationality_domestik_${managementCount}" value="Domestik" required>
+                    <label class="form-check-label" for="management_nationality_domestik_${managementCount}">Domestik</label>
+                </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-management-btn">Hapus</button>
+        `;
+        managementContainer.appendChild(div);
+        div.querySelector('.remove-management-btn').addEventListener('click', function() {
+            div.remove();
+            managementCount--;
+            document.querySelectorAll('.management-item h6').forEach((el, idx) => {
+                el.textContent = `Pengurus #${idx + 1}`;
+            });
+        });
+    }
+
+    // Cooperation
+    const cooperationContainer = document.getElementById('cooperation-container');
+    document.getElementById('add-cooperation-btn').addEventListener('click', addCooperationField);
+
+    let cooperationCount = 0;
+    function addCooperationField() {
+        cooperationCount++;
+        const div = document.createElement('div');
+        div.classList.add('repeatable-item', 'cooperation-item');
+        div.innerHTML = `
+            <h6>Kerja Sama #${cooperationCount}</h6>
+            <div class="mb-3">
+                <label for="cooperation_partner_name_${cooperationCount}" class="form-label">Nama Mitra <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="cooperation_partner_name_${cooperationCount}" name="cooperation_partner_name_${cooperationCount}" required>
+            </div>
+            <div class="mb-3">
+                <label for="cooperation_scope_${cooperationCount}" class="form-label">Ruang Lingkup <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="cooperation_scope_${cooperationCount}" name="cooperation_scope_${cooperationCount}" rows="2" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tipe Mitra <span class="text-danger">*</span></label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="cooperation_type_${cooperationCount}" id="cooperation_type_penunjang_${cooperationCount}" value="Penunjang" required>
+                    <label class="form-check-label" for="cooperation_type_penunjang_${cooperationCount}">Penyelenggara Penunjang</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="cooperation_type_${cooperationCount}" id="cooperation_type_pjp_${cooperationCount}" value="PJP" required>
+                    <label class="form-check-label" for="cooperation_type_pjp_${cooperationCount}">PJP</label>
+                </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-cooperation-btn">Hapus</button>
+        `;
+        cooperationContainer.appendChild(div);
+        div.querySelector('.remove-cooperation-btn').addEventListener('click', function() {
+            div.remove();
+            cooperationCount--;
+            document.querySelectorAll('.cooperation-item h6').forEach((el, idx) => {
+                el.textContent = `Kerja Sama #${idx + 1}`;
+            });
+        });
+    }
+
+    // Financial Table Logic
+    const financialYear1Input = document.getElementById('financial_year_1');
+    const financialYear2Input = document.getElementById('financial_year_2');
+    const headerYear1 = document.getElementById('header-year-1');
+    const headerYear2 = document.getElementById('header-year-2');
+    const financialInputs = document.querySelectorAll('.financial-input');
+
+    function updateFinancialTableHeaders() {
+        const year1 = financialYear1Input.value;
+        const year2 = financialYear2Input.value;
+        headerYear1.textContent = year1 ? year1 : 'Tahun 1';
+        headerYear2.textContent = year2 ? year2 : 'Tahun 2';
+    }
+
+    function calculatePercentageDifference(val1, val2) {
+        val1 = parseFloat(val1);
+        val2 = parseFloat(val2);
+
+        if (isNaN(val1) || isNaN(val2)) {
+            return '';
+        }
+        if (val1 === 0 && val2 === 0) {
+            return '0.00%';
+        }
+        if (val1 === 0) {
+            return val2 > 0 ? '+Inf%' : '-Inf%'; // Represents infinite increase/decrease
+        }
+        
+        const diff = val2 - val1;
+        const percentage = (diff / val1) * 100;
+        return percentage.toFixed(2) + '%';
+    }
+
+    function calculateAllPercentages() {
+        const rows = document.querySelectorAll('#financial-data-body tr');
+        rows.forEach(row => {
+            const year1Value = row.querySelector('.year-1').value;
+            const year2Value = row.querySelector('.year-2').value;
+            const percentageDiffField = row.querySelector('.percentage-diff');
+            percentageDiffField.value = calculatePercentageDifference(year1Value, year2Value);
+        });
+    }
+
+    financialYear1Input.addEventListener('input', updateFinancialTableHeaders);
+    financialYear2Input.addEventListener('input', updateFinancialTableHeaders);
+
+    financialInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const row = this.closest('tr');
+            const year1Value = row.querySelector('.year-1').value;
+            const year2Value = row.querySelector('.year-2').value;
+            const percentageDiffField = row.querySelector('.percentage-diff');
+            percentageDiffField.value = calculatePercentageDifference(year1Value, year2Value);
+        });
+    });
+
+    // Initial call to set headers and calculate percentages
+    updateFinancialTableHeaders();
+    calculateAllPercentages();
 });
 </script>
 {% endblock %}

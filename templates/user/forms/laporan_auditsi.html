@@ -6,6 +6,7 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10">
         <div class="card shadow-lg p-4">
+            <!-- Modals for Success, Error, Loading -->
             <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -62,7 +63,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
                                     <option value="">-- Pilih Tahun --</option>
@@ -71,11 +72,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP) <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="nama_penyelenggara" name="nama_penyelenggara" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
                             </div>
@@ -293,7 +290,36 @@ document.addEventListener('DOMContentLoaded', function() {
         return newItem;
     }
 
-    // ... [kode selanjutnya tetap sama]
+    // This function can be used to sync the count and the fields.
+    function updateUnresolvedFindingFields() {
+        const fields = unresolvedFindingsContainer.querySelectorAll('.unresolved-finding-item');
+        fields.forEach((field, index) => {
+            field.querySelector('.finding-number').textContent = index + 1;
+        });
+        jumlahTemuanBelumTerselesaikanInput.value = fields.length;
+    }
+    
+    // Auto-generate fields based on the input number
+    if (jumlahTemuanBelumTerselesaikanInput) {
+        jumlahTemuanBelumTerselesaikanInput.addEventListener('change', function() {
+            const targetCount = parseInt(this.value) || 0;
+            while (unresolvedFindingsContainer.children.length < targetCount) {
+                unresolvedFindingsContainer.appendChild(createUnresolvedFindingField(unresolvedFindingsContainer.children.length));
+            }
+            while (unresolvedFindingsContainer.children.length > targetCount) {
+                unresolvedFindingsContainer.removeChild(unresolvedFindingsContainer.lastChild);
+            }
+             updateUnresolvedFindingFields();
+        });
+    }
+
+    if (addUnresolvedFindingButton) {
+        addUnresolvedFindingButton.addEventListener('click', function() {
+            const currentCount = parseInt(jumlahTemuanBelumTerselesaikanInput.value) || 0;
+            jumlahTemuanBelumTerselesaikanInput.value = currentCount + 1;
+            unresolvedFindingsContainer.appendChild(createUnresolvedFindingField(currentCount));
+        });
+    }
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -363,8 +389,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // let unresolvedDetails = [];
         // for (let i = 0; i < actualUnresolvedFields; i++) {
         // unresolvedDetails.push({
-        // deskripsi: formData.get(\`deskripsi_temuan_\${i}\`),
-        // tindak_lanjut: formData.get(\`tindak_lanjut_\${i}\`)
+        // deskripsi: formData.get(`deskripsi_temuan_${i}`),
+        // tindak_lanjut: formData.get(`tindak_lanjut_${i}`)
         // });
         // }
         // formData.append('unresolved_findings_list', JSON.stringify(unresolvedDetails));

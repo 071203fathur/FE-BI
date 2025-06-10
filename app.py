@@ -325,31 +325,45 @@ def form_laporan_keuangan_triwulan():
 def submit_laporan_keuangan_triwulan():
     """
     Menangani pengiriman Laporan Keuangan Triwulan.
-    CATATAN: Endpoint untuk Laporan Keuangan Triwulan tidak secara eksplisit tercantum dalam dokumentasi API.
-    Ini akan mengembalikan keberhasilan yang disimulasikan.
+    Disambungkan ke endpoint laporan/keuangan-triwulanan/submit.
     """
     try:
         formatted_tanggal_surat = datetime.strptime(request.form.get("tanggal_surat"), '%Y-%m-%d').strftime('%d/%m/%Y')
     except ValueError:
         return jsonify({"success": False, "message": "Format tanggal surat tidak valid"}), 400
+    
+    # Memastikan semua nilai numerik dikonversi ke integer dan menghilangkan tanda titik
+    try:
+        modal_disetor = int(request.form.get("modal_disetor").replace('.', ''))
+        total_revenue = int(request.form.get("pendapatan").replace('.', ''))
+        cost_of_revenue = int(request.form.get("beban_operasional").replace('.', ''))
+        profit = int(request.form.get("laba").replace('.', ''))
+        loss = int(request.form.get("rugi").replace('.', ''))
+        total_asset = int(request.form.get("total_aset").replace('.', ''))
+        liabilities = int(request.form.get("total_liabilitas").replace('.', ''))
+        equity = int(request.form.get("equity").replace('.', '')) # Menggunakan nama 'equity' dari HTML form
+    except ValueError:
+        return jsonify({"success": False, "message": "Format angka tidak valid. Pastikan hanya memasukkan angka."}), 400
+
     form_data = {
-        "tahun_laporan": int(request.form.get("tahun")), # Menggunakan 'tahun_laporan' untuk konsistensi
-        "periode_laporan": request.form.get("triwulan"), # Memetakan 'triwulan' ke 'periode_laporan'
+        "tahun_laporan": int(request.form.get("tahun")),
+        "periode_laporan": request.form.get("triwulan"),
         "nomor_surat": request.form.get("nomor_surat"),
         "tanggal_surat": formatted_tanggal_surat,
-        "modal_disetor": int(request.form.get("modal_disetor").replace('.', '')),
-        "pendapatan": int(request.form.get("pendapatan").replace('.', '')),
-        "beban_operasional": int(request.form.get("beban_operasional").replace('.', '')),
-        "laba": int(request.form.get("laba").replace('.', '')),
-        "rugi": int(request.form.get("rugi").replace('.', '')),
-        "total_aset": int(request.form.get("total_aset").replace('.', '')),
-        "total_liabilitas": int(request.form.get("total_liabilitas").replace('.', '')),
-        "total_ekuitas": int(request.form.get("total_ekuitas").replace('.', '')) # Memetakan 'total_equitas' ke 'total_ekuitas'
+        "modal_disetor": modal_disetor,
+        "total_revenue": total_revenue, # Mengganti 'pendapatan' ke 'total_revenue'
+        "cost_of_revenue": cost_of_revenue, # Mengganti 'beban_operasional' ke 'cost_of_revenue'
+        "profit": profit, # Mengganti 'laba' ke 'profit'
+        "loss": loss, # Mengganti 'rugi' ke 'loss'
+        "total_asset": total_asset, # Mengganti 'total_aset' ke 'total_asset'
+        "liabilities": liabilities, # Mengganti 'total_liabilitas' ke 'liabilities'
+        "equity": equity, # Mengganti 'total_ekuitas' ke 'equity' (dari HTML 'equity')
+        "keterangan": request.form.get("keterangan") # Menambahkan field keterangan
     }
     file_laporan = request.files.get("file_laporan")
 
-    # Menggunakan fungsi send_report_to_backend
-    success, message, status_code = send_report_to_backend("laporan/keuangan-triwulan/submit", form_data, file_laporan)
+    # Menggunakan fungsi send_report_to_backend dengan endpoint yang sesuai
+    success, message, status_code = send_report_to_backend("laporan/keuangan-triwulanan/submit", form_data, file_laporan)
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Gangguan IT ---
@@ -817,7 +831,11 @@ def submit_laporan_kpsp():
 def form_laporan_manajemen():
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
-    return render_template("user/forms/laporan_manajemen.html")
+    # 1. Dapatkan tahun saat ini
+    current_year = datetime.now().year
+        
+    # 2. Lewatkan 'current_year' ke template
+    return render_template("user/forms/laporan_manajemen.html", current_year=current_year)
 
 @app.route("/submit/laporan-manajemen", methods=["POST"])
 def submit_laporan_manajemen():
@@ -887,9 +905,19 @@ def submit_laporan_rencana_edukasi_publik():
 
 @app.route("/form/laporan-sksp-tahunan")
 def form_laporan_sksp_tahunan():
+    # Jalur 1: Jika pengguna belum login, arahkan ke halaman login.
+    # Pernyataan 'return' ini sudah benar.
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
-    return render_template("user/forms/laporan_sksp_tahunan.html")
+    
+    # Jalur 2: Jika pengguna sudah login.
+    # Dapatkan objek datetime saat ini.
+    now = datetime.now()
+    
+    # PASTIKAN Anda menggunakan kata kunci 'return' di sini.
+    # Error 'TypeError' yang Anda alami terjadi jika 'return' dihilangkan dari baris di bawah ini.
+    # Fungsi ini harus MENGEMBALIKAN hasil dari render_template.
+    return render_template("user/forms/laporan_sksp_tahunan.html", now=now)
 
 @app.route("/submit/laporan-sksp-tahunan", methods=["POST"])
 def submit_laporan_sksp_tahunan():

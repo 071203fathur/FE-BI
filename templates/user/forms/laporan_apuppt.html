@@ -6,6 +6,7 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10">
         <div class="card shadow-lg p-4">
+            <!-- Modals for Success, Error, Loading -->
             <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -56,13 +57,14 @@
 
             <h3 class="text-center mb-4">Laporan APU PPT (Anti Pencucian Uang dan Pencegahan Pendanaan Terorisme)</h3>
             <form method="POST" action="{{ url_for('submit_laporan_apuppt') }}" enctype="multipart/form-data" id="apuPptReportForm">
+                
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Informasi Dasar</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
                                     <option value="">-- Pilih Tahun --</option>
@@ -71,11 +73,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="nama_penyelenggara" class="form-label">Nama Penyelenggara (PJP) <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="nama_penyelenggara" name="nama_penyelenggara" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
                             </div>
@@ -98,6 +96,8 @@
                     </div>
                 </div>
                 
+                <!-- Other form sections remain the same -->
+
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Identitas Pengguna Sistem</h5>
@@ -155,33 +155,25 @@
                             <div class="col-md-3 mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="triwulan_1" name="triwulan_1" value="true">
-                                    <label class="form-check-label" for="triwulan_1">
-                                        Triwulan I (Jan-Mar)
-                                    </label>
+                                    <label class="form-check-label" for="triwulan_1">Triwulan I (Jan-Mar)</label>
                                 </div>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="triwulan_2" name="triwulan_2" value="true">
-                                    <label class="form-check-label" for="triwulan_2">
-                                        Triwulan II (Apr-Jun)
-                                    </label>
+                                    <label class="form-check-label" for="triwulan_2">Triwulan II (Apr-Jun)</label>
                                 </div>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="triwulan_3" name="triwulan_3" value="true">
-                                    <label class="form-check-label" for="triwulan_3">
-                                        Triwulan III (Jul-Sep)
-                                    </label>
+                                    <label class="form-check-label" for="triwulan_3">Triwulan III (Jul-Sep)</label>
                                 </div>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="triwulan_4" name="triwulan_4" value="true">
-                                    <label class="form-check-label" for="triwulan_4">
-                                        Triwulan IV (Okt-Dec)
-                                    </label>
+                                    <label class="form-check-label" for="triwulan_4">Triwulan IV (Okt-Dec)</label>
                                 </div>
                             </div>
                         </div>
@@ -197,17 +189,13 @@
                             <div class="col-md-6 mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="dttot_reported" name="dttot_reported" value="true">
-                                    <label class="form-check-label" for="dttot_reported">
-                                        DTTOT - Telah Melaporkan Surat dan Berita Acara Pemblokiran/Penghapusan
-                                    </label>
+                                    <label class="form-check-label" for="dttot_reported">DTTOT - Telah Melaporkan Surat dan Berita Acara Pemblokiran/Penghapusan</label>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="dppspm_reported" name="dppspm_reported" value="true">
-                                    <label class="form-check-label" for="dppspm_reported">
-                                        DPPSPM - Telah Melaporkan Surat dan Berita Acara Pemblokiran/Penghapusan
-                                    </label>
+                                    <label class="form-check-label" for="dppspm_reported">DPPSPM - Telah Melaporkan Surat dan Berita Acara Pemblokiran/Penghapusan</label>
                                 </div>
                             </div>
                         </div>
@@ -223,27 +211,22 @@
                             <label for="tanggung_jawab_direksi" class="form-label">Tanggung Jawab Direksi dan Pengawasan Aktif Dewan Komisaris <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="tanggung_jawab_direksi" name="tanggung_jawab_direksi" rows="3" required></textarea>
                         </div>
-                        
                         <div class="mb-3">
                             <label for="kebijakan_prosedur" class="form-label">Kebijakan dan Prosedur Tertulis <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="kebijakan_prosedur" name="kebijakan_prosedur" rows="3" required></textarea>
                         </div>
-                        
                         <div class="mb-3">
                             <label for="metode_pmpj" class="form-label">Metode Pelaksanaan Prinsip Mengenali Pengguna Jasa (PMPJ) <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="metode_pmpj" name="metode_pmpj" rows="3" required></textarea>
                         </div>
-                        
                         <div class="mb-3">
                             <label for="manajemen_risiko" class="form-label">Proses Manajemen Risiko <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="manajemen_risiko" name="manajemen_risiko" rows="3" required></textarea>
                         </div>
-                        
                         <div class="mb-3">
                             <label for="manajemen_sdm" class="form-label">Manajemen Sumber Daya Manusia <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="manajemen_sdm" name="manajemen_sdm" rows="3" required></textarea>
                         </div>
-                        
                         <div class="mb-3">
                             <label for="sistem_pengendalian" class="form-label">Sistem Pengendalian Intern <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="sistem_pengendalian" name="sistem_pengendalian" rows="3" required></textarea>
@@ -266,7 +249,6 @@
                                 <input type="email" class="form-control" id="email_penginput" name="email_penginput" required>
                             </div>
                         </div>
-                        
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="email_perusahaan" class="form-label">Email perusahaan <span class="text-danger">*</span></label>
