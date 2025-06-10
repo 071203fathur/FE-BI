@@ -6,7 +6,8 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-md-10 col-lg-8">
         <div class="card shadow-lg p-5">
-             <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+            <!-- Modals untuk pesan sukses, error, dan loading -->
+            <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header bg-success text-white">
@@ -53,6 +54,7 @@
                     </div>
                 </div>
             </div>
+            <!-- End Modals -->
 
             <h3 class="text-center mb-4">Form Laporan DTTOT</h3>
             <form method="POST" action="{{ url_for('submit_laporan_dttot') }}" enctype="multipart/form-data" id="dttotForm">
@@ -114,7 +116,7 @@
                 <div class="mb-4">
                     <label for="file_laporan" class="form-label">Upload File Laporan DTTOT <span class="text-danger">*</span></label>
                     <input type="file" class="form-control form-control-lg" id="file_laporan" name="file_laporan" accept=".pdf,.doc,.docx" required>
-                     <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
+                    <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
                 </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary btn-lg px-5">
@@ -143,6 +145,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitText = submitButton.querySelector('.submit-text');
     const submitSpinner = submitButton.querySelector('.spinner-border');
     
+    // Inisialisasi modal Bootstrap
+    // Pastikan Bootstrap JS dimuat di 'user/base.html' atau sebelum script ini
     const loadingModalElement = document.getElementById('loadingModal');
     const successModalElement = document.getElementById('successModal');
     const errorModalElement = document.getElementById('errorModal');
@@ -167,17 +171,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const fileInput = document.getElementById('file_laporan');
         if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) { // 10MB
             errorMessageElement.textContent = 'Ukuran file lampiran melebihi 10MB.';
-            errorModal.show();
+            errorModal.show(); // Tampilkan modal error
             formIsValid = false;
         }
         
-        if (!formIsValid) return;
+        if (!formIsValid) {
+            console.log("Form tidak valid, pengiriman dibatalkan.");
+            return;
+        }
 
-        // Show loading state
+        // Tampilkan modal loading dan nonaktifkan tombol
         submitButton.disabled = true;
         submitText.textContent = 'Mengirim...';
         submitSpinner.classList.remove('d-none');
-        loadingModal.show();
+        loadingModal.show(); // Tampilkan modal loading
         
         const formData = new FormData(this);
         
@@ -187,30 +194,40 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: { 'Accept': 'application/json' }
         })
         .then(response => {
-            loadingModal.hide();
+            loadingModal.hide(); // Sembunyikan modal loading setelah mendapatkan respons
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
+            // Cek jika response.ok untuk status 2xx
+            if (!response.ok) {
+                // Jika response bukan 2xx, throw error agar ditangkap oleh .catch
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Gagal mengirim laporan (status non-2xx)');
+                }).catch(() => {
+                    // Jika response tidak bisa di-parse sebagai JSON
+                    throw new Error('Gagal mengirim laporan (respons tidak valid dari server).');
+                });
+            }
             return response.json();
         })
         .then(data => {
             if (data.success) {
                 successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
-                successModal.show();
-                form.reset();
+                successModal.show(); // Tampilkan modal sukses
+                form.reset(); // Reset form setelah sukses
             } else {
                 errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
-                errorModal.show();
+                errorModal.show(); // Tampilkan modal error
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            loadingModal.hide();
+            loadingModal.hide(); // Pastikan modal loading disembunyikan
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
-            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
-            errorModal.show();
+            errorMessageElement.textContent = error.message || 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show(); // Tampilkan modal error
         });
     });
 });

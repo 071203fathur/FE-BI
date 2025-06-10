@@ -6,6 +6,7 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10">
         <div class="card shadow-lg p-4">
+            <!-- Modals untuk pesan sukses, error, dan loading -->
             <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -53,6 +54,7 @@
                     </div>
                 </div>
             </div>
+            <!-- End Modals -->
 
             <h3 class="text-center mb-4">Laporan Transaksi Dana Bukan Bank (LTDBB)</h3>
             <p class="text-center mb-4" style="font-size: 0.8em; color: red;">Penyampaian data laporan ini tidak menggugurkan kewajiban pelaporan ke LKKPBU</p>
@@ -76,18 +78,18 @@
                                 <label for="periode" class="form-label">Periode Laporan (Bulan) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="periode" name="periode" required>
                                     <option value="">-- Pilih Bulan --</option>
-                                    <option value="1">Januari</option>
-                                    <option value="2">Februari</option>
-                                    <option value="3">Maret</option>
-                                    <option value="4">April</option>
-                                    <option value="5">Mei</option>
-                                    <option value="6">Juni</option>
-                                    <option value="7">Juli</option>
-                                    <option value="8">Agustus</option>
-                                    <option value="9">September</option>
-                                    <option value="10">Oktober</option>
-                                    <option value="11">November</option>
-                                    <option value="12">Desember</option>
+                                    <option value="Januari">Januari</option>
+                                    <option value="Februari">Februari</option>
+                                    <option value="Maret">Maret</option>
+                                    <option value="April">April</option>
+                                    <option value="Mei">Mei</option>
+                                    <option value="Juni">Juni</option>
+                                    <option value="Juli">Juli</option>
+                                    <option value="Agustus">Agustus</option>
+                                    <option value="September">September</option>
+                                    <option value="Oktober">Oktober</option>
+                                    <option value="November">November</option>
+                                    <option value="Desember">Desember</option>
                                 </select>
                             </div>
                         </div>
@@ -213,6 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitText = submitButton.querySelector('.submit-text');
     const submitSpinner = submitButton.querySelector('.spinner-border');
     
+    // Inisialisasi modal Bootstrap
     const loadingModalElement = document.getElementById('loadingModal');
     const successModalElement = document.getElementById('successModal');
     const errorModalElement = document.getElementById('errorModal');
@@ -224,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const successMessageElement = document.getElementById('successMessage');
     const errorMessageElement = document.getElementById('errorMessage');
 
-    // Date validation
+    // Date validation for tanggal_surat
     const today = new Date().toISOString().split('T')[0];
     const tanggalSuratInput = document.getElementById('tanggal_surat');
     if (tanggalSuratInput) {
@@ -240,8 +243,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const periode = document.getElementById('periode').value;
         const currentYear = new Date().getFullYear();
         const currentMonth = new Date().getMonth() + 1; // JavaScript months are 0-11
-        
-        if (parseInt(tahun) > currentYear || (parseInt(tahun) == currentYear && parseInt(periode) > currentMonth)) {
+
+        // Convert periode name to month number for comparison (e.g., "Januari" to 1)
+        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        const periodeMonthNumber = monthNames.indexOf(periode) + 1; // +1 because array is 0-indexed
+
+        if (parseInt(tahun) > currentYear || (parseInt(tahun) == currentYear && periodeMonthNumber > currentMonth)) {
             errorMessageElement.textContent = 'Periode laporan tidak boleh melebihi bulan berjalan.';
             errorModal.show();
             formIsValid = false;
@@ -255,7 +262,10 @@ document.addEventListener('DOMContentLoaded', function() {
             formIsValid = false;
         }
 
-        if (!formIsValid) return;
+        if (!formIsValid) {
+            console.log("Form tidak valid, pengiriman dibatalkan.");
+            return;
+        }
 
         // Show loading state
         submitButton.disabled = true;
@@ -275,6 +285,16 @@ document.addEventListener('DOMContentLoaded', function() {
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
+            // Check if response.ok for 2xx status
+            if (!response.ok) {
+                // If response is not 2xx, throw error to be caught by .catch
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Gagal mengirim laporan (status non-2xx)');
+                }).catch(() => {
+                    // If response cannot be parsed as JSON
+                    throw new Error('Gagal mengirim laporan (respons tidak valid dari server).');
+                });
+            }
             return response.json();
         })
         .then(data => {
@@ -293,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
-            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorMessageElement.textContent = error.message || 'Terjadi kesalahan jaringan atau server.';
             errorModal.show();
         });
     });

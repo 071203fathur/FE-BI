@@ -6,6 +6,7 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-8">
         <div class="card shadow-lg p-4">
+            <!-- Success Modal -->
             <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -23,6 +24,7 @@
                 </div>
             </div>
 
+            <!-- Error Modal -->
             <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -40,6 +42,7 @@
                 </div>
             </div>
 
+            <!-- Loading Modal -->
             <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -104,6 +107,7 @@
                     </div>
                 </div>
                 
+                <!-- Dynamic IT Disturbance Container -->
                 <div id="itDisturbanceContainer">
                     <div class="card mb-4 it-disturbance-item">
                         <div class="card-header bg-light d-flex justify-content-between align-items-center">
@@ -114,11 +118,13 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="waktu_kejadian_1" class="form-label">Waktu Kejadian <span class="text-danger">*</span></label>
-                                    <input type="datetime-local" class="form-control" id="waktu_kejadian_1" name="waktu_kejadian_1" required>
+                                    <!-- Changed name to 'waktu_kejadian' to match Flask's expectation for single incident data -->
+                                    <input type="datetime-local" class="form-control" id="waktu_kejadian_1" name="waktu_kejadian" required> 
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="jenis_gangguan_1" class="form-label">Jenis Gangguan <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="jenis_gangguan_1" name="jenis_gangguan_1" required>
+                                    <!-- Changed name to 'jenis_gangguan' -->
+                                    <select class="form-select" id="jenis_gangguan_1" name="jenis_gangguan" required>
                                         <option value="">-- Pilih Jenis Gangguan --</option>
                                         <option value="Jaringan">Gangguan Jaringan</option>
                                         <option value="Server">Gangguan Server</option>
@@ -132,7 +138,8 @@
                             
                             <div class="mb-3">
                                 <label for="ringkasan_1" class="form-label">Ringkasan Gangguan <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="ringkasan_1" name="ringkasan_1" rows="4" required></textarea>
+                                <!-- Changed name to 'ringkasan' -->
+                                <textarea class="form-control" id="ringkasan_1" name="ringkasan" rows="4" required></textarea>
                                 <div class="form-text">Jelaskan secara detail gejala gangguan yang terjadi</div>
                             </div>
 
@@ -141,14 +148,16 @@
                             </div>
                             <div class="mb-3">
                                 <label for="upaya_perbaikan_1" class="form-label">Upaya Perbaikan <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="upaya_perbaikan_1" name="upaya_perbaikan_1" rows="4" required></textarea>
+                                <!-- Changed name to 'upaya_perbaikan' -->
+                                <textarea class="form-control" id="upaya_perbaikan_1" name="upaya_perbaikan" rows="4" required></textarea>
                                 <div class="form-text">Jelaskan langkah-langkah yang telah dilakukan untuk mengatasi gangguan</div>
                             </div>
                             
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="status_penyelesaian_1" class="form-label">Status Penyelesaian <span class="text-danger">*</span></label>
-                                    <select class="form-select status-select" id="status_penyelesaian_1" name="status_penyelesaian_1" required>
+                                    <!-- Changed name to 'status_penyelesaian' -->
+                                    <select class="form-select status-select" id="status_penyelesaian_1" name="status_penyelesaian" required>
                                         <option value="">-- Pilih Status --</option>
                                         <option value="Dalam Investigasi">Dalam Investigasi</option>
                                         <option value="Dalam Perbaikan">Dalam Perbaikan</option>
@@ -159,7 +168,8 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="tanggal_penyelesaian_1" class="form-label">Tanggal Penyelesaian (jika sudah selesai)</label>
-                                    <input type="datetime-local" class="form-control resolution-date" id="tanggal_penyelesaian_1" name="tanggal_penyelesaian_1">
+                                    <!-- Changed name to 'tanggal_penyelesaian' -->
+                                    <input type="datetime-local" class="form-control resolution-date" id="tanggal_penyelesaian_1" name="tanggal_penyelesaian">
                                 </div>
                             </div>
                         </div>
@@ -177,7 +187,8 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="lampiran" class="form-label">Upload Dokumen Pendukung</label>
-                            <input type="file" class="form-control" id="lampiran" name="lampiran" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png">
+                            <!-- Changed name to 'file_laporan' to match Flask's expectation -->
+                            <input type="file" class="form-control" id="lampiran" name="file_laporan" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png"> 
                             <div class="form-text">Format: PDF, DOC, XLS, JPG, PNG (Maks. 5MB)</div>
                         </div>
                     </div>
@@ -236,6 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let disturbanceCount = 1;
 
+    // Function to set up conditional fields (e.g., enable/disable resolution date)
     function setupConditionalFields(container) {
         const statusSelect = container.querySelector('.status-select');
         const resolutionDate = container.querySelector('.resolution-date');
@@ -250,121 +262,203 @@ document.addEventListener('DOMContentLoaded', function() {
                 resolutionDate.value = '';
             }
         }
-        toggleResolutionDate(); // Initial state
+        toggleResolutionDate(); // Initial state when page loads or new item added
         statusSelect.addEventListener('change', toggleResolutionDate);
     }
 
+    // Initialize conditional fields for the first (original) disturbance item
     setupConditionalFields(document.querySelector('.it-disturbance-item'));
 
+    // Event listener for "Tambah Gangguan IT" button
     document.getElementById('addDisturbance').addEventListener('click', function() {
         disturbanceCount++;
         const originalItem = document.querySelector('.it-disturbance-item');
-        const newItem = originalItem.cloneNode(true); 
+        const newItem = originalItem.cloneNode(true); // Deep clone to copy all children
 
+        // Update IDs and clear values for new item
         newItem.querySelectorAll('[id]').forEach(element => {
             const originalId = element.id;
-            const newId = originalId.replace(/_(\d+)$/, '_' + disturbanceCount);
+            // Remove the original index suffix (e.g., '_1') and add the new one
+            const newId = originalId.replace(/_\d+$/, '_' + disturbanceCount); 
             element.id = newId;
-            if (element.name) {
-                element.name = element.name.replace(/_(\d+)$/, '_' + disturbanceCount);
-            }
+            // Name attributes are kept without dynamic numbering in HTML, 
+            // as Flask's expectation for single incident data is assumed.
+            // If backend were to handle multiple incidents as an array,
+            // name attributes would look like name="incidents[0].waktu_kejadian", etc.
+
             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                element.value = '';
+                element.value = ''; // Clear input/textarea values
             } else if (element.tagName === 'SELECT') {
-                element.selectedIndex = 0;
+                element.selectedIndex = 0; // Reset select to first option
             }
         });
 
-        newItem.querySelector('.disturbance-number').textContent = disturbanceCount;
+        newItem.querySelector('.disturbance-number').textContent = disturbanceCount; // Update disturbance number in title
         const removeButton = newItem.querySelector('.remove-disturbance');
-        removeButton.style.display = 'inline-block';
+        removeButton.style.display = 'inline-block'; // Show remove button for cloned items
         removeButton.addEventListener('click', function() {
-            newItem.remove();
+            newItem.remove(); // Remove the item when its button is clicked
+            // Re-number remaining disturbance items
             document.querySelectorAll('.it-disturbance-item').forEach((item, index) => {
                 item.querySelector('.disturbance-number').textContent = index + 1;
+                // Hide remove button if only one item remains
                 if (document.querySelectorAll('.it-disturbance-item').length === 1) {
                     item.querySelector('.remove-disturbance').style.display = 'none';
                 }
             });
-            disturbanceCount = document.querySelectorAll('.it-disturbance-item').length;
+            disturbanceCount = document.querySelectorAll('.it-disturbance-item').length; // Update count
         });
 
-        setupConditionalFields(newItem);
-        document.getElementById('itDisturbanceContainer').appendChild(newItem);
+        setupConditionalFields(newItem); // Setup conditional logic for the new item
+        document.getElementById('itDisturbanceContainer').appendChild(newItem); // Add new item to container
     });
     
+    // Set max date for tanggal_surat to today
     const tanggalSuratInput = document.getElementById('tanggal_surat');
     if(tanggalSuratInput){
         const today = new Date().toISOString().split('T')[0];
         tanggalSuratInput.max = today;
     }
     
+    // Form submission handler
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
+        e.preventDefault(); // Prevent default form submission
         let formIsValid = true;
 
+        // Collect general report information
+        const generalData = {
+            tahun: document.getElementById('tahun').value,
+            periode: document.getElementById('periode').value,
+            nomor_surat: document.getElementById('nomor_surat').value,
+            tanggal_surat: document.getElementById('tanggal_surat').value
+        };
+
+        // Collect IT disturbance details from the FIRST disturbance item.
+        // NOTE: As per previous discussions and current API documentation,
+        // the backend '/api/laporan/gangguan-it/submit' endpoint seems to expect
+        // a single set of incident details (not an array of incidents).
+        // If your backend is designed to accept multiple incidents,
+        // this logic needs to be significantly expanded to collect all items
+        // and structure them into an array before sending.
+        const firstDisturbanceItem = document.querySelector('.it-disturbance-item');
+        let incidentData = {};
+        if (firstDisturbanceItem) {
+            incidentData = {
+                waktu_kejadian: firstDisturbanceItem.querySelector('[name="waktu_kejadian"]').value,
+                jenis_gangguan: firstDisturbanceItem.querySelector('[name="jenis_gangguan"]').value,
+                // The 'ringkasan' field from HTML is not explicitly in API docs for gangguan-it.
+                // It's mapped to 'keterangan_gangguan' below if you assume this mapping.
+                ringkasan: firstDisturbanceItem.querySelector('[name="ringkasan"]').value, 
+                upaya_perbaikan: firstDisturbanceItem.querySelector('[name="upaya_perbaikan"]').value,
+                status_penyelesaian: firstDisturbanceItem.querySelector('[name="status_penyelesaian"]').value,
+                // 'tanggal_penyelesaian' from HTML is not explicitly in API docs.
+                tanggal_penyelesaian: firstDisturbanceItem.querySelector('[name="tanggal_penyelesaian"]').value
+            };
+        }
+
+        // Manually construct FormData to control what is sent
+        const formDataToSend = new FormData();
+
+        // Append general data
+        for (const key in generalData) {
+            formDataToSend.append(key, generalData[key]);
+        }
+
+        // Append incident data (only from the first incident item)
+        for (const key in incidentData) {
+            // Check if value exists to avoid sending empty strings for optional fields
+            if (incidentData[key]) {
+                // Example mapping: if 'ringkasan' from frontend should be 'keterangan_gangguan' in backend
+                if (key === 'ringkasan') {
+                    formDataToSend.append('keterangan_gangguan', incidentData[key]); 
+                } else {
+                    formDataToSend.append(key, incidentData[key]);
+                }
+            }
+        }
+
+        // Append file data
+        const lampiranInput = document.getElementById('lampiran');
+        if (lampiranInput.files.length > 0) {
+            const file = lampiranInput.files[0];
+            if (file.size > 5 * 1024 * 1024) { // Check file size (5MB limit)
+                errorMessageElement.textContent = 'Ukuran file lampiran melebihi 5MB.';
+                errorModal.show();
+                formIsValid = false;
+            } else {
+                formDataToSend.append('file_laporan', file); // 'file_laporan' matches Flask's expected name
+            }
+        }
+
+        // Client-side validation for all disturbance items (even if only first is sent)
         document.querySelectorAll('.it-disturbance-item').forEach(item => {
-            const incidentTimeInput = item.querySelector('[id^="waktu_kejadian_"]');
-            const statusSelect = item.querySelector('.status-select');
-            const resolutionDateInput = item.querySelector('.resolution-date');
-            const incidentTime = new Date(incidentTimeInput.value);
-            const now = new Date();
+            const incidentTimeInput = item.querySelector('[name="waktu_kejadian"]'); 
+            const statusSelect = item.querySelector('[name="status_penyelesaian"]'); 
+            const resolutionDateInput = item.querySelector('[name="tanggal_penyelesaian"]'); 
+            
+            // Basic validation for required fields or logical checks
+            if (incidentTimeInput && statusSelect && resolutionDateInput) {
+                const incidentTime = new Date(incidentTimeInput.value);
+                const now = new Date();
 
-            if (incidentTime > now) {
-                errorMessageElement.textContent = 'Waktu kejadian tidak boleh lebih baru dari waktu saat ini pada gangguan ' + item.querySelector('.disturbance-number').textContent;
-                errorModal.show();
-                formIsValid = false;
-                return; 
-            }
+                if (incidentTime > now) {
+                    errorMessageElement.textContent = 'Waktu kejadian tidak boleh lebih baru dari waktu saat ini pada gangguan ' + item.querySelector('.disturbance-number').textContent;
+                    errorModal.show();
+                    formIsValid = false;
+                    return; 
+                }
 
-            if (statusSelect.value === 'Terselesaikan' && !resolutionDateInput.value) {
-                errorMessageElement.textContent = 'Harap isi tanggal penyelesaian untuk status "Terselesaikan" pada gangguan ' + item.querySelector('.disturbance-number').textContent;
-                errorModal.show();
-                formIsValid = false;
-                return; 
-            }
-            if (resolutionDateInput.value && new Date(resolutionDateInput.value) < incidentTime) {
-                 errorMessageElement.textContent = 'Tanggal penyelesaian tidak boleh sebelum waktu kejadian pada gangguan ' + item.querySelector('.disturbance-number').textContent;
-                errorModal.show();
-                formIsValid = false;
-                return;
+                if (statusSelect.value === 'Terselesaikan' && !resolutionDateInput.value) {
+                    errorMessageElement.textContent = 'Harap isi tanggal penyelesaian untuk status "Terselesaikan" pada gangguan ' + item.querySelector('.disturbance-number').textContent;
+                    errorModal.show();
+                    formIsValid = false;
+                    return; 
+                }
+                if (resolutionDateInput.value && new Date(resolutionDateInput.value) < incidentTime) {
+                    errorMessageElement.textContent = 'Tanggal penyelesaian tidak boleh sebelum waktu kejadian pada gangguan ' + item.querySelector('.disturbance-number').textContent;
+                    errorModal.show();
+                    formIsValid = false;
+                    return;
+                }
             }
         });
 
-        const lampiranInput = document.getElementById('lampiran');
-        if (lampiranInput.files[0] && lampiranInput.files[0].size > 5 * 1024 * 1024) { // 5MB
-            errorMessageElement.textContent = 'Ukuran file lampiran melebihi 5MB.';
-            errorModal.show();
-            formIsValid = false;
-        }
+        if (!formIsValid) return; // Stop submission if validation fails
 
-        if (!formIsValid) return;
-
+        // Show loading spinner and modal
         submitButton.disabled = true;
         submitText.textContent = 'Mengirim...';
         submitSpinner.classList.remove('d-none');
         loadingModal.show();
         
-        const formData = new FormData(this);
-        
+        // Send data using Fetch API
         fetch(this.action, {
             method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
+            body: formDataToSend // Use the manually constructed FormData
         })
         .then(response => {
-            loadingModal.hide();
-            submitButton.disabled = false;
+            loadingModal.hide(); // Hide loading modal regardless of success/failure
+            submitButton.disabled = false; // Re-enable submit button
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
-            return response.json();
+            
+
+            // Check if response is JSON, if not, parse as text and log error
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.indexOf('application/json') !== -1) {
+                return response.json();
+            } else {
+                return response.text().then(text => {
+                    throw new Error('Server did not return JSON: ' + text);
+                });
+            }
         })
         .then(data => {
             if (data.success) {
                 successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
                 successModal.show();
-                form.reset();
-                // Reset dynamic fields
+                form.reset(); // Reset the form fields
+                // Reset dynamic disturbance fields to initial state (single item)
                 document.getElementById('itDisturbanceContainer').innerHTML = `
                     <div class="card mb-4 it-disturbance-item">
                         <div class="card-header bg-light d-flex justify-content-between align-items-center">
@@ -375,11 +469,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="waktu_kejadian_1" class="form-label">Waktu Kejadian <span class="text-danger">*</span></label>
-                                    <input type="datetime-local" class="form-control" id="waktu_kejadian_1" name="waktu_kejadian_1" required>
+                                    <input type="datetime-local" class="form-control" id="waktu_kejadian_1" name="waktu_kejadian" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="jenis_gangguan_1" class="form-label">Jenis Gangguan <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="jenis_gangguan_1" name="jenis_gangguan_1" required>
+                                    <select class="form-select" id="jenis_gangguan_1" name="jenis_gangguan" required>
                                         <option value="">-- Pilih Jenis Gangguan --</option>
                                         <option value="Jaringan">Gangguan Jaringan</option>
                                         <option value="Server">Gangguan Server</option>
@@ -392,19 +486,19 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                             <div class="mb-3">
                                 <label for="ringkasan_1" class="form-label">Ringkasan Gangguan <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="ringkasan_1" name="ringkasan_1" rows="4" required></textarea>
+                                <textarea class="form-control" id="ringkasan_1" name="ringkasan" rows="4" required></textarea>
                                 <div class="form-text">Jelaskan secara detail gejala gangguan yang terjadi</div>
                             </div>
                             <div class="mt-4"><h6 class="mb-0">Upaya Penanganan</h6></div>
                             <div class="mb-3">
                                 <label for="upaya_perbaikan_1" class="form-label">Upaya Perbaikan <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="upaya_perbaikan_1" name="upaya_perbaikan_1" rows="4" required></textarea>
+                                <textarea class="form-control" id="upaya_perbaikan_1" name="upaya_perbaikan" rows="4" required></textarea>
                                 <div class="form-text">Jelaskan langkah-langkah yang telah dilakukan untuk mengatasi gangguan</div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="status_penyelesaian_1" class="form-label">Status Penyelesaian <span class="text-danger">*</span></label>
-                                    <select class="form-select status-select" id="status_penyelesaian_1" name="status_penyelesaian_1" required>
+                                    <select class="form-select status-select" id="status_penyelesaian_1" name="status_penyelesaian" required>
                                         <option value="">-- Pilih Status --</option>
                                         <option value="Dalam Investigasi">Dalam Investigasi</option>
                                         <option value="Dalam Perbaikan">Dalam Perbaikan</option>
@@ -415,13 +509,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="tanggal_penyelesaian_1" class="form-label">Tanggal Penyelesaian (jika sudah selesai)</label>
-                                    <input type="datetime-local" class="form-control resolution-date" id="tanggal_penyelesaian_1" name="tanggal_penyelesaian_1">
+                                    <input type="datetime-local" class="form-control resolution-date" id="tanggal_penyelesaian_1" name="tanggal_penyelesaian">
                                 </div>
                             </div>
                         </div>
                     </div>`;
-                disturbanceCount = 1;
-                setupConditionalFields(document.querySelector('.it-disturbance-item'));
+                disturbanceCount = 1; // Reset count
+                setupConditionalFields(document.querySelector('.it-disturbance-item')); // Re-init setup for the reset item
             } else {
                 errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
                 errorModal.show();

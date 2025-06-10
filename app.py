@@ -1,3 +1,4 @@
+# app.py
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import requests
 from datetime import datetime
@@ -18,21 +19,21 @@ banks = [
 @app.route("/", methods=["GET", "POST"])
 def login():
     """
-    Handles user login. Sends credentials to the backend API's login endpoint.
-    If successful, stores access token in session and redirects to dashboard based on role.
+    Menangani login pengguna. Mengirim kredensial ke endpoint login API backend.
+    Jika berhasil, menyimpan token akses dalam sesi dan mengarahkan ke dasbor berdasarkan peran.
     """
     if request.method == "POST":
         sandi_pjp = request.form["username"] # Mengasumsikan frontend mengirim 'username'
         password = request.form["password"]
-        # Mengubah kunci dari 'username_or_email' menjadi 'sandi_pjp' sesuai error backend
-        login_data = {"sandi_pjp": sandi_pjp, "password": password} 
+        # Mengubah kunci dari 'username_or_email' menjadi 'sandi_pjp' sesuai error backend yang diterima
+        login_data = {"sandi_pjp": sandi_pjp, "password": password}
         try:
             response = requests.post(f"{API_BASE_URL}auth/login/", json=login_data)
             response_data = response.json()
             if response.status_code == 200 and response_data.get("data") and response_data["data"].get("access"):
                 session["username"] = sandi_pjp
                 session["access_token"] = response_data["data"]["access"]
-                # Determine role based on username (assuming 'admin' for admin, others for user)
+                # Menentukan peran berdasarkan username (mengasumsikan 'admin' untuk admin, lainnya untuk user)
                 if sandi_pjp == "admin":
                     session["role"] = "admin"
                     return redirect(url_for("admin_dashboard"))
@@ -46,28 +47,28 @@ def login():
                     error_message = f"Error: {response_data['sandi_pjp'][0]}"
                 return render_template("login.html", error=error_message)
         except requests.exceptions.RequestException as e:
-            # Handle network errors or server not reachable
+            # Menangani kesalahan jaringan atau server tidak dapat dijangkau
             error_message = f"Gagal terhubung ke server API: {e}"
             return render_template("login.html", error=error_message)
     return render_template("login.html")
 
 @app.route("/admin/dashboard")
 def admin_dashboard():
-    """Renders the admin dashboard, requires admin role."""
+    """Merender dasbor admin, memerlukan peran admin."""
     if session.get("role") != "admin":
         return redirect(url_for("login"))
     return render_template("admin/dashboardadmin.html", banks=banks)
 
 @app.route("/user/dashboard")
 def user_dashboard():
-    """Renders the user dashboard, requires user login."""
+    """Merender dasbor pengguna, memerlukan login pengguna."""
     if "username" not in session:
         return redirect(url_for("login"))
     return render_template("user/dashboarduser.html")
 
 @app.route("/admin/profile", endpoint="admin_profile")
 def profile_admin():
-    """Renders the admin profile page, requires admin role."""
+    """Merender halaman profil admin, memerlukan peran admin."""
     if session.get("role") != "admin":
         return redirect(url_for("login"))
     return render_template("admin/profile.html")
@@ -75,8 +76,8 @@ def profile_admin():
 @app.route("/admin/add_bank", methods=["POST"])
 def add_bank():
     """
-    Handles adding a new bank (dummy data for now).
-    This function doesn't interact with the API based on the provided documentation.
+    Menangani penambahan bank baru (data dummy untuk saat ini).
+    Fungsi ini tidak berinteraksi dengan API berdasarkan dokumentasi yang diberikan.
     """
     if "username" not in session or session["role"] != "admin":
         return redirect(url_for("login"))
@@ -89,78 +90,124 @@ def add_bank():
 
 @app.route("/user/laporan")
 def user_laporan():
-    """Redirects to user dashboard (assuming reports are accessible from there)."""
+    """Mengarahkan ke dasbor pengguna (mengasumsikan laporan dapat diakses dari sana)."""
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
-    # This route might be redundant if user_dashboard already lists reports.
-    # Consider removing if dashboarduser.html is the main reports page.
+    # Rute ini mungkin berlebihan jika user_dashboard sudah mencantumkan laporan.
+    # Pertimbangkan untuk menghapus jika dashboarduser.html adalah halaman laporan utama.
     return render_template("user/dashboarduser.html")
 
 @app.route("/admin/laporan")
 def admin_laporan():
-    """Placeholder for admin reports page."""
+    """Placeholder untuk halaman laporan admin."""
     if "username" not in session or session["role"] != "admin":
         return redirect(url_for("login"))
     return "Halaman Laporan Admin (Dalam Pengembangan)"
 
 @app.route('/admin/history')
 def admin_history():
-    """Renders the admin history page, requires admin role."""
+    """Merender halaman riwayat admin, memerlukan peran admin."""
     if session.get("role") != "admin":
         return redirect(url_for("login"))
     return render_template('admin/history.html')
 
 @app.route('/admin/peraturan')
 def admin_peraturan():
-    """Renders the admin regulations page, requires admin role."""
+    """Merender halaman peraturan admin, memerlukan peran admin."""
     if session.get("role") != "admin":
         return redirect(url_for("login"))
     return render_template('admin/peraturan.html')
 
 @app.route("/base")
 def base_page():
-    """Renders the admin base template (for debugging/testing purposes)."""
+    """Merender template dasar admin (untuk tujuan debugging/pengujian)."""
     if session.get("role") != "admin":
         return redirect(url_for("login"))
     return render_template("admin/base.html")
 
 def send_report_to_backend(endpoint_path, form_data, file_obj):
     """
-    Generic function to send report data and file to the backend API.
+    Fungsi generik untuk mengirim data laporan dan file ke API backend.
     Args:
-        endpoint_path (str): The specific API endpoint path (e.g., "laporan/fraud/submit").
-        form_data (dict): Dictionary of form fields and their values.
-        file_obj (werkzeug.datastructures.FileStorage): The uploaded file object.
+        endpoint_path (str): Jalur endpoint API tertentu (misalnya, "laporan/fraud/submit").
+        form_data (dict): Kamus bidang formulir dan nilainya.
+        file_obj (werkzeug.datastructures.FileStorage): Objek file yang diunggah.
     Returns:
-        tuple: A tuple containing (success_boolean, message, status_code).
+        tuple: Sebuah tuple yang berisi (boolean_sukses, pesan, kode_status).
     """
     if "username" not in session:
+        print("DEBUG: Sesi tidak valid, tidak ada username dalam sesi.")
         return False, "Sesi tidak valid, silakan login kembali.", 401
 
-    headers = {"Authorization": f"Bearer {session.get('access_token')}"}
+    access_token = session.get('access_token')
+    if not access_token:
+        print("DEBUG: Tidak ada access_token dalam sesi. Pengguna mungkin tidak login.")
+        return False, "Autentikasi gagal, silakan login kembali.", 401
+
+    headers = {"Authorization": f"Bearer {access_token}"}
     files = {}
     if file_obj and file_obj.filename:
+        # Nama kunci untuk file harus cocok dengan yang diharapkan oleh API backend
+        # Berdasarkan Postman, kuncinya adalah 'file'
         files = {"file": (file_obj.filename, file_obj.stream, file_obj.mimetype)}
+        print(f"DEBUG: File akan dikirim: {file_obj.filename}, MimeType: {file_obj.mimetype}")
+    else:
+        print("DEBUG: Tidak ada file yang akan dikirim.")
+
+
+    full_api_url = f"{API_BASE_URL}{endpoint_path}"
+    print(f"\n--- DEBUG: Mengirim permintaan ke API Backend ---")
+    print(f"URL: {full_api_url}")
+    print(f"Headers: {headers}")
+    print(f"Data Form: {form_data}")
+    print(f"Files: {files.keys() if files else 'No files'}") # Hanya tampilkan nama file, bukan kontennya
+
 
     try:
-        response = requests.post(f"{API_BASE_URL}{endpoint_path}", headers=headers, data=form_data, files=files)
-        response_data = response.json()
+        response = requests.post(full_api_url, headers=headers, data=form_data, files=files)
+        
+        print(f"--- DEBUG: Respons dari API Backend ---")
+        print(f"Status Code: {response.status_code}")
+        
+        try:
+            response_data = response.json()
+            print(f"Response JSON: {json.dumps(response_data, indent=2)}")
+        except json.JSONDecodeError:
+            response_data = {"message": response.text} # Ambil teks jika bukan JSON
+            print(f"Response Text (bukan JSON): {response.text}")
+        
         if response.status_code == 201: # 201 Created for successful submissions
             return True, response_data.get("message", "Laporan berhasil dikirim!"), 201
         else:
-            return False, response_data.get("message", "Gagal mengirim laporan."), response.status_code
+            # Mengembalikan pesan kesalahan dari backend jika ada
+            error_message = response_data.get("message", "Gagal mengirim laporan.")
+            if isinstance(response_data, dict):
+                # Tambahkan detail kesalahan dari backend jika disediakan (misal: validasi field)
+                for key, value in response_data.items():
+                    if key != "message": # Hindari duplikasi pesan utama
+                        error_message += f"\n{key}: {value}"
+            return False, error_message, response.status_code
+    except requests.exceptions.ConnectionError as e:
+        print(f"DEBUG: Kesalahan Koneksi: {e}")
+        return False, f"Gagal terhubung ke server API (koneksi ditolak atau server tidak tersedia): {e}", 500
+    except requests.exceptions.Timeout as e:
+        print(f"DEBUG: Kesalahan Timeout: {e}")
+        return False, f"Permintaan ke server API habis waktu: {e}", 500
     except requests.exceptions.RequestException as e:
-        return False, f"Gagal terhubung ke server API: {e}", 500
+        print(f"DEBUG: Kesalahan Permintaan Umum: {e}")
+        return False, f"Terjadi kesalahan saat mengirim permintaan ke server API: {e}", 500
     except json.JSONDecodeError:
+        print(f"DEBUG: Respon API bukan JSON yang valid atau kosong.")
         return False, "Respon API bukan JSON yang valid atau kosong.", 500
 
-# --- Report Submission Routes ---
+
+# --- Rute Pengiriman Laporan ---
 
 @app.route("/submit/laporan-fraud", methods=["POST"])
 def submit_laporan_fraud():
-    """Handles submission of Laporan Fraud."""
+    """Menangani pengiriman Laporan Fraud."""
     try:
-        # Backend expects DD/MM/YYYY for tanggal_surat
+        # Backend mengharapkan DD/MM/YYYY untuk tanggal_surat
         formatted_tanggal_surat = datetime.strptime(request.form.get("tanggal_surat"), '%Y-%m-%d').strftime('%d/%m/%Y')
     except ValueError:
         return jsonify({"success": False, "message": "Format tanggal surat tidak valid"}), 400
@@ -182,7 +229,7 @@ def submit_laporan_fraud():
 
 @app.route("/form/laporan-fraud")
 def form_laporan_fraud():
-    """Renders the form for Laporan Fraud."""
+    """Merender formulir untuk Laporan Fraud."""
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
     return render_template("user/forms/laporan_fraud.html")
@@ -190,12 +237,10 @@ def form_laporan_fraud():
 @app.route("/submit/laporan-dttot", methods=["POST"])
 def submit_laporan_dttot():
     """
-    Handles submission of Laporan DTTOT.
-    NOTE: Endpoint for DTTOT is not explicitly listed in API documentation.
-    This will currently return a simulated success.
+    Menangani pengiriman Laporan DTTOT.
     """
     try:
-        # Assuming DD/MM/YYYY for consistency if not specified otherwise
+        # Asumsi DD/MM/YYYY untuk konsistensi jika tidak ditentukan lain
         formatted_tanggal_surat = datetime.strptime(request.form.get("tanggal_surat"), '%Y-%m-%d').strftime('%d/%m/%Y')
     except ValueError:
         return jsonify({"success": False, "message": "Format tanggal surat tidak valid"}), 400
@@ -207,26 +252,25 @@ def submit_laporan_dttot():
         "periode_laporan": request.form.get("periode"),
         "jumlah_terduga_teroris": int(request.form.get("jumlah_terduga")),
         "perihal": request.form.get("perihal"),
-        "keterangan": request.form.get("keterangan"),
-        "nomor_surat_kepolisian": request.form.get("nomor_surat_kepolisian"),
-        "organisasi_teroris": request.form.get("organisasi_teroris")
+        "keterangan": request.form.get("keterangan")
     }
     file_laporan = request.files.get("file_laporan")
 
-    # Simulate success as DTTOT endpoint not found in API docs
-    print("Simulating DTTOT submission (endpoint not found in docs)")
-    return jsonify({"success": True, "message": "Laporan DTTOT (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
+    # Menggunakan fungsi send_report_to_backend untuk mengirim data ke API
+    success, message, status_code = send_report_to_backend("laporan/dttot/submit", form_data, file_laporan)
+    return jsonify({"success": success, "message": message}), status_code
+
 
 @app.route("/form/laporan-dttot")
 def form_laporan_dttot():
-    """Renders the form for Laporan DTTOT."""
+    """Merender formulir untuk Laporan DTTOT."""
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
     return render_template("user/forms/laporan_dttot.html")
 
 @app.route("/form/laporan-keuangan-tahunan")
 def form_laporan_keuangan_tahunan():
-    """Renders the form for Laporan Keuangan Tahunan."""
+    """Merender formulir untuk Laporan Keuangan Tahunan."""
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
     return render_template("user/forms/laporan_keuangan_tahunan.html")
@@ -234,9 +278,9 @@ def form_laporan_keuangan_tahunan():
 @app.route("/submit/laporan-keuangan-tahunan", methods=["POST"])
 def submit_laporan_keuangan_tahunan():
     """
-    Handles submission of Laporan Keuangan Tahunan.
-    NOTE: Endpoint for Laporan Keuangan Tahunan is not explicitly listed in API documentation.
-    This will currently return a simulated success.
+    Menangani pengiriman Laporan Keuangan Tahunan.
+    CATATAN: Endpoint untuk Laporan Keuangan Tahunan tidak secara eksplisit tercantum dalam dokumentasi API.
+    Ini akan mengembalikan keberhasilan yang disimulasikan.
     """
     try:
         formatted_tanggal_surat = datetime.strptime(request.form.get("tanggal_surat"), '%Y-%m-%d').strftime('%d/%m/%Y')
@@ -247,7 +291,7 @@ def submit_laporan_keuangan_tahunan():
         return jsonify({"success": False, "message": "Format tanggal tidak valid"}), 400
 
     form_data = {
-        "tahun_laporan": int(request.form.get("tahun")), # Using 'tahun_laporan' for consistency
+        "tahun_laporan": int(request.form.get("tahun")), # Menggunakan 'tahun_laporan' untuk konsistensi
         "nomor_surat": request.form.get("nomor_surat"),
         "tanggal_surat": formatted_tanggal_surat,
         "modal_disetor": int(request.form.get("modal_disetor").replace('.', '')),
@@ -265,14 +309,14 @@ def submit_laporan_keuangan_tahunan():
     }
     file_laporan = request.files.get("file_laporan")
 
-    # Simulate success as endpoint not found in API docs
-    print("Simulating Laporan Keuangan Tahunan submission (endpoint not found in docs)")
-    return jsonify({"success": True, "message": "Laporan Keuangan Tahunan (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
+    # Menggunakan fungsi send_report_to_backend
+    success, message, status_code = send_report_to_backend("laporan/keuangan-tahunan/submit", form_data, file_laporan)
+    return jsonify({"success": success, "message": message}), status_code
 
 
 @app.route("/form/laporan-keuangan-triwulan")
 def form_laporan_keuangan_triwulan():
-    """Renders the form for Laporan Keuangan Triwulan."""
+    """Merender formulir untuk Laporan Keuangan Triwulan."""
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
     return render_template("user/forms/laporan_keuangan_triwulan.html")
@@ -280,17 +324,17 @@ def form_laporan_keuangan_triwulan():
 @app.route("/submit/laporan-keuangan-triwulan", methods=["POST"])
 def submit_laporan_keuangan_triwulan():
     """
-    Handles submission of Laporan Keuangan Triwulan.
-    NOTE: Endpoint for Laporan Keuangan Triwulan is not explicitly listed in API documentation.
-    This will currently return a simulated success.
+    Menangani pengiriman Laporan Keuangan Triwulan.
+    CATATAN: Endpoint untuk Laporan Keuangan Triwulan tidak secara eksplisit tercantum dalam dokumentasi API.
+    Ini akan mengembalikan keberhasilan yang disimulasikan.
     """
     try:
         formatted_tanggal_surat = datetime.strptime(request.form.get("tanggal_surat"), '%Y-%m-%d').strftime('%d/%m/%Y')
     except ValueError:
         return jsonify({"success": False, "message": "Format tanggal surat tidak valid"}), 400
     form_data = {
-        "tahun_laporan": int(request.form.get("tahun")), # Using 'tahun_laporan' for consistency
-        "periode_laporan": request.form.get("triwulan"), # Mapped 'triwulan' to 'periode_laporan'
+        "tahun_laporan": int(request.form.get("tahun")), # Menggunakan 'tahun_laporan' untuk konsistensi
+        "periode_laporan": request.form.get("triwulan"), # Memetakan 'triwulan' ke 'periode_laporan'
         "nomor_surat": request.form.get("nomor_surat"),
         "tanggal_surat": formatted_tanggal_surat,
         "modal_disetor": int(request.form.get("modal_disetor").replace('.', '')),
@@ -300,13 +344,13 @@ def submit_laporan_keuangan_triwulan():
         "rugi": int(request.form.get("rugi").replace('.', '')),
         "total_aset": int(request.form.get("total_aset").replace('.', '')),
         "total_liabilitas": int(request.form.get("total_liabilitas").replace('.', '')),
-        "total_ekuitas": int(request.form.get("total_ekuitas").replace('.', '')) # Mapped 'total_equitas' to 'total_ekuitas'
+        "total_ekuitas": int(request.form.get("total_ekuitas").replace('.', '')) # Memetakan 'total_equitas' ke 'total_ekuitas'
     }
     file_laporan = request.files.get("file_laporan")
 
-    # Simulate success as endpoint not found in API docs
-    print("Simulating Laporan Keuangan Triwulan submission (endpoint not found in docs)")
-    return jsonify({"success": True, "message": "Laporan Keuangan Triwulan (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
+    # Menggunakan fungsi send_report_to_backend
+    success, message, status_code = send_report_to_backend("laporan/keuangan-triwulan/submit", form_data, file_laporan)
+    return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Gangguan IT ---
 @app.route("/form/laporan-gangguanit")
@@ -319,22 +363,45 @@ def form_laporan_gangguanit():
 def submit_laporan_gangguanit():
     try:
         formatted_tanggal_surat = datetime.strptime(request.form.get("tanggal_surat"), '%Y-%m-%d').strftime('%d/%m/%Y')
-        # waktu_kejadian can be DD/MM/YYYY or YYYY-MM-DD
-        formatted_waktu_kejadian = datetime.strptime(request.form.get("waktu_kejadian"), '%Y-%m-%d').strftime('%d/%m/%Y')
-    except ValueError:
-        return jsonify({"success": False, "message": "Format tanggal tidak valid"}), 400
+        
+        # Ekstrak hanya bagian tanggal dari input datetime-local (YYYY-MM-DD) dan format ke DD/MM/YYYY
+        waktu_kejadian_raw = request.form.get("waktu_kejadian")
+        if waktu_kejadian_raw:
+            formatted_waktu_kejadian = datetime.strptime(waktu_kejadian_raw.split('T')[0], '%Y-%m-%d').strftime('%d/%m/%Y')
+        else:
+            formatted_waktu_kejadian = None # Atau tangani sebagai error jika diperlukan dan tidak ada
+    except ValueError as e:
+        return jsonify({"success": False, "message": f"Format tanggal/waktu tidak valid: {e}"}), 400
 
     form_data = {
-        "tahun_laporan": int(request.form.get("tahun_laporan")),
-        "periode_laporan": request.form.get("periode_laporan"),
+        "tahun_laporan": int(request.form.get("tahun")), # Dikoreksi dari tahun_laporan menjadi tahun
+        "periode_laporan": request.form.get("periode"), # Dikoreksi dari periode_laporan menjadi periode
         "nomor_surat": request.form.get("nomor_surat"),
         "tanggal_surat": formatted_tanggal_surat,
-        "waktu_kejadian": formatted_waktu_kejadian,
+        "waktu_kejadian": formatted_waktu_kejadian, # Sekarang hanya bagian tanggal, sesuai docs API
         "jenis_gangguan": request.form.get("jenis_gangguan"),
+        # 'ringkasan' dari HTML dipetakan ke 'keterangan_gangguan' untuk API backend.
+        "keterangan_gangguan": request.form.get("ringkasan"), 
         "upaya_perbaikan": request.form.get("upaya_perbaikan"),
         "status_penyelesaian": request.form.get("status_penyelesaian")
     }
-    file_laporan = request.files.get("file_laporan")
+
+    # Tangani tanggal_penyelesaian opsional jika statusnya 'Terselesaikan'
+    tanggal_penyelesaian_raw = request.form.get("tanggal_penyelesaian")
+    if request.form.get("status_penyelesaian") == 'Terselesaikan' and tanggal_penyelesaian_raw:
+        try:
+            # Ekstrak hanya bagian tanggal dari input datetime-local dan format ke DD/MM/YYYY
+            form_data["tanggal_penyelesaian"] = datetime.strptime(tanggal_penyelesaian_raw.split('T')[0], '%Y-%m-%d').strftime('%d/%m/%Y')
+        except ValueError:
+            return jsonify({"success": False, "message": "Format tanggal penyelesaian tidak valid"}), 400
+
+    file_laporan = request.files.get("file_laporan") # Ini sesuai dengan name="file_laporan" di input HTML
+
+    # Catatan: Fungsi Flask saat ini (dan kemungkinan endpoint API Django)
+    # diatur untuk menerima *satu* data insiden per laporan.
+    # Jika niat Anda adalah untuk mengirimkan beberapa insiden (dari tombol "Tambah Gangguan IT"),
+    # API backend Anda harus diperbarui untuk menerima array objek insiden,
+    # dan fungsi Flask ini perlu mengulang array tersebut.
 
     success, message, status_code = send_report_to_backend("laporan/gangguan-it/submit", form_data, file_laporan)
     return jsonify({"success": success, "message": message}), status_code
@@ -654,9 +721,9 @@ def submit_laporan_keamanan_informasi():
     return jsonify({"success": success, "message": message}), status_code
 
 
-# --- Placeholder routes for forms without explicit API submit endpoints ---
-# These routes will render the forms, but their submission will be simulated as
-# the API documentation does not provide specific endpoints for them.
+# --- Rute placeholder untuk formulir tanpa endpoint API pengiriman eksplisit ---
+# Rute ini akan merender formulir, tetapi pengirimannya akan disimulasikan karena
+# dokumentasi API tidak menyediakan endpoint khusus untuk mereka.
 
 @app.route("/form/laporan-apuppt")
 def form_laporan_apuppt():
@@ -666,7 +733,7 @@ def form_laporan_apuppt():
 
 @app.route("/submit/laporan-apuppt", methods=["POST"])
 def submit_laporan_apuppt():
-    # Simulate success as endpoint not found in API docs
+    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
     print("Simulating Laporan APUPPT submission (endpoint not found in docs)")
     return jsonify({"success": True, "message": "Laporan APUPPT (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
 
@@ -678,7 +745,7 @@ def form_laporan_auditsi():
 
 @app.route("/submit/laporan-auditsi", methods=["POST"])
 def submit_laporan_auditsi():
-    # Simulate success as endpoint not found in API docs
+    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
     print("Simulating Laporan Auditsi submission (endpoint not found in docs)")
     return jsonify({"success": True, "message": "Laporan Auditsi (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
 
@@ -690,9 +757,49 @@ def form_laporan_dana_bukan_bank():
 
 @app.route("/submit/laporan-dana-bukan-bank", methods=["POST"])
 def submit_laporan_dana_bukan_bank():
-    # Simulate success as endpoint not found in API docs
-    print("Simulating Laporan Dana Bukan Bank submission (endpoint not found in docs)")
-    return jsonify({"success": True, "message": "Laporan Dana Bukan Bank (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
+    """
+    Menangani pengiriman Laporan Transaksi Dana Bukan Bank (LTDBB).
+    """
+    try:
+        # Tanggal surat bisa dalam format DD/MM/YYYY atau YYYY-MM-DD
+        tanggal_surat_raw = request.form.get("tanggal_surat")
+        
+        # Coba parse sebagai YYYY-MM-DD dulu (dari input type="date")
+        try:
+            formatted_tanggal_surat = datetime.strptime(tanggal_surat_raw, '%Y-%m-%d').strftime('%d/%m/%Y')
+        except ValueError:
+            # Jika gagal, coba parse sebagai DD/MM/YYYY
+            formatted_tanggal_surat = datetime.strptime(tanggal_surat_raw, '%d/%m/%Y').strftime('%d/%m/%Y')
+
+    except ValueError:
+        return jsonify({"success": False, "message": "Format tanggal surat tidak valid. Gunakan YYYY-MM-DD atau DD/MM/YYYY."}), 400
+
+    form_data = {
+        "nomor_surat": request.form.get("nomor_surat"),
+        "tanggal_surat": formatted_tanggal_surat,
+        "tahun_laporan": int(request.form.get("tahun")),
+        "periode_laporan": request.form.get("periode"),
+        "number_outgoing_transactions": int(request.form.get("jumlah_keluar")),
+        "amount_outgoing_transactions": int(request.form.get("nilai_keluar")),
+        "number_incoming_transactions": int(request.form.get("jumlah_masuk")),
+        "amount_incoming_transactions": int(request.form.get("nilai_masuk")),
+        "number_local_transactions": int(request.form.get("jumlah_dalam")),
+        "amount_local_transactions": int(request.form.get("nilai_dalam")),
+    }
+    
+    # Keterangan tambahan (opsional)
+    keterangan = request.form.get("keterangan")
+    if keterangan:
+        form_data["keterangan"] = keterangan
+
+    # Nama file dari form HTML adalah 'bukti_lkpbu' tapi API menginginkan 'file'
+    file_laporan = request.files.get("bukti_lkpbu") 
+
+    # Menggunakan fungsi send_report_to_backend untuk mengirim data ke API
+    # Endpoint untuk LTDBB adalah "laporan/ltdbb/submit"
+    success, message, status_code = send_report_to_backend("laporan/ltdbb/submit", form_data, file_laporan)
+    return jsonify({"success": success, "message": message}), status_code
+
 
 @app.route("/form/laporan-kpsp")
 def form_laporan_kpsp():
@@ -702,7 +809,7 @@ def form_laporan_kpsp():
 
 @app.route("/submit/laporan-kpsp", methods=["POST"])
 def submit_laporan_kpsp():
-    # Simulate success as endpoint not found in API docs
+    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
     print("Simulating Laporan KPSP submission (endpoint not found in docs)")
     return jsonify({"success": True, "message": "Laporan KPSP (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
 
@@ -714,7 +821,7 @@ def form_laporan_manajemen():
 
 @app.route("/submit/laporan-manajemen", methods=["POST"])
 def submit_laporan_manajemen():
-    # Simulate success as endpoint not found in API docs
+    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
     print("Simulating Laporan Manajemen submission (endpoint not found in docs)")
     return jsonify({"success": True, "message": "Laporan Manajemen (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
 
@@ -726,7 +833,7 @@ def form_laporan_p2p():
 
 @app.route("/submit/laporan-p2p", methods=["POST"])
 def submit_laporan_p2p():
-    # Simulate success as endpoint not found in API docs
+    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
     print("Simulating Laporan P2P submission (endpoint not found in docs)")
     return jsonify({"success": True, "message": "Laporan P2P (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
 
@@ -738,7 +845,7 @@ def form_laporan_pelaksanaan_edukasi_publik():
 
 @app.route("/submit/laporan-pelaksanaan-edukasi-publik", methods=["POST"])
 def submit_laporan_pelaksanaan_edukasi_publik():
-    # Simulate success as endpoint not found in API docs
+    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
     print("Simulating Laporan Pelaksanaan Edukasi Publik submission (endpoint not found in docs)")
     return jsonify({"success": True, "message": "Laporan Pelaksanaan Edukasi Publik (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
 
@@ -750,7 +857,7 @@ def form_laporan_pelaksanaan_pengujian_keamanan():
 
 @app.route("/submit/laporan-pelaksanaan-pengujian-keamanan", methods=["POST"])
 def submit_laporan_pelaksanaan_pengujian_keamanan():
-    # Simulate success as endpoint not found in API docs
+    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
     print("Simulating Laporan Pelaksanaan Pengujian Keamanan submission (endpoint not found in docs)")
     return jsonify({"success": True, "message": "Laporan Pelaksanaan Pengujian Keamanan (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
 
@@ -762,7 +869,7 @@ def form_laporan_pppk():
 
 @app.route("/submit/laporan-pppk", methods=["POST"])
 def submit_laporan_pppk():
-    # Simulate success as endpoint not found in API docs
+    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
     print("Simulating Laporan PPPK submission (endpoint not found in docs)")
     return jsonify({"success": True, "message": "Laporan PPPK (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
 
@@ -774,7 +881,7 @@ def form_laporan_rencana_edukasi_publik():
 
 @app.route("/submit/laporan-rencana-edukasi-publik", methods=["POST"])
 def submit_laporan_rencana_edukasi_publik():
-    # Simulate success as endpoint not found in API docs
+    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
     print("Simulating Laporan Rencana Edukasi Publik submission (endpoint not found in docs)")
     return jsonify({"success": True, "message": "Laporan Rencana Edukasi Publik (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
 
@@ -786,7 +893,7 @@ def form_laporan_sksp_tahunan():
 
 @app.route("/submit/laporan-sksp-tahunan", methods=["POST"])
 def submit_laporan_sksp_tahunan():
-    # Simulate success as endpoint not found in API docs
+    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
     print("Simulating Laporan SKSP Tahunan submission (endpoint not found in docs)")
     return jsonify({"success": True, "message": "Laporan SKSP Tahunan (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
 
@@ -798,7 +905,7 @@ def form_laporan_sksp_triwulan():
 
 @app.route("/submit/laporan-sksp-triwulan", methods=["POST"])
 def submit_laporan_sksp_triwulan():
-    # Simulate success as endpoint not found in API docs
+    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
     print("Simulating Laporan SKSP Triwulan submission (endpoint not found in docs)")
     return jsonify({"success": True, "message": "Laporan SKSP Triwulan (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
 
@@ -810,14 +917,14 @@ def form_laporan_tahunan_sp():
 
 @app.route("/submit/laporan-tahunan-sp", methods=["POST"])
 def submit_laporan_tahunan_sp():
-    # Simulate success as endpoint not found in API docs
+    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
     print("Simulating Laporan Tahunan SP submission (endpoint not found in docs)")
     return jsonify({"success": True, "message": "Laporan Tahunan SP (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
 
 
 @app.route("/logout")
 def logout():
-    """Logs out the user by clearing the session."""
+    """Mencatat keluar pengguna dengan menghapus sesi."""
     session.pop("username", None)
     session.pop("access_token", None)
     session.pop("role", None)
