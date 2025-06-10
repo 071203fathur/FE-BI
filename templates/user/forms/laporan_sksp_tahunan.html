@@ -6,8 +6,56 @@
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-12">
         <div class="card shadow-lg p-4">
+            <div class="modal fade" id="successModalSKSPTahunan" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">Sukses!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="successMessageSKSPTahunan">Laporan berhasil dikirim!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="errorModalSKSPTahunan" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">Error!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="errorMessageSKSPTahunan">Terjadi kesalahan saat mengirim laporan.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="loadingModalSKSPTahunan" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center py-4">
+                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
+                            <p class="text-muted small">Harap tunggu sebentar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h3 class="text-center mb-4">Formulir Standar Kompetensi Sistem Pembayaran (Tahunan)</h3>
-            <form method="POST" action="/submit/standar-kompetensi-tahunan" enctype="multipart/form-data" id="competencyFormTahunan">
+            <form method="POST" action="{{ url_for('submit_standar_kompetensi_tahunan') }}" enctype="multipart/form-data" id="competencyFormTahunan">
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Informasi Dasar</h5>
@@ -15,22 +63,22 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="tahun" class="form-label">Tahun Laporan</label>
+                                <label for="tahun" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
                                 <select class="form-select" id="tahun" name="tahun" required>
                                     <option value="">-- Pilih Tahun --</option>
-                                    {% for year in range(2020, 2026) %}
+                                    {% for year in range(2020, 2027) %}
                                     <option value="{{ year }}" {% if year == now.year %}selected{% endif %}>{{ year }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="periode" class="form-label">Periode Laporan (Tahunan)</label>
+                                <label for="periode" class="form-label">Periode Laporan (Tahunan) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="periode" name="periode" required>
                                     <option value="Tahunan">Tahunan</option>
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="penyelenggara" class="form-label">Nama Penyelenggara</label>
+                                <label for="penyelenggara" class="form-label">Nama Penyelenggara <span class="text-danger">*</span></label>
                                 <select class="form-select" id="penyelenggara" name="penyelenggara" required>
                                     <option value="">-- Pilih Penyelenggara --</option>
                                     <option value="Bank A">Bank A</option>
@@ -43,18 +91,18 @@
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="nomor_surat" class="form-label">Nomor Surat</label>
+                                <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
+                                <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
                             </div>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="jenis_pelaku" class="form-label">Jenis Pelaku SPPUR</label>
+                                <label for="jenis_pelaku" class="form-label">Jenis Pelaku SPPUR <span class="text-danger">*</span></label>
                                 <select class="form-select" id="jenis_pelaku" name="jenis_pelaku" required>
                                     <option value="">-- Pilih Jenis Pelaku --</option>
                                     <option value="Bank">Bank</option>
@@ -62,7 +110,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="tahap" class="form-label">Tahap</label>
+                                <label for="tahap" class="form-label">Tahap <span class="text-danger">*</span></label>
                                 <select class="form-select" id="tahap" name="tahap" required>
                                     <option value="">-- Pilih Tahap --</option>
                                     <option value="1">Tahap 1</option>
@@ -74,7 +122,7 @@
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="sub_bidang" class="form-label">Sub Bidang SKKNI</label>
+                                <label for="sub_bidang" class="form-label">Sub Bidang SKKNI <span class="text-danger">*</span></label>
                                 <select class="form-select" id="sub_bidang" name="sub_bidang" required>
                                     <option value="">-- Pilih Sub Bidang --</option>
                                     <option value="Sistem Pembayaran">Sistem Pembayaran</option>
@@ -84,7 +132,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="pic" class="form-label">PIC (KPW BI)</label>
+                                <label for="pic" class="form-label">PIC (KPW BI) <span class="text-danger">*</span></label>
                                 <select class="form-select" id="pic" name="pic" required>
                                     <option value="">-- Pilih KPW BI --</option>
                                     <option value="KPW BI Jakarta">KPW BI Jakarta</option>
@@ -104,23 +152,23 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="dana_pbk" class="form-label">Total Rencana Penyediaan Dana PBK Sistem Pembayaran Tahun Berikutnya</label>
-                                <input type="number" class="form-control" id="dana_pbk" name="dana_pbk" min="0" step="100000" required>
+                                <label for="dana_pbk" class="form-label">Total Rencana Penyediaan Dana PBK Sistem Pembayaran Tahun Berikutnya <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="dana_pbk" name="dana_pbk" min="0" step="1" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="dana_pemeliharaan_pbk" class="form-label">Total Rencana Penyediaan Dana Pemeliharaan PBK Sistem Pembayaran Tahun Berikutnya</label>
-                                <input type="number" class="form-control" id="dana_pemeliharaan_pbk" name="dana_pemeliharaan_pbk" min="0" step="100000" required>
+                                <label for="dana_pemeliharaan_pbk" class="form-label">Total Rencana Penyediaan Dana Pemeliharaan PBK Sistem Pembayaran Tahun Berikutnya <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="dana_pemeliharaan_pbk" name="dana_pemeliharaan_pbk" min="0" step="1" required>
                             </div>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="dana_sertifikasi" class="form-label">Total Rencana Penyediaan Dana Sertifikasi Kompetensi Sistem Pembayaran Tahun Berikutnya</label>
-                                <input type="number" class="form-control" id="dana_sertifikasi" name="dana_sertifikasi" min="0" step="100000" required>
+                                <label for="dana_sertifikasi" class="form-label">Total Rencana Penyediaan Dana Sertifikasi Kompetensi Sistem Pembayaran Tahun Berikutnya <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="dana_sertifikasi" name="dana_sertifikasi" min="0" step="1" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="dana_pemeliharaan_sertifikasi" class="form-label">Total Rencana Penyediaan Dana Pemeliharaan Sertifikasi Kompetensi Sistem Pembayaran Tahun Berikutnya</label>
-                                <input type="number" class="form-control" id="dana_pemeliharaan_sertifikasi" name="dana_pemeliharaan_sertifikasi" min="0" step="100000" required>
+                                <label for="dana_pemeliharaan_sertifikasi" class="form-label">Total Rencana Penyediaan Dana Pemeliharaan Sertifikasi Kompetensi Sistem Pembayaran Tahun Berikutnya <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="dana_pemeliharaan_sertifikasi" name="dana_pemeliharaan_sertifikasi" min="0" step="1" required>
                             </div>
                         </div>
                     </div>
@@ -134,15 +182,15 @@
                         <div class="row mb-4">
                             <h6>Total Pegawai PBK</h6>
                             <div class="col-md-4 mb-3">
-                                <label for="total_pbk_lv4" class="form-label">Level 4</label>
+                                <label for="total_pbk_lv4" class="form-label">Level 4 <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="total_pbk_lv4" name="total_pbk_lv4" min="0" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="total_pbk_lv5" class="form-label">Level 5</label>
+                                <label for="total_pbk_lv5" class="form-label">Level 5 <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="total_pbk_lv5" name="total_pbk_lv5" min="0" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="total_pbk_lv6" class="form-label">Level 6</label>
+                                <label for="total_pbk_lv6" class="form-label">Level 6 <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="total_pbk_lv6" name="total_pbk_lv6" min="0" required>
                             </div>
                         </div>
@@ -150,7 +198,7 @@
                         <div class="row mb-4">
                             <h6>Total Pegawai SK Level Direksi</h6>
                             <div class="col-md-12 mb-3">
-                                <label for="total_sk_direksi" class="form-label">Jumlah</label>
+                                <label for="total_sk_direksi" class="form-label">Jumlah <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="total_sk_direksi" name="total_sk_direksi" min="0" required>
                             </div>
                         </div>
@@ -167,7 +215,7 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>Triwulan</th>
-                                        <th>Jumlah</th>
+                                        <th>Jumlah <span class="text-danger">*</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -193,7 +241,7 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>Triwulan</th>
-                                        <th>Jumlah</th>
+                                        <th>Jumlah <span class="text-danger">*</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -219,7 +267,7 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>Triwulan</th>
-                                        <th>Jumlah</th>
+                                        <th>Jumlah <span class="text-danger">*</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -245,10 +293,10 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>Level</th>
-                                        <th>Triwulan I</th>
-                                        <th>Triwulan II</th>
-                                        <th>Triwulan III</th>
-                                        <th>Triwulan IV</th>
+                                        <th>Triwulan I <span class="text-danger">*</span></th>
+                                        <th>Triwulan II <span class="text-danger">*</span></th>
+                                        <th>Triwulan III <span class="text-danger">*</span></th>
+                                        <th>Triwulan IV <span class="text-danger">*</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -276,7 +324,7 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>Triwulan</th>
-                                        <th>Jumlah</th>
+                                        <th>Jumlah <span class="text-danger">*</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -302,7 +350,7 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>Triwulan</th>
-                                        <th>Jumlah</th>
+                                        <th>Jumlah <span class="text-danger">*</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -331,7 +379,10 @@
                 </div>
                 
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">Kirim Formulir</button>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="submit-text">Kirim Formulir</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -358,33 +409,100 @@
         margin-top: 1rem;
         margin-bottom: 1rem;
     }
+    .btn-primary .spinner-border {
+        vertical-align: middle;
+        margin-left: 5px;
+    }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Set current year for "Tahun Laporan"
-    const currentYear = new Date().getFullYear();
-    document.getElementById('tahun').value = currentYear;
-
-    // Validasi form sebelum submit
-    document.getElementById('competencyFormTahunan').addEventListener('submit', function(e) {
-        // Validasi tambahan bisa ditambahkan di sini
-        console.log('Form submitted');
-    });
+    const form = document.getElementById('competencyFormTahunan');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const submitText = submitButton.querySelector('.submit-text');
+    const submitSpinner = submitButton.querySelector('.spinner-border');
     
-    // Format input angka dengan separator ribuan
-    const numberInputs = document.querySelectorAll('input[type="number"]');
+    const loadingModalElement = document.getElementById('loadingModalSKSPTahunan');
+    const successModalElement = document.getElementById('successModalSKSPTahunan');
+    const errorModalElement = document.getElementById('errorModalSKSPTahunan');
+
+    const loadingModal = new bootstrap.Modal(loadingModalElement);
+    const successModal = new bootstrap.Modal(successModalElement);
+    const errorModal = new bootstrap.Modal(errorModalElement);
+    
+    const successMessageElement = document.getElementById('successMessageSKSPTahunan');
+    const errorMessageElement = document.getElementById('errorMessageSKSPTahunan');
+
+    const tanggalSuratInput = document.getElementById('tanggal_surat');
+    if(tanggalSuratInput){
+        const today = new Date().toISOString().split('T')[0];
+        tanggalSuratInput.max = today;
+    }
+
+    const numberInputs = form.querySelectorAll('input[type="number"]');
     numberInputs.forEach(input => {
         input.addEventListener('blur', function() {
-            if (this.value) {
-                this.value = parseInt(this.value).toLocaleString('id-ID');
+            if (this.value && !isNaN(this.value.replace(/\./g, ''))) {
+                this.value = parseInt(this.value.replace(/\./g, '')).toLocaleString('id-ID');
             }
         });
-        
         input.addEventListener('focus', function() {
             if (this.value) {
                 this.value = this.value.replace(/\./g, '');
             }
+        });
+    });
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Validasi tambahan bisa ditambahkan di sini
+        
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+        
+        const formData = new FormData(this);
+         // Pastikan nilai numerik dikirim tanpa separator ribuan
+        numberInputs.forEach(input => {
+            if (formData.has(input.name)) {
+                formData.set(input.name, formData.get(input.name).replace(/\./g, ''));
+            }
+        });
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Formulir';
+            submitSpinner.classList.add('d-none');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
+                successModal.show();
+                form.reset();
+                 // Set current year again after reset if needed
+                const currentYear = new Date().getFullYear();
+                document.getElementById('tahun').value = currentYear;
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Formulir';
+            submitSpinner.classList.add('d-none');
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show();
         });
     });
 });

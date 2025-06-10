@@ -21,12 +21,63 @@
         font-size: 0.85rem;
         color: #6c757d;
     }
-    /* Tambahkan styling lain jika diperlukan */
+    .btn-primary .spinner-border {
+        vertical-align: middle;
+        margin-left: 5px;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container mt-4 mb-5">
+     <div class="modal fade" id="successModalTahunanSP" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Sukses!</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="successMessageTahunanSP">Laporan berhasil dikirim!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="errorModalTahunanSP" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Error!</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="errorMessageTahunanSP">Terjadi kesalahan saat mengirim laporan.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="loadingModalTahunanSP" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
+                    <p class="text-muted small">Harap tunggu sebentar</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <h2 class="text-center mb-4">Laporan Tahunan Sistem Pembayaran</h2>
 
     <form method="POST" action="{{ url_for('submit_laporan_tahunan_sp') }}" enctype="multipart/form-data" id="laporanTahunanSPForm">
@@ -41,7 +92,7 @@
                         <label for="tahun_laporan" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
                         <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
                             <option value="">-- Pilih Tahun --</option>
-                            {% for year in range(2020, 2027) %} {# Sesuaikan range tahun jika perlu #}
+                            {% for year in range(2020, 2027) %}
                             <option value="{{ year }}">{{ year }}</option>
                             {% endfor %}
                         </select>
@@ -286,7 +337,10 @@
         </div>
 
         <div class="d-grid gap-2 mt-4">
-            <button type="submit" class="btn btn-lg btn-primary">Kirim Laporan Tahunan SP</button>
+            <button type="submit" class="btn btn-lg btn-primary">
+                <span class="submit-text">Kirim Laporan Tahunan SP</span>
+                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            </button>
             <button type="reset" class="btn btn-lg btn-outline-secondary">Reset Form</button>
         </div>
     </form>
@@ -294,6 +348,22 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('laporanTahunanSPForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const submitText = submitButton.querySelector('.submit-text');
+    const submitSpinner = submitButton.querySelector('.spinner-border');
+    
+    const loadingModalElement = document.getElementById('loadingModalTahunanSP');
+    const successModalElement = document.getElementById('successModalTahunanSP');
+    const errorModalElement = document.getElementById('errorModalTahunanSP');
+
+    const loadingModal = new bootstrap.Modal(loadingModalElement);
+    const successModal = new bootstrap.Modal(successModalElement);
+    const errorModal = new bootstrap.Modal(errorModalElement);
+    
+    const successMessageElement = document.getElementById('successMessageTahunanSP');
+    const errorMessageElement = document.getElementById('errorMessageTahunanSP');
+
     const tahunLaporanSelect = document.getElementById('tahun_laporan');
     const tahunLaporanTextElements = document.querySelectorAll('.tahun_laporan_text');
     const tahunProyeksiTextElements = document.querySelectorAll('.tahun_proyeksi_text');
@@ -311,40 +381,81 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (tahunLaporanSelect) {
         tahunLaporanSelect.addEventListener('change', updateTahunText);
-        updateTahunText(); // Initial call
+        updateTahunText(); 
+    }
+    
+    const tanggalSuratPengantarInput = document.getElementById('tanggal_surat_pengantar');
+    if(tanggalSuratPengantarInput){
+        const today = new Date().toISOString().split('T')[0];
+        tanggalSuratPengantarInput.max = today;
     }
 
-    const form = document.getElementById('laporanTahunanSPForm');
-    if (form) {
-        form.addEventListener('submit', function(event) {
-            // Tambahkan validasi custom jika perlu
-            // Contoh: Validasi ukuran file
-            const fileInputs = form.querySelectorAll('input[type="file"]');
-            let formIsValid = true;
-            fileInputs.forEach(input => {
-                if (input.files.length > 0) {
-                    for (let i = 0; i < input.files.length; i++) {
-                        const file = input.files[i];
-                        if (file.size > 10 * 1024 * 1024) { // 10 MB
-                            alert(`File "${file.name}" terlalu besar. Maksimum 10MB.`);
-                            formIsValid = false;
-                            break;
-                        }
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        let formIsValid = true;
+        
+        const fileInputs = form.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            if (input.files.length > 0) {
+                for (let i = 0; i < input.files.length; i++) {
+                    const file = input.files[i];
+                    if (file.size > 10 * 1024 * 1024) { // 10 MB
+                        errorMessageElement.textContent = 'File "' + file.name + '" terlalu besar. Maksimum 10MB.';
+                        errorModal.show();
+                        formIsValid = false;
+                        break;
                     }
                 }
-                if (!formIsValid) return;
-            });
-
-            if (!formIsValid) {
-                event.preventDefault();
-            } else {
-                // Tampilkan konfirmasi sebelum submit (opsional)
-                if (!confirm('Apakah Anda yakin ingin mengirim laporan ini? Pastikan semua data sudah benar.')) {
-                    event.preventDefault();
-                }
             }
+            if (!formIsValid) return;
         });
-    }
+
+        if (!formIsValid) return;
+        
+        if (!confirm('Apakah Anda yakin ingin mengirim laporan ini? Pastikan semua data sudah benar.')) {
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan Tahunan SP';
+            submitSpinner.classList.add('d-none');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
+                successModal.show();
+                form.reset();
+                updateTahunText(); // Reset dynamic year text
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan Tahunan SP';
+            submitSpinner.classList.add('d-none');
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show();
+        });
+    });
 });
 </script>
 {% endblock %}
