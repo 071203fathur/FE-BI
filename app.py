@@ -5,16 +5,64 @@ from datetime import datetime
 import json
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"  # Untuk session
+app.secret_key = "supersecretkey"  # Kunci rahasia untuk pengelolaan sesi
 
-# Base URL untuk API Anda
+# Base URL untuk API backend Anda
 API_BASE_URL = "http://20.205.26.22:8000/api/"
 
-# Dummy data bank (sesuaikan dengan kebutuhan produksi Anda)
+# Dummy data bank (sesuaikan dengan kebutuhan produksi Anda jika diperlukan)
+# Data ini digunakan untuk mengisi dropdown "Nama PJP" di form KPSP
 banks = [
     {"id": 1, "nama": "PT Fliptech Lentera Inspirasi Pertiwi", "kategori": "Penyedia Jasa Pembayaran - Kategori Izin 3",
-     "no_izin": "18/196/DKSP/68", "tgl_izin": "04 Oktober 2016"}
+     "no_izin": "18/196/DKSP/68", "tgl_izin": "04 Oktober 2016"},
+    {"id": 2, "nama": "PT Contoh Bank Digital", "kategori": "Bank Umum",
+     "no_izin": "SK-001/OJK/2020", "tgl_izin": "15 Januari 2020"},
+    {"id": 3, "nama": "PT Pembayaran Cepat", "kategori": "Penyedia Jasa Pembayaran - Kategori Izin 2",
+     "no_izin": "19/200/DKSP/70", "tgl_izin": "10 Maret 2018"}
 ]
+
+# --- Penyimpanan data KPSP di memori (untuk demonstrasi sederhana) ---
+# CATATAN PENTING: Data ini akan HILANG setiap kali server Flask di-restart.
+# Untuk persistensi data di aplikasi produksi, Anda harus mengimplementasikan
+# penggunaan database (misalnya, SQLite, PostgreSQL, MySQL) dengan ORM (seperti SQLAlchemy).
+kpsp_reports = []
+report_id_counter = 1 # Penghitung untuk memberikan ID unik pada setiap laporan
+
+# --- Fungsi utilitas untuk simulasi perhitungan KPSP ---
+# Anda SANGAT PERLU mengganti logika ini dengan rumus perhitungan KPSP yang sebenarnya
+# dari file JavaScript (core.js) atau dokumentasi rumus KPSP Anda.
+# Perhatikan bahwa dalam skenario ini, perhitungan utama sudah ada di frontend JS.
+# Fungsi ini hanya akan menjadi placeholder atau untuk validasi sederhana jika diperlukan.
+def calculate_kpsp_backend(form_data):
+    """
+    Placeholder untuk perhitungan KPSP di backend.
+    Dalam implementasi ini, perhitungan utama ada di frontend (JavaScript).
+    Fungsi ini bisa digunakan untuk validasi data atau perhitungan kompleks
+    yang tidak bisa dilakukan di frontend.
+    """
+    # Contoh sederhana: mengambil nilai dan mengembalikannya
+    # Anda bisa menambahkan logika validasi atau perhitungan parsial di sini.
+    try:
+        modal_inti = float(form_data.get('modalInti', '0').replace('.', '').replace(',', '.'))
+        total_ongoing_capital_str = form_data.get('totalOngoingCapitalDisplay', '0').replace('Rp ', '').replace('.', '').replace(',', '.')
+        total_ongoing_capital = float(total_ongoing_capital_str)
+
+        # Asumsi rasio sederhana untuk contoh backend
+        if modal_inti > 0:
+            dummy_ratio = (total_ongoing_capital / modal_inti) * 100
+        else:
+            dummy_ratio = 0
+
+        return {
+            "status_validasi_backend": "OK",
+            "dummy_calculated_ratio": round(dummy_ratio, 2),
+            "message": "Data berhasil diterima dan divalidasi oleh backend (perhitungan utama di frontend)."
+        }
+    except ValueError:
+        return {"error": "Input numerik tidak valid pada backend."}
+    except Exception as e:
+        return {"error": f"Kesalahan backend saat memproses data: {str(e)}"}
+
 
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -46,6 +94,7 @@ def login():
                 if response_data.get("sandi_pjp"):
                     error_message = f"Error: {response_data['sandi_pjp'][0]}"
                 return render_template("login.html", error=error_message)
+
         except requests.exceptions.RequestException as e:
             # Menangani kesalahan jaringan atau server tidak dapat dijangkau
             error_message = f"Gagal terhubung ke server API: {e}"
@@ -815,17 +864,73 @@ def submit_laporan_dana_bukan_bank():
     return jsonify({"success": success, "message": message}), status_code
 
 
+# --- Rute KPSP Baru (menggunakan perhitungan frontend) ---
 @app.route("/form/laporan-kpsp")
 def form_laporan_kpsp():
+    """
+    Menampilkan form untuk Laporan Perhitungan KPSP.
+    Memerlukan pengguna yang sudah login dengan peran 'user'.
+    Melewatkan data 'banks' ke template untuk mengisi dropdown PJP.
+    """
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
-    return render_template("user/forms/laporan_kpsp.html")
+    # Melewatkan data banks ke template
+    return render_template("user/forms/laporan_kpsp.html", banks=banks)
 
 @app.route("/submit/laporan-kpsp", methods=["POST"])
 def submit_laporan_kpsp():
-    # Simulasi keberhasilan karena endpoint tidak ditemukan di docs API
-    print("Simulating Laporan KPSP submission (endpoint not found in docs)")
-    return jsonify({"success": True, "message": "Laporan KPSP (Simulasi) berhasil diterima! (Endpoint tidak ditemukan di Dokumentasi API)"}), 201
+    """
+    Menerima data form KPSP dari frontend (termasuk hasil perhitungan dari JS),
+    dan menyimpan laporan secara in-memory.
+    """
+    global report_id_counter # Menggunakan variabel global untuk ID laporan
+
+    # Memastikan pengguna sudah login dan memiliki peran 'user'
+    if "username" not in session or session.get("role") != "user":
+        return jsonify({"success": False, "message": "Anda tidak memiliki otorisasi untuk mengakses fungsi ini."}), 401
+
+    # Mengambil semua data form yang dikirim dari frontend sebagai dictionary
+    form_data = request.form.to_dict()
+    print("Menerima data form KPSP:", form_data)
+
+    # Anda bisa melakukan validasi tambahan atau pemrosesan di sini jika perlu.
+    # Misalnya, panggil fungsi calculate_kpsp_backend untuk validasi.
+    backend_validation_results = calculate_kpsp_backend(form_data)
+    if "error" in backend_validation_results:
+        return jsonify({"success": False, "message": f"Validasi backend gagal: {backend_validation_results['error']}"}), 400
+
+    # Ambil hasil perhitungan yang dikirim dari frontend (misalnya, sebagai string)
+    frontend_calculated_results = {
+        "total_ongoing_capital": form_data.get('totalOngoingCapitalDisplay'),
+        "rasio_kpsp": form_data.get('rasioKPSPDisplay'),
+        "status_initial_capital": form_data.get('statusPemenuhanInitialCapitalDisplay'),
+        "status_ongoing_capital": form_data.get('statusPemenuhanOngoingCapitalDisplay')
+        # Tambahkan hasil perhitungan lain yang Anda ingin simpan dari frontend
+    }
+
+    # Membuat entri laporan baru untuk disimpan
+    report_entry = {
+        "id": report_id_counter,
+        "submitted_by": session["username"],
+        "timestamp": datetime.now().isoformat(), # Waktu pengiriman laporan
+        "form_data_raw": form_data, # Menyimpan semua data form mentah
+        "frontend_calculations": frontend_calculated_results, # Menyimpan hasil dari frontend
+        "backend_validation": backend_validation_results # Hasil validasi/pemrosesan backend
+    }
+    kpsp_reports.append(report_entry) # Menambahkan laporan ke daftar in-memory
+    report_id_counter += 1 # Meningkatkan counter ID untuk laporan berikutnya
+
+    print("Laporan KPSP tersimpan (in-memory):", report_entry)
+
+    # Mengembalikan respons JSON ke frontend
+    return jsonify({
+        "success": True,
+        "message": "Laporan KPSP berhasil diterima dan dihitung!",
+        "report_id": report_entry["id"],
+        "calculation_results_from_frontend": frontend_calculated_results,
+        "backend_validation_status": backend_validation_results
+    }), 201
+
 
 @app.route("/form/laporan-manajemen")
 def form_laporan_manajemen():
