@@ -78,49 +78,23 @@
                         <form id="kpspForm">
                             <div class="form-section">
                                 <h5 class="form-section-title">Informasi Umum</h5>
-                                <div class="mb-3 row">
-                                    <label for="nama_pjp" class="col-sm-4 col-form-label">Nama PJP</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select select2" id="nama_pjp" name="nama_pjp" required>
-                                            <option value="">Pilih PJP</option>
-                                            <!-- Options will be dynamically added by JavaScript from banksData -->
-                                        </select>
+                                <div class="row mb-3">
+                                    <div class="col-3 text-end">
+                                        Posisi
+                                    </div>
+                                    <div class="col-4">
+                                    <input type="date" class="form-control form-control-lg" id="posisilaporan" name="Posisi Tanggal Laporan">
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
-                                    <label for="kategori_izin" class="col-sm-4 col-form-label">Kategori Izin</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control" id="kategori_izin" name="kategori_izin" readonly>
+                                <div class="row mb-3">
+                                    <div class="col-3 text-end">
+                                        Nama Pelapor
+                                    </div>
+                                    <div class="col-4">
+                                        <input type="text" class="form-control" id="nama_pelapor" onchange="refreshAktivitas()">
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
-                                    <label for="no_izin" class="col-sm-4 col-form-label">No. Izin</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control" id="no_izin" name="no_izin" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label for="tgl_izin" class="col-sm-4 col-form-label">Tgl. Izin</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control" id="tgl_izin" name="tgl_izin" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label for="periode_laporan" class="col-sm-4 col-form-label">Periode Laporan</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control datepicker" id="periode_laporan" name="periode_laporan" required>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label for="jenis_laporan" class="col-sm-4 col-form-label">Jenis Laporan</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select" id="jenis_laporan" name="jenis_laporan" required>
-                                            <option value="">Pilih Jenis Laporan</option>
-                                            <option value="Bulanan">Bulanan</option>
-                                            <option value="Triwulanan">Triwulanan</option>
-                                        </select>
-                                    </div>
-                                </div>
+                            </div>
                             </div>
 
                             <div class="form-section">
@@ -631,7 +605,7 @@
 
                             <div class="mt-4 text-center">
                                 <button type="submit" class="btn btn-primary btn-lg">
-                                    <i data-feather="send" class="align-text-bottom"></i> Submit Laporan
+                                    <i data-feather="send" class="align-text-bottom"></i> Hitung KPSP
                                 </button>
                             </div>
                         </form>
@@ -677,6 +651,7 @@
 
         // Data PJP/PIP (diisi dari Flask menggunakan Jinja2)
 const banksData = JSON.parse('{{ banks | tojson | safe if banks is not none else "[]" }}');
+
         // Konstanta perhitungan (diambil dari modal asumsi perhitungan)
         // Pastikan nilai-nilai ini akurat sesuai rumus KPSP Anda
         const PARAMS = {
@@ -694,14 +669,15 @@ const banksData = JSON.parse('{{ banks | tojson | safe if banks is not none else
                 PSPU:     { dasar: 10.00, surcharge: 0.00, total: 10.00 }
             },
             otherParams: {
-                rateBand4Perc: 100000000000,
-                rateBand1Perc: 1000000000000,
-                rateBand01PercAbove: 1000000000000,
-                rateKI3: 0.10,
-                bebanDanaFloat: 5.00,
-                konstantaTTMR: 10 // Pastikan ini adalah nilai terakhir atau tambahkan koma jika ada properti lain
-            } // Tutup otherParams
-        }; // Tutup PARAMS
+                rateBand4Perc: 100000000000, // 100 Miliar
+                rateBand1Perc: 1000000000000, // 1 Triliun
+                rateBand01PercAbove: 1000000000000, // 1 Triliun
+                rateKI3: 0.10, // 0.10%
+                bebanDanaFloat: 5.00, // 5.00%
+                konstantaTTMR: 10,
+                konstantaTTMR_KI3: 10 // Jika ada perbedaan untuk KI3
+            }
+        };
 
 
         $(document).ready(function() {
@@ -745,12 +721,15 @@ const banksData = JSON.parse('{{ banks | tojson | safe if banks is not none else
                 const selectedBank = banksData.find(bank => bank.nama === selectedPJPName);
 
                 if (selectedBank) {
-                    $('#kategori_izin').val(selectedBank.kategori);
+                    // Update fields from selected bank data
+                    // Kategori Izin, No. Izin, Tgl. Izin sekarang diisi otomatis
+                    $('#kategori_izin').val(selectedBank.kategori); // Ini akan digunakan untuk logika perhitungan
                     $('#no_izin').val(selectedBank.no_izin);
                     $('#tgl_izin').val(selectedBank.tgl_izin);
-                    // Update Flag PIP Asing checkbox
-                    $('#flagGL_PIPasing').prop('checked', selectedBank.flag_pip_asing);
+                    // Update Flag PIP Asing checkbox berdasarkan data bank
+                    $('#flagGL_PIPasing').prop('checked', selectedBank.flag_pip_asing || false);
                 } else {
+                    // Clear fields if no PJP is selected
                     $('#kategori_izin').val('');
                     $('#no_izin').val('');
                     $('#tgl_izin').val('');
@@ -837,7 +816,7 @@ const banksData = JSON.parse('{{ banks | tojson | safe if banks is not none else
             // --- Implementasi Perhitungan KPSP ---
 
             function calculateInitialCapital() {
-                const kategoriIzin = $('#kategori_izin').val();
+                const kategoriIzin = $('#kategori_izin').val(); // Mendapatkan kategori izin dari field tersembunyi
                 const jumlahModalDisetor = parseMoney($('#jumlahModalDisetor').val());
                 const isPIPAsing = $('#flagGL_PIPasing').is(':checked');
 
@@ -845,7 +824,7 @@ const banksData = JSON.parse('{{ banks | tojson | safe if banks is not none else
                 let statusPemenuhan = "Tidak Memenuhi";
                 let tambahanInitCapital = 0;
 
-                // Tentukan kewajiban Initial Capital berdasarkan kategori izin
+                // Tentukan kewajiban Initial Capital berdasarkan kategori izin yang didapat dari data bank
                 if (kategoriIzin) {
                     if (kategoriIzin === "PIP") {
                         kewajibanInitCapital = PARAMS.initialCapital.PIP;
@@ -854,8 +833,6 @@ const banksData = JSON.parse('{{ banks | tojson | safe if banks is not none else
                     } else if (kategoriIzin === "KI2") { // PIAS
                         kewajibanInitCapital = PARAMS.initialCapital.PIAS;
                     } else if (kategoriIzin === "KI3") { // REM1/REM2 - perlu ditentukan berdasarkan aktivitas yang diceklis
-                        // Untuk simplified version ini, kita bisa asumsikan default terendah atau ambil dari field lain.
-                        // Jika Anda memiliki elemen untuk memilih REM1/REM2, Anda bisa menambah logika di sini.
                         kewajibanInitCapital = Math.min(PARAMS.initialCapital.REM1, PARAMS.initialCapital.REM2);
                     }
                 }
@@ -943,7 +920,7 @@ const banksData = JSON.parse('{{ banks | tojson | safe if banks is not none else
                 $('#totalBeban').val(formatMoney(totalBeban));
 
                 // Konstanta TTMR
-                const kategoriIzin = $('#kategori_izin').val();
+                const kategoriIzin = $('#kategori_izin').val(); // Mengambil kategori izin dari field tersembunyi
                 let konstantaTTMR_val = PARAMS.otherParams.konstantaTTMR;
                 // Asumsi: Jika kategori izin KI3, gunakan konstantaTTMR_KI3, jika ada.
                 if (kategoriIzin === 'KI3' && PARAMS.otherParams.konstantaTTMR_KI3 !== undefined) { 
@@ -1042,27 +1019,37 @@ const banksData = JSON.parse('{{ banks | tojson | safe if banks is not none else
             }
 
             function calculateKPSPobligation() {
-                const klasifikasiPJPPIP = $('#klp_klasifikasiPJPPIP').val(); // Asumsi ini ada di form
+                // Klasifikasi PJP/PIP sekarang akan diambil dari data bank yang sudah diisi secara otomatis
+                const kategoriIzin = $('#kategori_izin').val(); // Mengambil kategori izin
+                const klasifikasiPJPPIP = ''; // Kosongkan atau dapatkan dari logika Anda jika ada pemetaan khusus
                 const isPIPAsing = $('#flagGL_PIPasing').is(':checked');
 
                 let KPSPdasar = 0;
                 let surcharge = 0;
                 let totalKPSP = 0;
 
-                // Tentukan KPSP berdasarkan klasifikasi dan flag PIP Asing
-                if (isPIPAsing && klasifikasiPJPPIP === 'PSPS') { // Contoh: Aturan khusus untuk PIP Asing PSPS
-                    KPSPdasar = PARAMS.kpspObligation.PIP_PSPS.dasar;
-                    surcharge = PARAMS.kpspObligation.PIP_PSPS.surcharge;
-                    totalKPSP = PARAMS.kpspObligation.PIP_PSPS.total;
-                } else if (klasifikasiPJPPIP === 'PSPS') {
-                    KPSPdasar = PARAMS.kpspObligation.PSPS.dasar;
-                    surcharge = PARAMS.kpspObligation.PSPS.surcharge;
-                    totalKPSP = PARAMS.kpspObligation.PSPS.total;
-                } else if (klasifikasiPJPPIP === 'PSPK') {
+                // Tentukan KPSP berdasarkan kategori izin dan flag PIP Asing
+                // Anda mungkin perlu menyesuaikan logika ini berdasarkan bagaimana
+                // 'Klasifikasi PJP/PIP' (`PSPS`, `PSPK`, `PSPU`) ditentukan dari `Kategori Izin` (KI1, KI2, KI3, PIP)
+                // Jika tidak ada logika pemetaan, Anda mungkin perlu menambahkan field untuk klasifikasi ini lagi.
+                // Untuk saat ini, saya akan mengasumsikan mapping sederhana atau default.
+
+                // Contoh pemetaan sederhana berdasarkan Kategori Izin
+                if (kategoriIzin === "PIP") {
+                    if (isPIPAsing) { // Contoh: PIP Asing mungkin selalu PSPS dengan surcharge
+                        KPSPdasar = PARAMS.kpspObligation.PIP_PSPS.dasar;
+                        surcharge = PARAMS.kpspObligation.PIP_PSPS.surcharge;
+                        totalKPSP = PARAMS.kpspObligation.PIP_PSPS.total;
+                    } else { // PIP non-asing, asumsikan PSPS
+                        KPSPdasar = PARAMS.kpspObligation.PSPS.dasar;
+                        surcharge = PARAMS.kpspObligation.PSPS.surcharge;
+                        totalKPSP = PARAMS.kpspObligation.PSPS.total;
+                    }
+                } else if (kategoriIzin === "KI1" || kategoriIzin === "KI2") { // Asumsi KI1/KI2 adalah PSPK
                     KPSPdasar = PARAMS.kpspObligation.PSPK.dasar;
                     surcharge = PARAMS.kpspObligation.PSPK.surcharge;
                     totalKPSP = PARAMS.kpspObligation.PSPK.total;
-                } else if (klasifikasiPJPPIP === 'PSPU') {
+                } else if (kategoriIzin === "KI3") { // Asumsi KI3 adalah PSPU
                     KPSPdasar = PARAMS.kpspObligation.PSPU.dasar;
                     surcharge = PARAMS.kpspObligation.PSPU.surcharge;
                     totalKPSP = PARAMS.kpspObligation.PSPU.total;
@@ -1128,4 +1115,3 @@ const banksData = JSON.parse('{{ banks | tojson | safe if banks is not none else
     </script>
 </body>
 {% endblock %}
-
