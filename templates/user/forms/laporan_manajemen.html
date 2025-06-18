@@ -122,24 +122,39 @@
                     </div>
                 </div>
 
+                <!-- Bagian Ringkasan Laporan Manajemen yang diubah menjadi tabel -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Ringkasan Laporan Manajemen <span class="text-danger">*</span></h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;">No.</th>
+                                    <th style="width: 50%;">Isi Laporan</th>
+                                    <th style="width: 45%;">Executive Summary</th>
+                                </tr>
+                            </thead>
+                            <tbody id="executive-summary-table-body">
+                                <!-- Baris akan ditambahkan secara dinamis di sini -->
+                            </tbody>
+                        </table>
+                        <!-- Tombol "Tambah Baris Ringkasan" dihapus -->
+                    </div>
+                </div>
+
                 <div class="row mb-4">
                     <div class="col-md-6 mb-3">
                         <label for="kepemilikan_domestik" class="form-label">Persentase Kepemilikan Domestik (%) <span class="text-danger">*</span></label>
                         <input type="number" class="form-control form-control-lg" id="kepemilikan_domestik" 
-                               name="kepemilikan_domestik" min="0" max="100" step="0.01" required>
+                               name="persentase_kepemilikan_domestik" min="0" max="100" step="0.01" required>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="kepemilikan_asing" class="form-label">Persentase Kepemilikan Asing (%) <span class="text-danger">*</span></label>
                         <input type="number" class="form-control form-control-lg" id="kepemilikan_asing" 
-                               name="kepemilikan_asing" min="0" max="100" step="0.01" required>
+                               name="persentase_kepemilikan_asing" min="0" max="100" step="0.01" required>
                     </div>
-                </div>
-
-                <div class="mb-4">
-                    <label for="ringkasan" class="form-label">Ringkasan Laporan Manajemen <span class="text-danger">*</span></label>
-                    <textarea class="form-control form-control-lg" id="ringkasan" name="ringkasan" 
-                              rows="5" minlength="10" maxlength="1000" required></textarea>
-                    <div class="form-text">Minimal 10 karakter, maksimal 1000 karakter. <span id="char-count">0</span>/1000</div>
                 </div>
 
                 <div class="mb-4">
@@ -200,24 +215,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const successMessageElement = document.getElementById('successMessageManajemen');
     const errorMessageElement = document.getElementById('errorMessageManajemen');
 
-    const ringkasan = document.getElementById('ringkasan');
-    const charCount = document.getElementById('char-count');
-    
-    if(ringkasan && charCount) {
-        ringkasan.addEventListener('input', function() {
-            charCount.textContent = this.value.length;
-        });
-    }
-    
     const tanggalSuratInput = document.getElementById('tanggal_surat');
     if(tanggalSuratInput){
         const today = new Date().toISOString().split('T')[0];
         tanggalSuratInput.max = today;
     }
 
+    // --- JavaScript for Komisaris and Direksi (Reverted to original) ---
     function addManagementMember(containerId, type, countInputId) {
         const container = document.getElementById(containerId);
-        const currentCount = container.children.length;
         const newItem = document.createElement('div');
         newItem.className = type + '-item mb-3 border p-3 rounded';
         newItem.innerHTML = `
@@ -251,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('tambah-komisaris').addEventListener('click', function() {
         addManagementMember('komisaris-container', 'komisaris', 'jumlah_komisaris');
     });
-     // Sync input number with dynamic fields for Komisaris
+    // Sync input number with dynamic fields for Komisaris
     if(jumlahKomisarisInput) {
         jumlahKomisarisInput.addEventListener('change', function() {
             const targetCount = parseInt(this.value) || 0;
@@ -268,7 +274,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.value = komisarisContainer.children.length; // Update count based on actual fields
         });
     }
-
 
     const jumlahDireksiInput = document.getElementById('jumlah_direksi');
     const direksiContainer = document.getElementById('direksi-container');
@@ -292,7 +297,95 @@ document.addEventListener('DOMContentLoaded', function() {
              this.value = direksiContainer.children.length; // Update count based on actual fields
         });
     }
-    
+    // --- End of JavaScript for Komisaris and Direksi ---
+
+
+    // --- JavaScript for Executive Summary Table ---
+    const executiveSummaryTableBody = document.getElementById('executive-summary-table-body');
+    let executiveSummaryCounter = 0;
+
+    function addExecutiveSummaryRow(keteranganValue = '', executiveSummaryValue = '') {
+        executiveSummaryCounter++;
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${executiveSummaryCounter}</td>
+            <td>
+                <div class="keterangan-static-text fw-bold">${keteranganValue}</div>
+            </td>
+            <td>
+                <textarea class="form-control form-control-sm executive-summary-text" 
+                          name="executive_summary_detail[]" rows="2" 
+                          minlength="10" maxlength="100" required>${executiveSummaryValue}</textarea>
+                <div class="form-text">Min 10, Max 100 kata.</div>
+            </td>
+            <!-- Kolom Aksi dihapus -->
+        `;
+        executiveSummaryTableBody.appendChild(newRow);
+
+        // Add event listeners for word counting and validation for the editable textarea
+        newRow.querySelector('.executive-summary-text').addEventListener('input', function() {
+            const words = this.value.match(/\S+/g) || [];
+            const wordCount = words.length;
+            const minWords = 10;
+            const maxWords = 100;
+            const formText = this.nextElementSibling;
+
+            if (formText) {
+                formText.textContent = `Min ${minWords}, Max ${maxWords} kata. (${wordCount}/${maxWords} kata)`;
+                if (wordCount < minWords || wordCount > maxWords) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            }
+        });
+        // Trigger initial count and validation for newly added row
+        newRow.querySelector('.executive-summary-text').dispatchEvent(new Event('input')); 
+    }
+
+    function updateExecutiveSummaryRowNumbers() {
+        const rows = executiveSummaryTableBody.querySelectorAll('tr');
+        rows.forEach((row, index) => {
+            row.querySelector('td:first-child').textContent = index + 1;
+        });
+        executiveSummaryCounter = rows.length;
+    }
+
+    // Tombol 'tambah-executive-summary' dihapus, sehingga event listener ini juga dihapus
+    // document.getElementById('tambah-executive-summary').addEventListener('click', function() {
+    //     addExecutiveSummaryRow('', ''); 
+    // });
+
+    // Pre-populate the table with data from the document
+    const predefinedSummaries = [
+        "Penilaian Dewan Komisaris terhadap kondisi perekonomian terkini & perkembangan industri SP",
+        "Hasil Pengawasan Dewan Komisaris terhadap perkembangan bisnis PJP kinerja PJP, termasuk langkah strategis yang telah dilakukan antara lain terkait permodalan pengembangan infrastruktur sistem informasi SDM",
+        "Hasil Pengawasan Dewan Komisaris terhadap pelaksanaan tata Kelola dan manajemen risiko termasuk prinsip kehati hatian oleh PJP",
+        "Pandangan dari Dewan Komisaris untuk mendorong PJP agar menjadi lebih baik lagi",
+        "Penjelasan perubahan komposisi Dewan Komisaris (apabila ada)",
+        "Laporan pertanggungjawaban Direksi yang mencakup: Implementasi kebijakan Direksi",
+        "Laporan pertanggungjawaban Direksi yang mencakup: Proses yang dilakukan Direksi untuk memastikan pencapaian kinerja tahun pelaporan",
+        "Laporan pertanggungjawaban Direksi yang mencakup: Perbandingan antara hasil yang dicapai dengan yang ditargetkan PJP/PIP, paling sedikit memuat realisasi selama satu tahun terakhir dibandingkan tahun sebelumnya",
+        "Laporan pertanggungjawaban Direksi yang mencakup: Kendala yang dihadapi PJP",
+        "Penerapan tata kelola dan manajemen risiko yang mencakup: Pengawasan aktif direksi dan dewan komisaris",
+        "Penerapan tata kelola dan manajemen risiko yang mencakup: Proses dan Fungsi Manajemen Risiko termasuk SDM",
+        "Penerapan tata kelola dan manajemen risiko yang mencakup: Ketersediaan kebijakan dan prosedur",
+        "Penerapan tata kelola dan manajemen risiko yang mencakup: Pengendalian intern",
+        "Asesmen kecukupan struktur organisasi dan SDM, yang mencakup: Kualitas: Rencana pengembangan SDM terkait SP",
+        "Asesmen kecukupan struktur organisasi dan SDM, yang mencakup: Kuantitas: Asesmen kecukupan SDM SP, jabatan kosong, dan target pemenuhan",
+        "Asesmen struktur kepemilikan (termasuk informasi struktur kepemilikan sampai ultimate shareholder) (Sesuai PBI PJP Pasal 19 atau PBI PIP pasal 21) Struktur kepemilikan domestik dan asing apabila ada ) sampai dengan ultimate shareholder sesuai PBI PJP pasal 19 dan PBI PIP pasal 21 (Persentase kepemilikan dan pengendalian dihitung berdasarkan nominal saham)",
+        "Asesmen struktur pengendalian termasuk informasi struktur pengendalian sampai ultimate shareholder Struktur pengendalian domestik dan asing apabila ada ) sampai dengan ultimate shareholder sesuai PBI PJP pasal 20 dan PBI PIP pasal 22 (Persentase kepemilikan dan pengendalian dihitung berdasarkan nominal saham)",
+        "Asesmen permodalan dan investasi (jika tidak memenuhi Kewajiban Permodalan Sistem Pembayaran maka disampaikan rencana penambahan modal)",
+        "Asesmen manajemen risiko dan standar keamanan sistem informasi (sesuai dengan kewajiban pemenuhan MRSI)",
+        "Pemantauan kepatuhan (apabila ada ) termasuk komitmen"
+    ];
+
+    predefinedSummaries.forEach(item => {
+        addExecutiveSummaryRow(item, ''); 
+    });
+    // --- End of JavaScript for Executive Summary Table ---
+
+
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         let formIsValid = true;
@@ -325,6 +418,21 @@ document.addEventListener('DOMContentLoaded', function() {
             formIsValid = false;
         }
 
+        // Validate executive summary textareas (only the editable ones)
+        executiveSummaryTableBody.querySelectorAll('.executive-summary-text').forEach(textarea => {
+            const words = textarea.value.match(/\S+/g) || [];
+            const wordCount = words.length;
+            const minWords = 10;
+            const maxWords = 100;
+            if (wordCount < minWords || wordCount > maxWords) {
+                textarea.classList.add('is-invalid');
+                formIsValid = false;
+                errorMessageElement.textContent = `Pastikan semua ringkasan eksekutif memiliki antara ${minWords} dan ${maxWords} kata.`;
+                errorModal.show();
+            } else {
+                textarea.classList.remove('is-invalid');
+            }
+        });
 
         if (!formIsValid) return;
 
@@ -334,6 +442,18 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingModal.show();
         
         const formData = new FormData(this);
+
+        // Collect executive summary data as JSON string
+        const executiveSummaries = [];
+        executiveSummaryTableBody.querySelectorAll('tr').forEach(row => {
+            const keterangan = row.querySelector('.keterangan-static-text').textContent; // Get text content
+            const detail = row.querySelector('.executive-summary-text').value;
+            executiveSummaries.push({
+                keterangan: keterangan,
+                executive_summary: detail
+            });
+        });
+        formData.append('executive_summaries_json', JSON.stringify(executiveSummaries));
         
         fetch(this.action, {
             method: 'POST',
@@ -352,9 +472,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
                 successModal.show();
                 form.reset();
-                document.getElementById('komisaris-container').innerHTML = ''; // Clear dynamic fields
-                document.getElementById('direksi-container').innerHTML = '';
-                if(charCount) charCount.textContent = '0'; // Reset char counter
+                // Clear and re-populate dynamic fields for Komisaris/Direksi and Executive Summary table
+                komisarisContainer.innerHTML = '';
+                jumlahKomisarisInput.value = 0;
+                direksiContainer.innerHTML = '';
+                jumlahDireksiInput.value = 0;
+                executiveSummaryTableBody.innerHTML = ''; 
+                executiveSummaryCounter = 0; 
+                predefinedSummaries.forEach(item => { 
+                    addExecutiveSummaryRow(item, '');
+                });
             } else {
                 errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
                 errorModal.show();
