@@ -2,161 +2,234 @@
 
 {% block title %}Form Laporan DTTOT{% endblock %}
 
+{% block extra_head %}
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Mengatur font-family secara global untuk halaman ini */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Kelas utilitas untuk spinner */
+        .spinner-border {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            vertical-align: middle;
+            border: 0.25em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border .75s linear infinite;
+        }
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+        .d-none { display: none !important; } /* Utility untuk JS */
+
+        /* Custom styles to match Laporan P2P/Fraud form aesthetics */
+        .section-group {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .section-group .section-header {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1f2937;
+            background-color: #eef2f6;
+            padding: 0.8rem 1.5rem;
+            margin-top: 0;
+            margin-left: -1px;
+            margin-right: -1px;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e0e7eb;
+            border-top-left-radius: 11px;
+            border-top-right-radius: 11px;
+        }
+        .section-group .section-content {
+            padding: 1.5rem;
+            padding-top: 0;
+        }
+
+        /* Adjust font size for labels and inputs for precision */
+        .form-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .form-input {
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
+            width: 100%; /* Ensure full width */
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            color: #4b5563;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            outline: none;
+            box-shadow: none;
+        }
+        .form-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        textarea.form-input {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .form-text {
+            font-size: 0.75rem; /* Smaller text for hints */
+            color: #6b7280; /* gray-500 */
+            margin-top: 0.25rem;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center mt-4">
-    <div class="col-12 col-md-10 col-lg-8">
-        <div class="card shadow-lg p-5">
-            <!-- Modals untuk pesan sukses, error, dan loading -->
-            <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-success text-white">
-                            <h5 class="modal-title">Sukses!</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p id="successMessage">Laporan berhasil dikirim!</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6 tw-font-sans">
+    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">Form Laporan DTTOT</h2>
 
-            <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-danger text-white">
-                            <h5 class="modal-title">Error!</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p id="errorMessage">Terjadi kesalahan saat mengirim laporan.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
-                        </div>
-                    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="tw-p-4 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
+                    {{ message }}
                 </div>
-            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-            <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body text-center py-4">
-                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
-                            <p class="text-muted small">Harap tunggu sebentar</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- End Modals -->
-
-            <h3 class="text-center mb-4">Form Laporan DTTOT</h3>
-            <form method="POST" action="{{ url_for('submit_laporan_dttot') }}" enctype="multipart/form-data" id="dttotForm">
-                <div class="mb-3">
-                    <label for="tahun" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
-                    <select class="form-select form-select-lg" id="tahun" name="tahun" required>
-                        <option value="">-- Pilih Tahun --</option>
-                        {% for year in range(2020, 2027) %}
-                        <option value="{{ year }}">{{ year }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="periode" class="form-label">Periode Laporan <span class="text-danger">*</span></label>
-                    <select class="form-select form-select-lg" id="periode" name="periode" required>
-                        <option value="">-- Pilih Periode --</option>
-                        <option value="Januari">Januari</option>
-                        <option value="Februari">Februari</option>
-                        <option value="Maret">Maret</option>
-                        <option value="April">April</option>
-                        <option value="Mei">Mei</option>
-                        <option value="Juni">Juni</option>
-                        <option value="Juli">Juli</option>
-                        <option value="Agustus">Agustus</option>
-                        <option value="September">September</option>
-                        <option value="Oktober">Oktober</option>
-                        <option value="November">November</option>
-                        <option value="Desember">Desember</option>
+    <form method="POST" action="{{ url_for('submit_laporan_dttot') }}" enctype="multipart/form-data" id="dttotForm" class="tw-space-y-6">
+        <div class="section-group">
+            <h3 class="section-header">Informasi Umum Laporan</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="tahun_laporan" class="tw-block form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
+                        <select class="tw-mt-1 tw-block tw-w-full form-input" id="tahun_laporan" name="tahun_laporan" required>
+                            <option value="">-- Pilih Tahun --</option>
+                            {% for year in range(2020, 2027) %}
+                            <option value="{{ year }}">{{ year }}</option>
+                            {% endfor %}
                         </select>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="periode_laporan" class="tw-block form-label">Periode Laporan <span class="tw-text-red-500">*</span></label>
+                        <select class="tw-mt-1 tw-block tw-w-full form-input" id="periode_laporan" name="periode_laporan" required>
+                            <option value="">-- Pilih Periode --</option>
+                            <option value="Januari">Januari</option>
+                            <option value="Februari">Februari</option>
+                            <option value="Maret">Maret</option>
+                            <option value="April">April</option>
+                            <option value="Mei">Mei</option>
+                            <option value="Juni">Juni</option>
+                            <option value="Juli">Juli</option>
+                            <option value="Agustus">Agustus</option>
+                            <option value="September">September</option>
+                            <option value="Oktober">Oktober</option>
+                            <option value="November">November</option>
+                            <option value="Desember">Desember</option>
+                        </select>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="nomor_surat" class="tw-block form-label">Nomor Surat <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="nomor_surat" name="nomor_surat" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="tanggal_surat" class="tw-block form-label">Tanggal Surat <span class="tw-text-red-500">*</span></label>
+                        <input type="date" class="tw-mt-1 tw-block tw-w-full form-input" id="tanggal_surat" name="tanggal_surat" required>
+                    </div>
+                    {# Moved "Upload File Laporan DTTOT" here #}
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="file" class="tw-block form-label">Upload File Laporan DTTOT (PDF/DOC/DOCX) <span class="tw-text-red-500">*</span></label>
+                        <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="file" name="file" accept=".pdf,.doc,.docx" required>
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF, DOC, DOCX (Maks. 10MB)</p>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control form-control-lg" id="nomor_surat" name="nomor_surat" required>
-                </div>
-                <div class="mb-3">
-                    <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control form-control-lg" id="tanggal_surat" name="tanggal_surat" required>
-                </div>
-                <div class="mb-3">
-                    <label for="nomor_surat_kepolisian" class="form-label">Nomor Surat Kepolisian <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control form-control-lg" id="nomor_surat_kepolisian" name="nomor_surat_kepolisian" required>
-                </div>
-                <div class="mb-3">
-                    <label for="jumlah_terduga" class="form-label">Jumlah Terduga Teroris <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control form-control-lg" id="jumlah_terduga" name="jumlah_terduga" min="0" required>
-                </div>
-                <div class="mb-3">
-                    <label for="organisasi_teroris" class="form-label">Organisasi Teroris <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control form-control-lg" id="organisasi_teroris" name="organisasi_teroris" required>
-                </div>
-                <div class="mb-3">
-                    <label for="perihal" class="form-label">Perihal <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control form-control-lg" id="perihal" name="perihal" required>
-                </div>
-                <div class="mb-3">
-                    <label for="keterangan" class="form-label">Keterangan <span class="text-danger">*</span></label>
-                    <textarea class="form-control form-control-lg" id="keterangan" name="keterangan" rows="3" required></textarea>
-                </div>
-                <div class="mb-4">
-                    <label for="file_laporan" class="form-label">Upload File Laporan DTTOT <span class="text-danger">*</span></label>
-                    <input type="file" class="form-control form-control-lg" id="file_laporan" name="file_laporan" accept=".pdf,.doc,.docx" required>
-                    <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-lg px-5">
-                        <span class="submit-text">Kirim Laporan</span>
-                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
+        
+        <div class="section-group">
+            <h3 class="section-header">Detail Terduga Teroris</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="jumlah_terduga_teroris" class="tw-block form-label">Jumlah Terduga Teroris <span class="tw-text-red-500">*</span></label>
+                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input" id="jumlah_terduga_teroris" name="jumlah_terduga_teroris" min="0" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="organisasi_teroris" class="tw-block form-label">Organisasi Teroris <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="organisasi_teroris" name="organisasi_teroris" required>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="nomor_surat_kepolisian" class="tw-block form-label">Nomor Surat Kepolisian <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="nomor_surat_kepolisian" name="nomor_surat_kepolisian" required>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="perihal" class="tw-block form-label">Perihal <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="perihal" name="perihal" required>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="keterangan" class="tw-block form-label">Keterangan <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="keterangan" name="keterangan" rows="3" required></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+                <span class="submit-text">Kirim Laporan</span>
+                <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">Batal</button>
+        </div>
+    </form>
 </div>
-<style>
-    .btn-primary .spinner-border {
-        vertical-align: middle;
-        margin-left: 5px;
-    }
-    .form-text {
-        font-size: 0.8rem;
-        color: #6c757d;
-    }
-</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('dttotForm');
-    const submitButton = form.querySelector('button[type="submit"]');
+    const submitButton = document.getElementById('submitButton');
     const submitText = submitButton.querySelector('.submit-text');
     const submitSpinner = submitButton.querySelector('.spinner-border');
     
-    // Inisialisasi modal Bootstrap
-    // Pastikan Bootstrap JS dimuat di 'user/base.html' atau sebelum script ini
-    const loadingModalElement = document.getElementById('loadingModal');
-    const successModalElement = document.getElementById('successModal');
-    const errorModalElement = document.getElementById('errorModal');
-
-    const loadingModal = new bootstrap.Modal(loadingModalElement);
-    const successModal = new bootstrap.Modal(successModalElement);
-    const errorModal = new bootstrap.Modal(errorModalElement);
+    // --- Custom Modal/Message Box ---
+    const messageContainer = document.querySelector('.tw-max-w-4xl.tw-mx-auto'); 
     
-    const successMessageElement = document.getElementById('successMessage');
-    const errorMessageElement = document.getElementById('errorMessage');
+    function showMessageBox(message, type) {
+        let messageBox = document.getElementById('dynamicMessageBox');
+        if (!messageBox) {
+            messageBox = document.createElement('div');
+            messageBox.id = 'dynamicMessageBox';
+            messageBox.classList.add('tw-p-3', 'tw-rounded-lg', 'tw-mb-4', 'tw-text-center', 'tw-font-medium'); 
+            const firstChild = messageContainer.querySelector('h2');
+            if (firstChild) {
+                firstChild.parentNode.insertBefore(messageBox, firstChild.nextSibling);
+            } else {
+                messageContainer.insertBefore(messageBox, messageContainer.firstChild);
+            }
+        }
+
+        messageBox.textContent = message;
+        messageBox.classList.remove('tw-bg-green-100', 'tw-text-green-800', 'tw-border-green-300', 'tw-bg-red-100', 'tw-text-red-800', 'tw-border-red-300'); 
+        
+        if (type === 'success') {
+            messageBox.classList.add('tw-bg-green-100', 'tw-text-green-800', 'tw-border', 'tw-border-green-300');
+        } else if (type === 'error') {
+            messageBox.classList.add('tw-bg-red-100', 'tw-text-red-800', 'tw-border', 'tw-border-red-300');
+        }
+        
+        messageBox.style.display = 'block'; 
+        setTimeout(() => {
+            messageBox.style.display = 'none'; 
+        }, 5000);
+    }
+    // --- End Custom Modal/Message Box ---
 
     const tanggalSuratInput = document.getElementById('tanggal_surat');
     if(tanggalSuratInput){
@@ -168,10 +241,9 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         let formIsValid = true;
 
-        const fileInput = document.getElementById('file_laporan');
+        const fileInput = document.getElementById('file'); 
         if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) { // 10MB
-            errorMessageElement.textContent = 'Ukuran file lampiran melebihi 10MB.';
-            errorModal.show(); // Tampilkan modal error
+            showMessageBox('Ukuran file lampiran melebihi 10MB.', 'error');
             formIsValid = false;
         }
         
@@ -180,11 +252,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Tampilkan modal loading dan nonaktifkan tombol
         submitButton.disabled = true;
         submitText.textContent = 'Mengirim...';
         submitSpinner.classList.remove('d-none');
-        loadingModal.show(); // Tampilkan modal loading
         
         const formData = new FormData(this);
         
@@ -194,17 +264,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: { 'Accept': 'application/json' }
         })
         .then(response => {
-            loadingModal.hide(); // Sembunyikan modal loading setelah mendapatkan respons
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
-            // Cek jika response.ok untuk status 2xx
+
             if (!response.ok) {
-                // Jika response bukan 2xx, throw error agar ditangkap oleh .catch
                 return response.json().then(errorData => {
                     throw new Error(errorData.message || 'Gagal mengirim laporan (status non-2xx)');
                 }).catch(() => {
-                    // Jika response tidak bisa di-parse sebagai JSON
                     throw new Error('Gagal mengirim laporan (respons tidak valid dari server).');
                 });
             }
@@ -212,22 +279,18 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             if (data.success) {
-                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
-                successModal.show(); // Tampilkan modal sukses
-                form.reset(); // Reset form setelah sukses
+                showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
+                form.reset();
             } else {
-                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
-                errorModal.show(); // Tampilkan modal error
+                showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            loadingModal.hide(); // Pastikan modal loading disembunyikan
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
-            errorMessageElement.textContent = error.message || 'Terjadi kesalahan jaringan atau server.';
-            errorModal.show(); // Tampilkan modal error
+            showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server.', 'error');
         });
     });
 });

@@ -3,490 +3,559 @@
 {% block title %}Laporan Tahunan Sistem Pembayaran{% endblock %}
 
 {% block extra_head %}
-<style>
-    .card-header {
-        font-weight: 600;
-        background-color: #0056b3; /* Warna biru BI */
-        color: white;
-    }
-    .form-section {
-        margin-bottom: 2rem;
-    }
-    .form-subsection-header {
-        font-size: 1.1rem;
-        font-weight: 500;
-        margin-top: 1.5rem;
-        margin-bottom: 0.75rem;
-        color: #0056b3; /* Warna biru BI */
-    }
-    .small-text {
-        font-size: 0.85rem;
-        color: #6c757d;
-    }
-    .btn-primary .spinner-border {
-        vertical-align: middle;
-        margin-left: 5px;
-    }
-    .table-responsive {
-        overflow-x: auto;
-    }
-    .table thead th {
-        background-color: #e9ecef;
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-    /* Style for repeatable sections */
-    .repeatable-item {
-        border: 1px solid #dee2e6;
-        border-radius: 0.25rem;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        background-color: #f8f9fa;
-    }
-</style>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Mengatur font-family secara global untuk halaman ini */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Kelas utilitas untuk spinner */
+        .spinner-border {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            vertical-align: middle;
+            border: 0.25em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border .75s linear infinite;
+        }
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+        .d-none { display: none !important; } /* Utility untuk JS */
+
+        /* Custom styles to match consistent form aesthetics */
+        .section-group {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .section-group .section-header {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1f2937;
+            background-color: #eef2f6;
+            padding: 0.8rem 1.5rem;
+            margin-top: 0;
+            margin-left: -1px;
+            margin-right: -1px;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e0e7eb;
+            border-top-left-radius: 11px;
+            border-top-right-radius: 11px;
+        }
+        .section-group .section-content {
+            padding: 1.5rem;
+            padding-top: 0;
+        }
+
+        /* Adjust font size for labels and inputs for precision */
+        .form-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .form-input {
+            width: 100%; /* Ensure full width */
+            padding: 0.7rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #4b5563;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            outline: none;
+            box-shadow: none;
+        }
+        .form-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        textarea.form-input {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* Nested section for tables and specific groupings */
+        .nested-section-group {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #fcfdfe;
+        }
+        .nested-section-group h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #e0e7eb;
+        }
+
+        /* Table specific styles for consistency */
+        .table-custom {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            border: 1px solid #e5e7eb; /* Outer border for the table */
+            border-radius: 8px; /* Rounded corners for the table */
+            overflow: hidden; /* Ensures content respects border-radius */
+        }
+        .table-custom th, .table-custom td {
+            border-bottom: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+            vertical-align: middle;
+        }
+        .table-custom th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+        .table-custom tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        .table-custom tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        .table-custom .text-center {
+            text-align: center;
+        }
+        .table-custom .form-check {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%; /* Ensure vertical alignment in cell */
+        }
+        .table-custom .form-check-input {
+            margin: 0; /* Remove default margin */
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4 mb-5">
-     <!-- Success Modal -->
-     <div class="modal fade" id="successModalTahunanSP" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Sukses!</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p id="successMessageTahunanSP">Laporan berhasil dikirim!</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6 tw-font-sans">
+    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">Laporan Tahunan Sistem Pembayaran</h2>
 
-    <!-- Error Modal -->
-    <div class="modal fade" id="errorModalTahunanSP" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Error!</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="tw-p-4 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
+                    {{ message }}
                 </div>
-                <div class="modal-body">
-                    <p id="errorMessageTahunanSP">Terjadi kesalahan saat mengirim laporan.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-    <!-- Loading Modal -->
-    <div class="modal fade" id="loadingModalTahunanSP" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body text-center py-4">
-                    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
-                    <p class="text-muted small">Harap tunggu sebentar</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Confirmation Modal -->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-warning text-white">
-                    <h5 class="modal-title">Konfirmasi Pengiriman</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Apakah Anda yakin ingin mengirim laporan ini? Pastikan semua data sudah benar.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="confirmSendButton">Kirim</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <h2 class="text-center mb-4">Laporan Tahunan Sistem Pembayaran</h2>
-
-    <form method="POST" action="{{ url_for('submit_laporan_tahunan_sp') }}" enctype="multipart/form-data" id="laporanTahunanSPForm">
+    <form method="POST" action="{{ url_for('submit_laporan_tahunan_sp') }}" enctype="multipart/form-data" id="laporanTahunanSPForm" class="tw-space-y-6">
         
-        <div class="card form-section shadow-sm">
-            <div class="card-header">
-                Informasi Umum Laporan
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="tahun_laporan" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
-                        <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
+        <div class="section-group">
+            <h3 class="section-header">Informasi Umum Laporan</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="tahun_laporan" class="tw-block form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
+                        <select class="tw-mt-1 tw-block tw-w-full form-input" id="tahun_laporan" name="tahun_laporan" required>
                             <option value="">-- Pilih Tahun --</option>
                             {% for year in range(2020, 2027) %}
                             <option value="{{ year }}">{{ year }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="nomor_surat_pengantar" class="form-label">Nomor Surat Pengantar <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="nomor_surat_pengantar" name="nomor_surat_pengantar" required>
+                    <div class="tw-space-y-1">
+                        <label for="nomor_surat_pengantar" class="tw-block form-label">Nomor Surat Pengantar <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="nomor_surat_pengantar" name="nomor_surat_pengantar" required>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="tanggal_surat_pengantar" class="form-label">Tanggal Surat Pengantar <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="tanggal_surat_pengantar" name="tanggal_surat_pengantar" required>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="tanggal_surat_pengantar" class="tw-block form-label">Tanggal Surat Pengantar <span class="tw-text-red-500">*</span></label>
+                        <input type="date" class="tw-mt-1 tw-block tw-w-full form-input" id="tanggal_surat_pengantar" name="tanggal_surat_pengantar" required>
                     </div>
-                </div>
-                 <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="nama_pejabat_penandatangan" class="form-label">Nama Pejabat Penandatangan <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="nama_pejabat_penandatangan" name="nama_pejabat_penandatangan" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="jabatan_pejabat_penandatangan" class="form-label">Jabatan Pejabat Penandatangan <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="jabatan_pejabat_penandatangan" name="jabatan_pejabat_penandatangan" required>
-                    </div>
-                </div>
-                <div class="row">
-                     <div class="col-md-6 mb-3">
-                        <label for="email_pic" class="form-label">Email PIC <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="email_pic" name="email_pic" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="telepon_pic" class="form-label">Telepon PIC <span class="text-danger">*</span></label>
-                        <input type="tel" class="form-control" id="telepon_pic" name="telepon_pic" required>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="file_laporan" class="tw-block form-label">Upload File Laporan (PDF) <span class="tw-text-red-500">*</span></label>
+                        <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="file_laporan" name="file_laporan" accept=".pdf" required>
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF (Maks. 10MB)</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card form-section shadow-sm">
-            <div class="card-header">
-                I. Executive Summary
+        <div class="section-group">
+            <h3 class="section-header">Informasi Pejabat Penandatangan</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="nama_pejabat_penandatangan" class="tw-block form-label">Nama Pejabat Penandatangan <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="nama_pejabat_penandatangan" name="nama_pejabat_penandatangan" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="jabatan_pejabat_penandatangan" class="tw-block form-label">Jabatan Pejabat Penandatangan <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="jabatan_pejabat_penandatangan" name="jabatan_pejabat_penandatangan" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="email_pic" class="tw-block form-label">Email PIC <span class="tw-text-red-500">*</span></label>
+                        <input type="email" class="tw-mt-1 tw-block tw-w-full form-input" id="email_pic" name="email_pic" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="telepon_pic" class="tw-block form-label">Telepon PIC <span class="tw-text-red-500">*</span></label>
+                        <input type="tel" class="tw-mt-1 tw-block tw-w-full form-input" id="telepon_pic" name="telepon_pic" required>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <label for="executive_summary" class="form-label">Ringkasan Eksekutif <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="executive_summary" name="executive_summary" rows="5" placeholder="Penjelasan umum mengenai hasil/realisasi pengembangan aktivitas, produk, dan/atau kerja sama yang telah dicapai di tahun berjalan maupun rencana pengembangan serta target usaha di tahun depan." required></textarea>
+        </div>
+
+        <div class="section-group">
+            <h3 class="section-header">I. Executive Summary</h3>
+            <div class="section-content">
+                <div class="tw-space-y-1">
+                    <label for="executive_summary" class="tw-block form-label">Ringkasan Eksekutif <span class="tw-text-red-500">*</span></label>
+                    <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="executive_summary" name="executive_summary" rows="5" placeholder="Penjelasan umum mengenai hasil/realisasi pengembangan aktivitas, produk, dan/atau kerja sama yang telah dicapai di tahun berjalan maupun rencana pengembangan serta target usaha di tahun depan." required></textarea>
                 </div>
             </div>
         </div>
 
-        <div class="card form-section shadow-sm">
-            <div class="card-header">
-                II. Kelembagaan dan Profil
-            </div>
-            <div class="card-body">
-                <h5 class="form-subsection-header">2.1 Perizinan</h5>
-                <div class="mb-3">
-                    <label for="perizinan_penjelasan" class="form-label">Penjelasan Umum Perizinan <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="perizinan_penjelasan" name="perizinan_penjelasan" rows="3" placeholder="Penjelasan mengenai seluruh perizinan yang dimiliki terkait SP, termasuk peran, aktivitas, dan kategori izin PJP/PIP serta perijinan APMK/UE/Proprietary Channel yang dimiliki." required></textarea>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="perizinan_kategori_izin" class="form-label">Kategori Izin PJP/PIP</label>
-                        <input type="text" class="form-control" id="perizinan_kategori_izin" name="perizinan_kategori_izin" placeholder="Contoh: KI1, KI2, KI3, PIP">
+        <div class="section-group">
+            <h3 class="section-header">II. Kelembagaan dan Profil</h3>
+            <div class="section-content">
+                <div class="nested-section-group">
+                    <h4>2.1 Perizinan</h4>
+                    <div class="tw-space-y-1">
+                        <label for="perizinan_penjelasan" class="tw-block form-label">Penjelasan Umum Perizinan <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="perizinan_penjelasan" name="perizinan_penjelasan" rows="3" placeholder="Penjelasan mengenai seluruh perizinan yang dimiliki terkait SP, termasuk peran, aktivitas, dan kategori izin PJP/PIP serta perijinan APMK/UE/Proprietary Channel yang dimiliki." required></textarea>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="perizinan_klasifikasi" class="form-label">Klasifikasi PJP/PIP</label>
-                        <input type="text" class="form-control" id="perizinan_klasifikasi" name="perizinan_klasifikasi" placeholder="Contoh: PSPS, PSPK, PSPU">
-                    </div>
-                </div>
-                <p class="small-text">Detail perizinan (nomor, tanggal, produk) dapat dilampirkan atau diinput dalam format tabel jika API mendukung.</p>
-
-                <h5 class="form-subsection-header">2.2 Kepemilikan dan Pengendalian</h5>
-                <div class="mb-3">
-                    <label for="kepemilikan_penjelasan" class="form-label">Penjelasan Kepemilikan dan Pengendalian <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="kepemilikan_penjelasan" name="kepemilikan_penjelasan" rows="3" placeholder="Penjelasan mengenai kepemilikan dan pengendalian PJP/PIP sampai dengan ultimate shareholder serta informasi mengenai status kepemilikan (asing/WNI) dan grup terkait (konglomerasi)." required></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="kepemilikan_upload_bagan" class="form-label">Upload Bagan Struktur Kepemilikan</label>
-                    <input type="file" class="form-control" id="kepemilikan_upload_bagan" name="kepemilikan_upload_bagan">
-                    <div class="small-text">Format: PDF, JPG, PNG. Maks 5MB.</div>
-                </div>
-
-                <h5 class="form-subsection-header">Manajemen Risiko Sistem Pembayaran (MERSI)</h5>
-                <div id="mersi-container">
-                    <!-- Dynamic MERSI fields will be added here -->
-                </div>
-                <button type="button" class="btn btn-sm btn-outline-primary" id="add-mersi-btn">Tambah Data MERSI</button>
-                <hr class="my-3">
-
-                <h5 class="form-subsection-header">Detail Kepemilikan Saham</h5>
-                <div id="shareholder-container">
-                    <!-- Dynamic shareholder fields will be added here -->
-                </div>
-                <button type="button" class="btn btn-sm btn-outline-primary" id="add-shareholder-btn">Tambah Pemegang Saham</button>
-                <hr class="my-3">
-
-                <h5 class="form-subsection-header">2.3 Kepengurusan</h5>
-                <div class="mb-3">
-                    <label for="kepengurusan_penjelasan" class="form-label">Penjelasan Struktur Kepengurusan <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="kepengurusan_penjelasan" name="kepengurusan_penjelasan" rows="3" placeholder="Penjelasan mengenai struktur kepengurusan (Direksi dan Komisaris) termasuk informasi mengenai pengurus yang belum definitif (dalam proses persetujuan)." required></textarea>
-                </div>
-                <div id="management-container">
-                    <!-- Dynamic management fields will be added here -->
-                </div>
-                <button type="button" class="btn btn-sm btn-outline-primary" id="add-management-btn">Tambah Pengurus</button>
-                <p class="small-text mt-3">Detail nama pengurus, jabatan, domisili, rangkap jabatan, status dapat dilampirkan atau diinput dalam format tabel.</p>
-                <hr class="my-3">
-
-                <h5 class="form-subsection-header">2.4 Jaringan Usaha</h5>
-                <div class="mb-3">
-                    <label for="jaringan_usaha_penjelasan" class="form-label">Penjelasan Jaringan Usaha <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="jaringan_usaha_penjelasan" name="jaringan_usaha_penjelasan" rows="2" placeholder="Penjelasan mengenai jumlah jaringan kantor yang dimiliki." required></textarea>
-                </div>
-                 <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="jaringan_jumlah_total" class="form-label">Jumlah Total Jaringan Kantor</label>
-                        <input type="number" class="form-control" id="jaringan_jumlah_total" name="jaringan_jumlah_total" min="0">
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="jaringan_jumlah_kantor_cabang" class="form-label">Jumlah Kantor Cabang</label>
-                        <input type="number" class="form-control" id="jaringan_jumlah_kantor_cabang" name="jaringan_jumlah_kantor_cabang" min="0">
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="jaringan_jumlah_titik_layanan" class="form-label">Jumlah Titik Layanan</label>
-                        <input type="number" class="form-control" id="jaringan_jumlah_titik_layanan" name="jaringan_jumlah_titik_layanan" min="0">
-                    </div>
-                 </div>
-            </div>
-        </div>
-
-        <div class="card form-section shadow-sm">
-            <div class="card-header">
-                III. Realisasi Kinerja Tahun Laporan (<span class="tahun_laporan_text"></span>)
-            </div>
-            <div class="card-body">
-                <h5 class="form-subsection-header">3.1 Realisasi Produk, Aktivitas, dan Pengembangan SP</h5>
-                <div class="mb-3">
-                    <label for="realisasi_produk_aktivitas_pengembangan_sp" class="form-label">Penjelasan Realisasi <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="realisasi_produk_aktivitas_pengembangan_sp" name="realisasi_produk_aktivitas_pengembangan_sp" rows="4" placeholder="Penjelasan mencakup nama produk/aktivitas/kerjasama, uraian dan target waktu sesuai rencana serta uraian realisasi dan waktu realisasi, serta keterangan apabila terdapat penundaan/pembatalan." required></textarea>
-                </div>
-
-                <h5 class="form-subsection-header">3.2 Realisasi Kerja Sama SP</h5>
-                <div class="mb-3">
-                    <label for="realisasi_kerjasama_sp_penjelasan" class="form-label">Penjelasan Realisasi Kerjasama <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="realisasi_kerjasama_sp_penjelasan" name="realisasi_kerjasama_sp_penjelasan" rows="4" placeholder="Kerja sama dengan pihak lain baik yang dilakukan dengan PJP dan/atau PIP lainnya; dan/atau Penyelenggara Penunjang." required></textarea>
-                </div>
-                <div id="cooperation-container">
-                    <!-- Dynamic cooperation fields will be added here -->
-                </div>
-                <button type="button" class="btn btn-sm btn-outline-primary" id="add-cooperation-btn">Tambah Kerja Sama</button>
-                <hr class="my-3">
-
-                <h5 class="form-subsection-header">3.3 Kinerja Keuangan Tahun Laporan (<span class="tahun_laporan_text"></span>)</h5>
-                <div class="mb-3">
-                    <label for="kinerja_keuangan_penjelasan" class="form-label">Ringkasan Kinerja Keuangan <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="kinerja_keuangan_penjelasan" name="kinerja_keuangan_penjelasan" rows="3" placeholder="Ringkasan penyajian pos-pos tertentu laporan keuangan untuk seluruh kegiatan perusahaan dan untuk aktivitas SP secara triwulanan, dengan memperhatikan aspek pemenuhan kecukupan permodalan." required></textarea>
-                </div>
-                <p class="small-text">Detail laporan keuangan (Neraca, Laba/Rugi, Rasio Keuangan, Info UE) per triwulan dapat dilampirkan.</p>
-                
-                <div class="mb-3">
-                    <div class="row mb-3">
-                        <div class="col-md-3">
-                            <label for="financial_year_1" class="form-label">Tahun Data Keuangan 1</label>
-                            <input type="number" class="form-control" id="financial_year_1" name="financial_year_1" placeholder="Ex: 2023" min="2000" max="2100">
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-4">
+                        <div class="tw-space-y-1">
+                            <label for="perizinan_kategori_izin" class="tw-block form-label">Kategori Izin PJP/PIP</label>
+                            <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="perizinan_kategori_izin" name="perizinan_kategori_izin" placeholder="Contoh: KI1, KI2, KI3, PIP">
                         </div>
-                        <div class="col-md-3">
-                            <label for="financial_year_2" class="form-label">Tahun Data Keuangan 2</label>
-                            <input type="number" class="form-control" id="financial_year_2" name="financial_year_2" placeholder="Ex: 2024" min="2000" max="2100">
+                        <div class="tw-space-y-1">
+                            <label for="perizinan_klasifikasi" class="tw-block form-label">Klasifikasi PJP/PIP</label>
+                            <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="perizinan_klasifikasi" name="perizinan_klasifikasi" placeholder="Contoh: PSPS, PSPK, PSPU">
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
+                    <p class="tw-text-xs tw-text-gray-500 tw-mt-2">Detail perizinan (nomor, tanggal, produk) dapat dilampirkan atau diinput dalam format tabel jika API mendukung.</p>
+                </div>
+
+                <div class="nested-section-group">
+                    <h4>2.2 Kepemilikan dan Pengendalian</h4>
+                    <div class="tw-space-y-1">
+                        <label for="kepemilikan_penjelasan" class="tw-block form-label">Penjelasan Kepemilikan dan Pengendalian <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="kepemilikan_penjelasan" name="kepemilikan_penjelasan" rows="3" placeholder="Penjelasan mengenai kepemilikan dan pengendalian PJP/PIP sampai dengan ultimate shareholder serta informasi mengenai status kepemilikan (asing/WNI) dan grup terkait (konglomerasi)." required></textarea>
+                    </div>
+                    <div class="tw-space-y-1 mt-4">
+                        <label for="kepemilikan_upload_bagan" class="tw-block form-label">Upload Bagan Struktur Kepemilikan</label>
+                        <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="kepemilikan_upload_bagan" name="kepemilikan_upload_bagan" accept=".pdf,.jpg,.png">
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF, JPG, PNG. Maks 5MB.</p>
+                    </div>
+                    
+                    <h5 class="form-subsection-header mt-6">Detail Kepemilikan Saham</h5>
+                    <div id="shareholder-container" class="tw-space-y-4">
+                        <!-- Dynamic shareholder fields will be added here -->
+                    </div>
+                    <button type="button" class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-md tw-shadow-sm tw-text-indigo-700 tw-bg-indigo-100 hover:tw-bg-indigo-200 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-150 tw-ease-in-out mt-4" id="add-shareholder-btn">
+                        <svg class="tw-w-5 tw-h-5 tw-mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Tambah Pemegang Saham
+                    </button>
+                </div>
+
+                <div class="nested-section-group">
+                    <h4>2.3 Kepengurusan</h4>
+                    <div class="tw-space-y-1">
+                        <label for="kepengurusan_penjelasan" class="tw-block form-label">Penjelasan Struktur Kepengurusan <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="kepengurusan_penjelasan" name="kepengurusan_penjelasan" rows="3" placeholder="Penjelasan mengenai struktur kepengurusan (Direksi dan Komisaris) termasuk informasi mengenai pengurus yang belum definitif (dalam proses persetujuan)." required></textarea>
+                    </div>
+                    <div id="management-container" class="tw-space-y-4">
+                        <!-- Dynamic management fields will be added here -->
+                    </div>
+                    <button type="button" class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-md tw-shadow-sm tw-text-indigo-700 tw-bg-indigo-100 hover:tw-bg-indigo-200 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-150 tw-ease-in-out mt-4" id="add-management-btn">
+                        <svg class="tw-w-5 tw-h-5 tw-mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Tambah Pengurus
+                    </button>
+                    <p class="tw-text-xs tw-text-gray-500 tw-mt-3">Detail nama pengurus, jabatan, domisili, rangkap jabatan, status dapat dilampirkan atau diinput dalam format tabel.</p>
+                </div>
+
+                <div class="nested-section-group">
+                    <h4>2.4 Jaringan Usaha</h4>
+                    <div class="tw-space-y-1">
+                        <label for="jaringan_usaha_penjelasan" class="tw-block form-label">Penjelasan Jaringan Usaha <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="jaringan_usaha_penjelasan" name="jaringan_usaha_penjelasan" rows="2" placeholder="Penjelasan mengenai jumlah jaringan kantor yang dimiliki." required></textarea>
+                    </div>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-x-6 tw-gap-y-4 mt-4">
+                        <div class="tw-space-y-1">
+                            <label for="jaringan_jumlah_total" class="tw-block form-label">Jumlah Total Jaringan Kantor</label>
+                            <input type="number" class="tw-mt-1 tw-block tw-w-full form-input" id="jaringan_jumlah_total" name="jaringan_jumlah_total" min="0">
+                        </div>
+                        <div class="tw-space-y-1">
+                            <label for="jaringan_jumlah_kantor_cabang" class="tw-block form-label">Jumlah Kantor Cabang</label>
+                            <input type="number" class="tw-mt-1 tw-block tw-w-full form-input" id="jaringan_jumlah_kantor_cabang" name="jaringan_jumlah_kantor_cabang" min="0">
+                        </div>
+                        <div class="tw-space-y-1">
+                            <label for="jaringan_jumlah_titik_layanan" class="tw-block form-label">Jumlah Titik Layanan</label>
+                            <input type="number" class="tw-mt-1 tw-block tw-w-full form-input" id="jaringan_jumlah_titik_layanan" name="jaringan_jumlah_titik_layanan" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nested-section-group">
+                    <h4>Manajemen Risiko Sistem Pembayaran (MERSI)</h4>
+                    <div id="mersi-container" class="tw-space-y-4">
+                        <!-- Dynamic MERSI fields will be added here -->
+                    </div>
+                    <button type="button" class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-md tw-shadow-sm tw-text-indigo-700 tw-bg-indigo-100 hover:tw-bg-indigo-200 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-150 tw-ease-in-out mt-4" id="add-mersi-btn">
+                        <svg class="tw-w-5 tw-h-5 tw-mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Tambah Data MERSI
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-group">
+            <h3 class="section-header">III. Realisasi Kinerja Tahun Laporan (<span class="tahun_laporan_text"></span>)</h3>
+            <div class="section-content">
+                <div class="nested-section-group">
+                    <h4>3.1 Realisasi Produk, Aktivitas, dan Pengembangan SP</h4>
+                    <div class="tw-space-y-1">
+                        <label for="realisasi_produk_aktivitas_pengembangan_sp" class="tw-block form-label">Penjelasan Realisasi <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="realisasi_produk_aktivitas_pengembangan_sp" name="realisasi_produk_aktivitas_pengembangan_sp" rows="4" placeholder="Penjelasan mencakup nama produk/aktivitas/kerjasama, uraian dan target waktu sesuai rencana serta uraian realisasi dan waktu realisasi, serta keterangan apabila terdapat penundaan/pembatalan." required></textarea>
+                    </div>
+                </div>
+
+                <div class="nested-section-group">
+                    <h4>3.2 Realisasi Kerja Sama SP</h4>
+                    <div class="tw-space-y-1">
+                        <label for="realisasi_kerjasama_sp_penjelasan" class="tw-block form-label">Penjelasan Realisasi Kerjasama <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="realisasi_kerjasama_sp_penjelasan" name="realisasi_kerjasama_sp_penjelasan" rows="4" placeholder="Kerja sama dengan pihak lain baik yang dilakukan dengan PJP dan/atau PIP lainnya; dan/atau Penyelenggara Penunjang." required></textarea>
+                    </div>
+                    <div id="cooperation-container" class="tw-space-y-4 mt-4">
+                        <!-- Dynamic cooperation fields will be added here -->
+                    </div>
+                    <button type="button" class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-md tw-shadow-sm tw-text-indigo-700 tw-bg-indigo-100 hover:tw-bg-indigo-200 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-150 tw-ease-in-out mt-4" id="add-cooperation-btn">
+                        <svg class="tw-w-5 tw-h-5 tw-mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Tambah Kerja Sama
+                    </button>
+                </div>
+
+                <div class="nested-section-group">
+                    <h4>3.3 Kinerja Keuangan Tahun Laporan (<span class="tahun_laporan_text"></span>)</h4>
+                    <div class="tw-space-y-1">
+                        <label for="kinerja_keuangan_penjelasan" class="tw-block form-label">Ringkasan Kinerja Keuangan <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="kinerja_keuangan_penjelasan" name="kinerja_keuangan_penjelasan" rows="3" placeholder="Ringkasan penyajian pos-pos tertentu laporan keuangan untuk seluruh kegiatan perusahaan dan untuk aktivitas SP secara triwulanan, dengan memperhatikan aspek pemenuhan kecukupan permodalan." required></textarea>
+                    </div>
+                    <p class="tw-text-xs tw-text-gray-500 tw-mt-2">Detail laporan keuangan (Neraca, Laba/Rugi, Rasio Keuangan, Info UE) per triwulan dapat dilampirkan.</p>
+                    
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-x-6 tw-gap-y-4 mt-4">
+                        <div class="tw-space-y-1">
+                            <label for="financial_year_1" class="tw-block form-label">Tahun Data Keuangan 1</label>
+                            <input type="number" class="tw-mt-1 tw-block tw-w-full form-input" id="financial_year_1" name="financial_year_1" placeholder="Ex: 2023" min="2000" max="2100">
+                        </div>
+                        <div class="tw-space-y-1">
+                            <label for="financial_year_2" class="tw-block form-label">Tahun Data Keuangan 2</label>
+                            <input type="number" class="tw-mt-1 tw-block tw-w-full form-input" id="financial_year_2" name="financial_year_2" placeholder="Ex: 2024" min="2000" max="2100">
+                        </div>
+                    </div>
+                    <div class="tw-overflow-x-auto mt-4">
+                        <table class="table-custom">
                             <thead>
                                 <tr>
                                     <th>Pos Keuangan</th>
-                                    <th id="header-year-1">Tahun 1</th>
-                                    <th id="header-year-2">Tahun 2</th>
-                                    <th>Perubahan (%)</th>
+                                    <th id="header-year-1" class="text-center">Tahun 1</th>
+                                    <th id="header-year-2" class="text-center">Tahun 2</th>
+                                    <th class="text-center">Perubahan (%)</th>
                                 </tr>
                             </thead>
                             <tbody id="financial-data-body">
-                                <!-- Rows will be dynamically generated and updated by JS -->
                                 <tr>
                                     <td>Modal (Rp)</td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="modal_year_1" value="0"></td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="modal_year_2" value="0"></td>
-                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-1" name="modal_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-2" name="modal_year_2" value="0"></td>
+                                    <td><input type="text" class="form-input percentage-diff" readonly></td>
                                 </tr>
                                 <tr>
                                     <td>Pendapatan (Rp)</td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="pendapatan_year_1" value="0"></td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="pendapatan_year_2" value="0"></td>
-                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-1" name="pendapatan_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-2" name="pendapatan_year_2" value="0"></td>
+                                    <td><input type="text" class="form-input percentage-diff" readonly></td>
                                 </tr>
                                 <tr>
                                     <td>Beban Operasional (Rp)</td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="beban_operasional_year_1" value="0"></td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="beban_operasional_year_2" value="0"></td>
-                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-1" name="beban_operasional_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-2" name="beban_operasional_year_2" value="0"></td>
+                                    <td><input type="text" class="form-input percentage-diff" readonly></td>
                                 </tr>
                                 <tr>
                                     <td>Laba (Rp)</td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="laba_year_1" value="0"></td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="laba_year_2" value="0"></td>
-                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-1" name="laba_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-2" name="laba_year_2" value="0"></td>
+                                    <td><input type="text" class="form-input percentage-diff" readonly></td>
                                 </tr>
                                 <tr>
                                     <td>Rugi (Rp)</td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="rugi_year_1" value="0"></td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="rugi_year_2" value="0"></td>
-                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-1" name="rugi_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-2" name="rugi_year_2" value="0"></td>
+                                    <td><input type="text" class="form-input percentage-diff" readonly></td>
                                 </tr>
                                 <tr>
                                     <td>Total Aset (Rp)</td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="total_aset_year_1" value="0"></td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="total_aset_year_2" value="0"></td>
-                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-1" name="total_aset_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-2" name="total_aset_year_2" value="0"></td>
+                                    <td><input type="text" class="form-input percentage-diff" readonly></td>
                                 </tr>
                                 <tr>
                                     <td>Total Liabilitas (Rp)</td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="total_liabilitas_year_1" value="0"></td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="total_liabilitas_year_2" value="0"></td>
-                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-1" name="total_liabilitas_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-2" name="total_liabilitas_year_2" value="0"></td>
+                                    <td><input type="text" class="form-input percentage-diff" readonly></td>
                                 </tr>
                                 <tr>
                                     <td>Total Ekuitas (Rp)</td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-1" name="total_ekuitas_year_1" value="0"></td>
-                                    <td><input type="number" step="0.01" class="form-control financial-input year-2" name="total_ekuitas_year_2" value="0"></td>
-                                    <td><input type="text" class="form-control percentage-diff" readonly></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-1" name="total_ekuitas_year_1" value="0"></td>
+                                    <td><input type="number" step="0.01" class="form-input financial-input year-2" name="total_ekuitas_year_2" value="0"></td>
+                                    <td><input type="text" class="form-input percentage-diff" readonly></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <div class="mb-3">
-                    <label for="upload_lapkeu_realisasi" class="form-label">Upload Dokumen Pendukung Kinerja Keuangan (Laporan Keuangan Triwulanan, dll)</label>
-                    <input type="file" class="form-control" id="upload_lapkeu_realisasi" name="upload_lapkeu_realisasi" multiple>
-                     <div class="small-text">Format: PDF, XLSX. Maks 10MB per file.</div>
+                    <div class="tw-space-y-1 mt-4">
+                        <label for="upload_lapkeu_realisasi" class="tw-block form-label">Upload Dokumen Pendukung Kinerja Keuangan (Laporan Keuangan Triwulanan, dll)</label>
+                        <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="upload_lapkeu_realisasi" name="upload_lapkeu_realisasi" multiple accept=".pdf,.xlsx">
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF, XLSX. Maks 10MB per file.</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card form-section shadow-sm">
-            <div class="card-header">
-                IV. Strategi dan Proyeksi Usaha Tahun Berikutnya (<span class="tahun_proyeksi_text"></span>)
-            </div>
-            <div class="card-body">
-                <h5 class="form-subsection-header">4.1 Visi, Misi, dan Arah Strategi SP</h5>
-                <div class="mb-3">
-                    <label for="proyeksi_visi_misi_strategi" class="form-label">Visi, Misi, dan Arah Strategi <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="proyeksi_visi_misi_strategi" name="proyeksi_visi_misi_strategi" rows="4" placeholder="Penjelasan mengenai arah pengembangan strategi terkait dengan sistem pembayaran." required></textarea>
+        <div class="section-group">
+            <h3 class="section-header">IV. Strategi dan Proyeksi Usaha Tahun Berikutnya (<span class="tahun_proyeksi_text"></span>)</h3>
+            <div class="section-content">
+                <div class="nested-section-group">
+                    <h4>4.1 Visi, Misi, dan Arah Strategi SP</h4>
+                    <div class="tw-space-y-1">
+                        <label for="proyeksi_visi_misi_strategi" class="tw-block form-label">Visi, Misi, dan Arah Strategi <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="proyeksi_visi_misi_strategi" name="proyeksi_visi_misi_strategi" rows="4" placeholder="Penjelasan mengenai arah pengembangan strategi terkait dengan sistem pembayaran." required></textarea>
+                    </div>
                 </div>
 
-                <h5 class="form-subsection-header">4.2 SWOT Analysis</h5>
-                 <div class="mb-3">
-                    <label for="proyeksi_swot" class="form-label">Analisis SWOT <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="proyeksi_swot" name="proyeksi_swot" rows="4" placeholder="Penjelasan mengenai kajian internal (Strengths, Weaknesses) dan analisis eksternal (Opportunities, Threats)." required></textarea>
+                <div class="nested-section-group">
+                    <h4>4.2 SWOT Analysis</h4>
+                    <div class="tw-space-y-1">
+                        <label for="proyeksi_swot" class="tw-block form-label">Analisis SWOT <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="proyeksi_swot" name="proyeksi_swot" rows="4" placeholder="Penjelasan mengenai kajian internal (Strengths, Weaknesses) dan analisis eksternal (Opportunities, Threats)." required></textarea>
+                    </div>
                 </div>
 
-                <h5 class="form-subsection-header">4.3 Langkah-Langkah Strategis SP</h5>
-                <div class="mb-3">
-                    <label for="proyeksi_langkah_strategis" class="form-label">Langkah-Langkah Strategis <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="proyeksi_langkah_strategis" name="proyeksi_langkah_strategis" rows="3" placeholder="Penjelasan mengenai langkah-langkah strategis yang akan ditempuh." required></textarea>
+                <div class="nested-section-group">
+                    <h4>4.3 Langkah-Langkah Strategis SP</h4>
+                    <div class="tw-space-y-1">
+                        <label for="proyeksi_langkah_strategis" class="tw-block form-label">Langkah-Langkah Strategis <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="proyeksi_langkah_strategis" name="proyeksi_langkah_strategis" rows="3" placeholder="Penjelasan mengenai langkah-langkah strategis yang akan ditempuh." required></textarea>
+                    </div>
                 </div>
 
-                <h5 class="form-subsection-header">4.4 Rencana Penerapan MRSI</h5>
-                <div class="mb-3">
-                    <label for="proyeksi_rencana_mrsi" class="form-label">Rencana Penerapan Manajemen Risiko dan Sistem Informasi <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="proyeksi_rencana_mrsi" name="proyeksi_rencana_mrsi" rows="3" placeholder="Penjelasan mengenai rencana penerapan manajemen risiko dan sistem informasi terutama untuk pemenuhan ketentuan Bank Indonesia." required></textarea>
+                <div class="nested-section-group">
+                    <h4>4.4 Rencana Penerapan MRSI</h4>
+                    <div class="tw-space-y-1">
+                        <label for="proyeksi_rencana_mrsi" class="tw-block form-label">Rencana Penerapan Manajemen Risiko dan Sistem Informasi <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="proyeksi_rencana_mrsi" name="proyeksi_rencana_mrsi" rows="3" placeholder="Penjelasan mengenai rencana penerapan manajemen risiko dan sistem informasi terutama untuk pemenuhan ketentuan Bank Indonesia." required></textarea>
+                    </div>
                 </div>
                 
-                <h5 class="form-subsection-header">4.5 Permodalan</h5>
-                <div class="mb-3">
-                    <label for="proyeksi_permodalan_kecukupan" class="form-label">Proyeksi Kecukupan Permodalan <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="proyeksi_permodalan_kecukupan" name="proyeksi_permodalan_kecukupan" rows="3" placeholder="Penjelasan mengenai proyeksi kecukupan permodalan sesuai ketentuan BI." required></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="proyeksi_permodalan_aksi_korporasi" class="form-label">Rencana Aksi Korporasi terkait Permodalan</label>
-                    <textarea class="form-control" id="proyeksi_permodalan_aksi_korporasi" name="proyeksi_permodalan_aksi_korporasi" rows="3" placeholder="Penjelasan rinci atas rencana aksi korporasi (merger, akuisisi, dll.) dan dampaknya."></textarea>
-                </div>
-
-                <h5 class="form-subsection-header">4.6 Proyeksi Kinerja Keuangan</h5>
-                 <div class="mb-3">
-                    <label for="proyeksi_kinerja_keuangan_penjelasan" class="form-label">Ringkasan Proyeksi Kinerja Keuangan <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="proyeksi_kinerja_keuangan_penjelasan" name="proyeksi_kinerja_keuangan_penjelasan" rows="3" placeholder="Ringkasan proyeksi pos-pos tertentu laporan keuangan (seluruh kegiatan dan aktivitas SP)." required></textarea>
-                </div>
-                <p class="small-text">Detail proyeksi keuangan dapat dilampirkan.</p>
-                 <div class="mb-3">
-                    <label for="upload_lapkeu_proyeksi" class="form-label">Upload Dokumen Pendukung Proyeksi Keuangan</label>
-                    <input type="file" class="form-control" id="upload_lapkeu_proyeksi" name="upload_lapkeu_proyeksi" multiple>
-                    <div class="small-text">Format: PDF, XLSX. Maks 10MB per file.</div>
+                <div class="nested-section-group">
+                    <h4>4.5 Permodalan</h4>
+                    <div class="tw-space-y-1">
+                        <label for="proyeksi_permodalan_kecukupan" class="tw-block form-label">Proyeksi Kecukupan Permodalan <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="proyeksi_permodalan_kecukupan" name="proyeksi_permodalan_kecukupan" rows="3" placeholder="Penjelasan mengenai proyeksi kecukupan permodalan sesuai ketentuan BI." required></textarea>
+                    </div>
+                    <div class="tw-space-y-1 mt-4">
+                        <label for="proyeksi_permodalan_aksi_korporasi" class="tw-block form-label">Rencana Aksi Korporasi terkait Permodalan</label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="proyeksi_permodalan_aksi_korporasi" name="proyeksi_permodalan_aksi_korporasi" rows="3" placeholder="Penjelasan rinci atas rencana aksi korporasi (merger, akuisisi, dll.) dan dampaknya."></textarea>
+                    </div>
                 </div>
 
-                <h5 class="form-subsection-header">4.7 Target Usaha</h5>
-                <div class="mb-3">
-                    <label for="proyeksi_target_nasabah_pengguna" class="form-label">Target Nasabah/Pengguna <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="proyeksi_target_nasabah_pengguna" name="proyeksi_target_nasabah_pengguna" rows="3" placeholder="Penjelasan mengenai target pengguna sistem pembayaran perusahaan." required></textarea>
-                </div>
-                 <div class="mb-3">
-                    <label for="proyeksi_pengembangan_jaringan_kantor" class="form-label">Rencana Pengembangan Jaringan Kantor</label>
-                    <textarea class="form-control" id="proyeksi_pengembangan_jaringan_kantor" name="proyeksi_pengembangan_jaringan_kantor" rows="3" placeholder="Penjelasan mengenai rencana pengembangan jaringan kantor."></textarea>
-                </div>
-
-                <h5 class="form-subsection-header">4.8 Rencana Produk, Aktivitas, dan Pengembangan SP</h5>
-                <div class="mb-3">
-                    <label for="proyeksi_rencana_produk_aktivitas_pengembangan_sp" class="form-label">Penjelasan Rencana <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="proyeksi_rencana_produk_aktivitas_pengembangan_sp" name="proyeksi_rencana_produk_aktivitas_pengembangan_sp" rows="4" placeholder="Penjelasan mengenai rencana nama produk/aktivitas/pengembangan, uraian dan target waktu pelaksanaan." required></textarea>
+                <div class="nested-section-group">
+                    <h4>4.6 Proyeksi Kinerja Keuangan</h4>
+                    <div class="tw-space-y-1">
+                        <label for="proyeksi_kinerja_keuangan_penjelasan" class="tw-block form-label">Ringkasan Proyeksi Kinerja Keuangan <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="proyeksi_kinerja_keuangan_penjelasan" name="proyeksi_kinerja_keuangan_penjelasan" rows="3" placeholder="Ringkasan proyeksi pos-pos tertentu laporan keuangan (seluruh kegiatan dan aktivitas SP)." required></textarea>
+                    </div>
+                    <p class="tw-text-xs tw-text-gray-500 tw-mt-2">Detail proyeksi keuangan dapat dilampirkan.</p>
+                    <div class="tw-space-y-1 mt-4">
+                        <label for="upload_lapkeu_proyeksi" class="tw-block form-label">Upload Dokumen Pendukung Proyeksi Keuangan</label>
+                        <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="upload_lapkeu_proyeksi" name="upload_lapkeu_proyeksi" multiple accept=".pdf,.xlsx">
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF, XLSX. Maks 10MB per file.</p>
+                    </div>
                 </div>
 
-                <h5 class="form-subsection-header">4.9 Rencana Kerja Sama SP</h5>
-                <div class="mb-3">
-                    <label for="proyeksi_rencana_kerjasama_sp" class="form-label">Penjelasan Rencana Kerjasama <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="proyeksi_rencana_kerjasama_sp" name="proyeksi_rencana_kerjasama_sp" rows="4" placeholder="Penjelasan mengenai rencana kerjasama, uraian dan target waktu pelaksanaan." required></textarea>
+                <div class="nested-section-group">
+                    <h4>4.7 Target Usaha</h4>
+                    <div class="tw-space-y-1">
+                        <label for="proyeksi_target_nasabah_pengguna" class="tw-block form-label">Target Nasabah/Pengguna <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="proyeksi_target_nasabah_pengguna" name="proyeksi_target_nasabah_pengguna" rows="3" placeholder="Penjelasan mengenai target pengguna sistem pembayaran perusahaan." required></textarea>
+                    </div>
+                    <div class="tw-space-y-1 mt-4">
+                        <label for="proyeksi_pengembangan_jaringan_kantor" class="tw-block form-label">Rencana Pengembangan Jaringan Kantor</label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="proyeksi_pengembangan_jaringan_kantor" name="proyeksi_pengembangan_jaringan_kantor" rows="3" placeholder="Penjelasan mengenai rencana pengembangan jaringan kantor."></textarea>
+                    </div>
                 </div>
 
-                <h5 class="form-subsection-header">4.10 Rencana Strategis dan Pengembangan IT</h5>
-                <div class="mb-3">
-                    <label for="proyeksi_rencana_strategis_it" class="form-label">Rencana Strategis dan Pengembangan IT <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="proyeksi_rencana_strategis_it" name="proyeksi_rencana_strategis_it" rows="4" placeholder="Penjelasan secara umum (ringkasan) mengenai rencana pembangunan infrastruktur dan sistem pendukung, pemanfaatan teknologi informasi, dan penambahan dan penyempurnaan teknologi informasi eksisting." required></textarea>
+                <div class="nested-section-group">
+                    <h4>4.8 Rencana Produk, Aktivitas, dan Pengembangan SP</h4>
+                    <div class="tw-space-y-1">
+                        <label for="proyeksi_rencana_produk_aktivitas_pengembangan_sp" class="tw-block form-label">Penjelasan Rencana <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="proyeksi_rencana_produk_aktivitas_pengembangan_sp" name="proyeksi_rencana_produk_aktivitas_pengembangan_sp" rows="4" placeholder="Penjelasan mengenai rencana nama produk/aktivitas/pengembangan, uraian dan target waktu pelaksanaan." required></textarea>
+                    </div>
+                </div>
+
+                <div class="nested-section-group">
+                    <h4>4.9 Rencana Kerja Sama SP</h4>
+                    <div class="tw-space-y-1">
+                        <label for="proyeksi_rencana_kerjasama_sp" class="tw-block form-label">Penjelasan Rencana Kerjasama <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="proyeksi_rencana_kerjasama_sp" name="proyeksi_rencana_kerjasama_sp" rows="4" placeholder="Penjelasan mengenai rencana kerjasama, uraian dan target waktu pelaksanaan." required></textarea>
+                    </div>
+                </div>
+
+                <div class="nested-section-group">
+                    <h4>4.10 Rencana Strategis dan Pengembangan IT</h4>
+                    <div class="tw-space-y-1">
+                        <label for="proyeksi_rencana_strategis_it" class="tw-block form-label">Rencana Strategis dan Pengembangan IT <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="proyeksi_rencana_strategis_it" name="proyeksi_rencana_strategis_it" rows="4" placeholder="Penjelasan secara umum (ringkasan) mengenai rencana pembangunan infrastruktur dan sistem pendukung, pemanfaatan teknologi informasi, dan penambahan dan penyempurnaan teknologi informasi eksisting." required></textarea>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="card form-section shadow-sm">
-            <div class="card-header">
-                Lampiran
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <label for="lampiran_profil_penyelenggara_sp" class="form-label">1. Profil Penyelenggara Sistem Pembayaran (termasuk Branding, Produk, Proses Bisnis, Struktur Organisasi SP, Pengembangan Kompetensi SDM) <span class="text-danger">*</span></label>
-                    <input type="file" class="form-control" id="lampiran_profil_penyelenggara_sp" name="lampiran_profil_penyelenggara_sp" required>
-                    <div class="small-text">Format: PDF, DOCX. Maks 10MB. Sesuai format pada Lampiran PDF Panduan.</div>
+        <div class="section-group">
+            <h3 class="section-header">Lampiran</h3>
+            <div class="section-content">
+                <div class="tw-space-y-1">
+                    <label for="lampiran_profil_penyelenggara_sp" class="tw-block form-label">1. Profil Penyelenggara Sistem Pembayaran (termasuk Branding, Produk, Proses Bisnis, Struktur Organisasi SP, Pengembangan Kompetensi SDM) <span class="tw-text-red-500">*</span></label>
+                    <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="lampiran_profil_penyelenggara_sp" name="lampiran_profil_penyelenggara_sp" accept=".pdf,.docx" required>
+                    <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF, DOCX. Maks 10MB. Sesuai format pada Lampiran PDF Panduan.</p>
                 </div>
-                <div class="mb-3">
-                    <label for="lampiran_profil_it" class="form-label">2. Profil IT <span class="text-danger">*</span></label>
-                    <input type="file" class="form-control" id="lampiran_profil_it" name="lampiran_profil_it" required>
-                    <div class="small-text">Format: PDF, DOCX. Maks 10MB. Sesuai format pada Lampiran PDF Panduan.</div>
+                <div class="tw-space-y-1 mt-4">
+                    <label for="lampiran_profil_it" class="tw-block form-label">2. Profil IT <span class="tw-text-red-500">*</span></label>
+                    <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="lampiran_profil_it" name="lampiran_profil_it" accept=".pdf,.docx" required>
+                    <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF, DOCX. Maks 10MB. Sesuai format pada Lampiran PDF Panduan.</p>
                 </div>
-                <div class="mb-3">
-                    <label for="lampiran_tambahan" class="form-label">Dokumen Pendukung Lainnya (jika ada)</label>
-                    <input type="file" class="form-control" id="lampiran_tambahan" name="lampiran_tambahan" multiple>
-                    <div class="small-text">Format: PDF, DOCX, XLSX, JPG, PNG. Maks 10MB per file.</div>
+                <div class="tw-space-y-1 mt-4">
+                    <label for="lampiran_tambahan" class="tw-block form-label">Dokumen Pendukung Lainnya (jika ada)</label>
+                    <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="lampiran_tambahan" name="lampiran_tambahan" multiple accept=".pdf,.docx,.xlsx,.jpg,.png">
+                    <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF, DOCX, XLSX, JPG, PNG. Maks 10MB per file.</p>
                 </div>
             </div>
         </div>
 
-        <div class="d-grid gap-2 mt-4">
-            <button type="submit" class="btn btn-lg btn-primary">
+        <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
                 <span class="submit-text">Kirim Laporan Tahunan SP</span>
-                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
             </button>
-            <button type="reset" class="btn btn-lg btn-outline-secondary">Reset Form</button>
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">Batal</button>
         </div>
     </form>
 </div>
@@ -494,23 +563,42 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('laporanTahunanSPForm');
-    const submitButton = form.querySelector('button[type="submit"]');
+    const submitButton = document.getElementById('submitButton');
     const submitText = submitButton.querySelector('.submit-text');
     const submitSpinner = submitButton.querySelector('.spinner-border');
     
-    const loadingModalElement = document.getElementById('loadingModalTahunanSP');
-    const successModalElement = document.getElementById('successModalTahunanSP');
-    const errorModalElement = document.getElementById('errorModalTahunanSP');
-    const confirmationModalElement = document.getElementById('confirmationModal');
-    const confirmSendButton = document.getElementById('confirmSendButton');
-
-    const loadingModal = new bootstrap.Modal(loadingModalElement);
-    const successModal = new bootstrap.Modal(successModalElement);
-    const errorModal = new bootstrap.Modal(errorModalElement);
-    const confirmationModal = new bootstrap.Modal(confirmationModalElement);
+    // --- Custom Modal/Message Box ---
+    const messageContainer = document.querySelector('.tw-max-w-4xl.tw-mx-auto'); 
     
-    const successMessageElement = document.getElementById('successMessageTahunanSP');
-    const errorMessageElement = document.getElementById('errorMessageTahunanSP');
+    function showMessageBox(message, type) {
+        let messageBox = document.getElementById('dynamicMessageBox');
+        if (!messageBox) {
+            messageBox = document.createElement('div');
+            messageBox.id = 'dynamicMessageBox';
+            messageBox.classList.add('tw-p-3', 'tw-rounded-lg', 'tw-mb-4', 'tw-text-center', 'tw-font-medium'); 
+            const firstChild = messageContainer.querySelector('h2');
+            if (firstChild) {
+                firstChild.parentNode.insertBefore(messageBox, firstChild.nextSibling);
+            } else {
+                messageContainer.insertBefore(messageBox, messageContainer.firstChild);
+            }
+        }
+
+        messageBox.textContent = message;
+        messageBox.classList.remove('tw-bg-green-100', 'tw-text-green-800', 'tw-border-green-300', 'tw-bg-red-100', 'tw-text-red-800', 'tw-border-red-300'); 
+        
+        if (type === 'success') {
+            messageBox.classList.add('tw-bg-green-100', 'tw-text-green-800', 'tw-border', 'tw-border-green-300');
+        } else if (type === 'error') {
+            messageBox.classList.add('tw-bg-red-100', 'tw-text-red-800', 'tw-border', 'tw-border-red-300');
+        }
+        
+        messageBox.style.display = 'block'; 
+        setTimeout(() => {
+            messageBox.style.display = 'none'; 
+        }, 5000);
+    }
+    // --- End Custom Modal/Message Box ---
 
     const tahunLaporanSelect = document.getElementById('tahun_laporan');
     const tahunLaporanTextElements = document.querySelectorAll('.tahun_laporan_text');
@@ -538,295 +626,169 @@ document.addEventListener('DOMContentLoaded', function() {
         tanggalSuratPengantarInput.max = today;
     }
 
-    // Handle form submission via custom confirmation modal
-    form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission initially
-        
-        let formIsValid = true;
-        
-        // File size validation
-        const fileInputs = form.querySelectorAll('input[type="file"]');
-        for (let i = 0; i < fileInputs.length; i++) {
-            const input = fileInputs[i];
-            if (input.files.length > 0) {
-                for (let j = 0; j < input.files.length; j++) {
-                    const file = input.files[j];
-                    if (file.size > 10 * 1024 * 1024) { // 10 MB
-                        errorMessageElement.textContent = 'File "' + file.name + '" terlalu besar. Maksimum 10MB.';
-                        errorModal.show();
-                        formIsValid = false;
-                        break;
-                    }
+    // --- Dynamic Field Logic (Shareholder, MERSI, Management, Cooperation) ---
+
+    // Helper to add repeatable item structure
+    function addRepeatableItem(containerId, itemClass, headerPrefix, contentHtml, removeBtnClass = 'remove-item-btn') {
+        const container = document.getElementById(containerId);
+        const currentCount = container.querySelectorAll(`.${itemClass}`).length;
+        const newItem = document.createElement('div');
+        newItem.classList.add('repeatable-item', itemClass, 'tw-space-y-2');
+        newItem.innerHTML = `
+            <h6 class="tw-font-semibold tw-text-gray-800">${headerPrefix} #${currentCount + 1}</h6>
+            <div class="tw-relative">
+                ${contentHtml}
+                <button type="button" class="${removeBtnClass} tw-absolute tw-top-0.5 tw-right-0.5 tw-bg-red-50 tw-text-red-500 tw-border tw-border-red-200 tw-rounded-full tw-p-1 tw-inline-flex tw-items-center tw-justify-center tw-w-8 tw-h-8 hover:tw-bg-red-100 hover:tw-text-red-600 tw-transition-colors tw-duration-150">
+                    <svg class="tw-w-4 tw-h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
+        `;
+        container.appendChild(newItem);
+
+        newItem.querySelector(`.${removeBtnClass}`).addEventListener('click', function() {
+            newItem.remove();
+            updateRepeatableItemNumbers(containerId, itemClass, headerPrefix);
+        });
+        updateRepeatableItemNumbers(containerId, itemClass, headerPrefix);
+        return newItem;
+    }
+
+    function updateRepeatableItemNumbers(containerId, itemClass, headerPrefix) {
+        const container = document.getElementById(containerId);
+        const items = container.querySelectorAll(`.${itemClass}`);
+        items.forEach((item, index) => {
+            const itemNumber = index + 1;
+            item.querySelector('h6').textContent = `${headerPrefix} #${itemNumber}`;
+            // Update name attributes to ensure correct indexing for form submission
+            item.querySelectorAll('input, select, textarea').forEach(input => {
+                const oldName = input.name;
+                // Regex to find _ followed by digits at the end of the name
+                const baseName = oldName.replace(/_\d+$/, ''); 
+                input.name = `${baseName}_${itemNumber}`;
+                input.id = `${baseName}_${itemNumber}`; // Also update ID for labels
+                const label = item.querySelector(`label[for^="${baseName}_"]`);
+                if (label) {
+                    label.setAttribute('for', input.id);
                 }
-            }
-            if (!formIsValid) break;
-        }
-
-        if (!formIsValid) return;
-
-        // Show custom confirmation modal instead of browser's confirm
-        confirmationModal.show();
-    });
-
-    // Handle click on the custom confirmation button
-    confirmSendButton.addEventListener('click', function() {
-        confirmationModal.hide(); // Hide confirmation modal
-        
-        submitButton.disabled = true;
-        submitText.textContent = 'Mengirim...';
-        submitSpinner.classList.remove('d-none');
-        loadingModal.show();
-
-        const formData = new FormData(form);
-
-        // Dynamically collect repeatable fields
-        // Shareholders
-        document.querySelectorAll('.shareholder-item').forEach((item, index) => {
-            formData.append(`shareholders[${index}][name]`, item.querySelector('[name^="shareholder_name_"]').value);
-            formData.append(`shareholders[${index}][nominal_saham]`, item.querySelector('[name^="shareholder_nominal_saham_"]').value);
-            formData.append(`shareholders[${index}][lembar_saham]`, item.querySelector('[name^="shareholder_lembar_saham_"]').value);
-            formData.append(`shareholders[${index}][persentase_saham]`, item.querySelector('[name^="shareholder_persentase_saham_"]').value);
-            formData.append(`shareholders[${index}][type]`, item.querySelector('[name^="shareholder_type_"]:checked').value);
-            const jenisSeriSaham = item.querySelector('[name^="shareholder_jenis_seri_saham_"]');
-            if (jenisSeriSaham) {
-                formData.append(`shareholders[${index}][jenis_seri_saham]`, jenisSeriSaham.value);
-            }
+            });
         });
-
-        // MERSI
-        document.querySelectorAll('.mersi-item').forEach((item, index) => {
-            formData.append(`mersi[${index}][title]`, item.querySelector('[name^="mersi_title_"]').value);
-            formData.append(`mersi[${index}][content]`, item.querySelector('[name^="mersi_content_"]').value);
-        });
-
-        // Management
-        document.querySelectorAll('.management-item').forEach((item, index) => {
-            formData.append(`management[${index}][name]`, item.querySelector('[name^="management_name_"]').value);
-            formData.append(`management[${index}][position]`, item.querySelector('[name^="management_position_"]').value);
-            formData.append(`management[${index}][nationality]`, item.querySelector('[name^="management_nationality_"]:checked').value);
-        });
-
-        // Cooperation
-        document.querySelectorAll('.cooperation-item').forEach((item, index) => {
-            formData.append(`cooperation[${index}][partner_name]`, item.querySelector('[name^="cooperation_partner_name_"]').value);
-            formData.append(`cooperation[${index}][scope]`, item.querySelector('[name^="cooperation_scope_"]').value);
-            formData.append(`cooperation[${index}][type]`, item.querySelector('[name^="cooperation_type_"]:checked').value);
-        });
-
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
-        })
-        .then(response => {
-            loadingModal.hide();
-            submitButton.disabled = false;
-            submitText.textContent = 'Kirim Laporan Tahunan SP';
-            submitSpinner.classList.add('d-none');
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
-                successModal.show();
-                form.reset();
-                updateTahunText(); // Reset dynamic year text
-                // Clear dynamic fields
-                document.getElementById('shareholder-container').innerHTML = '';
-                document.getElementById('mersi-container').innerHTML = '';
-                document.getElementById('management-container').innerHTML = '';
-                document.getElementById('cooperation-container').innerHTML = '';
-                updateFinancialTableHeaders(); // Reset financial table headers
-                calculateAllPercentages(); // Recalculate percentages
-            } else {
-                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
-                errorModal.show();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            loadingModal.hide();
-            submitButton.disabled = false;
-            submitText.textContent = 'Kirim Laporan Tahunan SP';
-            submitSpinner.classList.add('d-none');
-            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
-            errorModal.show();
-        });
-    });
-
-    // --- Dynamic Field Logic ---
+    }
 
     // MERSI
     const mersiContainer = document.getElementById('mersi-container');
-    document.getElementById('add-mersi-btn').addEventListener('click', addMersiField);
-
-    let mersiCount = 0;
-    function addMersiField() {
-        mersiCount++;
-        const div = document.createElement('div');
-        div.classList.add('repeatable-item', 'mersi-item');
-        div.innerHTML = `
-            <h6>Data MERSI #${mersiCount}</h6>
-            <div class="mb-3">
-                <label for="mersi_title_${mersiCount}" class="form-label">Judul/Topik Risiko SP</label>
-                <input type="text" class="form-control" id="mersi_title_${mersiCount}" name="mersi_title_${mersiCount}" required>
+    document.getElementById('add-mersi-btn').addEventListener('click', () => {
+        addRepeatableItem('mersi-container', 'mersi-item', 'Data MERSI', `
+            <div class="tw-space-y-1">
+                <label for="mersi_title_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" class="tw-block form-label">Judul/Topik Risiko SP <span class="tw-text-red-500">*</span></label>
+                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="mersi_title_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" name="mersi_title_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" required>
             </div>
-            <div class="mb-3">
-                <label for="mersi_content_${mersiCount}" class="form-label">Uraian Risiko SP</label>
-                <textarea class="form-control" id="mersi_content_${mersiCount}" name="mersi_content_${mersiCount}" rows="3" required></textarea>
+            <div class="tw-space-y-1">
+                <label for="mersi_content_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" class="tw-block form-label">Uraian Risiko SP <span class="tw-text-red-500">*</span></label>
+                <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="mersi_content_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" name="mersi_content_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" rows="3" required></textarea>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-danger remove-mersi-btn">Hapus</button>
-        `;
-        mersiContainer.appendChild(div);
-        div.querySelector('.remove-mersi-btn').addEventListener('click', function() {
-            div.remove();
-            mersiCount--; // Decrement count on removal
-            // Re-index displayed numbers (optional, but good for UX)
-            document.querySelectorAll('.mersi-item h6').forEach((el, idx) => {
-                el.textContent = `Data MERSI #${idx + 1}`;
-            });
-        });
-    }
+        `);
+    });
 
     // Shareholder
     const shareholderContainer = document.getElementById('shareholder-container');
-    document.getElementById('add-shareholder-btn').addEventListener('click', addShareholderField);
-
-    let shareholderCount = 0;
-    function addShareholderField() {
-        shareholderCount++;
-        const div = document.createElement('div');
-        div.classList.add('repeatable-item', 'shareholder-item');
-        div.innerHTML = `
-            <h6>Pemegang Saham #${shareholderCount}</h6>
-            <div class="mb-3">
-                <label for="shareholder_name_${shareholderCount}" class="form-label">Nama Perorangan/PT <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="shareholder_name_${shareholderCount}" name="shareholder_name_${shareholderCount}" required>
+    document.getElementById('add-shareholder-btn').addEventListener('click', () => {
+        const currentCount = shareholderContainer.querySelectorAll('.shareholder-item').length;
+        const newItem = addRepeatableItem('shareholder-container', 'shareholder-item', 'Pemegang Saham', `
+            <div class="tw-space-y-1">
+                <label for="shareholder_name_${currentCount + 1}" class="tw-block form-label">Nama Perorangan/PT <span class="tw-text-red-500">*</span></label>
+                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_name_${currentCount + 1}" name="shareholder_name_${currentCount + 1}" required>
             </div>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label for="shareholder_nominal_saham_${shareholderCount}" class="form-label">Nominal Saham (Rp) <span class="text-danger">*</span></label>
-                    <input type="number" step="0.01" class="form-control" id="shareholder_nominal_saham_${shareholderCount}" name="shareholder_nominal_saham_${shareholderCount}" required min="0">
+            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-x-6 tw-gap-y-4">
+                <div class="tw-space-y-1">
+                    <label for="shareholder_nominal_saham_${currentCount + 1}" class="tw-block form-label">Nominal Saham (Rp) <span class="tw-text-red-500">*</span></label>
+                    <input type="number" step="0.01" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_nominal_saham_${currentCount + 1}" name="shareholder_nominal_saham_${currentCount + 1}" required min="0">
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label for="shareholder_lembar_saham_${shareholderCount}" class="form-label">Jumlah Lembar Saham <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="shareholder_lembar_saham_${shareholderCount}" name="shareholder_lembar_saham_${shareholderCount}" required min="0">
+                <div class="tw-space-y-1">
+                    <label for="shareholder_lembar_saham_${currentCount + 1}" class="tw-block form-label">Jumlah Lembar Saham <span class="tw-text-red-500">*</span></label>
+                    <input type="number" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_lembar_saham_${currentCount + 1}" name="shareholder_lembar_saham_${currentCount + 1}" required min="0">
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label for="shareholder_persentase_saham_${shareholderCount}" class="form-label">Persentase Saham (%) <span class="text-danger">*</span></label>
-                    <input type="number" step="0.01" class="form-control" id="shareholder_persentase_saham_${shareholderCount}" name="shareholder_persentase_saham_${shareholderCount}" required min="0" max="100">
+                <div class="tw-space-y-1">
+                    <label for="shareholder_persentase_saham_${currentCount + 1}" class="tw-block form-label">Persentase Saham (%) <span class="tw-text-red-500">*</span></label>
+                    <input type="number" step="0.01" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_persentase_saham_${currentCount + 1}" name="shareholder_persentase_saham_${currentCount + 1}" required min="0" max="100">
                 </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Jenis Kepemilikan <span class="text-danger">*</span></label><br>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="shareholder_type_${shareholderCount}" id="shareholder_type_asing_${shareholderCount}" value="asing" required>
-                    <label class="form-check-label" for="shareholder_type_asing_${shareholderCount}">Asing</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="shareholder_type_${shareholderCount}" id="shareholder_type_domestik_${shareholderCount}" value="domestik" required>
-                    <label class="form-check-label" for="shareholder_type_domestik_${shareholderCount}">Domestik</label>
+            <div class="tw-space-y-1">
+                <label class="tw-block form-label">Jenis Kepemilikan <span class="tw-text-red-500">*</span></label>
+                <div class="tw-flex tw-gap-4 mt-2">
+                    <div class="tw-flex tw-items-center">
+                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="shareholder_type_${currentCount + 1}" id="shareholder_type_asing_${currentCount + 1}" value="asing" required>
+                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="shareholder_type_asing_${currentCount + 1}">Asing</label>
+                    </div>
+                    <div class="tw-flex tw-items-center">
+                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="shareholder_type_${currentCount + 1}" id="shareholder_type_domestik_${currentCount + 1}" value="domestik" required>
+                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="shareholder_type_domestik_${currentCount + 1}">Domestik</label>
+                    </div>
                 </div>
             </div>
-            <div class="mb-3">
-                <label for="shareholder_jenis_seri_saham_${shareholderCount}" class="form-label">Jenis Seri Saham (Opsional)</label>
-                <input type="text" class="form-control" id="shareholder_jenis_seri_saham_${shareholderCount}" name="shareholder_jenis_seri_saham_${shareholderCount}">
+            <div class="tw-space-y-1">
+                <label for="shareholder_jenis_seri_saham_${currentCount + 1}" class="tw-block form-label">Jenis Seri Saham (Opsional)</label>
+                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_jenis_seri_saham_${currentCount + 1}" name="shareholder_jenis_seri_saham_${currentCount + 1}">
             </div>
-            <button type="button" class="btn btn-sm btn-outline-danger remove-shareholder-btn">Hapus</button>
-        `;
-        shareholderContainer.appendChild(div);
-        div.querySelector('.remove-shareholder-btn').addEventListener('click', function() {
-            div.remove();
-            shareholderCount--;
-            document.querySelectorAll('.shareholder-item h6').forEach((el, idx) => {
-                el.textContent = `Pemegang Saham #${idx + 1}`;
-            });
-        });
-    }
+        `);
+    });
 
     // Management
     const managementContainer = document.getElementById('management-container');
-    document.getElementById('add-management-btn').addEventListener('click', addManagementField);
-
-    let managementCount = 0;
-    function addManagementField() {
-        managementCount++;
-        const div = document.createElement('div');
-        div.classList.add('repeatable-item', 'management-item');
-        div.innerHTML = `
-            <h6>Pengurus #${managementCount}</h6>
-            <div class="mb-3">
-                <label for="management_name_${managementCount}" class="form-label">Nama <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="management_name_${managementCount}" name="management_name_${managementCount}" required>
+    document.getElementById('add-management-btn').addEventListener('click', () => {
+        const currentCount = managementContainer.querySelectorAll('.management-item').length;
+        addRepeatableItem('management-container', 'management-item', 'Pengurus', `
+            <div class="tw-space-y-1">
+                <label for="management_name_${currentCount + 1}" class="tw-block form-label">Nama <span class="tw-text-red-500">*</span></label>
+                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="management_name_${currentCount + 1}" name="management_name_${currentCount + 1}" required>
             </div>
-            <div class="mb-3">
-                <label for="management_position_${managementCount}" class="form-label">Jabatan <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="management_position_${managementCount}" name="management_position_${managementCount}" required>
+            <div class="tw-space-y-1">
+                <label for="management_position_${currentCount + 1}" class="tw-block form-label">Jabatan <span class="tw-text-red-500">*</span></label>
+                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="management_position_${currentCount + 1}" name="management_position_${currentCount + 1}" required>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Kewarganegaraan <span class="text-danger">*</span></label><br>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="management_nationality_${managementCount}" id="management_nationality_wna_${managementCount}" value="WNA" required>
-                    <label class="form-check-label" for="management_nationality_wna_${managementCount}">WNA</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="management_nationality_${managementCount}" id="management_nationality_domestik_${managementCount}" value="Domestik" required>
-                    <label class="form-check-label" for="management_nationality_domestik_${managementCount}">Domestik</label>
+            <div class="tw-space-y-1">
+                <label class="tw-block form-label">Kewarganegaraan <span class="tw-text-red-500">*</span></label>
+                <div class="tw-flex tw-gap-4 mt-2">
+                    <div class="tw-flex tw-items-center">
+                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="management_nationality_${currentCount + 1}" id="management_nationality_wna_${currentCount + 1}" value="WNA" required>
+                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="management_nationality_wna_${currentCount + 1}">WNA</label>
+                    </div>
+                    <div class="tw-flex tw-items-center">
+                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="management_nationality_${currentCount + 1}" id="management_nationality_domestik_${currentCount + 1}" value="Domestik" required>
+                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="management_nationality_domestik_${currentCount + 1}">Domestik</label>
+                    </div>
                 </div>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-danger remove-management-btn">Hapus</button>
-        `;
-        managementContainer.appendChild(div);
-        div.querySelector('.remove-management-btn').addEventListener('click', function() {
-            div.remove();
-            managementCount--;
-            document.querySelectorAll('.management-item h6').forEach((el, idx) => {
-                el.textContent = `Pengurus #${idx + 1}`;
-            });
-        });
-    }
+        `);
+    });
 
     // Cooperation
     const cooperationContainer = document.getElementById('cooperation-container');
-    document.getElementById('add-cooperation-btn').addEventListener('click', addCooperationField);
-
-    let cooperationCount = 0;
-    function addCooperationField() {
-        cooperationCount++;
-        const div = document.createElement('div');
-        div.classList.add('repeatable-item', 'cooperation-item');
-        div.innerHTML = `
-            <h6>Kerja Sama #${cooperationCount}</h6>
-            <div class="mb-3">
-                <label for="cooperation_partner_name_${cooperationCount}" class="form-label">Nama Mitra <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="cooperation_partner_name_${cooperationCount}" name="cooperation_partner_name_${cooperationCount}" required>
+    document.getElementById('add-cooperation-btn').addEventListener('click', () => {
+        const currentCount = cooperationContainer.querySelectorAll('.cooperation-item').length;
+        addRepeatableItem('cooperation-container', 'cooperation-item', 'Kerja Sama', `
+            <div class="tw-space-y-1">
+                <label for="cooperation_partner_name_${currentCount + 1}" class="tw-block form-label">Nama Mitra <span class="tw-text-red-500">*</span></label>
+                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="cooperation_partner_name_${currentCount + 1}" name="cooperation_partner_name_${currentCount + 1}" required>
             </div>
-            <div class="mb-3">
-                <label for="cooperation_scope_${cooperationCount}" class="form-label">Ruang Lingkup <span class="text-danger">*</span></label>
-                <textarea class="form-control" id="cooperation_scope_${cooperationCount}" name="cooperation_scope_${cooperationCount}" rows="2" required></textarea>
+            <div class="tw-space-y-1">
+                <label for="cooperation_scope_${currentCount + 1}" class="tw-block form-label">Ruang Lingkup <span class="tw-text-red-500">*</span></label>
+                <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="cooperation_scope_${currentCount + 1}" name="cooperation_scope_${currentCount + 1}" rows="2" required></textarea>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Tipe Mitra <span class="text-danger">*</span></label><br>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="cooperation_type_${cooperationCount}" id="cooperation_type_penunjang_${cooperationCount}" value="Penunjang" required>
-                    <label class="form-check-label" for="cooperation_type_penunjang_${cooperationCount}">Penyelenggara Penunjang</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="cooperation_type_${cooperationCount}" id="cooperation_type_pjp_${cooperationCount}" value="PJP" required>
-                    <label class="form-check-label" for="cooperation_type_pjp_${cooperationCount}">PJP</label>
+            <div class="tw-space-y-1">
+                <label class="tw-block form-label">Tipe Mitra <span class="tw-text-red-500">*</span></label>
+                <div class="tw-flex tw-gap-4 mt-2">
+                    <div class="tw-flex tw-items-center">
+                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="cooperation_type_${currentCount + 1}" id="cooperation_type_penunjang_${currentCount + 1}" value="Penunjang" required>
+                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="cooperation_type_penunjang_${currentCount + 1}">Penyelenggara Penunjang</label>
+                    </div>
+                    <div class="tw-flex tw-items-center">
+                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="cooperation_type_${currentCount + 1}" id="cooperation_type_pjp_${currentCount + 1}" value="PJP" required>
+                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="cooperation_type_pjp_${currentCount + 1}">PJP</label>
+                    </div>
                 </div>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-danger remove-cooperation-btn">Hapus</button>
-        `;
-        cooperationContainer.appendChild(div);
-        div.querySelector('.remove-cooperation-btn').addEventListener('click', function() {
-            div.remove();
-            cooperationCount--;
-            document.querySelectorAll('.cooperation-item h6').forEach((el, idx) => {
-                el.textContent = `Kerja Sama #${idx + 1}`;
-            });
-        });
-    }
+        `);
+    });
 
     // Financial Table Logic
     const financialYear1Input = document.getElementById('financial_year_1');
@@ -853,7 +815,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return '0.00%';
         }
         if (val1 === 0) {
-            return val2 > 0 ? '+Inf%' : '-Inf%'; // Represents infinite increase/decrease
+            return val2 > 0 ? '+Inf%' : '-Inf%';
         }
         
         const diff = val2 - val1;
@@ -887,6 +849,132 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial call to set headers and calculate percentages
     updateFinancialTableHeaders();
     calculateAllPercentages();
+
+    // Handle form submission via custom confirmation modal
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission initially
+        
+        let formIsValid = true;
+        
+        // File size validation
+        const fileInputs = form.querySelectorAll('input[type="file"]');
+        for (let i = 0; i < fileInputs.length; i++) {
+            const input = fileInputs[i];
+            if (input.files.length > 0) {
+                for (let j = 0; j < input.files.length; j++) {
+                    const file = input.files[j];
+                    if (file.size > 10 * 1024 * 1024) { // 10 MB
+                        showMessageBox('File "' + file.name + '" terlalu besar. Maksimum 10MB.', 'error');
+                        formIsValid = false;
+                        break;
+                    }
+                }
+            }
+            if (!formIsValid) break;
+        }
+
+        if (!formIsValid) return;
+
+        // Show custom confirmation modal instead of browser's confirm
+        confirmationModal.show();
+    });
+
+    // Handle click on the custom confirmation button
+    confirmSendButton.addEventListener('click', function() {
+        confirmationModal.hide(); // Hide confirmation modal
+        
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+
+        const formData = new FormData(form);
+
+        // Dynamically collect repeatable fields
+        // Shareholders
+        document.querySelectorAll('.shareholder-item').forEach((item, index) => {
+            formData.append(`shareholders[${index}][name]`, item.querySelector(`[name="shareholder_name_${index + 1}"]`).value);
+            formData.append(`shareholders[${index}][nominal_saham]`, item.querySelector(`[name="shareholder_nominal_saham_${index + 1}"]`).value);
+            formData.append(`shareholders[${index}][lembar_saham]`, item.querySelector(`[name="shareholder_lembar_saham_${index + 1}"]`).value);
+            formData.append(`shareholders[${index}][persentase_saham]`, item.querySelector(`[name="shareholder_persentase_saham_${index + 1}"]`).value);
+            formData.append(`shareholders[${index}][type]`, item.querySelector(`input[name="shareholder_type_${index + 1}"]:checked`).value);
+            const jenisSeriSaham = item.querySelector(`[name="shareholder_jenis_seri_saham_${index + 1}"]`);
+            if (jenisSeriSaham) {
+                formData.append(`shareholders[${index}][jenis_seri_saham]`, jenisSeriSaham.value);
+            }
+        });
+
+        // MERSI
+        document.querySelectorAll('.mersi-item').forEach((item, index) => {
+            formData.append(`mersi[${index}][title]`, item.querySelector(`[name="mersi_title_${index + 1}"]`).value);
+            formData.append(`mersi[${index}][content]`, item.querySelector(`[name="mersi_content_${index + 1}"]`).value);
+        });
+
+        // Management
+        document.querySelectorAll('.management-item').forEach((item, index) => {
+            formData.append(`management[${index}][name]`, item.querySelector(`[name="management_name_${index + 1}"]`).value);
+            formData.append(`management[${index}][position]`, item.querySelector(`[name="management_position_${index + 1}"]`).value);
+            formData.append(`management[${index}][nationality]`, item.querySelector(`input[name="management_nationality_${index + 1}"]:checked`).value);
+        });
+
+        // Cooperation
+        document.querySelectorAll('.cooperation-item').forEach((item, index) => {
+            formData.append(`cooperation[${index}][partner_name]`, item.querySelector(`[name="cooperation_partner_name_${index + 1}"]`).value);
+            formData.append(`cooperation[${index}][scope]`, item.querySelector(`[name="cooperation_scope_${index + 1}"]`).value);
+            formData.append(`cooperation[${index}][type]`, item.querySelector(`input[name="cooperation_type_${index + 1}"]:checked`).value);
+        });
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan Tahunan SP';
+            submitSpinner.classList.add('d-none');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
+                form.reset();
+                updateTahunText(); // Reset dynamic year text
+                // Clear dynamic fields
+                document.getElementById('shareholder-container').innerHTML = '';
+                document.getElementById('mersi-container').innerHTML = '';
+                document.getElementById('management-container').innerHTML = '';
+                document.getElementById('cooperation-container').innerHTML = '';
+                updateFinancialTableHeaders(); // Reset financial table headers
+                calculateAllPercentages(); // Recalculate percentages
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan Tahunan SP';
+            submitSpinner.classList.add('d-none');
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show();
+        });
+    });
+
+    // Reset form listener
+    form.addEventListener('reset', function() {
+        updateTahunText(); // Reset dynamic year text
+        // Clear dynamic fields
+        document.getElementById('shareholder-container').innerHTML = '';
+        document.getElementById('mersi-container').innerHTML = '';
+        document.getElementById('management-container').innerHTML = '';
+        document.getElementById('cooperation-container').innerHTML = '';
+        updateFinancialTableHeaders(); // Reset financial table headers
+        calculateAllPercentages(); // Recalculate percentages
+    });
 });
 </script>
 {% endblock %}

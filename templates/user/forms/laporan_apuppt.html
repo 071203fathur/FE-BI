@@ -2,426 +2,704 @@
 
 {% block title %}Laporan APU PPT{% endblock %}
 
+{% block extra_head %}
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Mengatur font-family secara global untuk halaman ini */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Kelas utilitas untuk spinner */
+        .spinner-border {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            vertical-align: middle;
+            border: 0.25em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border .75s linear infinite;
+        }
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+        .d-none { display: none !important; } /* Utility untuk JS */
+
+        /* Custom styles to match Laporan P2P/Fraud form aesthetics */
+        .section-group {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .section-group .section-header {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1f2937;
+            background-color: #eef2f6;
+            padding: 0.8rem 1.5rem;
+            margin-top: 0;
+            margin-left: -1px;
+            margin-right: -1px;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e0e7eb;
+            border-top-left-radius: 11px;
+            border-top-right-radius: 11px;
+        }
+        .section-group .section-content {
+            padding: 1.5rem;
+            padding-top: 0;
+        }
+
+        /* Adjust font size for labels and inputs for precision */
+        .form-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .form-input {
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
+        }
+
+        /* Table styles for radio buttons - Enhanced with Tailwind-like aesthetics */
+        .form-table {
+            width: 100%;
+            border-collapse: separate; /* Use separate to allow border-radius on cells */
+            border-spacing: 0; /* Remove default spacing */
+            margin-top: 1rem;
+            border: 1px solid #e5e7eb; /* Outer border for the table */
+            border-radius: 8px; /* Rounded corners for the table */
+            overflow: hidden; /* Ensures content respects border-radius */
+        }
+        .form-table th, .form-table td {
+            border-bottom: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .form-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .form-table th:last-child,
+        .form-table td:last-child {
+            border-right: none; /* Remove right border for last column */
+        }
+        .form-table tr:last-child td {
+            border-bottom: none; /* Remove bottom border for last row */
+        }
+        .form-table td:first-child {
+            text-align: left;
+            font-weight: 500; /* Slightly bolder for the description */
+            color: #374151;
+        }
+        .form-check-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .form-check-input {
+            margin: 0;
+            /* Custom radio button styling */
+            appearance: none; /* Hide default radio */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 1.25rem; /* Size */
+            height: 1.25rem;
+            border: 2px solid #9ca3af; /* Gray border */
+            border-radius: 50%; /* Make it round */
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            position: relative; /* For inner circle */
+        }
+        .form-check-input:checked {
+            border-color: #4f46e5; /* Indigo when checked */
+            background-color: #4f46e5; /* Fill with indigo when checked */
+        }
+        .form-check-input:checked::before {
+            content: '';
+            display: block;
+            width: 0.5rem; /* Inner circle size */
+            height: 0.5rem;
+            background-color: #ffffff; /* White inner circle */
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .form-check-input:focus {
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Focus ring */
+        }
+        .form-check-input:hover:not(:checked) {
+            border-color: #6366f1; /* Lighten border on hover if not checked */
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center mt-4">
-    <div class="col-12 col-lg-10">
-        <div class="card shadow-lg p-4">
-            <!-- Modals for Success, Error, Loading -->
-            <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-success text-white">
-                            <h5 class="modal-title">Sukses!</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p id="successMessage">Laporan berhasil dikirim!</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
-                        </div>
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6 tw-font-sans">
+    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">Laporan APU PPT (Anti Pencucian Uang dan Pencegahan Pendanaan Terorisme)</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="tw-p-4 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('submit_laporan_apuppt') }}" enctype="multipart/form-data" id="apuPptReportForm" class="tw-space-y-6">
+        
+        <div class="section-group">
+            <h3 class="section-header">Informasi Umum Laporan</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="tahun_laporan" class="tw-block form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
+                        <select class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="tahun_laporan" name="tahun_laporan" required>
+                            <option value="">-- Pilih Tahun --</option>
+                            {% for year in range(2020, 2026) %}
+                            <option value="{{ year }}">{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="nomor_surat" class="tw-block form-label">Nomor Surat <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="nomor_surat" name="nomor_surat" required>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="tanggal_surat" class="tw-block form-label">Tanggal Surat <span class="tw-text-red-500">*</span></label>
+                        <input type="date" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="tanggal_surat" name="tanggal_surat" required>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="file" class="tw-block form-label">Dokumen Laporan Tahunan APU, PPT, dan PPSPM yang telah ditandatangani (PDF/DOC/DOCX) <span class="tw-text-red-500">*</span></label>
+                        <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="file" name="file" accept=".pdf,.doc,.docx" required>
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF, DOC, DOCX (Maks. 10MB)</p>
                     </div>
                 </div>
             </div>
-
-            <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-danger text-white">
-                            <h5 class="modal-title">Error!</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p id="errorMessage">Terjadi kesalahan saat mengirim laporan.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body text-center py-4">
-                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
-                            <p class="text-muted small">Harap tunggu sebentar</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <h3 class="text-center mb-4">Laporan APU PPT (Anti Pencucian Uang dan Pencegahan Pendanaan Terorisme)</h3>
-            <form method="POST" action="{{ url_for('submit_laporan_apuppt') }}" enctype="multipart/form-data" id="apuPptReportForm">
-                
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Informasi Dasar</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="tahun_laporan" class="form-label">Periode Laporan (Tahun) <span class="text-danger">*</span></label>
-                                <select class="form-select" id="tahun_laporan" name="tahun_laporan" required>
-                                    <option value="">-- Pilih Tahun --</option>
-                                    {% for year in range(2020, 2026) %}
-                                    <option value="{{ year }}">{{ year }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="nama_petugas" class="form-label">Nama Petugas APU PPT <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="nama_petugas" name="nama_petugas" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="sk_penunjukkan" class="form-label">SK-Penunjukkan APU PPT <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="sk_penunjukkan" name="sk_penunjukkan" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Other form sections remain the same -->
-
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Identitas Pengguna Sistem</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label for="user_id_goaml" class="form-label">User ID GoAML <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="user_id_goaml" name="user_id_goaml" required>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="user_id_sipesat" class="form-label">User ID SIPESAT <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="user_id_sipesat" name="user_id_sipesat" required>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="user_id_pep" class="form-label">User ID PEP <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="user_id_pep" name="user_id_pep" required>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="user_id_sipendar" class="form-label">User ID SIPENDAR <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="user_id_sipendar" name="user_id_sipendar" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Statistik Laporan ke PPATK</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="jumlah_ltkt" class="form-label">Jumlah Laporan LTKT <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="jumlah_ltkt" name="jumlah_ltkt" min="0" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="jumlah_ltkm" class="form-label">Jumlah Laporan LTKM <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="jumlah_ltkm" name="jumlah_ltkm" min="0" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="jumlah_ltkl" class="form-label">Jumlah Laporan LTKL <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="jumlah_ltkl" name="jumlah_ltkl" min="0" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Laporan SIPESAT Triwulanan</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="triwulan_1" name="triwulan_1" value="true">
-                                    <label class="form-check-label" for="triwulan_1">Triwulan I (Jan-Mar)</label>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="triwulan_2" name="triwulan_2" value="true">
-                                    <label class="form-check-label" for="triwulan_2">Triwulan II (Apr-Jun)</label>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="triwulan_3" name="triwulan_3" value="true">
-                                    <label class="form-check-label" for="triwulan_3">Triwulan III (Jul-Sep)</label>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="triwulan_4" name="triwulan_4" value="true">
-                                    <label class="form-check-label" for="triwulan_4">Triwulan IV (Okt-Dec)</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Laporan Pemblokiran/Penghapusan</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="dttot_reported" name="dttot_reported" value="true">
-                                    <label class="form-check-label" for="dttot_reported">DTTOT - Telah Melaporkan Surat dan Berita Acara Pemblokiran/Penghapusan</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="dppspm_reported" name="dppspm_reported" value="true">
-                                    <label class="form-check-label" for="dppspm_reported">DPPSPM - Telah Melaporkan Surat dan Berita Acara Pemblokiran/Penghapusan</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Kebijakan dan Prosedur</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="tanggung_jawab_direksi" class="form-label">Tanggung Jawab Direksi dan Pengawasan Aktif Dewan Komisaris <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="tanggung_jawab_direksi" name="tanggung_jawab_direksi" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="kebijakan_prosedur" class="form-label">Kebijakan dan Prosedur Tertulis <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="kebijakan_prosedur" name="kebijakan_prosedur" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="metode_pmpj" class="form-label">Metode Pelaksanaan Prinsip Mengenali Pengguna Jasa (PMPJ) <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="metode_pmpj" name="metode_pmpj" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="manajemen_risiko" class="form-label">Proses Manajemen Risiko <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="manajemen_risiko" name="manajemen_risiko" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="manajemen_sdm" class="form-label">Manajemen Sumber Daya Manusia <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="manajemen_sdm" name="manajemen_sdm" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="sistem_pengendalian" class="form-label">Sistem Pengendalian Intern <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="sistem_pengendalian" name="sistem_pengendalian" rows="3" required></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Informasi Penginput Data</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="nama_penginput" class="form-label">Nama penginput data dan upload dokumen Laporan Tahunan <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="nama_penginput" name="nama_penginput" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="email_penginput" class="form-label">Email penginput data <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" id="email_penginput" name="email_penginput" required>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="email_perusahaan" class="form-label">Email perusahaan <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" id="email_perusahaan" name="email_perusahaan" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="nomor_hp" class="form-label">Nomor HP penginput data dan informasi <span class="text-danger">*</span></label>
-                                <input type="tel" class="form-control" id="nomor_hp" name="nomor_hp" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Dokumen Pendukung</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="dokumen_laporan" class="form-label">Dokumen Laporan Tahunan APU, PPT, dan PPSPM yang telah ditandatangani <span class="text-danger">*</span></label>
-                            <input type="file" class="form-control" id="dokumen_laporan" name="dokumen_laporan" accept=".pdf,.doc,.docx" required>
-                            <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Pernyataan</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="declaration" name="declaration" required>
-                                <label class="form-check-label" for="declaration">
-                                    Sehubungan dengan penyampaian Laporan Tahunan APU, PPT, dan PPSPM Tahunan yang telah disampaikan, dengan ini saya mewakili Perusahaan menyatakan data dan informasi pada isian tersebut dengan lengkap dan benar. 
-                                    Apabila data/informasi yang diisi tidak lengkap dan tidak akurat, maka laporan yang disampaikan akan dianggap salah dan tidak disampaikan.
-                                    Dalam hal terdapat perubahan, maka saya, mewakili perusahaan akan melakukan update data dan informasi tersebut.
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <span class="submit-text">Kirim Laporan</span>
-                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                    </button>
-                    <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
-                </div>
-            </form>
         </div>
-    </div>
-</div>
+        
+        <div class="section-group">
+            <h3 class="section-header">Informasi Petugas & Identitas Pengguna Sistem</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="nama_petugas" class="tw-block form-label">Nama Petugas <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="nama_petugas" name="nama_petugas" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="sk_penunjukan" class="tw-block form-label">SK Penunjukan <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="sk_penunjukan" name="sk_penunjukan" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="user_id_goaml" class="tw-block form-label">User ID GoAML <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="user_id_goaml" name="user_id_goaml" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="user_id_sipesat" class="tw-block form-label">User ID SIPESAT <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="user_id_sipesat" name="user_id_sipesat" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="user_id_pep" class="tw-block form-label">User ID PEP <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="user_id_pep" name="user_id_pep" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="user_id_sipendar" class="tw-block form-label">User ID SIPENDAR <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="user_id_sipendar" name="user_id_sipendar" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-group">
+            <h3 class="section-header">Statistik Laporan ke PPATK</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="jumlah_ltkt" class="tw-block form-label">Jumlah LTKT <span class="tw-text-red-500">*</span></label>
+                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="jumlah_ltkt" name="jumlah_ltkt" min="0" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="jumlah_ltkm" class="tw-block form-label">Jumlah LTKM <span class="tw-text-red-500">*</span></label>
+                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="jumlah_ltkm" name="jumlah_ltkm" min="0" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="jumlah_ltkl" class="tw-block form-label">Jumlah LTKL <span class="tw-text-red-500">*</span></label>
+                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="jumlah_ltkl" name="jumlah_ltkl" min="0" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-group">
+            <h3 class="section-header">Laporan SIPESAT Triwulanan</h3>
+            <div class="section-content">
+                <div class="tw-space-y-1 mb-4">
+                    <label for="sipesat_uploaded_count" class="tw-block form-label">Laporan SIPESAT Triwulanan sudah di upload berapa saja? <span class="tw-text-red-500">*</span></label>
+                    <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="sipesat_uploaded_count" name="sipesat_uploaded_count" min="0" required>
+                </div>
 
-<style>
-    .card {
-        margin-bottom: 1.5rem;
-    }
-    .card-header {
-        font-weight: 600;
-        padding: 1rem 1.25rem;
-    }
-    .form-text {
-        font-size: 0.8rem;
-        color: #6c757d;
-    }
-    .form-check-label {
-        font-weight: normal;
-    }
-    .btn-primary .spinner-border {
-        vertical-align: middle;
-        margin-left: 5px;
-    }
-</style>
+                <p class="tw-font-semibold tw-text-gray-700 tw-mt-4 tw-mb-3">Telah melakukan Laporan SIPESAT ke PPATK secara Triwulanan? <span class="tw-text-red-500">*</span></p>
+                <div class="tw-overflow-x-auto">
+                    <table class="form-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Sudah</th>
+                                <th>Belum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Lapor SIPESAT tw 1</td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input sipesat-triwulan-status" type="radio" name="lapor_sipesat_tw_1" id="lapor_sipesat_tw_1_sudah" value="True" required>
+                                        <label class="tw-sr-only" for="lapor_sipesat_tw_1_sudah">Sudah</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input sipesat-triwulan-status" type="radio" name="lapor_sipesat_tw_1" id="lapor_sipesat_tw_1_belum" value="False">
+                                        <label class="tw-sr-only" for="lapor_sipesat_tw_1_belum">Belum</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Lapor SIPESAT tw 2</td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input sipesat-triwulan-status" type="radio" name="lapor_sipesat_tw_2" id="lapor_sipesat_tw_2_sudah" value="True" required>
+                                        <label class="tw-sr-only" for="lapor_sipesat_tw_2_sudah">Sudah</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input sipesat-triwulan-status" type="radio" name="lapor_sipesat_tw_2" id="lapor_sipesat_tw_2_belum" value="False">
+                                        <label class="tw-sr-only" for="lapor_sipesat_tw_2_belum">Belum</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Lapor SIPESAT tw 3</td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input sipesat-triwulan-status" type="radio" name="lapor_sipesat_tw_3" id="lapor_sipesat_tw_3_sudah" value="True" required>
+                                        <label class="tw-sr-only" for="lapor_sipesat_tw_3_sudah">Sudah</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input sipesat-triwulan-status" type="radio" name="lapor_sipesat_tw_3" id="lapor_sipesat_tw_3_belum" value="False">
+                                        <label class="tw-sr-only" for="lapor_sipesat_tw_3_belum">Belum</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Lapor SIPESAT tw 4</td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input sipesat-triwulan-status" type="radio" name="lapor_sipesat_tw_4" id="lapor_sipesat_tw_4_sudah" value="True" required>
+                                        <label class="tw-sr-only" for="lapor_sipesat_tw_4_sudah">Sudah</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input sipesat-triwulan-status" type="radio" name="lapor_sipesat_tw_4" id="lapor_sipesat_tw_4_belum" value="False">
+                                        <label class="tw-sr-only" for="lapor_sipesat_tw_4_belum">Belum</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-group">
+            <h3 class="section-header">Laporan Pemblokiran/Penghapusan</h3>
+            <div class="section-content">
+                <p class="tw-font-semibold tw-text-gray-700 tw-mb-3">Lapor Pemblokiran DTTOT <span class="tw-text-red-500">*</span></p>
+                <div class="tw-overflow-x-auto tw-mb-4">
+                    <table class="form-table">
+                        <thead>
+                            <tr>
+                                <th>Dokumen</th>
+                                <th>Sudah Dilaporkan</th>
+                                <th>Belum Dilaporkan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>R/42/V/RES.6.1./2024/Densus, 2 May 24 (DTTOT/P-17/43/V/RES.6.1./2024)</td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input dttot-status" type="radio" name="lapor_pemblokiran_dttot_freezing1_status" id="lapor_pemblokiran_dttot_freezing1_sudah" value="True" required>
+                                        <label class="tw-sr-only" for="lapor_pemblokiran_dttot_freezing1_sudah">Sudah Dilaporkan</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input dttot-status" type="radio" name="lapor_pemblokiran_dttot_freezing1_status" id="lapor_pemblokiran_dttot_freezing1_belum" value="False">
+                                        <label class="tw-sr-only" for="lapor_pemblokiran_dttot_freezing1_belum">Belum Dilaporkan</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>R/46/VII/RES.6.1./2024/Densus, 25 Jul 24 (DTTOT/P-18/47/VII/RES.6.1./2024)</td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input dttot-status" type="radio" name="lapor_pemblokiran_dttot_freezing2_status" id="lapor_pemblokiran_dttot_freezing2_sudah" value="True" required>
+                                        <label class="tw-sr-only" for="lapor_pemblokiran_dttot_freezing2_sudah">Sudah Dilaporkan</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input dttot-status" type="radio" name="lapor_pemblokiran_dttot_freezing2_status" id="lapor_pemblokiran_dttot_freezing2_belum" value="False">
+                                        <label class="tw-sr-only" for="lapor_pemblokiran_dttot_freezing2_belum">Belum Dilaporkan</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Delisting: No. R/49/X/RES.6.1./2024/Densus, 21 Oct 24 (DTTOT/P-18a/50/X/RES.6.1./2024)</td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input dttot-status" type="radio" name="lapor_pemblokiran_dttot_delisting_status" id="lapor_pemblokiran_dttot_delisting_sudah" value="True" required>
+                                        <label class="tw-sr-only" for="lapor_pemblokiran_dttot_delisting_sudah">Sudah Dilaporkan</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input dttot-status" type="radio" name="lapor_pemblokiran_dttot_delisting_status" id="lapor_pemblokiran_dttot_delisting_belum" value="False">
+                                        <label class="tw-sr-only" for="lapor_pemblokiran_dttot_delisting_belum">Belum Dilaporkan</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Freezing: R/52/XI/RES.6.1./2024/Densus, 7 Nov 24 (DTTOT/P-19/53/XI/RES.6.1./2024)</td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input dttot-status" type="radio" name="lapor_pemblokiran_dttot_freezing3_status" id="lapor_pemblokiran_dttot_freezing3_sudah" value="True" required>
+                                        <label class="tw-sr-only" for="lapor_pemblokiran_dttot_freezing3_sudah">Sudah Dilaporkan</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input dttot-status" type="radio" name="lapor_pemblokiran_dttot_freezing3_status" id="lapor_pemblokiran_dttot_freezing3_belum" value="False">
+                                        <label class="tw-sr-only" for="lapor_pemblokiran_dttot_freezing3_belum">Belum Dilaporkan</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="tw-font-semibold tw-text-gray-700 tw-mb-3">Lapor Pemblokiran DPPSPM <span class="tw-text-red-500">*</span></p>
+                <div class="tw-overflow-x-auto">
+                    <table class="form-table">
+                        <thead>
+                            <tr>
+                                <th>Dokumen</th>
+                                <th>Sudah Dilaporkan</th>
+                                <th>Belum Dilaporkan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>R/230/DN.05.02/IV/2024, 17 Apr 24 (Keputusan Kepala PPATK No. 175 Year 2024)</td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input dppspm-status" type="radio" name="lapor_pemblokiran_dppspm_doc1_status" id="lapor_pemblokiran_dppspm_doc1_sudah" value="True" required>
+                                        <label class="tw-sr-only" for="lapor_pemblokiran_dppspm_doc1_sudah">Sudah Dilaporkan</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input dppspm-status" type="radio" name="lapor_pemblokiran_dppspm_doc1_status" id="lapor_pemblokiran_dppspm_doc1_belum" value="False">
+                                        <label class="tw-sr-only" for="lapor_pemblokiran_dppspm_doc1_belum">Belum Dilaporkan</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>R/647/DN.05.02/4.1/XII/2024, 24 Des 24 (Keputusan Kepala PPATK No. 679 Year 2024)</td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input dppspm-status" type="radio" name="lapor_pemblokiran_dppspm_doc2_status" id="lapor_pemblokiran_dppspm_doc2_sudah" value="True" required>
+                                        <label class="tw-sr-only" for="lapor_pemblokiran_dppspm_doc2_sudah">Sudah Dilaporkan</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check-container">
+                                        <input class="form-check-input dppspm-status" type="radio" name="lapor_pemblokiran_dppspm_doc2_status" id="lapor_pemblokiran_dppspm_doc2_belum" value="False">
+                                        <label class="tw-sr-only" for="lapor_pemblokiran_dppspm_doc2_belum">Belum Dilaporkan</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-group">
+            <h3 class="section-header">Kebijakan dan Prosedur</h3>
+            <div class="section-content">
+                <div class="tw-space-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="tanggung_jawab_direksi" class="tw-block form-label">Tanggung Jawab Direksi dan Pengawasan Aktif Dewan Komisaris <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="tanggung_jawab_direksi" name="tanggung_jawab_direksi" rows="3" required placeholder="Contoh: &#10;- Penetapan Komitmen Direksi dan Dewan Komisaris terhadap penerapan APU PPT dan PPSPM.&#10;- Pernyataan representasi atas penerapan APU PPT dan PPSPM.&#10;- Penetapan KPA PPT.&#10;- Penetapan Direksi atau pejabat setingkat Direksi yang membidangi fungsi kepatuhan sebagai PIC APU PPT dan PPSPM.&#10;- Kewajiban pelaporan dan pemantauan oleh Direksi dan Dewan Komisaris."></textarea>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="kebijakan_prosedur" class="tw-block form-label">Kebijakan dan Prosedur Tertulis <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="kebijakan_prosedur" name="kebijakan_prosedur" rows="3" required placeholder="Contoh:&#10;- Kebijakan dan prosedur PMPJ, pemantauan dan pengkinian profil nasabah, pelaporan LTKT dan LTKM.&#10;- Kebijakan dan prosedur terkait sanksi internal.&#10;- Prosedur identifikasi nasabah dan/atau transaksi mencurigakan.&#10;- Prosedur pelaporan dan pemantauan transaksi.&#10;- Kebijakan dan prosedur audit internal."></textarea>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="metode_pmpj" class="tw-block form-label">Metode Pelaksanaan Prinsip Mengenali Pengguna Jasa (PMPJ) <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="metode_pmpj" name="metode_pmpj" rows="3" required placeholder="Contoh:&#10;- Identifikasi dan verifikasi nasabah individu/korporasi.&#10;- Verifikasi dan identifikasi beneficial ownership.&#10;- Pemantauan transaksi dan profil nasabah.&#10;- Penyimpanan data PMPJ yang akurat dan terkini."></textarea>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="manajemen_risiko" class="tw-block form-label">Proses Manajemen Risiko <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="manajemen_risiko" name="manajemen_risiko" rows="3" required placeholder="Contoh:&#10;- Telah melakukan identifikasi, penilaian risiko pencucian uang dan pendanaan terorisme.&#10;- Telah melakukan mitigasi risiko yang teridentifikasi.&#10;- Penilaian risiko APU PPT secara berkala."></textarea>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="manajemen_sdm" class="tw-block form-label">Manajemen Sumber Daya Manusia <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="manajemen_sdm" name="manajemen_sdm" rows="3" required placeholder="Contoh:&#10;- Pelatihan APU PPT bagi seluruh karyawan.&#10;- Uji kompetensi atau sertifikasi bagi petugas APU PPT.&#10;- Penempatan pegawai yang memiliki pengetahuan dan pengalaman di bidang APU PPT."></textarea>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="sistem_pengendalian" class="tw-block form-label">Sistem Pengendalian Intern <span class="tw-text-red-500">*</span></label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="sistem_pengendalian" name="sistem_pengendalian" rows="3" required placeholder="Contoh:&#10;- Sistem IT yang mendukung pelaksanaan APU PPT.&#10;- Sistem audit internal yang efektif untuk APU PPT.&#10;- Prosedur pelaporan transaksi mencurigakan."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-group">
+            <h3 class="section-header">Informasi Penginput Data</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="nama_penginput" class="tw-block form-label">Nama Penginput <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="nama_penginput" name="nama_penginput" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="email_penginput" class="tw-block form-label">Email Penginput <span class="tw-text-red-500">*</span></label>
+                        <input type="email" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="email_penginput" name="email_penginput" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="email_perusahaan" class="tw-block form-label">Email Perusahaan <span class="tw-text-red-500">*</span></label>
+                        <input type="email" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="email_perusahaan" name="email_perusahaan" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="nomor_hp" class="tw-block form-label">Nomor HP <span class="tw-text-red-500">*</span></label>
+                        <input type="tel" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="nomor_hp" name="nomor_hp" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-group">
+            <h3 class="section-header">Pernyataan</h3>
+            <div class="section-content">
+                <div class="tw-space-y-1">
+                    <div class="tw-flex tw-items-start">
+                        <input class="tw-form-checkbox tw-h-5 tw-w-5 tw-text-indigo-600 focus:tw-ring-indigo-500 tw-border-gray-300 tw-rounded" type="checkbox" id="declaration" name="declaration" required>
+                        <label class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900" for="declaration">
+                            Sehubungan dengan penyampaian Laporan Tahunan APU, PPT, dan PPSPM Tahunan yang telah disampaikan, dengan ini saya mewakili Perusahaan menyatakan data dan informasi pada isian tersebut dengan lengkap dan benar.  
+                            Apabila data/informasi yang diisi tidak lengkap dan tidak akurat, maka laporan yang disampaikan akan dianggap salah dan tidak disampaikan. 
+                            Dalam hal terdapat perubahan, maka saya, mewakili perusahaan akan melakukan update data dan informasi tersebut. 
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+                <span class="submit-text">Kirim Laporan</span>
+                <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">Batal</button>
+        </div>
+    </form>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('apuPptReportForm');
-    const submitButton = form.querySelector('button[type="submit"]');
+    const submitButton = document.getElementById('submitButton');
     const submitText = submitButton.querySelector('.submit-text');
     const submitSpinner = submitButton.querySelector('.spinner-border');
 
-    const loadingModalElement = document.getElementById('loadingModal');
-    const successModalElement = document.getElementById('successModal');
-    const errorModalElement = document.getElementById('errorModal');
-
-    const loadingModal = new bootstrap.Modal(loadingModalElement);
-    const successModal = new bootstrap.Modal(successModalElement);
-    const errorModal = new bootstrap.Modal(errorModalElement);
-
-    const successMessageElement = document.getElementById('successMessage');
-    const errorMessageElement = document.getElementById('errorMessage');
-
-    // Date validation - report date shouldn't be in the future
-    const today = new Date().toISOString().split('T')[0];
-    const tanggalSuratInput = document.getElementById('tanggal_surat');
-    if (tanggalSuratInput) {
-        tanggalSuratInput.max = today;
-    }
+    // --- Custom Modal/Message Box ---
+    const messageContainer = document.querySelector('.tw-max-w-4xl.tw-mx-auto'); 
     
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Basic client-side validation
-        const tahun = document.getElementById('tahun_laporan').value;
-        const currentYear = new Date().getFullYear();
-        
-        if (tahun > currentYear) {
-            errorMessageElement.textContent = 'Tahun laporan tidak boleh melebihi tahun berjalan.';
-            errorModal.show();
-            return false;
-        }
-        
-        if (!document.getElementById('declaration').checked) {
-            errorMessageElement.textContent = 'Anda harus menyetujui pernyataan sebelum mengirim laporan.';
-            errorModal.show();
-            return false;
-        }
-        
-        const fileInput = document.getElementById('dokumen_laporan');
-        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) { // 10MB
-            errorMessageElement.textContent = 'Ukuran file dokumen laporan melebihi 10MB.';
-            errorModal.show();
-            return false;
+    function showMessageBox(message, type) {
+        let messageBox = document.getElementById('dynamicMessageBox');
+        if (!messageBox) {
+            messageBox = document.createElement('div');
+            messageBox.id = 'dynamicMessageBox';
+            messageBox.classList.add('tw-p-3', 'tw-rounded-lg', 'tw-mb-4', 'tw-text-center', 'tw-font-medium'); 
+            const firstChild = messageContainer.querySelector('h2');
+            if (firstChild) {
+                firstChild.parentNode.insertBefore(messageBox, firstChild.nextSibling);
+            } else {
+                messageContainer.insertBefore(messageBox, messageContainer.firstChild);
+            }
         }
 
-        // Show loading state
-        submitButton.disabled = true;
-        submitText.textContent = 'Mengirim...';
-        submitSpinner.classList.remove('d-none');
-        loadingModal.show();
+        messageBox.textContent = message;
+        messageBox.classList.remove('tw-bg-green-100', 'tw-text-green-800', 'tw-border-green-300', 'tw-bg-red-100', 'tw-text-red-800', 'tw-border-red-300'); 
         
-        const formData = new FormData(this);
+        if (type === 'success') {
+            messageBox.classList.add('tw-bg-green-100', 'tw-text-green-800', 'tw-border', 'tw-border-green-300');
+        } else if (type === 'error') {
+            messageBox.classList.add('tw-bg-red-100', 'tw-text-red-800', 'tw-border', 'tw-border-red-300');
+        }
         
-        fetch(this.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json' // Expect JSON response
-            }
-        })
-        .then(response => {
-            // Hide loading state immediately after getting response header
-            loadingModal.hide();
-            submitButton.disabled = false;
-            submitText.textContent = 'Kirim Laporan';
-            submitSpinner.classList.add('d-none');
-            return response.json(); // Process the response as JSON
-        })
-        .then(data => {
-            if (data.success) {
-                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
-                successModal.show();
-                form.reset(); // Reset form on success
-            } else {
-                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan. Silakan coba lagi.';
-                errorModal.show();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            // Hide loading state on network error or other issues
-            loadingModal.hide();
-            submitButton.disabled = false;
-            submitText.textContent = 'Kirim Laporan';
-            submitSpinner.classList.add('d-none');
+        messageBox.style.display = 'block'; 
+        setTimeout(() => {
+            messageBox.style.display = 'none'; 
+        }, 5000);
+    }
+    // --- End Custom Modal/Message Box ---
+
+    // Date validation - report date shouldn't be in the future 
+    const today = new Date().toISOString().split('T')[0]; 
+    const tanggalSuratInput = document.getElementById('tanggal_surat'); 
+    if (tanggalSuratInput) { 
+        tanggalSuratInput.max = today; 
+    } 
+    
+    form.addEventListener('submit', function(e) { 
+        e.preventDefault(); 
+        let formIsValid = true; 
+        
+        // Basic client-side validation for year 
+        const tahun = document.getElementById('tahun_laporan').value; 
+        const currentYear = new Date().getFullYear(); 
+        
+        if (parseInt(tahun) > currentYear) { // Ensure parsing to int for comparison 
+            showMessageBox('Tahun laporan tidak boleh melebihi tahun berjalan.', 'error'); 
+            formIsValid = false; 
+        } 
+        
+        // Declaration checkbox validation 
+        if (!document.getElementById('declaration').checked) { 
+            showMessageBox('Anda harus menyetujui pernyataan sebelum mengirim laporan.', 'error'); 
+            formIsValid = false; 
+        } 
+        
+        // File size validation 
+        const fileInput = document.getElementById('file'); 
+        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) { // 10MB 
+            showMessageBox('Ukuran file dokumen laporan melebihi 10MB.', 'error'); 
+            formIsValid = false; 
+        } 
+
+        // Validate that at least one radio button is selected for each SIPESAT Triwulan status 
+        const sipesatTriwulanNames = ['lapor_sipesat_tw_1', 'lapor_sipesat_tw_2', 'lapor_sipesat_tw_3', 'lapor_sipesat_tw_4']; 
+        sipesatTriwulanNames.forEach(name => { 
+            const radios = document.querySelectorAll(`input[name="${name}"]`); 
+            const isChecked = Array.from(radios).some(radio => radio.checked); 
+            if (!isChecked) { 
+                showMessageBox(`Harap lengkapi status laporan untuk ${name.replace(/_/g, ' ').toUpperCase()}.`, 'error'); 
+                formIsValid = false; 
+            } 
+        }); 
+
+        // Validate DTTOT and DPPSPM radio buttons 
+        const dttotNames = [ 
+            'lapor_pemblokiran_dttot_freezing1_status',  
+            'lapor_pemblokiran_dttot_freezing2_status',  
+            'lapor_pemblokiran_dttot_delisting_status',  
+            'lapor_pemblokiran_dttot_freezing3_status' 
+        ]; 
+        dttotNames.forEach(name => { 
+            const radios = document.querySelectorAll(`input[name="${name}"]`); 
+            const isChecked = Array.from(radios).some(radio => radio.checked); 
+            if (!isChecked) { 
+                showMessageBox(`Harap lengkapi semua status laporan DTTOT untuk ${name.replace(/_/g, ' ').toUpperCase()}.`, 'error'); 
+                formIsValid = false; 
+            } 
+        }); 
+
+        const dppspmNames = ['lapor_pemblokiran_dppspm_doc1_status', 'lapor_pemblokiran_dppspm_doc2_status']; 
+        dppspmNames.forEach(name => { 
+            const radios = document.querySelectorAll(`input[name="${name}"]`); 
+            const isChecked = Array.from(radios).some(radio => radio.checked); 
+            if (!isChecked) { 
+                showMessageBox(`Harap lengkapi semua status laporan DPPSPM untuk ${name.replace(/_/g, ' ').toUpperCase()}.`, 'error'); 
+                formIsValid = false; 
+            } 
+        }); 
+
+
+        if (!formIsValid) return; 
+
+        // Show loading state 
+        submitButton.disabled = true; 
+        submitText.textContent = 'Mengirim...'; 
+        submitSpinner.classList.remove('d-none'); 
+        
+        const formData = new FormData(this); 
+        
+        fetch(this.action, { 
+            method: 'POST', 
+            body: formData, 
+            headers: { 
+                'Accept': 'application/json' // Expect JSON response 
+            } 
+        }) 
+        .then(response => { 
+            // Hide loading state immediately after getting response header 
+            submitButton.disabled = false; 
+            submitText.textContent = 'Kirim Laporan'; 
+            submitSpinner.classList.add('d-none'); 
+            return response.json(); // Process the response as JSON 
+        }) 
+        .then(data => { 
+            if (data.success) { 
+                showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success'); 
+                form.reset(); // Reset form on success 
+            } else { 
+                showMessageBox(data.message || 'Gagal mengirim laporan. Silakan coba lagi.', 'error'); 
+            } 
+        }) 
+        .catch(error => { 
+            console.error('Error:', error); 
+            // Hide loading state on network error or other issues 
+            submitButton.disabled = false; 
+            submitText.textContent = 'Kirim Laporan'; 
+            submitSpinner.classList.add('d-none'); 
             
-            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server. Silakan coba lagi nanti.';
-            errorModal.show();
-        });
-    });
+            showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server. Silakan coba lagi nanti.', 'error'); 
+        }); 
+    }); 
+
+    // Reset form listener 
+    form.addEventListener('reset', function() { 
+        // Reset radio buttons by setting their checked status or triggering change if needed. 
+        // For radio groups, just setting checked to false might not be enough, 
+        // as you want one of them to be re-selected by default or required on next submission. 
+        // It's often better to rely on the browser's default reset behavior for radios or 
+        // explicitly set the first option as checked if it's meant to be default. 
+        // Here, we just let form.reset() handle it, and the 'required' attribute 
+        // will enforce selection on next submit. 
+    }); 
 });
 </script>
 {% endblock %}

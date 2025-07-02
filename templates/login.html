@@ -3,42 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body class="d-flex justify-content-center align-items-center vh-100 bg-light">
+    <title>Login - Bank Indonesia</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom Tailwind Colors */
+        :root {
+            --color-bi-blue-dark: #003366;
+            --color-bi-gold: #FFD700;
+            --color-bi-blue-medium: #0056b3;
+            --color-bi-green: #10B981;
+            --color-bi-red: #EF4444;
+            --color-bi-amber: #F59E0B;
+            --color-bi-light-blue: #e0f2fe; /* light blue for card background */
+        }
 
-    <div class="card shadow p-4 text-center" style="width: 400px;">
-        <!-- Logo Bank Indonesia -->
-        <div class="d-flex justify-content-center">
-            <img src="{{ url_for('static', filename='BI_Logo.png') }}" alt="Bank Indonesia" 
-                class="mb-3" style="width: 300px; height: auto;">
+        .bg-biBlueDark { background-color: var(--color-bi-blue-dark); }
+        .text-biBlueDark { color: var(--color-bi-blue-dark); }
+        .bg-biGold { background-color: var(--color-bi-gold); }
+        .text-biGold { color: var(--color-bi-gold); }
+        .text-biBlueMedium { color: var(--color-bi-blue-medium); }
+        .text-biGreen { color: var(--color-bi-green); }
+        .text-biRed { color: var(--color-bi-red); }
+        .text-biAmber { color: var(--color-bi-amber); }
+        .bg-biLightBlue { background-color: var(--color-bi-light-blue); }
+
+        /* General Body and Font */
+        body {
+            font-family: "Inter", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f8fafc; /* Light background for the whole page */
+            color: #334155; /* Default text color */
+            overflow: hidden; /* Prevent scroll for background image */
+            position: relative;
+        }
+
+        /* Background Image Styling */
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://expatlifeindonesia.com/wp-content/uploads/2022/05/BI_UMA.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(5px); /* Subtle blur for background */
+            transform: scale(1.02); /* To hide blur edges */
+            z-index: -2; /* Behind overlay and content */
+        }
+
+        /* Overlay for background image */
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 51, 102, 0.7); /* Dark BI blue with transparency */
+            z-index: -1; /* Between image and content */
+        }
+
+        /* Login Card Styling */
+        .login-card {
+            background-color: white;
+            border-radius: 1.5rem; /* rounded-3xl */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25); /* Stronger, more elegant shadow */
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 450px; /* Slightly wider card */
+            text-align: center;
+            position: relative; /* For z-index */
+            z-index: 1; /* Above background */
+            border: 1px solid rgba(0, 51, 102, 0.1); /* Subtle border */
+            backdrop-filter: blur(5px); /* Frosted glass effect on card */
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-logo {
+            width: 250px; /* Adjusted size for better fit */
+            height: auto;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); /* Subtle shadow for logo */
+        }
+
+        .login-title {
+            font-size: 2rem; /* text-3xl */
+            font-weight: 800; /* font-extrabold */
+            color: var(--color-bi-blue-dark);
+            margin-bottom: 2rem;
+        }
+
+        /* Input field styling */
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .input-label {
+            display: block;
+            text-align: left;
+            font-weight: 600; /* font-semibold */
+            color: #475569; /* slate-600 */
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e1; /* slate-300 */
+            border-radius: 0.75rem; /* rounded-lg */
+            font-size: 1rem;
+            color: #334155;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .input-field:focus {
+            border-color: var(--color-bi-blue-medium);
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2); /* Focus ring with BI blue */
+        }
+        .input-field::placeholder {
+            color: #94a3b8; /* slate-400 */
+        }
+
+        /* Password toggle icon */
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(calc(-50% + 0.25rem)); /* Adjust for label height */
+            cursor: pointer;
+            color: #64748b; /* slate-500 */
+            transition: color 0.2s ease;
+        }
+        .password-toggle:hover {
+            color: var(--color-bi-blue-medium);
+        }
+
+        /* Login Button Styling */
+        .login-button {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--color-bi-blue-dark) 0%, var(--color-bi-blue-medium) 100%);
+            color: white;
+            font-weight: 700; /* font-bold */
+            border-radius: 0.75rem; /* rounded-lg */
+            box-shadow: 0 8px 20px rgba(0, 51, 102, 0.3); /* Button shadow */
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1.1rem;
+            letter-spacing: 0.025em;
+        }
+        .login-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 51, 102, 0.4);
+            background: linear-gradient(135deg, var(--color-bi-blue-medium) 0%, var(--color-bi-blue-dark) 100%);
+        }
+        .login-button:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        .login-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Error Message Styling */
+        .error-message {
+            background-color: #fef2f2; /* red-50 */
+            color: var(--color-bi-red); /* red-600 */
+            border: 1px solid #fca5a5; /* red-300 */
+            border-radius: 0.5rem; /* rounded-md */
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            text-align: left;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .login-card {
+                padding: 1.5rem;
+                margin: 1rem; /* Add some margin on small screens */
+            }
+            .login-title {
+                font-size: 1.75rem;
+                margin-bottom: 1.5rem;
+            }
+            .login-logo {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Image -->
+    <div class="background-image"></div>
+    <!-- Background Overlay -->
+    <div class="background-overlay"></div>
+
+    <div class="login-card">
+        <!-- Logo Bank Indonesia (Placeholder) -->
+        <div class="flex justify-center">
+            <!-- Replace this placeholder with your actual BI_Logo.png path -->
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/BI_Logo.png" alt="Bank Indonesia Logo" class="login-logo">
         </div>
 
-        <h3 class="text-center">Login</h3>
+        <h3 class="login-title">Selamat Datang</h3>
         
-        {% if error %}
-            <div class="alert alert-danger" role="alert">
+        <!-- Error Message Display -->
+        <div id="error-alert" class="error-message hidden" role="alert">
+            <!-- Error message will be inserted here by JavaScript or Flask -->
+            {% if error %}
                 {{ error }}
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
 
-        <form method="POST">
-            <div class="mb-3 text-start">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" name="username" class="form-control" required>
-            </div>
-
-            <div class="mb-3 text-start">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" required>
+        <form id="login-form" method="POST">
+            <div class="input-group">
+                <label for="sandi_pjp" class="input-label">Username</label>
+                <!-- Changed name from 'username' to 'sandi_pjp' to match Flask backend -->
+                <input type="text" name="sandi_pjp" id="sandi_pjp" class="input-field" placeholder="Masukkan username Anda" required>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <div class="input-group">
+                <label for="password" class="input-label">Password</label>
+                <input type="password" name="password" id="password" class="input-field" placeholder="Masukkan password Anda" required>
+                <span class="password-toggle" id="togglePassword">
+                    <i data-lucide="eye"></i>
+                </span>
+            </div>
+
+            <button type="submit" class="login-button" id="login-button">
+                Login
+            </button>
         </form>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Get elements
+        const passwordField = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const loginForm = document.getElementById('login-form');
+        const loginButton = document.getElementById('login-button');
+        const errorAlert = document.getElementById('error-alert');
+
+        // Function to show error message (used for client-side messages or initial Flask errors)
+        function showErrorMessage(message, isSuccess = false) {
+            errorAlert.textContent = message;
+            errorAlert.classList.remove('hidden', 'bg-green-50', 'text-green-600', 'border-green-300', 'error-message');
+            
+            if (isSuccess) {
+                errorAlert.classList.add('bg-green-50', 'text-green-600', 'border-green-300');
+            } else {
+                errorAlert.classList.add('error-message'); // Re-add default error styling
+            }
+
+            // Hide after 5 seconds
+            setTimeout(() => {
+                errorAlert.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Toggle password visibility
+        if (togglePassword && passwordField) {
+            togglePassword.addEventListener('click', function () {
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+                // Change icon
+                this.innerHTML = type === 'password' ? '<i data-lucide="eye"></i>' : '<i data-lucide="eye-off"></i>';
+                lucide.createIcons(); // Re-render Lucide icon
+            });
+        }
+
+        // --- IMPORTANT: Removed client-side login simulation ---
+        // The form will now directly submit to the Flask backend.
+        // You can add client-side validation here if needed, but the actual
+        // login logic should remain on the server.
+
+        // Handle button loading state during submission
+        if (loginForm && loginButton) {
+            loginForm.addEventListener('submit', function () {
+                loginButton.textContent = 'Memuat...';
+                loginButton.disabled = true;
+                loginButton.classList.add('opacity-70', 'cursor-not-allowed');
+            });
+        }
+
+        // This part assumes Flask's `error` variable is passed.
+        // It will display any error message rendered by Flask when the page loads.
+        const initialErrorElement = document.querySelector('#error-alert');
+        if (initialErrorElement && initialErrorElement.textContent.trim() !== '') {
+            initialErrorElement.classList.remove('hidden');
+            initialErrorElement.classList.remove('bg-green-50', 'text-green-600', 'border-green-300'); // Ensure it's not green
+            initialErrorElement.classList.add('error-message'); // Ensure it has error styling
+            setTimeout(() => {
+                initialErrorElement.classList.add('hidden');
+            }, 5000);
+        }
+    </script>
+
 </body>
 </html>

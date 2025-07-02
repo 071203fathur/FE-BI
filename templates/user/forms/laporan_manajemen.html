@@ -2,218 +2,364 @@
 
 {% block title %}Laporan Manajemen{% endblock %}
 
+{% block extra_head %}
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Mengatur font-family secara global untuk halaman ini */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Kelas utilitas untuk spinner */
+        .spinner-border {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            vertical-align: middle;
+            border: 0.25em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border .75s linear infinite;
+        }
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+        .d-none { display: none !important; } /* Utility untuk JS */
+
+        /* Custom styles to match Laporan P2P/Fraud form aesthetics */
+        .section-group {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .section-group .section-header {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1f2937;
+            background-color: #eef2f6;
+            padding: 0.8rem 1.5rem;
+            margin-top: 0;
+            margin-left: -1px;
+            margin-right: -1px;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e0e7eb;
+            border-top-left-radius: 11px;
+            border-top-right-radius: 11px;
+        }
+        .section-group .section-content {
+            padding: 1.5rem;
+            padding-top: 0;
+        }
+
+        /* Adjust font size for labels and inputs for precision */
+        .form-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .form-input {
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
+        }
+
+        /* Styles for dynamic members (Komisaris/Direksi) */
+        .management-member-item {
+            border: 1px solid #e0e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #fcfdfe;
+            position: relative;
+        }
+        .management-member-item .remove-item-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #fef2f2; /* red-50 */
+            color: #ef4444; /* red-500 */
+            border: 1px solid #fecaca; /* red-200 */
+            border-radius: 9999px; /* full rounded */
+            padding: 0.25rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .management-member-item .remove-item-btn:hover {
+            background-color: #fee2e2; /* red-100 */
+            color: #dc2626; /* red-600 */
+        }
+        .management-member-item .remove-item-btn svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        /* Table styles for Executive Summary */
+        .form-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .form-table th, .form-table td {
+            border-bottom: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            vertical-align: top; /* Align content to top for textareas */
+        }
+        .form-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #4b5563;
+            text-align: left;
+        }
+        .form-table th:first-child { width: 5%; text-align: center; }
+        .form-table th:nth-child(2) { width: 45%; } /* Adjusted width for 'Sub Laporan' */
+        .form-table th:nth-child(3) { width: 10%; text-align: center;} /* Checkbox column */
+        .form-table th:nth-child(4) { width: 40%; } /* Adjusted width for Textarea column */
+
+
+        .form-table td:first-child {
+            text-align: center;
+            font-weight: 500;
+            color: #374151;
+        }
+        .form-table td:last-child,
+        .form-table th:last-child {
+            border-right: none;
+        }
+        .form-table tr:last-child td {
+            border-bottom: none;
+        }
+        .executive-summary-text {
+            min-height: 80px; /* Ensure sufficient height for textarea */
+            resize: vertical;
+            width: 100%; /* Make textarea take full width of its cell */
+        }
+        .word-count-info {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        .word-count-error {
+            color: #ef4444; /* red-500 */
+            font-weight: 500;
+        }
+
+        /* Custom checkbox styling */
+        .custom-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #9ca3af; /* gray-400 */
+            border-radius: 0.25rem; /* rounded-md */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            margin-top: -0.125rem; /* Adjust alignment */
+        }
+        .custom-checkbox:checked {
+            background-color: #4f46e5; /* indigo-600 */
+            border-color: #4f46e5;
+        }
+        .custom-checkbox:checked::after {
+            content: '';
+            display: block;
+            width: 0.5rem;
+            height: 0.8rem;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg) translate(-50%, -50%);
+            position: absolute;
+            top: 40%;
+            left: 50%;
+        }
+        .custom-checkbox:focus {
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* focus-ring-indigo-500 */
+            outline: none;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center mt-4">
-    <div class="col-12 col-lg-10">
-        <div class="card shadow-lg p-4">
-            <!-- Modals for Success, Error, Loading -->
-            <div class="modal fade" id="successModalManajemen" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-success text-white">
-                            <h5 class="modal-title">Sukses!</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p id="successMessageManajemen">Laporan berhasil dikirim!</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6 tw-font-sans">
+    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">Laporan Manajemen & Hasil Pengawasan Dewan Komisaris</h2>
 
-            <div class="modal fade" id="errorModalManajemen" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-danger text-white">
-                            <h5 class="modal-title">Error!</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p id="errorMessageManajemen">Terjadi kesalahan saat mengirim laporan.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
-                        </div>
-                    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="tw-p-4 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
+                    {{ message }}
                 </div>
-            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-            <div class="modal fade" id="loadingModalManajemen" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body text-center py-4">
-                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
-                            <p class="text-muted small">Harap tunggu sebentar</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <h3 class="text-center mb-4">Laporan Manajemen</h3>
-            <form method="POST" action="{{ url_for('submit_laporan_manajemen') }}" enctype="multipart/form-data" id="managementForm">
-                <div class="row mb-4">
-                    <div class="col-md-12 mb-3">
-                        <label for="tahun" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
-                        <select class="form-select form-select-lg" id="tahun" name="tahun" required>
+    <form method="POST" action="{{ url_for('submit_laporan_manajemen') }}" enctype="multipart/form-data" id="managementForm" class="tw-space-y-6">
+        
+        <div class="section-group">
+            <h3 class="section-header">Informasi Umum Laporan</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="tahun" class="tw-block form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
+                        <select class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="tahun" name="tahun" required>
                             <option value="">-- Pilih Tahun --</option>
                             {% for year_option in range(current_year - 5, current_year + 2) %}
                             <option value="{{ year_option }}" {% if year_option == current_year %}selected{% endif %}>{{ year_option }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                </div>
-
-                <div class="row mb-4">
-                    <div class="col-md-6 mb-3">
-                        <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-control-lg" id="nomor_surat" name="nomor_surat" required>
+                    <div class="tw-space-y-1">
+                        <label for="nomor_surat" class="tw-block form-label">Nomor Surat <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="nomor_surat" name="nomor_surat" required>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control form-control-lg" id="tanggal_surat" name="tanggal_surat" required>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="tanggal_surat" class="tw-block form-label">Tanggal Surat <span class="tw-text-red-500">*</span></label>
+                        <input type="date" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="tanggal_surat" name="tanggal_surat" required>
                     </div>
-                </div>
-
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Komposisi Komisaris</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="jumlah_komisaris" class="form-label">Jumlah Komisaris <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="jumlah_komisaris" name="jumlah_komisaris" min="0" required>
-                            </div>
-                        </div>
-
-                        <div id="komisaris-container">
-                            </div>
-
-                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="tambah-komisaris">
-                            <i class="bi bi-plus-circle"></i> Tambah Komisaris
-                        </button>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="file_laporan" class="tw-block form-label">Upload File Laporan (PDF/DOC/DOCX) <span class="tw-text-red-500">*</span></label>
+                        <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="file_laporan" name="file_laporan" accept=".pdf,.doc,.docx" required>
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF, DOC, DOCX (Maks. 10MB)</p>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Komposisi Direksi</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="jumlah_direksi" class="form-label">Jumlah Direksi <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="jumlah_direksi" name="jumlah_direksi" min="0" required>
-                            </div>
-                        </div>
-
-                        <div id="direksi-container">
-                            </div>
-
-                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="tambah-direksi">
-                            <i class="bi bi-plus-circle"></i> Tambah Direksi
-                        </button>
-                    </div>
+        <div class="section-group">
+            <h3 class="section-header">Pejabat yang Bertandatangan</h3>
+            <div class="section-content">
+                <p class="tw-text-sm tw-text-gray-700 tw-mb-4">
+                    Silakan masukkan nama, jabatan, dan klasifikasi (Komisaris atau Direksi) dari setiap anggota manajemen yang menandatangani laporan ini.
+                </p>
+                <div id="management-members-container" class="tw-space-y-4">
+                    <!-- Dynamic fields will be added here -->
                 </div>
+                <button type="button" class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-md tw-shadow-sm tw-text-indigo-700 tw-bg-indigo-100 hover:tw-bg-indigo-200 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-150 tw-ease-in-out mt-4" id="add-management-member">
+                    <svg class="tw-w-5 tw-h-5 tw-mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Tambah Anggota Manajemen
+                </button>
+            </div>
+        </div>
 
-                <!-- Bagian Ringkasan Laporan Manajemen yang diubah menjadi tabel -->
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Ringkasan Laporan Manajemen <span class="text-danger">*</span></h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-bordered">
+        <div class="section-group">
+            <h3 class="section-header">Ringkasan Laporan Manajemen</h3>
+            <div class="section-content">
+                <div id="executive-summary-section" class="tw-space-y-4">
+                    <div class="tw-overflow-x-auto">
+                        <table class="form-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 5%;">No.</th>
-                                    <th style="width: 50%;">Isi Laporan</th>
-                                    <th style="width: 45%;">Executive Summary</th>
+                                    <th>No.</th>
+                                    <th>Sub Laporan</th>
+                                    <th class="text-center">Tersedia di Laporan?</th>
+                                    <th>Executive Summary</th>
                                 </tr>
                             </thead>
                             <tbody id="executive-summary-table-body">
-                                <!-- Baris akan ditambahkan secara dinamis di sini -->
+                                <!-- Rows will be dynamically added/pre-populated here -->
                             </tbody>
                         </table>
-                        <!-- Tombol "Tambah Baris Ringkasan" dihapus -->
                     </div>
                 </div>
-
-                <div class="row mb-4">
-                    <div class="col-md-6 mb-3">
-                        <label for="kepemilikan_domestik" class="form-label">Persentase Kepemilikan Domestik (%) <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control form-control-lg" id="kepemilikan_domestik" 
-                               name="persentase_kepemilikan_domestik" min="0" max="100" step="0.01" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="kepemilikan_asing" class="form-label">Persentase Kepemilikan Asing (%) <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control form-control-lg" id="kepemilikan_asing" 
-                               name="persentase_kepemilikan_asing" min="0" max="100" step="0.01" required>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <label for="keterangan" class="form-label">Keterangan Tambahan</label>
-                    <textarea class="form-control form-control-lg" id="keterangan" name="keterangan" rows="3"></textarea>
-                </div>
-
-                <div class="mb-4">
-                    <label for="file_laporan" class="form-label">Upload File Laporan <span class="text-danger">*</span></label>
-                    <input type="file" class="form-control form-control-lg" id="file_laporan" 
-                           name="file_laporan" accept=".pdf,.doc,.docx" required>
-                    <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
-                </div>
-
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <span class="submit-text">Kirim Laporan</span>
-                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
-</div>
 
-<style>
-    .form-text {
-        font-size: 0.8rem;
-        color: #6c757d;
-    }
-    .card-header {
-        font-weight: 600;
-    }
-    .remove-item {
-        padding: 0.25rem 0.5rem;
-    }
-    .btn-primary .spinner-border {
-        vertical-align: middle;
-        margin-left: 5px;
-    }
-</style>
+        <div class="section-group">
+            <h3 class="section-header">Informasi Kepemilikan & Tambahan</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="kepemilikan_domestik" class="tw-block form-label">Persentase Kepemilikan Domestik (%) <span class="tw-text-red-500">*</span></label>
+                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="kepemilikan_domestik" name="persentase_kepemilikan_domestik" min="0" max="100" step="0.01" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="pengendalian_domestik" class="tw-block form-label">Pengendalian Domestik (Jumlah) <span class="tw-text-red-500">*</span></label>
+                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="pengendalian_domestik" name="pengendalian_domestik" min="0" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="kepemilikan_asing" class="tw-block form-label">Persentase Kepemilikan Asing (%) <span class="tw-text-red-500">*</span></label>
+                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="kepemilikan_asing" name="persentase_kepemilikan_asing" min="0" max="100" step="0.01" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="pengendalian_asing" class="tw-block form-label">Pengendalian Asing (Jumlah) <span class="tw-text-red-500">*</span></label>
+                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="pengendalian_asing" name="pengendalian_asing" min="0" required>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="pihak_pengendali_ubo" class="tw-block form-label">Pihak Pengendali UBO <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="pihak_pengendali_ubo" name="pihak_pengendali_ubo" required>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="keterangan" class="tw-block form-label">Keterangan Tambahan</label>
+                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="keterangan" name="keterangan" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+                <span class="submit-text">Kirim Laporan</span>
+                <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">Batal</button>
+        </div>
+    </form>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('managementForm');
-    const submitButton = form.querySelector('button[type="submit"]');
+    const submitButton = document.getElementById('submitButton');
     const submitText = submitButton.querySelector('.submit-text');
     const submitSpinner = submitButton.querySelector('.spinner-border');
-    
-    const loadingModalElement = document.getElementById('loadingModalManajemen');
-    const successModalElement = document.getElementById('successModalManajemen');
-    const errorModalElement = document.getElementById('errorModalManajemen');
 
-    const loadingModal = new bootstrap.Modal(loadingModalElement);
-    const successModal = new bootstrap.Modal(successModalElement);
-    const errorModal = new bootstrap.Modal(errorModalElement);
+    // --- Custom Modal/Message Box ---
+    const messageContainer = document.querySelector('.tw-max-w-4xl.tw-mx-auto'); 
     
-    const successMessageElement = document.getElementById('successMessageManajemen');
-    const errorMessageElement = document.getElementById('errorMessageManajemen');
+    function showMessageBox(message, type) {
+        let messageBox = document.getElementById('dynamicMessageBox');
+        if (!messageBox) {
+            messageBox = document.createElement('div');
+            messageBox.id = 'dynamicMessageBox';
+            messageBox.classList.add('tw-p-3', 'tw-rounded-lg', 'tw-mb-4', 'tw-text-center', 'tw-font-medium'); 
+            const firstChild = messageContainer.querySelector('h2');
+            if (firstChild) {
+                firstChild.parentNode.insertBefore(messageBox, firstChild.nextSibling);
+            } else {
+                messageContainer.insertBefore(messageBox, messageContainer.firstChild);
+            }
+        }
+
+        messageBox.textContent = message;
+        messageBox.classList.remove('tw-bg-green-100', 'tw-text-green-800', 'tw-border-green-300', 'tw-bg-red-100', 'tw-text-red-800', 'tw-border-red-300'); 
+        
+        if (type === 'success') {
+            messageBox.classList.add('tw-bg-green-100', 'tw-text-green-800', 'tw-border', 'tw-border-green-300');
+        } else if (type === 'error') {
+            messageBox.classList.add('tw-bg-red-100', 'tw-text-red-800', 'tw-border', 'tw-border-red-300');
+        }
+        
+        messageBox.style.display = 'block'; 
+        setTimeout(() => {
+            messageBox.style.display = 'none'; 
+        }, 5000);
+    }
+    // --- End Custom Modal/Message Box ---
 
     const tanggalSuratInput = document.getElementById('tanggal_surat');
     if(tanggalSuratInput){
@@ -221,236 +367,260 @@ document.addEventListener('DOMContentLoaded', function() {
         tanggalSuratInput.max = today;
     }
 
-    // --- JavaScript for Komisaris and Direksi (Reverted to original) ---
-    function addManagementMember(containerId, type, countInputId) {
-        const container = document.getElementById(containerId);
+    // --- JavaScript for Management Members ---
+    const managementMembersContainer = document.getElementById('management-members-container');
+    let memberCounter = 0;
+
+    function addManagementMember(name = '', position = '', classification = '') {
+        memberCounter++;
         const newItem = document.createElement('div');
-        newItem.className = type + '-item mb-3 border p-3 rounded';
+        newItem.className = 'management-member-item tw-space-y-2';
         newItem.innerHTML = `
-            <div class="row">
-                <div class="col-md-6 mb-2">
-                    <label class="form-label">Nama ${type.charAt(0).toUpperCase() + type.slice(1)} <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="nama_${type}[]" required>
+            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-x-4 tw-gap-y-2">
+                <div class="tw-space-y-1">
+                    <label class="tw-block form-label">Nama <span class="tw-text-red-500">*</span></label>
+                    <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" name="member_name_${memberCounter}" value="${name}" required>
                 </div>
-                <div class="col-md-5 mb-2">
-                    <label class="form-label">Keterangan/Jabatan <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="keterangan_${type}[]" required>
+                <div class="tw-space-y-1">
+                    <label class="tw-block form-label">Jabatan <span class="tw-text-red-500">*</span></label>
+                    <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" name="member_position_${memberCounter}" value="${position}" required>
                 </div>
-                <div class="col-md-1 mb-2 d-flex align-items-end">
-                    <button type="button" class="btn btn-sm btn-outline-danger remove-item" title="Hapus ${type}">
-                        <i class="bi bi-trash"></i> Hapus
-                    </button>
+                <div class="tw-space-y-1">
+                    <label class="tw-block form-label">Klasifikasi <span class="tw-text-red-500">*</span></label>
+                    <select class="tw-mt-1 tw-block tw-w-full form-input" name="member_classification_${memberCounter}" required>
+                        <option value="">-- Pilih Klasifikasi --</option>
+                        <option value="Komisaris" ${classification === 'Komisaris' ? 'selected' : ''}>Komisaris</option>
+                        <option value="Direksi" ${classification === 'Direksi' ? 'selected' : ''}>Direksi</option>
+                    </select>
                 </div>
             </div>
+            <button type="button" class="remove-item-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </button>
         `;
-        container.appendChild(newItem);
-        document.getElementById(countInputId).value = container.children.length;
+        managementMembersContainer.appendChild(newItem);
 
-        newItem.querySelector('.remove-item').addEventListener('click', function() {
+        newItem.querySelector('.remove-item-btn').addEventListener('click', function() {
             newItem.remove();
-            document.getElementById(countInputId).value = container.children.length;
+            updateManagementMemberNumbers();
         });
+        updateManagementMemberNumbers();
     }
-    
-    const jumlahKomisarisInput = document.getElementById('jumlah_komisaris');
-    const komisarisContainer = document.getElementById('komisaris-container');
-    document.getElementById('tambah-komisaris').addEventListener('click', function() {
-        addManagementMember('komisaris-container', 'komisaris', 'jumlah_komisaris');
-    });
-    // Sync input number with dynamic fields for Komisaris
-    if(jumlahKomisarisInput) {
-        jumlahKomisarisInput.addEventListener('change', function() {
-            const targetCount = parseInt(this.value) || 0;
-            const currentCount = komisarisContainer.children.length;
-            if (targetCount > currentCount) {
-                for (let i = currentCount; i < targetCount; i++) {
-                    addManagementMember('komisaris-container', 'komisaris', 'jumlah_komisaris');
-                }
-            } else if (targetCount < currentCount) {
-                for (let i = currentCount; i > targetCount; i--) {
-                    if (komisarisContainer.lastElementChild) komisarisContainer.lastElementChild.remove();
-                }
-            }
-            this.value = komisarisContainer.children.length; // Update count based on actual fields
+
+    function updateManagementMemberNumbers() {
+        const items = managementMembersContainer.querySelectorAll('.management-member-item');
+        memberCounter = 0; // Reset counter
+        items.forEach((item) => {
+            memberCounter++;
+            // Update name attributes to ensure correct indexing for form submission
+            item.querySelectorAll('input, select').forEach(input => {
+                const oldName = input.name;
+                const baseName = oldName.substring(0, oldName.lastIndexOf('_'));
+                input.name = `${baseName}_${memberCounter}`;
+            });
         });
     }
 
-    const jumlahDireksiInput = document.getElementById('jumlah_direksi');
-    const direksiContainer = document.getElementById('direksi-container');
-    document.getElementById('tambah-direksi').addEventListener('click', function() {
-         addManagementMember('direksi-container', 'direksi', 'jumlah_direksi');
+    document.getElementById('add-management-member').addEventListener('click', function() {
+        addManagementMember();
     });
-    // Sync input number with dynamic fields for Direksi
-    if(jumlahDireksiInput) {
-        jumlahDireksiInput.addEventListener('change', function() {
-            const targetCount = parseInt(this.value) || 0;
-            const currentCount = direksiContainer.children.length;
-            if (targetCount > currentCount) {
-                for (let i = currentCount; i < targetCount; i++) {
-                    addManagementMember('direksi-container', 'direksi', 'jumlah_direksi');
-                }
-            } else if (targetCount < currentCount) {
-                for (let i = currentCount; i > targetCount; i--) {
-                    if (direksiContainer.lastElementChild) direksiContainer.lastElementChild.remove();
-                }
-            }
-             this.value = direksiContainer.children.length; // Update count based on actual fields
-        });
-    }
-    // --- End of JavaScript for Komisaris and Direksi ---
-
+    // --- End JavaScript for Management Members ---
 
     // --- JavaScript for Executive Summary Table ---
     const executiveSummaryTableBody = document.getElementById('executive-summary-table-body');
-    let executiveSummaryCounter = 0;
-
-    function addExecutiveSummaryRow(keteranganValue = '', executiveSummaryValue = '') {
-        executiveSummaryCounter++;
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>${executiveSummaryCounter}</td>
-            <td>
-                <div class="keterangan-static-text fw-bold">${keteranganValue}</div>
-            </td>
-            <td>
-                <textarea class="form-control form-control-sm executive-summary-text" 
-                          name="executive_summary_detail[]" rows="2" 
-                          minlength="10" maxlength="100" required>${executiveSummaryValue}</textarea>
-                <div class="form-text">Min 10, Max 100 kata.</div>
-            </td>
-            <!-- Kolom Aksi dihapus -->
-        `;
-        executiveSummaryTableBody.appendChild(newRow);
-
-        // Add event listeners for word counting and validation for the editable textarea
-        newRow.querySelector('.executive-summary-text').addEventListener('input', function() {
-            const words = this.value.match(/\S+/g) || [];
-            const wordCount = words.length;
-            const minWords = 10;
-            const maxWords = 100;
-            const formText = this.nextElementSibling;
-
-            if (formText) {
-                formText.textContent = `Min ${minWords}, Max ${maxWords} kata. (${wordCount}/${maxWords} kata)`;
-                if (wordCount < minWords || wordCount > maxWords) {
-                    this.classList.add('is-invalid');
-                } else {
-                    this.classList.remove('is-invalid');
-                }
-            }
-        });
-        // Trigger initial count and validation for newly added row
-        newRow.querySelector('.executive-summary-text').dispatchEvent(new Event('input')); 
-    }
-
-    function updateExecutiveSummaryRowNumbers() {
-        const rows = executiveSummaryTableBody.querySelectorAll('tr');
-        rows.forEach((row, index) => {
-            row.querySelector('td:first-child').textContent = index + 1;
-        });
-        executiveSummaryCounter = rows.length;
-    }
-
-    // Tombol 'tambah-executive-summary' dihapus, sehingga event listener ini juga dihapus
-    // document.getElementById('tambah-executive-summary').addEventListener('click', function() {
-    //     addExecutiveSummaryRow('', ''); 
-    // });
-
-    // Pre-populate the table with data from the document
-    const predefinedSummaries = [
-        "Penilaian Dewan Komisaris terhadap kondisi perekonomian terkini & perkembangan industri SP",
-        "Hasil Pengawasan Dewan Komisaris terhadap perkembangan bisnis PJP kinerja PJP, termasuk langkah strategis yang telah dilakukan antara lain terkait permodalan pengembangan infrastruktur sistem informasi SDM",
-        "Hasil Pengawasan Dewan Komisaris terhadap pelaksanaan tata Kelola dan manajemen risiko termasuk prinsip kehati hatian oleh PJP",
-        "Pandangan dari Dewan Komisaris untuk mendorong PJP agar menjadi lebih baik lagi",
-        "Penjelasan perubahan komposisi Dewan Komisaris (apabila ada)",
-        "Laporan pertanggungjawaban Direksi yang mencakup: Implementasi kebijakan Direksi",
-        "Laporan pertanggungjawaban Direksi yang mencakup: Proses yang dilakukan Direksi untuk memastikan pencapaian kinerja tahun pelaporan",
-        "Laporan pertanggungjawaban Direksi yang mencakup: Perbandingan antara hasil yang dicapai dengan yang ditargetkan PJP/PIP, paling sedikit memuat realisasi selama satu tahun terakhir dibandingkan tahun sebelumnya",
-        "Laporan pertanggungjawaban Direksi yang mencakup: Kendala yang dihadapi PJP",
-        "Penerapan tata kelola dan manajemen risiko yang mencakup: Pengawasan aktif direksi dan dewan komisaris",
-        "Penerapan tata kelola dan manajemen risiko yang mencakup: Proses dan Fungsi Manajemen Risiko termasuk SDM",
-        "Penerapan tata kelola dan manajemen risiko yang mencakup: Ketersediaan kebijakan dan prosedur",
-        "Penerapan tata kelola dan manajemen risiko yang mencakup: Pengendalian intern",
-        "Asesmen kecukupan struktur organisasi dan SDM, yang mencakup: Kualitas: Rencana pengembangan SDM terkait SP",
-        "Asesmen kecukupan struktur organisasi dan SDM, yang mencakup: Kuantitas: Asesmen kecukupan SDM SP, jabatan kosong, dan target pemenuhan",
-        "Asesmen struktur kepemilikan (termasuk informasi struktur kepemilikan sampai ultimate shareholder) (Sesuai PBI PJP Pasal 19 atau PBI PIP pasal 21) Struktur kepemilikan domestik dan asing apabila ada ) sampai dengan ultimate shareholder sesuai PBI PJP pasal 19 dan PBI PIP pasal 21 (Persentase kepemilikan dan pengendalian dihitung berdasarkan nominal saham)",
-        "Asesmen struktur pengendalian termasuk informasi struktur pengendalian sampai ultimate shareholder Struktur pengendalian domestik dan asing apabila ada ) sampai dengan ultimate shareholder sesuai PBI PJP pasal 20 dan PBI PIP pasal 22 (Persentase kepemilikan dan pengendalian dihitung berdasarkan nominal saham)",
-        "Asesmen permodalan dan investasi (jika tidak memenuhi Kewajiban Permodalan Sistem Pembayaran maka disampaikan rencana penambahan modal)",
-        "Asesmen manajemen risiko dan standar keamanan sistem informasi (sesuai dengan kewajiban pemenuhan MRSI)",
-        "Pemantauan kepatuhan (apabila ada ) termasuk komitmen"
+    
+    // Define the structure for each summary point with their full descriptions
+    const summaryPoints = [
+        { name: "Penilaian Dewan Komisaris terhadap kondisi perekonomian terkini & perkembangan industri SP", id: "penilaian_perkembangan_industri_sp" },
+        { name: "Hasil Pengawasan Dewan Komisaris terhadap perkembangan bisnis PJP kinerja PJP, termasuk langkah strategis yang telah dilakukan antara lain terkait permodalan pengembangan infrastruktur sistem informasi SDM", id: "pengawasan_perkembangan_bisnis_pjp" },
+        { name: "Hasil Pengawasan Dewan Komisaris terhadap pelaksanaan tata kelola dan manajemen risiko termasuk prinsip kehati hatian oleh PJP", id: "pengawasan_tata_kelola_pjp" },
+        { name: "Pandangan dari Dewan Komisaris untuk mendorong PJP agar menjadi lebih baik lagi", id: "pandangan_perbaikan_pjp" },
+        { name: "Penjelasan perubahan komposisi Dewan Komisaris (apabila ada)", id: "perubahan_komposisi_komisaris" },
+        { name: "Laporan pertanggungjawaban Direksi yang mencakup: Implementasi kebijakan Direksi", id: "implementasi_kebijakan_direksi" },
+        { name: "Laporan pertanggungjawaban Direksi yang mencakup: Proses yang dilakukan Direksi untuk memastikan pencapaian kinerja tahun pelaporan", id: "proses_pencapaian_kinerja" },
+        { name: "Laporan pertanggungjawaban Direksi yang mencakup: Perbandingan antara hasil yang dicapai dengan yang ditargetkan PJP/PIP, paling sedikit memuat realisasi selama satu tahun terakhir dibandingkan tahun sebelumnya", id: "perbandingan_target_dan_realisasi" },
+        { name: "Laporan pertanggungjawaban Direksi yang mencakup: Kendala yang dihadapi PJP", id: "kendala_yang_dihadapi_pjp" },
+        { name: "Penerapan tata kelola dan manajemen risiko yang mencakup: Pengawasan aktif direksi dan dewan komisaris", id: "tata_kelola_pengawasan_direksi_komisaris" },
+        { name: "Penerapan tata kelola dan manajemen risiko yang mencakup: Proses dan Fungsi Manajemen Risiko termasuk SDM", id: "tata_kelola_risiko_sdm" },
+        { name: "Penerapan tata kelola dan manajemen risiko yang mencakup: Ketersediaan kebijakan dan prosedur", id: "tata_kelola_ketersediaan_prosedur" },
+        { name: "Penerapan tata kelola dan manajemen risiko yang mencakup: Pengendalian intern", id: "tata_kelola_pengendalian_intern" },
+        { name: "Asesmen kecukupan struktur organisasi dan SDM, yang mencakup: Kualitas: Rencana pengembangan SDM terkait SP", id: "asesmen_kualitatif_sdm" },
+        { name: "Asesmen kecukupan struktur organisasi dan SDM, yang mencakup: Kuantitas: Asesmen kecukupan SDM SP, jabatan kosong, dan target pemenuhan", id: "asesmen_kuantitatif_sdm" },
+        { name: "Asesmen struktur kepemilikan (termasuk informasi struktur kepemilikan sampai ultimate shareholder) (Sesuai PBI PJP Pasal 19 atau PBI PIP pasal 21) Struktur kepemilikan domestik dan asing apabila ada ) sampai dengan ultimate shareholder sesuai PBI PJP pasal 19 dan PBI PIP pasal 21 (Persentase kepemilikan dan pengendalian dihitung berdasarkan nominal saham)", id: "asesmen_kepemilikan_domestik_asing" },
+        { name: "Asesmen struktur pengendalian termasuk informasi struktur pengendalian sampai ultimate shareholder Struktur pengendalian domestik dan asing apabila ada ) sampai dengan ultimate shareholder sesuai PBI PJP pasal 20 dan PBI PIP pasal 22 (Persentase kepemilikan dan pengendalian dihitung berdasarkan nominal saham)", id: "asesmen_pengendalian_domestik_asing" },
+        { name: "Asesmen permodalan dan investasi (jika tidak memenuhi Kewajiban Permodalan Sistem Pembayaran maka disampaikan rencana penambahan modal)", id: "asesmen_pemenuhan_modal" },
+        { name: "Asesmen manajemen risiko dan standar keamanan sistem informasi (sesuai dengan kewajiban pemenuhan MRSI)", id: "asesmen_manajemen_risiko_it" },
+        { name: "Pemantauan kepatuhan (apabila ada ) termasuk komitmen", id: "pemantauan_kepatuhan" }
     ];
 
-    predefinedSummaries.forEach(item => {
-        addExecutiveSummaryRow(item, ''); 
-    });
-    // --- End of JavaScript for Executive Summary Table ---
+    function populateExecutiveSummaryTable() {
+        executiveSummaryTableBody.innerHTML = ''; // Clear existing rows
+        summaryPoints.forEach((point, index) => {
+            const rowNumber = index + 1;
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${rowNumber}</td>
+                <td>
+                    <div class="tw-font-semibold tw-text-gray-800">${point.name}</div>
+                </td>
+                <td class="text-center">
+                    <div class="form-check-container">
+                        <input class="custom-checkbox summary-status-checkbox" type="checkbox" 
+                               name="${point.id}_status" id="${point.id}_status_${rowNumber}" value="True">
+                        <label class="tw-sr-only" for="${point.id}_status_${rowNumber}">Status</label>
+                    </div>
+                </td>
+                <td>
+                    <textarea class="form-input executive-summary-text" 
+                               name="${point.id}_detail" rows="2" 
+                               placeholder="Isi ringkasan jika tersedia..." disabled></textarea>
+                    <p class="word-count-info"></p>
+                </td>
+            `;
+            executiveSummaryTableBody.appendChild(newRow);
 
+            const statusCheckbox = newRow.querySelector(`#${point.id}_status_${rowNumber}`);
+            const detailTextarea = newRow.querySelector(`textarea[name="${point.id}_detail"]`);
+            const wordCountInfo = newRow.querySelector('.word-count-info');
 
+            // Add event listener to toggle textarea enabled/disabled and required
+            statusCheckbox.addEventListener('change', function() {
+                detailTextarea.disabled = !this.checked;
+                detailTextarea.required = this.checked;
+                if (!this.checked) {
+                    detailTextarea.value = ''; // Clear content if unchecked
+                    detailTextarea.classList.remove('tw-border-red-500'); // Remove error styling
+                    wordCountInfo.textContent = ''; // Clear word count info
+                } else {
+                    // Trigger initial word count check if re-enabled and has content
+                    detailTextarea.dispatchEvent(new Event('input'));
+                }
+            });
+
+            // Add word count validation for textarea
+            detailTextarea.addEventListener('input', function() {
+                const words = this.value.match(/\S+/g) || [];
+                const wordCount = words.length;
+                const minWords = 10;
+                const maxWords = 100;
+                
+                wordCountInfo.textContent = `Min ${minWords}, Max ${maxWords} kata. (${wordCount}/${maxWords} kata)`;
+                if (wordCount < minWords || wordCount > maxWords) {
+                    detailTextarea.classList.add('tw-border-red-500');
+                    wordCountInfo.classList.add('word-count-error');
+                } else {
+                    detailTextarea.classList.remove('tw-border-red-500');
+                    wordCountInfo.classList.remove('word-count-error');
+                }
+            });
+        });
+    }
+
+    // Always populate the executive summary table
+    populateExecutiveSummaryTable(); 
+    // --- End JavaScript for Executive Summary Table ---
+
+    // Form submission handler
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         let formIsValid = true;
         
-        const domestic = parseFloat(document.getElementById('kepemilikan_domestik').value) || 0;
-        const foreign = parseFloat(document.getElementById('kepemilikan_asing').value) || 0;
-        
-        if (Math.round((domestic + foreign) * 100) / 100 !== 100) {
-            errorMessageElement.textContent = 'Total kepemilikan domestik dan asing harus tepat 100%.';
-            errorModal.show();
-            formIsValid = false;
-        }
-
+        // Validate file size
         const fileLaporanInput = document.getElementById('file_laporan');
         if (fileLaporanInput.files[0] && fileLaporanInput.files[0].size > 10 * 1024 * 1024) { // 10MB
-            errorMessageElement.textContent = 'Ukuran file laporan melebihi 10MB.';
-            errorModal.show();
-            formIsValid = false;
-        }
-        
-        // Validate jumlah komisaris/direksi matches the dynamic fields
-        if (parseInt(jumlahKomisarisInput.value) !== komisarisContainer.children.length) {
-            errorMessageElement.textContent = 'Jumlah komisaris tidak sesuai dengan detail yang diinput.';
-            errorModal.show();
-            formIsValid = false;
-        }
-        if (parseInt(jumlahDireksiInput.value) !== direksiContainer.children.length) {
-            errorMessageElement.textContent = 'Jumlah direksi tidak sesuai dengan detail yang diinput.';
-            errorModal.show();
+            showMessageBox('Ukuran file laporan melebihi 10MB.', 'error');
             formIsValid = false;
         }
 
-        // Validate executive summary textareas (only the editable ones)
-        executiveSummaryTableBody.querySelectorAll('.executive-summary-text').forEach(textarea => {
-            const words = textarea.value.match(/\S+/g) || [];
-            const wordCount = words.length;
-            const minWords = 10;
-            const maxWords = 100;
-            if (wordCount < minWords || wordCount > maxWords) {
-                textarea.classList.add('is-invalid');
-                formIsValid = false;
-                errorMessageElement.textContent = `Pastikan semua ringkasan eksekutif memiliki antara ${minWords} dan ${maxWords} kata.`;
-                errorModal.show();
+        // Validate total percentage of ownership
+        const kepemilikanDomestik = parseFloat(document.getElementById('kepemilikan_domestik').value) || 0;
+        const kepemilikanAsing = parseFloat(document.getElementById('kepemilikan_asing').value) || 0;
+        if (Math.round((kepemilikanDomestik + kepemilikanAsing) * 100) / 100 !== 100) {
+            showMessageBox('Total persentase kepemilikan domestik dan asing harus tepat 100%.', 'error');
+            formIsValid = false;
+        }
+
+        // Validate management members
+        const managementMembers = managementMembersContainer.querySelectorAll('.management-member-item');
+        if (managementMembers.length === 0) {
+            showMessageBox('Harap tambahkan setidaknya satu Anggota Manajemen (Komisaris atau Direksi).', 'error');
+            formIsValid = false;
+        } else {
+            managementMembers.forEach((item, index) => {
+                const nameInput = item.querySelector(`input[name="member_name_${index + 1}"]`);
+                const positionInput = item.querySelector(`input[name="member_position_${index + 1}"]`);
+                const classificationSelect = item.querySelector(`select[name="member_classification_${index + 1}"]`);
+
+                if (!nameInput.value.trim() || !positionInput.value.trim() || !classificationSelect.value) {
+                    showMessageBox(`Data Anggota Manajemen #${index + 1} tidak lengkap. Harap isi semua field.`, 'error');
+                    formIsValid = false;
+                }
+            });
+        }
+
+        // Validate executive summary textareas based on their status checkbox
+        executiveSummaryTableBody.querySelectorAll('.summary-status-checkbox').forEach(checkbox => {
+            const detailTextarea = checkbox.closest('tr').querySelector('.executive-summary-text');
+            if (checkbox.checked) {
+                const words = detailTextarea.value.match(/\S+/g) || [];
+                const wordCount = words.length;
+                const minWords = 10;
+                const maxWords = 100;
+                if (wordCount < minWords || wordCount > maxWords) {
+                    detailTextarea.classList.add('tw-border-red-500'); // Add error class
+                    formIsValid = false;
+                    showMessageBox(`Pastikan semua ringkasan eksekutif yang dicentang memiliki antara ${minWords} dan ${maxWords} kata.`, 'error');
+                } else {
+                    detailTextarea.classList.remove('tw-border-red-500'); // Remove error class
+                }
             } else {
-                textarea.classList.remove('is-invalid');
+                // If checkbox is not checked, ensure textarea is empty
+                if (detailTextarea.value.trim() !== '') {
+                    showMessageBox('Ringkasan eksekutif harus kosong jika statusnya tidak dicentang.', 'error');
+                    formIsValid = false;
+                }
             }
         });
 
-        if (!formIsValid) return;
+
+        if (!formIsValid) {
+            console.log("Form tidak valid, pengiriman dibatalkan.");
+            return;
+        }
 
         submitButton.disabled = true;
         submitText.textContent = 'Mengirim...';
         submitSpinner.classList.remove('d-none');
-        loadingModal.show();
         
         const formData = new FormData(this);
+
+        // Manually collect dynamic management members data
+        const membersData = [];
+        managementMembersContainer.querySelectorAll('.management-member-item').forEach((item, index) => {
+            const name = item.querySelector(`input[name="member_name_${index + 1}"]`).value;
+            const position = item.querySelector(`input[name="member_position_${index + 1}"]`).value;
+            const classification = item.querySelector(`select[name="member_classification_${index + 1}"]`).value;
+            membersData.push({
+                name: name,
+                position: position,
+                classification: classification
+            });
+        });
+        formData.append('management_members_json', JSON.stringify(membersData));
 
         // Collect executive summary data as JSON string
         const executiveSummaries = [];
         executiveSummaryTableBody.querySelectorAll('tr').forEach(row => {
-            const keterangan = row.querySelector('.keterangan-static-text').textContent; // Get text content
-            const detail = row.querySelector('.executive-summary-text').value;
+            const statusCheckbox = row.querySelector('.summary-status-checkbox');
+            const detailTextarea = row.querySelector('.executive-summary-text');
+            const keterangan = row.querySelector('td:nth-child(2) div').textContent; // Get static text
+
             executiveSummaries.push({
                 keterangan: keterangan,
-                executive_summary: detail
+                status: statusCheckbox.checked,
+                executive_summary: detailTextarea.value.trim()
             });
         });
         formData.append('executive_summaries_json', JSON.stringify(executiveSummaries));
@@ -461,7 +631,6 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: { 'Accept': 'application/json' }
         })
         .then(response => {
-            loadingModal.hide();
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
@@ -469,34 +638,34 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             if (data.success) {
-                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
-                successModal.show();
+                showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
                 form.reset();
-                // Clear and re-populate dynamic fields for Komisaris/Direksi and Executive Summary table
-                komisarisContainer.innerHTML = '';
-                jumlahKomisarisInput.value = 0;
-                direksiContainer.innerHTML = '';
-                jumlahDireksiInput.value = 0;
-                executiveSummaryTableBody.innerHTML = ''; 
-                executiveSummaryCounter = 0; 
-                predefinedSummaries.forEach(item => { 
-                    addExecutiveSummaryRow(item, '');
-                });
+                // Reset dynamic fields after successful submission
+                managementMembersContainer.innerHTML = ''; // Clear all dynamic members
+                memberCounter = 0; // Reset counter
+                populateExecutiveSummaryTable(); // Re-populate table to initial state
             } else {
-                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
-                errorModal.show();
+                showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            loadingModal.hide();
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
-            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
-            errorModal.show();
+            showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server.', 'error');
         });
+    });
+
+    // Handle form reset to ensure correct initial state for dynamic fields
+    form.addEventListener('reset', function() {
+        setTimeout(() => {
+            managementMembersContainer.innerHTML = ''; // Clear dynamic members
+            memberCounter = 0; // Reset counter
+            populateExecutiveSummaryTable(); // Re-populate table to initial state
+        }, 0);
     });
 });
 </script>
+
 {% endblock %}

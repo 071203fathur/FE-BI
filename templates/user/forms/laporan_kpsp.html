@@ -1,1117 +1,1041 @@
 {% extends "user/base.html" %}
 
-{% block title %}Form Perhitungan KPSP v.1.0{% endblock %}
+{% block title %}Form Perhitungan KPSP{% endblock %}
 
-{% block content %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Menggunakan url_for untuk aset CSS -->
-    <link href="{{ url_for('static', filename='assets/dist/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='assets/dist/css/offcanvas-navbar.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='assets/css/select2.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='assets/css/select2-bootstrap-5-theme.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='assets/css/jquery-ui.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='assets/css/sweetalert2.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='assets/dist/css/custom.css') }}" rel="stylesheet">
+{% block extra_head %}
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Gaya tambahan untuk menyesuaikan tampilan form */
+        /* Mengatur font-family secara global untuk halaman ini */
         body {
-            padding-top: 0; /* Pastikan tidak ada padding ganda jika base.html sudah mengaturnya */
-            background-color: #f8f9fa; /* Warna latar belakang */
+            font-family: 'Inter', sans-serif;
         }
-        .bg-purple {
-            background-color: #6f42c1 !important;
+        /* Kelas utilitas untuk spinner */
+        .spinner-border {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            vertical-align: middle;
+            border: 0.25em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border .75s linear infinite;
         }
-        .form-section {
-            margin-bottom: 2rem;
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+        .d-none { display: none !important; } /* Utility untuk JS */
+
+        /* Custom styles to match consistent form aesthetics */
+        .section-group {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .section-group .section-header {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1f2937;
+            background-color: #eef2f6;
+            padding: 0.8rem 1.5rem;
+            margin-top: 0;
+            margin-left: -1px;
+            margin-right: -1px;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e0e7eb;
+            border-top-left-radius: 11px;
+            border-top-right-radius: 11px;
+        }
+        .section-group .section-content {
             padding: 1.5rem;
-            border: 1px solid #e0e0e0;
-            border-radius: 0.5rem;
+            padding-top: 0;
+        }
+
+        /* Adjust font size for labels and inputs for precision */
+        .form-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .form-input {
+            width: 100%; /* Ensure full width */
+            padding: 0.7rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #4b5563;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            outline: none;
+            box-shadow: none;
+        }
+        .form-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        textarea.form-input {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* Nested section for specific groupings */
+        .nested-section-group {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #fcfdfe;
+        }
+        .nested-section-group h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #e0e7eb;
+        }
+
+        /* Table specific styles for consistency */
+        .table-custom {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            border: 1px solid #e5e7eb; /* Outer border for the table */
+            border-radius: 8px; /* Rounded corners for the table */
+            overflow: hidden; /* Ensures content respects border-radius */
+        }
+        .table-custom th, .table-custom td {
+            border-bottom: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+            vertical-align: middle;
+        }
+        .table-custom th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+        .table-custom tbody tr:nth-child(odd) {
             background-color: #ffffff;
         }
-        .form-section-title {
-            color: #6f42c1;
-            margin-bottom: 1.5rem;
-            font-size: 1.25rem;
-            font-weight: bold;
+        .table-custom tbody tr:nth-child(even) {
+            background-color: #f9fafb;
         }
-        .card-header {
-            font-weight: bold;
+        .table-custom .text-center {
+            text-align: center;
         }
+        .table-custom .form-check {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%; /* Ensure vertical alignment in cell */
+        }
+        .table-custom .form-check-input {
+            margin: 0; /* Remove default margin */
+        }
+
+        /* Specific styles for KPSP calculation results */
         .result-item {
             display: flex;
             justify-content: space-between;
             padding: 0.5rem 0;
-            border-bottom: 1px dashed #eee;
+            border-bottom: 1px dashed #e0e7eb;
+            font-size: 0.95rem;
         }
         .result-item:last-child {
             border-bottom: none;
         }
-        /* Tambahan styling untuk status pemenuhan */
+        .result-item strong {
+            font-weight: 600;
+        }
         .bg-success-custom {
-            background-color: #28a745 !important;
-            color: white !important;
+            background-color: #d1fae5; /* green-100 */
+            color: #065f46; /* green-800 */
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
         }
         .bg-danger-custom {
-            background-color: #dc3545 !important;
-            color: white !important;
+            background-color: #fee2e2; /* red-100 */
+            color: #991b1b; /* red-800 */
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+        .money-input-group .form-input {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .money-input-group .input-group-text {
+            background-color: #e5e7eb;
+            border: 1px solid #d1d5db;
+            border-left: 0;
+            border-radius: 8px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+            color: #4b5563;
         }
     </style>
-</head>
+{% endblock %}
 
-<body>
-    <div class="container-fluid py-3">
-        <div class="row justify-content-center">
-            <!-- Isi utama form akan berada di sini, dalam kolom setelah sidebar dari base.html -->
-            <div class="col-lg-10 col-md-12">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2 text-dark">Form Perhitungan KPSP v.1.0</h1>
+{% block content %}
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6 tw-font-sans">
+    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">Form Perhitungan KPSP v.1.0</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="tw-p-4 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
+                    {{ message }}
                 </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-                <!-- Card untuk Form Utama KPSP -->
-                <div class="card mb-3 shadow-sm">
-                    <div class="card-header bg-purple text-white">
-                        Informasi Umum dan Data Keuangan
+    <form id="kpspForm" class="tw-space-y-6">
+        <div class="section-group">
+            <h3 class="section-header">Informasi Umum</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="posisilaporan" class="tw-block form-label">Posisi Tanggal Laporan <span class="tw-text-red-500">*</span></label>
+                        <input type="date" class="tw-mt-1 tw-block tw-w-full form-input" id="posisilaporan" name="Posisi Tanggal Laporan" required>
                     </div>
-                    <div class="card-body">
-                        <form id="kpspForm">
-                            <div class="form-section">
-                                <h5 class="form-section-title">Informasi Umum</h5>
-                                <div class="row mb-3">
-                                    <div class="col-3 text-end">
-                                        Posisi
-                                    </div>
-                                    <div class="col-4">
-                                    <input type="date" class="form-control form-control-lg" id="posisilaporan" name="Posisi Tanggal Laporan">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-3 text-end">
-                                        Nama Pelapor
-                                    </div>
-                                    <div class="col-4">
-                                        <input type="text" class="form-control" id="nama_pelapor" onchange="refreshAktivitas()">
-                                    </div>
-                                </div>
-                            </div>
-                            </div>
-
-                            <div class="form-section">
-                                <h5 class="form-section-title">Pemenuhan Initial Capital</h5>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="jumlahModalDisetor" class="col-sm-8 col-form-label">Jumlah Modal Disetor <span class="badge bg-primary">Diisi sesuai laporan keuangan audited</span></label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="jumlahModalDisetor" name="jumlahModalDisetor" value="0">
-                                    </div>
-                                </div>
-                                <small class="d-block text-end mb-3 text-muted">
-                                    Initial Capital merujuk pada modal disetor yang tertera dalam akta perusahaan
-                                </small>
-                                <div class="mb-3 row align-items-center">
-                                    <label class="col-sm-8 col-form-label">Jumlah Kewajiban Initial Capital</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="kewajibanInitCapital" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label class="col-sm-8 col-form-label">Status Pemenuhan Initial Capital</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control text-center fw-bold" id="statusPemenuhan_initialCapital" name="statusPemenuhanInitialCapitalDisplay" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label class="col-sm-8 col-form-label">Total Kebutuhan Tambahan Initial Capital</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="tambahanInitCapital" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <div class="col-12">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="flagGL_PIPasing">
-                                            <label class="form-check-label" for="flagGL_PIPasing">
-                                                Memiliki guarantee letter dari parent company (khusus PIP Asing)
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-section">
-                                <h5 class="form-section-title">Perhitungan Ongoing Capital</h5>
-                                <h6 class="border-bottom pb-2 mb-3">Penetapan Transaksi Tertimbang Menurut Risiko (TTMR) <span class="badge bg-primary">Transaksi yang diproses selama tahun buku laporan</span></h6>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="jumlahBulanTrx" class="col-sm-4 col-form-label">Jumlah Bulan Transaksi</label>
-                                    <div class="col-sm-3">
-                                        <input type="number" class="form-control" id="jumlahBulanTrx" name="jumlahBulanTrx" min="1" max="12" value="12">
-                                    </div>
-                                    <div class="col-sm-5 text-danger small">(Range 1 s.d. 12)</div>
-                                </div>
-
-                                <div class="row mb-3 fw-bold">
-                                    <div class="col-sm-4"></div>
-                                    <div class="col-sm-4 text-center">Transaksi selama tahun buku laporan</div>
-                                    <div class="col-sm-4 text-center">Rata-rata Transaksi/Bulan</div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="totalTrx_ATMDebet" class="col-sm-4 col-form-label">Total Transaksi menggunakan Kartu ATM/Debet*)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="totalTrx_ATMDebet" name="totalTrx_ATMDebet" value="0">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="totalTrx_ATMDebet_rata" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="totalTrx_KK" class="col-sm-4 col-form-label">Total Transaksi menggunakan Transaksi Kartu Kredit*)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="totalTrx_KK" name="totalTrx_KK" value="0">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="totalTrx_KK_rata" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="trxDompel" class="col-sm-4 col-form-label">Transaksi Dompet Elektronik</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxDompel" name="trxDompel" value="0">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxDompel_rata" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="trxTrfDanaLN_inc" class="col-sm-4 col-form-label">Transaksi Transfer Dana LN - Incoming</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxTrfDanaLN_inc" name="trxTrfDanaLN_inc" value="0">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxTrfDanaLN_inc_rata" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="trxTrfDanaLN_out" class="col-sm-4 col-form-label">Transaksi Transfer Dana LN - Outgoing</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxTrfDanaLN_out" name="trxTrfDanaLN_out" value="0">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxTrfDanaLN_out_rata" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="trxTrfDana_dom" class="col-sm-4 col-form-label">Transaksi Transfer Dana - Domestik</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxTrfDana_dom" name="trxTrfDana_dom" value="0">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxTrfDana_dom_rata" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="trxUE" class="col-sm-4 col-form-label">Transaksi Uang Elektronik**)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxUE" name="trxUE" value="0">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxUE_rata" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="trxPIAS_fasil" class="col-sm-4 col-form-label">Transaksi PIAS - Fasilitator***)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxPIAS_fasil" name="trxPIAS_fasil" value="0">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxPIAS_fasil_rata" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="trxPIAS_merchAgg" class="col-sm-4 col-form-label">Transaksi PIAS - Merchant Agregator</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxPIAS_merchAgg" name="trxPIAS_merchAgg" value="0">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxPIAS_merchAgg_rata" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="trxLainnya" class="col-sm-4 col-form-label">Transaksi lainnya (a.l. Biller Aggregator)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxLainnya" name="trxLainnya" value="0">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="trxLainnya_rata" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-4 col-form-label text-end">Total Nilai Transaksi</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="totalNilaiTrx" name="totalNilaiTrx" readonly>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="totalNilaiTrx_rata" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Beban Transaksi</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="bebanTrx" name="bebanTrx" readonly>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12 text-danger small">
-                                        *) Untuk PIP hanya memperhitungkan transaksi off us<br>
-                                        **) meliputi transaksi outgoing berupa transaksi belanja, transfer & reedeem<br>
-                                        ***) Nilai Transaksi PIAS - Fasilitator dihitung 10%
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3 fw-bold">
-                                    <div class="col-sm-4"></div>
-                                    <div class="col-sm-4 text-center">Transaksi selama tahun buku laporan</div>
-                                    <div class="col-sm-4 text-center">Rata-rata Transaksi/Bulan</div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="danaFloat" class="col-sm-4 col-form-label">Dana Float****)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="danaFloat" name="danaFloat" value="0">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="danaFloat_rata" readonly>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12 text-danger small">
-                                        ****) khusus AIS yang menyelenggarakan Uang Elektronik
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">% Beban Transaksi Dana Float</label>
-                                    <div class="col-sm-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control text-center" id="percBebanTrxDanaFloat" name="percBebanTrxDanaFloat" readonly>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Beban Transaksi Dana Float</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="bebanTrxDanaFloat" name="bebanTrxDanaFloat" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Total Beban (Beban Transaksi Progresif + Beban Dana Float)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="totalBeban" name="totalBeban" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Konstanta TTMR</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control text-center" id="konstantaTTMR" name="konstantaTTMR" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">TTMR (Konstanta TTMR x Total Beban)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="TTMR" name="TTMR" readonly>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-section">
-                                <h5 class="form-section-title">Komponen Perhitungan Ongoing Capital</h5>
-                                <div class="text-center text-danger small mb-3">
-                                    Modal disetor = modal saham (nilai nominal saham) + uang muka setoran modal + agio/disagio saham
-                                </div>
-                                <div class="row mb-3 fw-bold">
-                                    <div class="col-sm-8"></div>
-                                    <div class="col-sm-4 text-center">Nominal</div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="modalSaham" class="col-sm-8 col-form-label">Modal Saham</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="modalSaham" name="modalSaham" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="uangMukaSetoranModal" class="col-sm-8 col-form-label">Uang Muka Setoran Modal*)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="uangMukaSetoranModal" name="uangMukaSetoranModal" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="agioDisagioSaham" class="col-sm-8 col-form-label">Agio Saham/Disagio Saham*) - <i class="text-danger small">diisi negatif jika disagio</i></label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="agioDisagioSaham" name="agioDisagioSaham" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="saldoLRberjalan" class="col-sm-8 col-form-label">Saldo Laba/Rugi berjalan, termasuk akumulasi laba/rugi tahun sebelumnya - <i class="text-danger small">diisi negatif jika rugi</i></label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="saldoLRberjalan" name="saldoLRberjalan" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="saldoPenghasilanKompr" class="col-sm-8 col-form-label">Saldo penghasilan komprehensif lain - <i class="text-danger small">diisi negatif jika rugi</i></label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="saldoPenghasilanKompr" name="saldoPenghasilanKompr" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Modal Inti Utama</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="modalIntiUtama" name="modalIntiUtama" readonly>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12 text-danger small">
-                                        *) Pada sebagian format laporan keuangan ditulis sebagai komponen tambahan modal disetor
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 row align-items-center">
-                                    <label for="asetPajakTangguhan" class="col-sm-8 col-form-label">Aset pajak tangguhan (deferred tax asset)**)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="asetPajakTangguhan" name="asetPajakTangguhan" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="goodWill" class="col-sm-8 col-form-label">Goodwill**)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="goodWill" name="goodWill" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="asetTidakBerwujud" class="col-sm-8 col-form-label">Asset tidak berwujud (intangible asset)**)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="asetTidakBerwujud" name="asetTidakBerwujud" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="seluruhPenyertaan" class="col-sm-8 col-form-label">Seluruh penyertaan dengan kepemilikan lebih dari 5% atau lebih**)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="seluruhPenyertaan" name="seluruhPenyertaan" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="pembelianKembaliInstModal" class="col-sm-8 col-form-label">Pembelian kembali instrumen modal yang telah diakui sebagai komponen permodalan PJP/PIP**)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="pembelianKembaliInstModal" name="pembelianKembaliInstModal" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="penempatanDanaInstUtang" class="col-sm-8 col-form-label">Penempatan dana pada instrumen utang pada entitas lainnya yang diakui sebagai komponen modal oleh entitas penerbit **)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="penempatanDanaInstUtang" name="penempatanDanaInstUtang" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Faktor Pengurang Modal Inti Utama</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="faktorPengurangModalInti" name="faktorPengurangModalInti" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Modal Inti Utama (Setelah dikurangi Faktor Pengurang)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="modalIntiUtama_setelahFPR" name="modalIntiUtama_setelahFPR" readonly>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12 text-danger small">
-                                        **) Faktor pengurang diisi dengan nilai positif
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 row align-items-center">
-                                    <label for="instrumenUtang" class="col-sm-8 col-form-label">Instrumen utang, baik berupa surat utang (debt securities) dan pinjaman yang bersifat subordinasi, yang tidak memiliki jangka waktu, dan pembayaran imbal hasil tidak dapat diakumulasikan</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="instrumenUtang" name="instrumenUtang" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="instrumenHybrid" class="col-sm-8 col-form-label">Instrumen hybrid yang tidak memiliki jangka waktu dan pembayaran imbal hasil tidak dapat diakumulasikan</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="instrumenHybrid" name="instrumenHybrid" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="sahamPreferenNonKumulatif" class="col-sm-8 col-form-label">Saham preferen non kumulatif baik dengan atau tanpa fitur opsi beli</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="sahamPreferenNonKumulatif" name="sahamPreferenNonKumulatif" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="premiumDiskonto" class="col-sm-8 col-form-label">Premium/diskonto yang berasal dari penerbitan instrumen yang tergolong sebagai modal inti tambahan</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="premiumDiskonto" name="premiumDiskonto" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Modal Inti Tambahan</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="modalIntiTambahan" name="modalIntiTambahan" readonly>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 row align-items-center">
-                                    <label for="instrumenModalIntiTambahan" class="col-sm-8 col-form-label">Instrumen Modal Inti Tambahan yang dimiliki sendiri (akibat kewajiban kontraktual)**)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="instrumenModalIntiTambahan" name="instrumenModalIntiTambahan" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="kepemilikanModalIntiTambahan" class="col-sm-8 col-form-label">Kepemilikan Modal Inti Tambahan oleh pihak lain yang terindikasi merupakan skema kepemilikan silang (crossholding)**)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="kepemilikanModalIntiTambahan" name="kepemilikanModalIntiTambahan" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Faktor Pengurang Modal Inti Tambahan</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="faktorPengurangModalIntiTambahan" name="faktorPengurangModalIntiTambahan" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Modal Inti Tambahan (Setelah dikurangi Faktor Pengurang)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="modalIntiTambahan_setelahFPR" name="modalIntiTambahan_setelahFPR" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Modal Inti Tambahan yang dapat diperhitungkan sebagai Ongoing Capital<br><b class="text-danger small">(max 1/3 modal inti utama)</b></label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="modalIntiTambahan_ongoingCapital" name="modalIntiTambahan_ongoingCapital" readonly>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 row align-items-center">
-                                    <label for="instrumenUtangJangkaPjg" class="col-sm-8 col-form-label">Instrumen utang jangka panjang, baik berupa surat utang (debt securities) dan pinjaman yang bersifat subordinasi dengan maturitas ≥ 5thn</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="instrumenUtangJangkaPjg" name="instrumenUtangJangkaPjg" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="premiumDiskontoModalPelengkap" class="col-sm-8 col-form-label">Premium/diskonto yang berasal dari penerbitan instrumen yang tergolong sebagai modal pelengkap</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="premiumDiskontoModalPelengkap" name="premiumDiskontoModalPelengkap" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Modal Pelengkap</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="modalPelengkap" name="modalPelengkap" readonly>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 row align-items-center">
-                                    <label for="instrumenModalPelengkap" class="col-sm-8 col-form-label">Instrumen Modal Pelengkap yang dimiliki sendiri (akibat kewajiban kontraktual)**)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="instrumenModalPelengkap" name="instrumenModalPelengkap" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center">
-                                    <label for="kepemilikanModalPelengkap" class="col-sm-8 col-form-label">Kepemilikan Modal Pelengkap oleh pihak lain yang terindikasi merupakan skema kepemilikan silang (cross holding)**)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="kepemilikanModalPelengkap" name="kepemilikanModalPelengkap" value="0">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Faktor Pengurang Modal Pelengkap</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="faktorPengurangModalPelengkap" name="faktorPengurangModalPelengkap" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Modal Pelengkap (Setelah dikurangi Faktor Pengurang)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="modalPelengkap_setelahFPR" name="modalPelengkap_setelahFPR" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Modal Pelengkap yang dapat diperhitungkan sebagai Ongoing Capital<br><b class="text-danger small">(max 1/3 Modal Inti Tambahan yang dapat diperhitungkan sebagai ongoing capital)</b></label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="modalPelengkap_ongoingCapital" name="modalPelengkap_ongoingCapital" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Total Ongoing Capital</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="totalOngoingCapital" name="totalOngoingCapital" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Rasio KPSP (Ongoing Capital/TTMR)</label>
-                                    <div class="col-sm-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control text-center" id="rasioKPSP" name="rasioKPSP" readonly>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-section">
-                                <h5 class="form-section-title">Kewajiban Ongoing Capital</h5>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">KPSP Dasar</label>
-                                    <div class="col-sm-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control text-center" id="KPSPdasar" name="KPSPdasar" readonly>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Surcharge Berdasarkan Klasifikasi PJP/PIP</label>
-                                    <div class="col-sm-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control text-center" id="surcharge" name="surcharge" readonly>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Total KPSP</label>
-                                    <div class="col-sm-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control text-center" id="totalKPSP" name="totalKPSP" readonly>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Jumlah Kewajiban Ongoing Capital (KPSP x TTMR)</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="jumlahKewajibanOngoingCapital" name="jumlahKewajibanOngoingCapital" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Status Pemenuhan Ongoing Capital</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control text-center fw-bold" id="statusPemenuhanOngoingCapital" name="statusPemenuhanOngoingCapitalDisplay" readonly>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row align-items-center fw-bold">
-                                    <label class="col-sm-8 col-form-label text-end">Total Kebutuhan Tambahan Ongoing Capital</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control money" id="totalKebutuhanTambahanOngoingCapital" name="totalKebutuhanTambahanOngoingCapital" readonly>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-4 text-center">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i data-feather="send" class="align-text-bottom"></i> Hitung KPSP
-                                </button>
-                            </div>
-                        </form>
+                    <div class="tw-space-y-1">
+                        <label for="nama_pelapor" class="tw-block form-label">Nama Pelapor <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="nama_pelapor" name="nama_pelapor" required>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="nama_pjp" class="tw-block form-label">Nama PJP <span class="tw-text-red-500">*</span></label>
+                        <select class="tw-mt-1 tw-block tw-w-full form-input" id="nama_pjp" name="nama_pjp" required>
+                            <option value="">-- Pilih PJP --</option>
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                        <!-- Hidden fields to store dynamic data from selected PJP -->
+                        <input type="hidden" id="kategori_izin" name="kategori_izin">
+                        <input type="hidden" id="no_izin" name="no_izin">
+                        <input type="hidden" id="tgl_izin" name="tgl_izin">
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Card untuk menampilkan hasil perhitungan KPSP -->
-                <div class="card mb-3 shadow-sm" id="kpsp_results_card" style="display: none;">
-                    <div class="card-header bg-purple text-white">
-                        Ringkasan Hasil Perhitungan KPSP
+        <div class="section-group">
+            <h3 class="section-header">Pemenuhan Initial Capital</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="jumlahModalDisetor" class="tw-block form-label">Jumlah Modal Disetor <span class="tw-text-red-500">*</span> <span class="tw-text-xs tw-text-gray-500">(Diisi sesuai laporan keuangan audited)</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="jumlahModalDisetor" name="jumlahModalDisetor" value="0" required>
                     </div>
-                    <div class="card-body">
-                        <div id="kpsp_results">
-                            <!-- Hasil perhitungan akan ditampilkan di sini secara dinamis oleh JavaScript -->
+                    <div class="tw-space-y-1 md:tw-col-span-2 tw-text-right">
+                        <p class="tw-text-xs tw-text-gray-500">Initial Capital merujuk pada modal disetor yang tertera dalam akta perusahaan</p>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Jumlah Kewajiban Initial Capital</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="kewajibanInitCapital" readonly>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Status Pemenuhan Initial Capital</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-text-center tw-font-bold" id="statusPemenuhan_initialCapital" name="statusPemenuhanInitialCapitalDisplay" readonly>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Total Kebutuhan Tambahan Initial Capital</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="tambahanInitCapital" readonly>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <div class="tw-flex tw-items-start mt-2">
+                            <input class="tw-form-checkbox tw-h-5 tw-w-5 tw-text-indigo-600 focus:tw-ring-indigo-500 tw-border-gray-300 tw-rounded" type="checkbox" id="flagGL_PIPasing" name="flagGL_PIPasing">
+                            <label class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900" for="flagGL_PIPasing">
+                                Memiliki guarantee letter dari parent company (khusus PIP Asing)
+                            </label>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="text-center text-muted small py-3">
-                    Departemen Surveilans Sistem Keuangan &middot; &copy; 2023
+        <div class="section-group">
+            <h3 class="section-header">Perhitungan Ongoing Capital</h3>
+            <div class="section-content">
+                <h4 class="tw-font-semibold tw-text-gray-800 tw-mb-3">Penetapan Transaksi Tertimbang Menurut Risiko (TTMR) <span class="tw-text-xs tw-text-gray-500">(Transaksi yang diproses selama tahun buku laporan)</span></h4>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="jumlahBulanTrx" class="tw-block form-label">Jumlah Bulan Transaksi <span class="tw-text-red-500">*</span></label>
+                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input" id="jumlahBulanTrx" name="jumlahBulanTrx" min="1" max="12" value="12" required>
+                        <p class="tw-text-xs tw-text-red-500">(Range 1 s.d. 12)</p>
+                    </div>
+                </div>
+                
+                <div class="tw-overflow-x-auto mt-4">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Jenis Transaksi</th>
+                                <th class="text-center">Transaksi selama tahun buku laporan</th>
+                                <th class="text-center">Rata-rata Transaksi/Bulan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Total Transaksi menggunakan Kartu ATM/Debet*)</td>
+                                <td><input type="text" class="form-input money" id="totalTrx_ATMDebet" name="totalTrx_ATMDebet" value="0"></td>
+                                <td><input type="text" class="form-input money tw-bg-gray-100" id="totalTrx_ATMDebet_rata" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Total Transaksi menggunakan Transaksi Kartu Kredit*)</td>
+                                <td><input type="text" class="form-input money" id="totalTrx_KK" name="totalTrx_KK" value="0"></td>
+                                <td><input type="text" class="form-input money tw-bg-gray-100" id="totalTrx_KK_rata" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Transaksi Dompet Elektronik</td>
+                                <td><input type="text" class="form-input money" id="trxDompel" name="trxDompel" value="0"></td>
+                                <td><input type="text" class="form-input money tw-bg-gray-100" id="trxDompel_rata" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Transaksi Transfer Dana LN - Incoming</td>
+                                <td><input type="text" class="form-input money" id="trxTrfDanaLN_inc" name="trxTrfDanaLN_inc" value="0"></td>
+                                <td><input type="text" class="form-input money tw-bg-gray-100" id="trxTrfDanaLN_inc_rata" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Transaksi Transfer Dana LN - Outgoing</td>
+                                <td><input type="text" class="form-input money" id="trxTrfDanaLN_out" name="trxTrfDanaLN_out" value="0"></td>
+                                <td><input type="text" class="form-input money tw-bg-gray-100" id="trxTrfDanaLN_out_rata" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Transaksi Transfer Dana - Domestik</td>
+                                <td><input type="text" class="form-input money" id="trxTrfDana_dom" name="trxTrfDana_dom" value="0"></td>
+                                <td><input type="text" class="form-input money tw-bg-gray-100" id="trxTrfDana_dom_rata" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Transaksi Uang Elektronik**)</td>
+                                <td><input type="text" class="form-input money" id="trxUE" name="trxUE" value="0"></td>
+                                <td><input type="text" class="form-input money tw-bg-gray-100" id="trxUE_rata" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Transaksi PIAS - Fasilitator***)</td>
+                                <td><input type="text" class="form-input money" id="trxPIAS_fasil" name="trxPIAS_fasil" value="0"></td>
+                                <td><input type="text" class="form-input money tw-bg-gray-100" id="trxPIAS_fasil_rata" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Transaksi PIAS - Merchant Agregator</td>
+                                <td><input type="text" class="form-input money" id="trxPIAS_merchAgg" name="trxPIAS_merchAgg" value="0"></td>
+                                <td><input type="text" class="form-input money tw-bg-gray-100" id="trxPIAS_merchAgg_rata" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Transaksi lainnya (a.l. Biller Aggregator)</td>
+                                <td><input type="text" class="form-input money" id="trxLainnya" name="trxLainnya" value="0"></td>
+                                <td><input type="text" class="form-input money tw-bg-gray-100" id="trxLainnya_rata" readonly></td>
+                            </tr>
+                            <tr class="tw-font-bold tw-bg-gray-50">
+                                <td>Total Nilai Transaksi</td>
+                                <td><input type="text" class="form-input money tw-bg-gray-100" id="totalNilaiTrx" name="totalNilaiTrx" readonly></td>
+                                <td><input type="text" class="form-input money tw-bg-gray-100" id="totalNilaiTrx_rata" readonly></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="tw-text-xs tw-text-red-500 tw-mt-2">
+                    *) Untuk PIP hanya memperhitungkan transaksi off us<br>
+                    **) meliputi transaksi outgoing berupa transaksi belanja, transfer & reedeem<br>
+                    ***) Nilai Transaksi PIAS - Fasilitator dihitung 10%
+                </p>
+
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Beban Transaksi</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="bebanTrx" name="bebanTrx" readonly>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label class="tw-block form-label">% Beban Transaksi Dana Float</label>
+                        <div class="tw-flex money-input-group">
+                            <input type="text" class="form-input tw-text-center tw-bg-gray-100" id="percBebanTrxDanaFloat" name="percBebanTrxDanaFloat" readonly>
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label class="tw-block form-label">Beban Transaksi Dana Float</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="bebanTrxDanaFloat" name="bebanTrxDanaFloat" readonly>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Total Beban (Beban Transaksi Progresif + Beban Dana Float)</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="totalBeban" name="totalBeban" readonly>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label class="tw-block form-label">Konstanta TTMR</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-text-center tw-bg-gray-100" id="konstantaTTMR" name="konstantaTTMR" readonly>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label class="tw-block form-label">TTMR (Konstanta TTMR x Total Beban)</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="TTMR" name="TTMR" readonly>
+                    </div>
+                </div>
+                <p class="tw-text-xs tw-text-red-500 tw-mt-2">
+                    ****) khusus AIS yang menyelenggarakan Uang Elektronik
+                </p>
+            </div>
+        </div>
+
+        <div class="section-group">
+            <h3 class="section-header">Komponen Perhitungan Ongoing Capital</h3>
+            <div class="section-content">
+                <p class="tw-text-xs tw-text-red-500 tw-mb-4">
+                    Modal disetor = modal saham (nilai nominal saham) + uang muka setoran modal + agio/disagio saham
+                </p>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="modalSaham" class="tw-block form-label">Modal Saham</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="modalSaham" name="modalSaham" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="uangMukaSetoranModal" class="tw-block form-label">Uang Muka Setoran Modal*) <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="uangMukaSetoranModal" name="uangMukaSetoranModal" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="agioDisagioSaham" class="tw-block form-label">Agio Saham/Disagio Saham*) <span class="tw-text-red-500">*</span> <span class="tw-text-xs tw-text-gray-500">(diisi negatif jika disagio)</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="agioDisagioSaham" name="agioDisagioSaham" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="saldoLRberjalan" class="tw-block form-label">Saldo Laba/Rugi berjalan <span class="tw-text-red-500">*</span> <span class="tw-text-xs tw-text-gray-500">(diisi negatif jika rugi)</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="saldoLRberjalan" name="saldoLRberjalan" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="saldoPenghasilanKompr" class="tw-block form-label">Saldo penghasilan komprehensif lain <span class="tw-text-red-500">*</span> <span class="tw-text-xs tw-text-gray-500">(diisi negatif jika rugi)</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="saldoPenghasilanKompr" name="saldoPenghasilanKompr" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label class="tw-block form-label">Modal Inti Utama</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalIntiUtama" name="modalIntiUtama" readonly>
+                    </div>
+                </div>
+                <p class="tw-text-xs tw-text-red-500 tw-mt-2">
+                    *) Pada sebagian format laporan keuangan ditulis sebagai komponen tambahan modal disetor
+                </p>
+
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
+                    <div class="tw-space-y-1">
+                        <label for="asetPajakTangguhan" class="tw-block form-label">Aset pajak tangguhan (deferred tax asset)**) <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="asetPajakTangguhan" name="asetPajakTangguhan" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="goodWill" class="tw-block form-label">Goodwill**) <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="goodWill" name="goodWill" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="asetTidakBerwujud" class="tw-block form-label">Asset tidak berwujud (intangible asset)**) <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="asetTidakBerwujud" name="asetTidakBerwujud" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="seluruhPenyertaan" class="tw-block form-label">Seluruh penyertaan dengan kepemilikan lebih dari 5% atau lebih**) <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="seluruhPenyertaan" name="seluruhPenyertaan" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="pembelianKembaliInstModal" class="tw-block form-label">Pembelian kembali instrumen modal yang telah diakui sebagai komponen permodalan PJP/PIP**) <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="pembelianKembaliInstModal" name="pembelianKembaliInstModal" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="penempatanDanaInstUtang" class="tw-block form-label">Penempatan dana pada instrumen utang pada entitas lainnya yang diakui sebagai komponen modal oleh entitas penerbit**) <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="penempatanDanaInstUtang" name="penempatanDanaInstUtang" value="0">
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Faktor Pengurang Modal Inti Utama</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="faktorPengurangModalInti" name="faktorPengurangModalInti" readonly>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Modal Inti Utama (Setelah dikurangi Faktor Pengurang)</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalIntiUtama_setelahFPR" name="modalIntiUtama_setelahFPR" readonly>
+                    </div>
+                </div>
+                <p class="tw-text-xs tw-text-red-500 tw-mt-2">
+                    **) Faktor pengurang diisi dengan nilai positif
+                </p>
+
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
+                    <div class="tw-space-y-1">
+                        <label for="instrumenUtang" class="tw-block form-label">Instrumen utang, baik berupa surat utang (debt securities) dan pinjaman yang bersifat subordinasi, yang tidak memiliki jangka waktu, dan pembayaran imbal hasil tidak dapat diakumulasikan <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="instrumenUtang" name="instrumenUtang" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="instrumenHybrid" class="tw-block form-label">Instrumen hybrid yang tidak memiliki jangka waktu dan pembayaran imbal hasil tidak dapat diakumulasikan <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="instrumenHybrid" name="instrumenHybrid" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="sahamPreferenNonKumulatif" class="tw-block form-label">Saham preferen non kumulatif baik dengan atau tanpa fitur opsi beli <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="sahamPreferenNonKumulatif" name="sahamPreferenNonKumulatif" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="premiumDiskonto" class="tw-block form-label">Premium/diskonto yang berasal dari penerbitan instrumen yang tergolong sebagai modal inti tambahan <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="premiumDiskonto" name="premiumDiskonto" value="0">
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Modal Inti Tambahan</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalIntiTambahan" name="modalIntiTambahan" readonly>
+                    </div>
                 </div>
 
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
+                    <div class="tw-space-y-1">
+                        <label for="instrumenModalIntiTambahan" class="tw-block form-label">Instrumen Modal Inti Tambahan yang dimiliki sendiri (akibat kewajiban kontraktual)**) <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="instrumenModalIntiTambahan" name="instrumenModalIntiTambahan" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="kepemilikanModalIntiTambahan" class="tw-block form-label">Kepemilikan Modal Inti Tambahan oleh pihak lain yang terindikasi merupakan skema kepemilikan silang (crossholding)**) <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="kepemilikanModalIntiTambahan" name="kepemilikanModalIntiTambahan" value="0">
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Faktor Pengurang Modal Inti Tambahan</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="faktorPengurangModalIntiTambahan" name="faktorPengurangModalIntiTambahan" readonly>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Modal Inti Tambahan (Setelah dikurangi Faktor Pengurang)</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalIntiTambahan_setelahFPR" name="modalIntiTambahan_setelahFPR" readonly>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Modal Inti Tambahan yang dapat diperhitungkan sebagai Ongoing Capital <span class="tw-text-red-500 tw-font-bold">(max 1/3 modal inti utama)</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalIntiTambahan_ongoingCapital" name="modalIntiTambahan_ongoingCapital" readonly>
+                    </div>
+                </div>
+
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
+                    <div class="tw-space-y-1">
+                        <label for="instrumenUtangJangkaPjg" class="tw-block form-label">Instrumen utang jangka panjang, baik berupa surat utang (debt securities) dan pinjaman yang bersifat subordinasi dengan maturitas ≥ 5thn <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="instrumenUtangJangkaPjg" name="instrumenUtangJangkaPjg" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="premiumDiskontoModalPelengkap" class="tw-block form-label">Premium/diskonto yang berasal dari penerbitan instrumen yang tergolong sebagai modal pelengkap <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="premiumDiskontoModalPelengkap" name="premiumDiskontoModalPelengkap" value="0">
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Modal Pelengkap</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalPelengkap" name="modalPelengkap" readonly>
+                    </div>
+                </div>
+
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
+                    <div class="tw-space-y-1">
+                        <label for="instrumenModalPelengkap" class="tw-block form-label">Instrumen Modal Pelengkap yang dimiliki sendiri (akibat kewajiban kontraktual)**) <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="instrumenModalPelengkap" name="instrumenModalPelengkap" value="0">
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="kepemilikanModalPelengkap" class="tw-block form-label">Kepemilikan Modal Pelengkap oleh pihak lain yang terindikasi merupakan skema kepemilikan silang (cross holding)**) <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="kepemilikanModalPelengkap" name="kepemilikanModalPelengkap" value="0">
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Faktor Pengurang Modal Pelengkap</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="faktorPengurangModalPelengkap" name="faktorPengurangModalPelengkap" readonly>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Modal Pelengkap (Setelah dikurangi Faktor Pengurang)</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalPelengkap_setelahFPR" name="modalPelengkap_setelahFPR" readonly>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Modal Pelengkap yang dapat diperhitungkan sebagai Ongoing Capital <span class="tw-text-red-500 tw-font-bold">(max 1/3 Modal Inti Tambahan yang dapat diperhitungkan sebagai ongoing capital)</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalPelengkap_ongoingCapital" name="modalPelengkap_ongoingCapital" readonly>
+                    </div>
+                </div>
+                <p class="tw-text-xs tw-text-red-500 tw-mt-2">
+                    **) Faktor pengurang diisi dengan nilai positif
+                </p>
+
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Total Ongoing Capital</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="totalOngoingCapital" name="totalOngoingCapital" readonly>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label class="tw-block form-label">Rasio KPSP (Ongoing Capital/TTMR)</label>
+                        <div class="tw-flex money-input-group">
+                            <input type="text" class="form-input tw-text-center tw-bg-gray-100" id="rasioKPSP" name="rasioKPSP" readonly>
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label class="tw-block form-label">KPSP Dasar</label>
+                        <div class="tw-flex money-input-group">
+                            <input type="text" class="form-input tw-text-center tw-bg-gray-100" id="KPSPdasar" name="KPSPdasar" readonly>
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label class="tw-block form-label">Surcharge Berdasarkan Klasifikasi PJP/PIP</label>
+                        <div class="tw-flex money-input-group">
+                            <input type="text" class="form-input tw-text-center tw-bg-gray-100" id="surcharge" name="surcharge" readonly>
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label class="tw-block form-label">Total KPSP</label>
+                        <div class="tw-flex money-input-group">
+                            <input type="text" class="form-input tw-text-center tw-bg-gray-100" id="totalKPSP" name="totalKPSP" readonly>
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Jumlah Kewajiban Ongoing Capital (KPSP x TTMR)</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="jumlahKewajibanOngoingCapital" name="jumlahKewajibanOngoingCapital" readonly>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Status Pemenuhan Ongoing Capital</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-text-center tw-font-bold" id="statusPemenuhanOngoingCapital" name="statusPemenuhanOngoingCapitalDisplay" readonly>
+                    </div>
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label class="tw-block form-label">Total Kebutuhan Tambahan Ongoing Capital</label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="totalKebutuhanTambahanOngoingCapital" name="totalKebutuhanTambahanOngoingCapital" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+                <span class="submit-text">Hitung KPSP</span>
+                <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="form.reset(); updateAllCalculations();">Batal</button>
+        </div>
+    </form>
+
+    <!-- Card untuk menampilkan hasil perhitungan KPSP -->
+    <div class="section-group" id="kpsp_results_card" style="display: none;">
+        <h3 class="section-header">Ringkasan Hasil Perhitungan KPSP</h3>
+        <div class="section-content">
+            <div id="kpsp_results" class="tw-space-y-2">
+                <!-- Hasil perhitungan akan ditampilkan di sini secara dinamis oleh JavaScript -->
             </div>
         </div>
     </div>
+</div>
 
-    <!-- JavaScript Dependencies (menggunakan url_for) -->
-    <script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/dist/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/color-modes.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/select2.full.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/jquery-ui.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/sweetalert2.all.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/jquery.csv.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/jquery.maskMoney.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/core.js') }}"></script>
-    <!-- Feather Icons (gunakan dari CDN atau lokal jika sudah diunduh) -->
-    <script src="https://unpkg.com/feather-icons"></script>
-
-    <script>
-        // Inisialisasi Feather Icons
-        feather.replace();
-
-        // Data PJP/PIP (diisi dari Flask menggunakan Jinja2)
-const banksData = JSON.parse('{{ banks | tojson | safe if banks is not none else "[]" }}');
-
-        // Konstanta perhitungan (diambil dari modal asumsi perhitungan)
-        // Pastikan nilai-nilai ini akurat sesuai rumus KPSP Anda
-        const PARAMS = {
-            initialCapital: {
-                PIP: 100000000000,
-                AIS: 15000000000,
-                PIAS: 5000000000,
-                REM1: 1000000000,
-                REM2: 500000000
-            },
-            kpspObligation: {
-                PIP_PSPS: { dasar: 10.00, surcharge: 5.00, total: 15.00 },
-                PSPS:     { dasar: 10.00, surcharge: 2.50, total: 12.50 },
-                PSPK:     { dasar: 10.00, surcharge: 1.50, total: 11.50 },
-                PSPU:     { dasar: 10.00, surcharge: 0.00, total: 10.00 }
-            },
-            otherParams: {
-                rateBand4Perc: 100000000000, // 100 Miliar
-                rateBand1Perc: 1000000000000, // 1 Triliun
-                rateBand01PercAbove: 1000000000000, // 1 Triliun
-                rateKI3: 0.10, // 0.10%
-                bebanDanaFloat: 5.00, // 5.00%
-                konstantaTTMR: 10,
-                konstantaTTMR_KI3: 10 // Jika ada perbedaan untuk KI3
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-ui@1.13.2/dist/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-maskmoney@3.0.2/dist/jquery.maskMoney.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('laporanTahunanSPForm');
+    const submitButton = document.getElementById('submitButton');
+    const submitText = submitButton.querySelector('.submit-text');
+    const submitSpinner = submitButton.querySelector('.spinner-border');
+    
+    // --- Custom Modal/Message Box ---
+    const messageContainer = document.querySelector('.tw-max-w-4xl.tw-mx-auto'); 
+    
+    function showMessageBox(message, type) {
+        let messageBox = document.getElementById('dynamicMessageBox');
+        if (!messageBox) {
+            messageBox = document.createElement('div');
+            messageBox.id = 'dynamicMessageBox';
+            messageBox.classList.add('tw-p-3', 'tw-rounded-lg', 'tw-mb-4', 'tw-text-center', 'tw-font-medium'); 
+            const firstChild = messageContainer.querySelector('h2');
+            if (firstChild) {
+                firstChild.parentNode.insertBefore(messageBox, firstChild.nextSibling);
+            } else {
+                messageContainer.insertBefore(messageBox, messageContainer.firstChild);
             }
-        };
-
-
-        $(document).ready(function() {
-            // Inisialisasi Select2 untuk dropdown PJP
-            const $namaPjpSelect = $('#nama_pjp');
-            banksData.forEach(bank => {
-                $namaPjpSelect.append(new Option(bank.nama, bank.nama));
-            });
-            $namaPjpSelect.select2({
-                theme: 'bootstrap-5',
-                width: '100%',
-                placeholder: 'Pilih PJP'
-            });
-
-            // Inisialisasi Datepicker
-            $('.datepicker').datepicker({
-                dateFormat: 'yy-mm-dd',
-                changeMonth: true,
-                changeYear: true,
-                showButtonPanel: true
-            });
-
-            // Inisialisasi MaskMoney
-            $('.money').maskMoney({
-                prefix: 'Rp ',
-                thousands: '.',
-                decimal: ',',
-                allowZero: true,
-                affixesStay: false
-            });
-
-            // --- Event Listeners untuk Perhitungan Realtime ---
-            // Trigger recalculation on any input change within the form
-            $('#kpspForm input, #kpspForm select').on('change keyup', function() {
-                updateAllCalculations();
-            });
-
-            // Populate PJP details when selected
-            $namaPjpSelect.on('change', function() {
-                const selectedPJPName = $(this).val();
-                const selectedBank = banksData.find(bank => bank.nama === selectedPJPName);
-
-                if (selectedBank) {
-                    // Update fields from selected bank data
-                    // Kategori Izin, No. Izin, Tgl. Izin sekarang diisi otomatis
-                    $('#kategori_izin').val(selectedBank.kategori); // Ini akan digunakan untuk logika perhitungan
-                    $('#no_izin').val(selectedBank.no_izin);
-                    $('#tgl_izin').val(selectedBank.tgl_izin);
-                    // Update Flag PIP Asing checkbox berdasarkan data bank
-                    $('#flagGL_PIPasing').prop('checked', selectedBank.flag_pip_asing || false);
-                } else {
-                    // Clear fields if no PJP is selected
-                    $('#kategori_izin').val('');
-                    $('#no_izin').val('');
-                    $('#tgl_izin').val('');
-                    $('#flagGL_PIPasing').prop('checked', false);
-                }
-                updateAllCalculations(); // Recalculate when PJP changes
-            });
-
-            // Handle form submission (untuk menampilkan hasil dan mengirim ke backend)
-            $('#kpspForm').on('submit', function(e) {
-                e.preventDefault();
-                
-                const formData = {};
-                $(this).serializeArray().forEach(item => {
-                    formData[item.name] = item.value;
-                });
-
-                // Ambil nilai yang dihitung dari readonly fields
-                formData['totalOngoingCapitalDisplay'] = $('#totalOngoingCapital').val();
-                formData['rasioKPSPDisplay'] = $('#rasioKPSP').val();
-                formData['statusPemenuhanInitialCapitalDisplay'] = $('#statusPemenuhan_initialCapital').val();
-                formData['statusPemenuhanOngoingCapitalDisplay'] = $('#statusPemenuhanOngoingCapital').val();
-                
-                // Tampilkan SweetAlert loading
-                Swal.fire({
-                    title: 'Memproses...',
-                    text: 'Sedang menghitung dan menyimpan laporan KPSP.',
-                    didOpen: () => {
-                        Swal.showLoading();
-                    },
-                    allowOutsideClick: false
-                });
-
-                $.ajax({
-                    url: "{{ url_for('submit_laporan_kpsp') }}", // Endpoint Flask yang baru
-                    type: "POST",
-                    data: formData, // Kirim semua data form, termasuk calculated values
-                    success: function(response) {
-                        Swal.close();
-                        if (response.success) {
-                            Swal.fire('Berhasil!', response.message, 'success');
-                            // Tampilkan ringkasan hasil yang sudah dihitung di frontend
-                            displayFinalResults();
-                        } else {
-                            Swal.fire('Error!', response.message, 'error');
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        Swal.close();
-                        let errorMessage = 'Terjadi kesalahan saat mengirim data.';
-                        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-                            errorMessage = jqXHR.responseJSON.message;
-                        } else if (errorThrown) {
-                            errorMessage = `Error: ${errorThrown}`;
-                        }
-                        Swal.fire('Error!', errorMessage, 'error');
-                        console.error("AJAX Error:", textStatus, errorThrown, jqXHR.responseText);
-                    }
-                });
-            });
-
-            // --- Fungsi Pembantu (Helpers) ---
-
-            // Converts Rupiah format string to a float number
-            function parseMoney(value) {
-                if (typeof value !== 'string') return value;
-                return parseFloat(value.replace(/Rp /g, '').replace(/\./g, '').replace(/,/g, '.') || '0');
-            }
-
-            // Formats a float number to Rupiah string
-            function formatMoney(value) {
-                if (isNaN(value)) return 'Rp 0,00';
-                // Hindari masalah floating point untuk pembulatan yang sangat presisi
-                return 'Rp ' + (Math.round(value * 100) / 100).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
-
-            // Update all calculations based on current input values
-            function updateAllCalculations() {
-                calculateInitialCapital();
-                calculateOngoingCapital();
-                calculateKPSPobligation();
-            }
-
-            // --- Implementasi Perhitungan KPSP ---
-
-            function calculateInitialCapital() {
-                const kategoriIzin = $('#kategori_izin').val(); // Mendapatkan kategori izin dari field tersembunyi
-                const jumlahModalDisetor = parseMoney($('#jumlahModalDisetor').val());
-                const isPIPAsing = $('#flagGL_PIPasing').is(':checked');
-
-                let kewajibanInitCapital = 0;
-                let statusPemenuhan = "Tidak Memenuhi";
-                let tambahanInitCapital = 0;
-
-                // Tentukan kewajiban Initial Capital berdasarkan kategori izin yang didapat dari data bank
-                if (kategoriIzin) {
-                    if (kategoriIzin === "PIP") {
-                        kewajibanInitCapital = PARAMS.initialCapital.PIP;
-                    } else if (kategoriIzin === "KI1") { // AIS
-                        kewajibanInitCapital = PARAMS.initialCapital.AIS;
-                    } else if (kategoriIzin === "KI2") { // PIAS
-                        kewajibanInitCapital = PARAMS.initialCapital.PIAS;
-                    } else if (kategoriIzin === "KI3") { // REM1/REM2 - perlu ditentukan berdasarkan aktivitas yang diceklis
-                        kewajibanInitCapital = Math.min(PARAMS.initialCapital.REM1, PARAMS.initialCapital.REM2);
-                    }
-                }
-
-                // Logika status pemenuhan
-                if (isPIPAsing && kategoriIzin === "PIP") { // PIP Asing selalu "Memenuhi" jika guarantee letter diceklis
-                    statusPemenuhan = "Memenuhi";
-                    tambahanInitCapital = 0;
-                } else if (jumlahModalDisetor >= kewajibanInitCapital) {
-                    statusPemenuhan = "Memenuhi";
-                    tambahanInitCapital = 0;
-                } else {
-                    statusPemenuhan = "Tidak Memenuhi";
-                    tambahanInitCapital = kewajibanInitCapital - jumlahModalDisetor;
-                }
-
-                $('#kewajibanInitCapital').val(formatMoney(kewajibanInitCapital));
-                $('#statusPemenuhan_initialCapital').val(statusPemenuhan).removeClass('bg-success-custom bg-danger-custom').addClass(statusPemenuhan === "Memenuhi" ? 'bg-success-custom' : 'bg-danger-custom');
-                $('#tambahanInitCapital').val(formatMoney(tambahanInitCapital));
-            }
-
-            function calculateOngoingCapital() {
-                const jumlahBulanTrx = parseFloat($('#jumlahBulanTrx').val()) || 1;
-
-                // Transaksi Inputs
-                const totalTrx_ATMDebet = parseMoney($('#totalTrx_ATMDebet').val());
-                const totalTrx_KK = parseMoney($('#totalTrx_KK').val());
-                const trxDompel = parseMoney($('#trxDompel').val());
-                const trxTrfDanaLN_inc = parseMoney($('#trxTrfDanaLN_inc').val());
-                const trxTrfDanaLN_out = parseMoney($('#trxTrfDanaLN_out').val());
-                const trxTrfDana_dom = parseMoney($('#trxTrfDana_dom').val());
-                const trxUE = parseMoney($('#trxUE').val());
-                let trxPIAS_fasil = parseMoney($('#trxPIAS_fasil').val()); // Diperhitungkan 10%
-                const trxPIAS_merchAgg = parseMoney($('#trxPIAS_merchAgg').val());
-                const trxLainnya = parseMoney($('#trxLainnya').val());
-
-                // Rata-rata transaksi
-                const calculateRata = (value) => (jumlahBulanTrx > 0 ? value / jumlahBulanTrx : 0);
-                $('#totalTrx_ATMDebet_rata').val(formatMoney(calculateRata(totalTrx_ATMDebet)));
-                $('#totalTrx_KK_rata').val(formatMoney(calculateRata(totalTrx_KK)));
-                $('#trxDompel_rata').val(formatMoney(calculateRata(trxDompel)));
-                $('#trxTrfDanaLN_inc_rata').val(formatMoney(calculateRata(trxTrfDanaLN_inc)));
-                $('#trxTrfDanaLN_out_rata').val(formatMoney(calculateRata(trxTrfDanaLN_out)));
-                $('#trxTrfDana_dom_rata').val(formatMoney(calculateRata(trxTrfDana_dom)));
-                $('#trxUE_rata').val(formatMoney(calculateRata(trxUE)));
-
-                // Perhitungan PIAS - Fasilitator (10%)
-                const trxPIAS_fasil_processed = trxPIAS_fasil * 0.10;
-                $('#trxPIAS_fasil_rata').val(formatMoney(calculateRata(trxPIAS_fasil_processed)));
-
-                // Total Nilai Transaksi (TTMR)
-                const totalNilaiTrx = totalTrx_ATMDebet + totalTrx_KK + trxDompel + trxTrfDanaLN_inc + trxTrfDanaLN_out + trxTrfDana_dom + trxUE + trxPIAS_fasil_processed + trxPIAS_merchAgg + trxLainnya;
-                $('#totalNilaiTrx').val(formatMoney(totalNilaiTrx));
-                $('#totalNilaiTrx_rata').val(formatMoney(calculateRata(totalNilaiTrx)));
-
-                // Beban Transaksi Progresif (mengikuti band rates)
-                let bebanTrx = 0;
-                let tempTotalTrx = totalNilaiTrx;
-
-                // Rate 0.1% for band above 1 Trillion
-                if (tempTotalTrx > PARAMS.otherParams.rateBand1Perc) {
-                    bebanTrx += (tempTotalTrx - PARAMS.otherParams.rateBand1Perc) * 0.001;
-                    tempTotalTrx = PARAMS.otherParams.rateBand1Perc;
-                }
-                // Rate 1% for band between 100 Billion and 1 Trillion
-                if (tempTotalTrx > PARAMS.otherParams.rateBand4Perc) {
-                    bebanTrx += (tempTotalTrx - PARAMS.otherParams.rateBand4Perc) * 0.01;
-                    tempTotalTrx = PARAMS.otherParams.rateBand4Perc;
-                }
-                // Rate 4% for band up to 100 Billion
-                bebanTrx += tempTotalTrx * 0.04;
-                
-                $('#bebanTrx').val(formatMoney(bebanTrx));
-
-                // Dana Float
-                const danaFloat = parseMoney($('#danaFloat').val());
-                $('#danaFloat_rata').val(formatMoney(calculateRata(danaFloat)));
-                const percBebanTrxDanaFloat = PARAMS.otherParams.bebanDanaFloat; // 5%
-                const bebanTrxDanaFloat = danaFloat * (percBebanTrxDanaFloat / 100);
-                $('#percBebanTrxDanaFloat').val(percBebanTrxDanaFloat.toFixed(2));
-                $('#bebanTrxDanaFloat').val(formatMoney(bebanTrxDanaFloat));
-
-                // Total Beban
-                const totalBeban = bebanTrx + bebanTrxDanaFloat;
-                $('#totalBeban').val(formatMoney(totalBeban));
-
-                // Konstanta TTMR
-                const kategoriIzin = $('#kategori_izin').val(); // Mengambil kategori izin dari field tersembunyi
-                let konstantaTTMR_val = PARAMS.otherParams.konstantaTTMR;
-                // Asumsi: Jika kategori izin KI3, gunakan konstantaTTMR_KI3, jika ada.
-                if (kategoriIzin === 'KI3' && PARAMS.otherParams.konstantaTTMR_KI3 !== undefined) { 
-                    konstantaTTMR_val = PARAMS.otherParams.konstantaTTMR_KI3;
-                }
-                $('#konstantaTTMR').val(konstantaTTMR_val);
-
-                // TTMR (Transaksi Tertimbang Menurut Risiko)
-                const TTMR = totalBeban * konstantaTTMR_val;
-                $('#TTMR').val(formatMoney(TTMR));
-
-
-                // --- Komponen Perhitungan Ongoing Capital ---
-                const modalSaham = parseMoney($('#modalSaham').val());
-                const uangMukaSetoranModal = parseMoney($('#uangMukaSetoranModal').val());
-                const agioDisagioSaham = parseMoney($('#agioDisagioSaham').val());
-                const saldoLRberjalan = parseMoney($('#saldoLRberjalan').val());
-                const saldoPenghasilanKompr = parseMoney($('#saldoPenghasilanKompr').val());
-
-                // Modal Inti Utama (sebelum pengurangan)
-                const modalIntiUtama = modalSaham + uangMukaSetoranModal + agioDisagioSaham + saldoLRberjalan + saldoPenghasilanKompr;
-                $('#modalIntiUtama').val(formatMoney(modalIntiUtama));
-
-                const asetPajakTangguhan = parseMoney($('#asetPajakTangguhan').val());
-                const goodWill = parseMoney($('#goodWill').val());
-                const asetTidakBerwujud = parseMoney($('#asetTidakBerwujud').val());
-                const seluruhPenyertaan = parseMoney($('#seluruhPenyertaan').val());
-                const pembelianKembaliInstModal = parseMoney($('#pembelianKembaliInstModal').val());
-                const penempatanDanaInstUtang = parseMoney($('#penempatanDanaInstUtang').val());
-
-                // Faktor Pengurang Modal Inti Utama
-                const faktorPengurangModalInti = asetPajakTangguhan + goodWill + asetTidakBerwujud + seluruhPenyertaan + pembelianKembaliInstModal + penempatanDanaInstUtang;
-                $('#faktorPengurangModalInti').val(formatMoney(faktorPengurangModalInti));
-
-                // Modal Inti Utama (setelah pengurangan)
-                const modalIntiUtama_setelahFPR = modalIntiUtama - faktorPengurangModalInti;
-                $('#modalIntiUtama_setelahFPR').val(formatMoney(modalIntiUtama_setelahFPR));
-
-
-                const instrumenUtang = parseMoney($('#instrumenUtang').val());
-                const instrumenHybrid = parseMoney($('#instrumenHybrid').val());
-                const sahamPreferenNonKumulatif = parseMoney($('#sahamPreferenNonKumulatif').val());
-                const premiumDiskonto = parseMoney($('#premiumDiskonto').val());
-
-                // Modal Inti Tambahan (sebelum pengurangan)
-                const modalIntiTambahan = instrumenUtang + instrumenHybrid + sahamPreferenNonKumulatif + premiumDiskonto;
-                $('#modalIntiTambahan').val(formatMoney(modalIntiTambahan));
-
-                const instrumenModalIntiTambahan = parseMoney($('#instrumenModalIntiTambahan').val());
-                const kepemilikanModalIntiTambahan = parseMoney($('#kepemilikanModalIntiTambahan').val());
-
-                // Faktor Pengurang Modal Inti Tambahan
-                const faktorPengurangModalIntiTambahan = instrumenModalIntiTambahan + kepemilikanModalIntiTambahan;
-                $('#faktorPengurangModalIntiTambahan').val(formatMoney(faktorPengurangModalIntiTambahan));
-
-                // Modal Inti Tambahan (setelah pengurangan)
-                const modalIntiTambahan_setelahFPR = modalIntiTambahan - faktorPengurangModalIntiTambahan;
-                $('#modalIntiTambahan_setelahFPR').val(formatMoney(modalIntiTambahan_setelahFPR));
-
-                // Modal Inti Tambahan yang dapat diperhitungkan sebagai Ongoing Capital (max 1/3 modal inti utama)
-                const maxModalIntiTambahanOngoing = modalIntiUtama_setelahFPR / 3;
-                const modalIntiTambahan_ongoingCapital = Math.min(modalIntiTambahan_setelahFPR, maxModalIntiTambahanOngoing);
-                $('#modalIntiTambahan_ongoingCapital').val(formatMoney(modalIntiTambahan_ongoingCapital));
-
-
-                const instrumenUtangJangkaPjg = parseMoney($('#instrumenUtangJangkaPjg').val());
-                const premiumDiskontoModalPelengkap = parseMoney($('#premiumDiskontoModalPelengkap').val());
-
-                // Modal Pelengkap (sebelum pengurangan)
-                const modalPelengkap = instrumenUtangJangkaPjg + premiumDiskontoModalPelengkap;
-                $('#modalPelengkap').val(formatMoney(modalPelengkap));
-
-                const instrumenModalPelengkap = parseMoney($('#instrumenModalPelengkap').val());
-                const kepemilikanModalPelengkap = parseMoney($('#kepemilikanModalPelengkap').val());
-
-                // Faktor Pengurang Modal Pelengkap
-                const faktorPengurangModalPelengkap = instrumenModalPelengkap + kepemilikanModalPelengkap;
-                $('#faktorPengurangModalPelengkap').val(formatMoney(faktorPengurangModalPelengkap));
-
-                // Modal Pelengkap (setelah pengurangan)
-                const modalPelengkap_setelahFPR = modalPelengkap - faktorPengurangModalPelengkap;
-                $('#modalPelengkap_setelahFPR').val(formatMoney(modalPelengkap_setelahFPR));
-
-                // Modal Pelengkap yang dapat diperhitungkan sebagai Ongoing Capital (max 1/3 Modal Inti Tambahan yang dapat diperhitungkan sebagai ongoing capital)
-                const maxModalPelengkapOngoing = modalIntiTambahan_ongoingCapital / 3;
-                const modalPelengkap_ongoingCapital = Math.min(modalPelengkap_setelahFPR, maxModalPelengkapOngoing);
-                $('#modalPelengkap_ongoingCapital').val(formatMoney(modalPelengkap_ongoingCapital));
-
-                // Total Ongoing Capital
-                const totalOngoingCapital = modalIntiUtama_setelahFPR + modalIntiTambahan_ongoingCapital + modalPelengkap_ongoingCapital;
-                $('#totalOngoingCapital').val(formatMoney(totalOngoingCapital));
-
-                // Rasio KPSP (Ongoing Capital / TTMR)
-                const rasioKPSP_val = (TTMR !== 0) ? (totalOngoingCapital / TTMR) * 100 : 0;
-                $('#rasioKPSP').val(rasioKPSP_val.toFixed(2));
-            }
-
-            function calculateKPSPobligation() {
-                // Klasifikasi PJP/PIP sekarang akan diambil dari data bank yang sudah diisi secara otomatis
-                const kategoriIzin = $('#kategori_izin').val(); // Mengambil kategori izin
-                const klasifikasiPJPPIP = ''; // Kosongkan atau dapatkan dari logika Anda jika ada pemetaan khusus
-                const isPIPAsing = $('#flagGL_PIPasing').is(':checked');
-
-                let KPSPdasar = 0;
-                let surcharge = 0;
-                let totalKPSP = 0;
-
-                // Tentukan KPSP berdasarkan kategori izin dan flag PIP Asing
-                // Anda mungkin perlu menyesuaikan logika ini berdasarkan bagaimana
-                // 'Klasifikasi PJP/PIP' (`PSPS`, `PSPK`, `PSPU`) ditentukan dari `Kategori Izin` (KI1, KI2, KI3, PIP)
-                // Jika tidak ada logika pemetaan, Anda mungkin perlu menambahkan field untuk klasifikasi ini lagi.
-                // Untuk saat ini, saya akan mengasumsikan mapping sederhana atau default.
-
-                // Contoh pemetaan sederhana berdasarkan Kategori Izin
-                if (kategoriIzin === "PIP") {
-                    if (isPIPAsing) { // Contoh: PIP Asing mungkin selalu PSPS dengan surcharge
-                        KPSPdasar = PARAMS.kpspObligation.PIP_PSPS.dasar;
-                        surcharge = PARAMS.kpspObligation.PIP_PSPS.surcharge;
-                        totalKPSP = PARAMS.kpspObligation.PIP_PSPS.total;
-                    } else { // PIP non-asing, asumsikan PSPS
-                        KPSPdasar = PARAMS.kpspObligation.PSPS.dasar;
-                        surcharge = PARAMS.kpspObligation.PSPS.surcharge;
-                        totalKPSP = PARAMS.kpspObligation.PSPS.total;
-                    }
-                } else if (kategoriIzin === "KI1" || kategoriIzin === "KI2") { // Asumsi KI1/KI2 adalah PSPK
-                    KPSPdasar = PARAMS.kpspObligation.PSPK.dasar;
-                    surcharge = PARAMS.kpspObligation.PSPK.surcharge;
-                    totalKPSP = PARAMS.kpspObligation.PSPK.total;
-                } else if (kategoriIzin === "KI3") { // Asumsi KI3 adalah PSPU
-                    KPSPdasar = PARAMS.kpspObligation.PSPU.dasar;
-                    surcharge = PARAMS.kpspObligation.PSPU.surcharge;
-                    totalKPSP = PARAMS.kpspObligation.PSPU.total;
-                }
-
-                $('#KPSPdasar').val(KPSPdasar.toFixed(2));
-                $('#surcharge').val(surcharge.toFixed(2));
-                $('#totalKPSP').val(totalKPSP.toFixed(2));
-
-                const TTMR_val = parseMoney($('#TTMR').val());
-                const jumlahKewajibanOngoingCapital = (totalKPSP / 100) * TTMR_val;
-                $('#jumlahKewajibanOngoingCapital').val(formatMoney(jumlahKewajibanOngoingCapital));
-
-                const totalOngoingCapital_val = parseMoney($('#totalOngoingCapital').val());
-                let statusPemenuhanOngoingCapital = "Tidak Memenuhi";
-                let totalKebutuhanTambahanOngoingCapital = 0;
-
-                if (totalOngoingCapital_val >= jumlahKewajibanOngoingCapital) {
-                    statusPemenuhanOngoingCapital = "Memenuhi";
-                    totalKebutuhanTambahanOngoingCapital = 0;
-                } else {
-                    statusPemenuhanOngoingCapital = "Tidak Memenuhi";
-                    totalKebutuhanTambahanOngoingCapital = jumlahKewajibanOngoingCapital - totalOngoingCapital_val;
-                }
-                $('#statusPemenuhanOngoingCapital').val(statusPemenuhanOngoingCapital).removeClass('bg-success-custom bg-danger-custom').addClass(statusPemenuhanOngoingCapital === "Memenuhi" ? 'bg-success-custom' : 'bg-danger-custom');
-                $('#totalKebutuhanTambahanOngoingCapital').val(formatMoney(totalKebutuhanTambahanOngoingCapital));
-            }
-
-
-            // --- Fungsi untuk Menampilkan Hasil Akhir di Card Terpisah ---
-            function displayFinalResults() {
-                // Ambil nilai yang sudah dihitung dan ditampilkan di form
-                const initialCapitalStatus = $('#statusPemenuhan_initialCapital').val();
-                const totalOngoingCapital = $('#totalOngoingCapital').val();
-                const rasioKPSP_display = $('#rasioKPSP').val(); // Sudah termasuk '%'
-                const finalTotalKPSP = $('#totalKPSP').val(); // Sudah termasuk '%'
-                const ongoingCapitalObligation = $('#jumlahKewajibanOngoingCapital').val();
-                const ongoingCapitalStatus = $('#statusPemenuhanOngoingCapital').val();
-                const neededOngoingCapital = $('#totalKebutuhanTambahanOngoingCapital').val();
-
-                let resultsHtml = `
-                    <div class="result-item"><span>Status Pemenuhan Initial Capital:</span> <strong class="${initialCapitalStatus === 'Memenuhi' ? 'text-success' : 'text-danger'}">${initialCapitalStatus}</strong></div>
-                    <div class="result-item"><span>Total Ongoing Capital:</span> <strong>${totalOngoingCapital}</strong></div>
-                    <div class="result-item"><span>Rasio KPSP (Ongoing Capital/TTMR):</span> <strong>${rasioKPSP_display}%</strong></div>
-                    <div class="result-item"><span>Total KPSP (Kewajiban):</span> <strong>${finalTotalKPSP}%</strong></div>
-                    <div class="result-item"><span>Jumlah Kewajiban Ongoing Capital:</span> <strong>${ongoingCapitalObligation}</strong></div>
-                    <div class="result-item"><span>Status Pemenuhan Ongoing Capital:</span> <strong class="${ongoingCapitalStatus === 'Memenuhi' ? 'text-success' : 'text-danger'}">${ongoingCapitalStatus}</strong></div>
-                    <div class="result-item"><span>Total Kebutuhan Tambahan Ongoing Capital:</span> <strong>${neededOngoingCapital}</strong></div>
-                `;
-
-                $('#kpsp_results').html(resultsHtml);
-                $('#kpsp_results_card').show();
-                // Smooth scroll ke bagian hasil
-                $('html, body').animate({
-                    scrollTop: $('#kpsp_results_card').offset().top - 100
-                }, 500);
-            }
-
-            // Initial calculation on page load
-            // Call this after all initializations are done
-            updateAllCalculations();
+        }
+
+        messageBox.textContent = message;
+        messageBox.classList.remove('tw-bg-green-100', 'tw-text-green-800', 'tw-border-green-300', 'tw-bg-red-100', 'tw-text-red-800', 'tw-border-red-300'); 
+        
+        if (type === 'success') {
+            messageBox.classList.add('tw-bg-green-100', 'tw-text-green-800', 'tw-border', 'tw-border-green-300');
+        } else if (type === 'error') {
+            messageBox.classList.add('tw-bg-red-100', 'tw-text-red-800', 'tw-border', 'tw-border-red-300');
+        }
+        
+        messageBox.style.display = 'block'; 
+        setTimeout(() => {
+            messageBox.style.display = 'none'; 
+        }, 5000);
+    }
+    // --- End Custom Modal/Message Box ---
+
+    const tahunLaporanSelect = document.getElementById('tahun_laporan');
+    const tahunLaporanTextElements = document.querySelectorAll('.tahun_laporan_text');
+    const tahunProyeksiTextElements = document.querySelectorAll('.tahun_proyeksi_text');
+
+    function updateTahunText() {
+        const selectedYear = tahunLaporanSelect.value;
+        if (selectedYear) {
+            tahunLaporanTextElements.forEach(el => el.textContent = selectedYear);
+            tahunProyeksiTextElements.forEach(el => el.textContent = parseInt(selectedYear) + 1);
+        } else {
+            tahunLaporanTextElements.forEach(el => el.textContent = '[Tahun Laporan]');
+            tahunProyeksiTextElements.forEach(el => el.textContent = '[Tahun Proyeksi]');
+        }
+    }
+
+    if (tahunLaporanSelect) {
+        tahunLaporanSelect.addEventListener('change', updateTahunText);
+        updateTahunText(); 
+    }
+    
+    const tanggalSuratPengantarInput = document.getElementById('tanggal_surat_pengantar');
+    if(tanggalSuratPengantarInput){
+        const today = new Date().toISOString().split('T')[0];
+        tanggalSuratPengantarInput.max = today;
+    }
+
+    // --- Dynamic Field Logic (Shareholder, MERSI, Management, Cooperation) ---
+
+    // Helper to add repeatable item structure
+    function addRepeatableItem(containerId, itemClass, headerPrefix, contentHtml, removeBtnClass = 'remove-item-btn') {
+        const container = document.getElementById(containerId);
+        const currentCount = container.querySelectorAll(`.${itemClass}`).length;
+        const newItem = document.createElement('div');
+        newItem.classList.add('repeatable-item', itemClass, 'tw-space-y-2');
+        newItem.innerHTML = `
+            <h6 class="tw-font-semibold tw-text-gray-800">${headerPrefix} #${currentCount + 1}</h6>
+            <div class="tw-relative">
+                ${contentHtml}
+                <button type="button" class="${removeBtnClass} tw-absolute tw-top-0.5 tw-right-0.5 tw-bg-red-50 tw-text-red-500 tw-border tw-border-red-200 tw-rounded-full tw-p-1 tw-inline-flex tw-items-center tw-justify-center tw-w-8 tw-h-8 hover:tw-bg-red-100 hover:tw-text-red-600 tw-transition-colors tw-duration-150">
+                    <svg class="tw-w-4 tw-h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
+        `;
+        container.appendChild(newItem);
+
+        newItem.querySelector(`.${removeBtnClass}`).addEventListener('click', function() {
+            newItem.remove();
+            updateRepeatableItemNumbers(containerId, itemClass, headerPrefix);
         });
-    </script>
-</body>
+        updateRepeatableItemNumbers(containerId, itemClass, headerPrefix);
+        return newItem;
+    }
+
+    function updateRepeatableItemNumbers(containerId, itemClass, headerPrefix) {
+        const container = document.getElementById(containerId);
+        const items = container.querySelectorAll(`.${itemClass}`);
+        items.forEach((item, index) => {
+            const itemNumber = index + 1;
+            item.querySelector('h6').textContent = `${headerPrefix} #${itemNumber}`;
+            // Update name attributes to ensure correct indexing for form submission
+            item.querySelectorAll('input, select, textarea').forEach(input => {
+                const oldName = input.name;
+                // Regex to find _ followed by digits at the end of the name
+                const baseName = oldName.replace(/_\d+$/, ''); 
+                input.name = `${baseName}_${itemNumber}`;
+                input.id = `${baseName}_${itemNumber}`; // Also update ID for labels
+                const label = item.querySelector(`label[for^="${baseName}_"]`);
+                if (label) {
+                    label.setAttribute('for', input.id);
+                }
+            });
+        });
+    }
+
+    // MERSI
+    const mersiContainer = document.getElementById('mersi-container');
+    document.getElementById('add-mersi-btn').addEventListener('click', () => {
+        addRepeatableItem('mersi-container', 'mersi-item', 'Data MERSI', `
+            <div class="tw-space-y-1">
+                <label for="mersi_title_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" class="tw-block form-label">Judul/Topik Risiko SP <span class="tw-text-red-500">*</span></label>
+                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="mersi_title_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" name="mersi_title_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" required>
+            </div>
+            <div class="tw-space-y-1">
+                <label for="mersi_content_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" class="tw-block form-label">Uraian Risiko SP <span class="tw-text-red-500">*</span></label>
+                <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="mersi_content_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" name="mersi_content_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" rows="3" required></textarea>
+            </div>
+        `);
+    });
+
+    // Shareholder
+    const shareholderContainer = document.getElementById('shareholder-container');
+    document.getElementById('add-shareholder-btn').addEventListener('click', () => {
+        const currentCount = shareholderContainer.querySelectorAll('.shareholder-item').length;
+        const newItem = addRepeatableItem('shareholder-container', 'shareholder-item', 'Pemegang Saham', `
+            <div class="tw-space-y-1">
+                <label for="shareholder_name_${currentCount + 1}" class="tw-block form-label">Nama Perorangan/PT <span class="tw-text-red-500">*</span></label>
+                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_name_${currentCount + 1}" name="shareholder_name_${currentCount + 1}" required>
+            </div>
+            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-x-6 tw-gap-y-4">
+                <div class="tw-space-y-1">
+                    <label for="shareholder_nominal_saham_${currentCount + 1}" class="tw-block form-label">Nominal Saham (Rp) <span class="tw-text-red-500">*</span></label>
+                    <input type="number" step="0.01" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_nominal_saham_${currentCount + 1}" name="shareholder_nominal_saham_${currentCount + 1}" required min="0">
+                </div>
+                <div class="tw-space-y-1">
+                    <label for="shareholder_lembar_saham_${currentCount + 1}" class="tw-block form-label">Jumlah Lembar Saham <span class="tw-text-red-500">*</span></label>
+                    <input type="number" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_lembar_saham_${currentCount + 1}" name="shareholder_lembar_saham_${currentCount + 1}" required min="0">
+                </div>
+                <div class="tw-space-y-1">
+                    <label for="shareholder_persentase_saham_${currentCount + 1}" class="tw-block form-label">Persentase Saham (%) <span class="tw-text-red-500">*</span></label>
+                    <input type="number" step="0.01" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_persentase_saham_${currentCount + 1}" name="shareholder_persentase_saham_${currentCount + 1}" required min="0" max="100">
+                </div>
+            </div>
+            <div class="tw-space-y-1">
+                <label class="tw-block form-label">Jenis Kepemilikan <span class="tw-text-red-500">*</span></label>
+                <div class="tw-flex tw-gap-4 mt-2">
+                    <div class="tw-flex tw-items-center">
+                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="shareholder_type_${currentCount + 1}" id="shareholder_type_asing_${currentCount + 1}" value="asing" required>
+                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="shareholder_type_asing_${currentCount + 1}">Asing</label>
+                    </div>
+                    <div class="tw-flex tw-items-center">
+                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="shareholder_type_${currentCount + 1}" id="shareholder_type_domestik_${currentCount + 1}" value="domestik" required>
+                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="shareholder_type_domestik_${currentCount + 1}">Domestik</label>
+                    </div>
+                </div>
+            </div>
+            <div class="tw-space-y-1">
+                <label for="shareholder_jenis_seri_saham_${currentCount + 1}" class="tw-block form-label">Jenis Seri Saham (Opsional)</label>
+                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_jenis_seri_saham_${currentCount + 1}" name="shareholder_jenis_seri_saham_${currentCount + 1}">
+            </div>
+        `);
+    });
+
+    // Management
+    const managementContainer = document.getElementById('management-container');
+    document.getElementById('add-management-btn').addEventListener('click', () => {
+        const currentCount = managementContainer.querySelectorAll('.management-item').length;
+        addRepeatableItem('management-container', 'management-item', 'Pengurus', `
+            <div class="tw-space-y-1">
+                <label for="management_name_${currentCount + 1}" class="tw-block form-label">Nama <span class="tw-text-red-500">*</span></label>
+                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="management_name_${currentCount + 1}" name="management_name_${currentCount + 1}" required>
+            </div>
+            <div class="tw-space-y-1">
+                <label for="management_position_${currentCount + 1}" class="tw-block form-label">Jabatan <span class="tw-text-red-500">*</span></label>
+                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="management_position_${currentCount + 1}" name="management_position_${currentCount + 1}" required>
+            </div>
+            <div class="tw-space-y-1">
+                <label class="tw-block form-label">Kewarganegaraan <span class="tw-text-red-500">*</span></label>
+                <div class="tw-flex tw-gap-4 mt-2">
+                    <div class="tw-flex tw-items-center">
+                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="management_nationality_${currentCount + 1}" id="management_nationality_wna_${currentCount + 1}" value="WNA" required>
+                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="management_nationality_wna_${currentCount + 1}">WNA</label>
+                    </div>
+                    <div class="tw-flex tw-items-center">
+                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="management_nationality_${currentCount + 1}" id="management_nationality_domestik_${currentCount + 1}" value="Domestik" required>
+                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="management_nationality_domestik_${currentCount + 1}">Domestik</label>
+                    </div>
+                </div>
+            </div>
+        `);
+    });
+
+    // Cooperation
+    const cooperationContainer = document.getElementById('cooperation-container');
+    document.getElementById('add-cooperation-btn').addEventListener('click', () => {
+        const currentCount = cooperationContainer.querySelectorAll('.cooperation-item').length;
+        addRepeatableItem('cooperation-container', 'cooperation-item', 'Kerja Sama', `
+            <div class="tw-space-y-1">
+                <label for="cooperation_partner_name_${currentCount + 1}" class="tw-block form-label">Nama Mitra <span class="tw-text-red-500">*</span></label>
+                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="cooperation_partner_name_${currentCount + 1}" name="cooperation_partner_name_${currentCount + 1}" required>
+            </div>
+            <div class="tw-space-y-1">
+                <label for="cooperation_scope_${currentCount + 1}" class="tw-block form-label">Ruang Lingkup <span class="tw-text-red-500">*</span></label>
+                <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="cooperation_scope_${currentCount + 1}" name="cooperation_scope_${currentCount + 1}" rows="2" required></textarea>
+            </div>
+            <div class="tw-space-y-1">
+                <label class="tw-block form-label">Tipe Mitra <span class="tw-text-red-500">*</span></label>
+                <div class="tw-flex tw-gap-4 mt-2">
+                    <div class="tw-flex tw-items-center">
+                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="cooperation_type_${currentCount + 1}" id="cooperation_type_penunjang_${currentCount + 1}" value="Penunjang" required>
+                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="cooperation_type_penunjang_${currentCount + 1}">Penyelenggara Penunjang</label>
+                    </div>
+                    <div class="tw-flex tw-items-center">
+                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="cooperation_type_${currentCount + 1}" id="cooperation_type_pjp_${currentCount + 1}" value="PJP" required>
+                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="cooperation_type_pjp_${currentCount + 1}">PJP</label>
+                    </div>
+                </div>
+            </div>
+        `);
+    });
+
+    // Financial Table Logic
+    const financialYear1Input = document.getElementById('financial_year_1');
+    const financialYear2Input = document.getElementById('financial_year_2');
+    const headerYear1 = document.getElementById('header-year-1');
+    const headerYear2 = document.getElementById('header-year-2');
+    const financialInputs = document.querySelectorAll('.financial-input');
+
+    function updateFinancialTableHeaders() {
+        const year1 = financialYear1Input.value;
+        const year2 = financialYear2Input.value;
+        headerYear1.textContent = year1 ? year1 : 'Tahun 1';
+        headerYear2.textContent = year2 ? year2 : 'Tahun 2';
+    }
+
+    function calculatePercentageDifference(val1, val2) {
+        val1 = parseFloat(val1);
+        val2 = parseFloat(val2);
+
+        if (isNaN(val1) || isNaN(val2)) {
+            return '';
+        }
+        if (val1 === 0 && val2 === 0) {
+            return '0.00%';
+        }
+        if (val1 === 0) {
+            return val2 > 0 ? '+Inf%' : '-Inf%';
+        }
+        
+        const diff = val2 - val1;
+        const percentage = (diff / val1) * 100;
+        return percentage.toFixed(2) + '%';
+    }
+
+    function calculateAllPercentages() {
+        const rows = document.querySelectorAll('#financial-data-body tr');
+        rows.forEach(row => {
+            const year1Value = row.querySelector('.year-1').value;
+            const year2Value = row.querySelector('.year-2').value;
+            const percentageDiffField = row.querySelector('.percentage-diff');
+            percentageDiffField.value = calculatePercentageDifference(year1Value, year2Value);
+        });
+    }
+
+    financialYear1Input.addEventListener('input', updateFinancialTableHeaders);
+    financialYear2Input.addEventListener('input', updateFinancialTableHeaders);
+
+    financialInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const row = this.closest('tr');
+            const year1Value = row.querySelector('.year-1').value;
+            const year2Value = row.querySelector('.year-2').value;
+            const percentageDiffField = row.querySelector('.percentage-diff');
+            percentageDiffField.value = calculatePercentageDifference(year1Value, year2Value);
+        });
+    });
+
+    // Initial call to set headers and calculate percentages
+    updateFinancialTableHeaders();
+    calculateAllPercentages();
+
+    // Handle form submission via custom confirmation modal
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission initially
+        
+        let formIsValid = true;
+        
+        // File size validation
+        const fileInputs = form.querySelectorAll('input[type="file"]');
+        for (let i = 0; i < fileInputs.length; i++) {
+            const input = fileInputs[i];
+            if (input.files.length > 0) {
+                for (let j = 0; j < input.files.length; j++) {
+                    const file = input.files[j];
+                    if (file.size > 10 * 1024 * 1024) { // 10 MB
+                        showMessageBox('File "' + file.name + '" terlalu besar. Maksimum 10MB.', 'error');
+                        formIsValid = false;
+                        break;
+                    }
+                }
+            }
+            if (!formIsValid) break;
+        }
+
+        if (!formIsValid) return;
+
+        // Show custom confirmation modal instead of browser's confirm
+        confirmationModal.show();
+    });
+
+    // Handle click on the custom confirmation button
+    confirmSendButton.addEventListener('click', function() {
+        confirmationModal.hide(); // Hide confirmation modal
+        
+        submitButton.disabled = true;
+        submitText.textContent = 'Mengirim...';
+        submitSpinner.classList.remove('d-none');
+        loadingModal.show();
+
+        const formData = new FormData(form);
+
+        // Dynamically collect repeatable fields
+        // Shareholders
+        document.querySelectorAll('.shareholder-item').forEach((item, index) => {
+            formData.append(`shareholders[${index}][name]`, item.querySelector(`[name="shareholder_name_${index + 1}"]`).value);
+            formData.append(`shareholders[${index}][nominal_saham]`, item.querySelector(`[name="shareholder_nominal_saham_${index + 1}"]`).value);
+            formData.append(`shareholders[${index}][lembar_saham]`, item.querySelector(`[name="shareholder_lembar_saham_${index + 1}"]`).value);
+            formData.append(`shareholders[${index}][persentase_saham]`, item.querySelector(`[name="shareholder_persentase_saham_${index + 1}"]`).value);
+            formData.append(`shareholders[${index}][type]`, item.querySelector(`input[name="shareholder_type_${index + 1}"]:checked`).value);
+            const jenisSeriSaham = item.querySelector(`[name="shareholder_jenis_seri_saham_${index + 1}"]`);
+            if (jenisSeriSaham) {
+                formData.append(`shareholders[${index}][jenis_seri_saham]`, jenisSeriSaham.value);
+            }
+        });
+
+        // MERSI
+        document.querySelectorAll('.mersi-item').forEach((item, index) => {
+            formData.append(`mersi[${index}][title]`, item.querySelector(`[name="mersi_title_${index + 1}"]`).value);
+            formData.append(`mersi[${index}][content]`, item.querySelector(`[name="mersi_content_${index + 1}"]`).value);
+        });
+
+        // Management
+        document.querySelectorAll('.management-item').forEach((item, index) => {
+            formData.append(`management[${index}][name]`, item.querySelector(`[name="management_name_${index + 1}"]`).value);
+            formData.append(`management[${index}][position]`, item.querySelector(`[name="management_position_${index + 1}"]`).value);
+            formData.append(`management[${index}][nationality]`, item.querySelector(`input[name="management_nationality_${index + 1}"]:checked`).value);
+        });
+
+        // Cooperation
+        document.querySelectorAll('.cooperation-item').forEach((item, index) => {
+            formData.append(`cooperation[${index}][partner_name]`, item.querySelector(`[name="cooperation_partner_name_${index + 1}"]`).value);
+            formData.append(`cooperation[${index}][scope]`, item.querySelector(`[name="cooperation_scope_${index + 1}"]`).value);
+            formData.append(`cooperation[${index}][type]`, item.querySelector(`input[name="cooperation_type_${index + 1}"]:checked`).value);
+        });
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan Tahunan SP';
+            submitSpinner.classList.add('d-none');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
+                form.reset();
+                updateTahunText(); // Reset dynamic year text
+                // Clear dynamic fields
+                document.getElementById('shareholder-container').innerHTML = '';
+                document.getElementById('mersi-container').innerHTML = '';
+                document.getElementById('management-container').innerHTML = '';
+                document.getElementById('cooperation-container').innerHTML = '';
+                updateFinancialTableHeaders(); // Reset financial table headers
+                calculateAllPercentages(); // Recalculate percentages
+            } else {
+                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
+                errorModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingModal.hide();
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan Tahunan SP';
+            submitSpinner.classList.add('d-none');
+            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
+            errorModal.show();
+        });
+    });
+
+    // Reset form listener
+    form.addEventListener('reset', function() {
+        updateTahunText(); // Reset dynamic year text
+        // Clear dynamic fields
+        document.getElementById('shareholder-container').innerHTML = '';
+        document.getElementById('mersi-container').innerHTML = '';
+        document.getElementById('management-container').innerHTML = '';
+        document.getElementById('cooperation-container').innerHTML = '';
+        updateFinancialTableHeaders(); // Reset financial table headers
+        calculateAllPercentages(); // Recalculate percentages
+    });
+});
+</script>
 {% endblock %}

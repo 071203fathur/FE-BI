@@ -1,65 +1,842 @@
-{% extends "user/base.html" %}
+{% extends 'user/base.html' %}
 
-{% block title %}Dashboard User{% endblock %}
+{% block title %}Dashboard Pelaporan - Revamped{% endblock %}
+
+{% block extra_head %}
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom Tailwind Colors (if needed, otherwise default colors are used) */
+        /* These are defined here for direct use in the HTML, mimicking a tailwind.config.js setup */
+        :root {
+            --color-bi-blue-dark: #003366;
+            --color-bi-gold: #FFD700;
+            --color-bi-blue-medium: #0056b3;
+            --color-bi-green: #10B981;
+            --color-bi-red: #EF4444;
+            --color-bi-amber: #F59E0B;
+        }
+
+        .bg-biBlueDark { background-color: var(--color-bi-blue-dark); }
+        .text-biBlueDark { color: var(--color-bi-blue-dark); }
+        .bg-biGold { background-color: var(--color-bi-gold); }
+        .text-biGold { color: var(--color-bi-gold); }
+        .text-biBlueMedium { color: var(--color-bi-blue-medium); }
+        .text-biGreen { color: var(--color-bi-green); }
+        .text-biRed { color: var(--color-bi-red); }
+        .text-biAmber { color: var(--color-bi-amber); }
+
+        /* General Body and Font */
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #f8fafc; /* Light background for the whole page */
+            color: #334155; /* Default text color */
+        }
+
+        /* Hero Section Styling */
+        .hero-section {
+            background: linear-gradient(135deg, var(--color-bi-blue-dark) 0%, var(--color-bi-blue-medium) 100%);
+            color: white;
+            padding: 4rem 1.5rem;
+            border-radius: 1rem; /* rounded-xl */
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Stronger shadow */
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            opacity: 0.08; /* Very subtle overlay */
+            z-index: 0;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        .hero-clock {
+            font-size: 3.75rem; /* text-6xl */
+            font-weight: 700; /* font-bold */
+            letter-spacing: 0.05em; /* tracking-wide */
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            margin-bottom: 1.5rem;
+            color: var(--color-bi-gold); /* Gold clock */
+        }
+        .hero-title {
+            font-size: 2.75rem; /* text-5xl */
+            font-weight: 800; /* font-extrabold */
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .hero-subtitle {
+            font-size: 1.25rem; /* text-xl */
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        .hero-info-bar {
+            background-color: rgba(255, 255, 255, 0.2); /* More transparent white */
+            backdrop-filter: blur(8px); /* Stronger blur */
+            border-radius: 0.75rem; /* rounded-lg */
+            padding: 1rem 1.5rem;
+            margin-top: 3rem;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1.5rem; /* More space */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
+        }
+        .hero-info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .hero-info-item .icon {
+            margin-bottom: 0.5rem;
+            color: var(--color-bi-gold);
+            width: 1.75rem; /* w-7 */
+            height: 1.75rem; /* h-7 */
+        }
+        .hero-info-item .value {
+            font-weight: 700; /* font-bold */
+            font-size: 1.1rem;
+        }
+        .hero-info-item .label {
+            font-size: 0.8rem;
+            opacity: 0.85;
+        }
+
+        /* Main Content Wrapper */
+        .main-content-wrapper {
+            padding: 1.5rem;
+            max-width: 1200px; /* Max width for better readability on large screens */
+            margin: 0 auto; /* Center the content */
+        }
+
+        /* Dashboard Content Card */
+        .dashboard-content-card {
+            background-color: #ffffff;
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0; /* subtle border */
+        }
+
+        /* Section Group (for each report category) */
+        .section-group {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            padding: 0;
+            margin-bottom: 2rem; /* More space between sections */
+            overflow: hidden;
+        }
+        .section-group .section-header {
+            font-size: 1.3rem; /* text-2xl */
+            font-weight: 700; /* font-bold */
+            color: var(--color-bi-blue-dark);
+            background-color: #eef2f6; /* Light blue-gray header */
+            padding: 1rem 2rem;
+            margin-top: 0;
+            margin-left: -1px;
+            margin-right: -1px;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #d1d5db;
+            border-top-left-radius: 0.9rem;
+            border-top-right-radius: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .section-group .section-header .icon {
+            color: var(--color-bi-blue-medium);
+            width: 1.75rem;
+            height: 1.75rem;
+        }
+        .section-group .section-content {
+            padding: 1.5rem 2rem;
+            padding-top: 0;
+        }
+
+        /* Deadline Item Card */
+        .deadline-item {
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1; /* slate-300 */
+            border-radius: 0.75rem; /* rounded-lg */
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: auto; /* Allow height to adjust */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            position: relative; /* For status icon positioning */
+        }
+        .deadline-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .deadline-item.uploaded {
+            background-color: #f0fdf4; /* Light green background */
+            border-color: #86efac; /* Green border */
+        }
+        .deadline-item.pending {
+            background-color: #fffbeb; /* Light amber background */
+            border-color: #fcd34d; /* Amber border */
+        }
+        .deadline-item.overdue {
+            background-color: #fef2f2; /* Light red background */
+            border-color: #fca5a5; /* Red border */
+        }
+
+        .deadline-name {
+            font-weight: 600; /* font-semibold */
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+        }
+        .deadline-date {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 0.75rem;
+        }
+        .days-left {
+            font-weight: 700; /* font-bold */
+            font-size: 1rem;
+            margin-top: auto; /* Push to bottom */
+            padding-top: 0.5rem;
+            border-top: 1px dashed #e5e7eb;
+            color: #334155;
+        }
+        .days-left.urgent {
+            color: var(--color-bi-red); /* red-500 */
+        }
+        .days-left.warning {
+            color: var(--color-bi-amber); /* amber-500 */
+        }
+        .days-left.safe {
+            color: var(--color-bi-green); /* green-500 */
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        .status-indicator.uploaded .lucide {
+            color: var(--color-bi-green);
+        }
+        .status-indicator.pending .lucide {
+            color: var(--color-bi-amber);
+        }
+        .status-indicator.overdue .lucide {
+            color: var(--color-bi-red);
+        }
+
+        /* KIP Summary Card */
+        .kip-summary-card {
+            background-color: #e0f2fe; /* Light blue background */
+            border: 1px solid #90cdf4; /* Blue border */
+            border-radius: 0.75rem; /* rounded-lg */
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.08); /* Inner shadow */
+            color: #1a365d; /* Darker blue text */
+        }
+        .kip-summary-card .kip-title {
+            font-size: 1.2rem;
+            font-weight: 700; /* font-bold */
+            color: var(--color-bi-blue-dark);
+            margin-bottom: 1rem;
+        }
+        .kip-metrics {
+            display: flex;
+            justify-content: center;
+            gap: 2rem; /* Space between metrics */
+            flex-wrap: wrap;
+        }
+        .kip-metric-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .kip-metric-item .value {
+            font-size: 2.5rem; /* text-4xl */
+            font-weight: 800; /* font-extrabold */
+            line-height: 1;
+            color: var(--color-bi-blue-medium);
+        }
+        .kip-metric-item .label {
+            font-size: 0.9rem;
+            color: #4a5568;
+            margin-top: 0.25rem;
+        }
+        .kip-metric-item .value.urgent-count {
+            color: var(--color-bi-red);
+        }
+        .kip-metric-item .value.uploaded-count {
+            color: var(--color-bi-green);
+        }
+        .kip-metric-item .value.pending-count {
+            color: var(--color-bi-amber);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-clock {
+                font-size: 2.5rem;
+            }
+            .hero-title {
+                font-size: 2rem;
+            }
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            .hero-info-bar {
+                flex-direction: column;
+                align-items: center;
+            }
+            .section-group .section-header {
+                font-size: 1.15rem;
+                padding: 0.8rem 1.5rem;
+            }
+            .section-group .section-content {
+                padding: 1rem 1.5rem;
+            }
+            .dashboard-content-card {
+                padding: 1.5rem;
+            }
+            .kip-summary-card {
+                padding: 1rem 1.5rem;
+            }
+            .kip-metric-item .value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-<h2 style="text-align: center;">Selamat Datang di Dashboard User</h2>
+<div class="main-content-wrapper">
 
-<!-- JAM DIGITAL BESAR DI TENGAH -->
-<div style="text-align: center; margin: 30px 0;">
-  <h1 id="clock" style="font-size: 48px; font-weight: bold; color: #2c3e50;"></h1>
-</div>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Selamat Datang di Dashboard Pelaporan</h1>
+            <p class="hero-subtitle">Pantau semua deadline laporan Anda dengan mudah dan pastikan tidak ada yang terlewat.</p>
+            <div class="hero-clock" id="clock"></div>
 
-<p>Berikut adalah daftar deadline pengumpulan laporan. Pastikan semua laporan diunggah sebelum batas waktu.</p>
+            <a href="#" class="tw-inline-block tw-mt-8 tw-px-8 tw-py-3 tw-bg-biGold tw-text-biBlueDark tw-font-bold tw-rounded-full tw-shadow-lg hover:tw-bg-yellow-400 tw-transition-all tw-duration-300 tw-transform hover:tw-scale-105">
+                Mulai Pelaporan Sekarang
+            </a>
 
-<h3>Laporan Insidental</h3>
-<ul>
-  <li>Laporan perubahan pengurus - Deadline: 30 April 2025 (6 hari lagi)</li>
-  <li>Laporan perubahan alamat - Deadline: 30 April 2025 (6 hari lagi)</li>
-  <li>Laporan perubahan pemegang saham - Deadline: 5 Mei 2025 (11 hari lagi)</li>
-  <li>Laporan perubahan modal - Deadline: 10 Mei 2025 (16 hari lagi)</li>
-</ul>
+            <div class="hero-info-bar">
+                <div class="hero-info-item">
+                    <i data-lucide="map-pin" class="icon"></i>
+                    <span class="value">Jakarta, Indonesia</span>
+                    <span class="label">Lokasi Kantor Pusat</span>
+                </div>
+                <div class="hero-info-item">
+                    <i data-lucide="phone" class="icon"></i>
+                    <span class="value">+62 21 1500150</span>
+                    <span class="label">Kontak Dukungan</span>
+                </div>
+                <div class="hero-info-item">
+                    <i data-lucide="calendar-days" class="icon"></i>
+                    <span class="value">Senin - Jumat</span>
+                    <span class="label">Jam Operasional</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<h3>Laporan Bulanan</h3>
-<ul>
-  <li>Laporan fraud - Deadline: 30 April 2025 (6 hari lagi)</li>
-  <li>Laporan Transaksi Dana Bukan Bank - Deadline: 30 April 2025 (6 hari lagi)</li>
-  <li>Laporan gangguan IT - Deadline: 30 April 2025 (6 hari lagi)</li>
-  <li>Laporan kerjasama P2P - Deadline: 30 April 2025 (6 hari lagi)</li>
-  <li>Laporan DTTOT - Deadline: 30 April 2025 (6 hari lagi)</li>
-</ul>
+    <!-- Main Dashboard Content Card -->
+    <div class="dashboard-content-card">
+        <p class="tw-text-xl tw-font-semibold tw-text-gray-800 tw-text-center tw-mb-8">
+            Ringkasan Status Laporan & Deadline Mendatang
+        </p>
 
-<h3>Laporan Triwulanan</h3>
-<ul>
-  <li>Laporan keuangan triwulan - Deadline: 15 Mei 2025 (21 hari lagi)</li>
-  <li>Laporan keluhan nasabah dan perlindungan konsumen - Deadline: 15 Mei 2025 (21 hari lagi)</li>
-  <li>Laporan Pengaduan Perlindungan Nasabah - Deadline: 15 Mei 2025 (21 hari lagi)</li>
-  <li>Laporan SKSP - Deadline: 15 Mei 2025 (21 hari lagi)</li>
-</ul>
+        <!-- Laporan Bulanan -->
+        <div class="section-group">
+            <h3 class="section-header">
+                <i data-lucide="calendar-check" class="icon"></i>
+                Laporan Bulanan
+            </h3>
+            <div class="section-content">
+                <div class="kip-summary-card">
+                    <div class="kip-title">Status Laporan Bulanan</div>
+                    <div class="kip-metrics">
+                        <div class="kip-metric-item">
+                            <span class="value" id="bulanan-total-count">0</span>
+                            <span class="label">Total Laporan</span>
+                        </div>
+                        <div class="kip-metric-item">
+                            <span class="value uploaded-count" id="bulanan-uploaded-count">0</span>
+                            <span class="label">Sudah Diunggah</span>
+                        </div>
+                        <div class="kip-metric-item">
+                            <span class="value pending-count" id="bulanan-pending-count">0</span>
+                            <span class="label">Belum Diunggah</span>
+                        </div>
+                        <div class="kip-metric-item">
+                            <span class="value urgent-count" id="bulanan-urgent-count">0</span>
+                            <span class="label">Mendesak</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-6">
+                    <div class="deadline-item" data-category="bulanan" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Fraud</div>
+                            <div class="deadline-date">Deadline: 30 April 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-04-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="bulanan" data-uploaded="true">
+                        <div class="status-indicator uploaded"><i data-lucide="check-circle"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Transaksi Dana Bukan Bank</div>
+                            <div class="deadline-date">Deadline: 30 April 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-04-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="bulanan" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Gangguan IT</div>
+                            <div class="deadline-date">Deadline: 30 April 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-04-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="bulanan" data-uploaded="true">
+                        <div class="status-indicator uploaded"><i data-lucide="check-circle"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Kerjasama P2P</div>
+                            <div class="deadline-date">Deadline: 30 April 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-04-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="bulanan" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan DTTOT</div>
+                            <div class="deadline-date">Deadline: 30 April 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-04-30"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<h3>Laporan Tahunan</h3>
-<ul>
-  <li>Laporan keuangan tahunan - Deadline: 30 Juni 2025 (67 hari lagi)</li>
-  <li>Laporan APU PPT - Deadline: 30 Juni 2025 (67 hari lagi)</li>
-  <li>Laporan Rencana Edukasi Publik - Deadline: 30 Juni 2025 (67 hari lagi)</li>
-  <li>Laporan Pelaksanaan Edukasi Publik - Deadline: 30 Juni 2025 (67 hari lagi)</li>
-  <li>Laporan Tahunan Sistem Pembayaran - Deadline: 30 Juni 2025 (67 hari lagi)</li>
-  <li>Laporan Manajemen dan Hasil Pengawasan Dewan Komisaris - Deadline: 30 Juni 2025 (67 hari lagi)</li>
-  <li>Laporan Keuangan Audited - Deadline: 30 Juni 2025 (67 hari lagi)</li>
-  <li>Laporan Audit Sistem Informasi - Deadline: 30 Juni 2025 (67 hari lagi)</li>
-  <li>Laporan Pelaksanaan Pengujian Keamanan (Penetration Test) - Deadline: 30 Juni 2025 (67 hari lagi)</li>
-</ul>
+        <!-- Laporan Triwulanan -->
+        <div class="section-group">
+            <h3 class="section-header">
+                <i data-lucide="calendar-range" class="icon"></i>
+                Laporan Triwulanan
+            </h3>
+            <div class="section-content">
+                <div class="kip-summary-card">
+                    <div class="kip-title">Status Laporan Triwulanan</div>
+                    <div class="kip-metrics">
+                        <div class="kip-metric-item">
+                            <span class="value" id="triwulanan-total-count">0</span>
+                            <span class="label">Total Laporan</span>
+                        </div>
+                        <div class="kip-metric-item">
+                            <span class="value uploaded-count" id="triwulanan-uploaded-count">0</span>
+                            <span class="label">Sudah Diunggah</span>
+                        </div>
+                        <div class="kip-metric-item">
+                            <span class="value pending-count" id="triwulanan-pending-count">0</span>
+                            <span class="label">Belum Diunggah</span>
+                        </div>
+                        <div class="kip-metric-item">
+                            <span class="value urgent-count" id="triwulanan-urgent-count">0</span>
+                            <span class="label">Mendesak</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-6">
+                    <div class="deadline-item" data-category="triwulanan" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Keuangan Triwulan</div>
+                            <div class="deadline-date">Deadline: 15 Mei 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-05-15"></div>
+                    </div>
+                    <div class="deadline-item" data-category="triwulanan" data-uploaded="true">
+                        <div class="status-indicator uploaded"><i data-lucide="check-circle"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Keluhan Nasabah & Perlindungan Konsumen</div>
+                            <div class="deadline-date">Deadline: 15 Mei 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-05-15"></div>
+                    </div>
+                    <div class="deadline-item" data-category="triwulanan" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Pengaduan Perlindungan Nasabah</div>
+                            <div class="deadline-date">Deadline: 15 Mei 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-05-15"></div>
+                    </div>
+                    <div class="deadline-item" data-category="triwulanan" data-uploaded="true">
+                        <div class="status-indicator uploaded"><i data-lucide="check-circle"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan SKSP</div>
+                            <div class="deadline-date">Deadline: 15 Mei 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-05-15"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<!-- Script Jam -->
+        <!-- Laporan Tahunan -->
+        <div class="section-group">
+            <h3 class="section-header">
+                <i data-lucide="calendar" class="icon"></i>
+                Laporan Tahunan
+            </h3>
+            <div class="section-content">
+                <div class="kip-summary-card">
+                    <div class="kip-title">Status Laporan Tahunan</div>
+                    <div class="kip-metrics">
+                        <div class="kip-metric-item">
+                            <span class="value" id="tahunan-total-count">0</span>
+                            <span class="label">Total Laporan</span>
+                        </div>
+                        <div class="kip-metric-item">
+                            <span class="value uploaded-count" id="tahunan-uploaded-count">0</span>
+                            <span class="label">Sudah Diunggah</span>
+                        </div>
+                        <div class="kip-metric-item">
+                            <span class="value pending-count" id="tahunan-pending-count">0</span>
+                            <span class="label">Belum Diunggah</span>
+                        </div>
+                        <div class="kip-metric-item">
+                            <span class="value urgent-count" id="tahunan-urgent-count">0</span>
+                            <span class="label">Mendesak</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-6">
+                    <div class="deadline-item" data-category="tahunan" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Keuangan Tahunan</div>
+                            <div class="deadline-date">Deadline: 30 Juni 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-06-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="tahunan" data-uploaded="true">
+                        <div class="status-indicator uploaded"><i data-lucide="check-circle"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan APU PPT</div>
+                            <div class="deadline-date">Deadline: 30 Juni 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-06-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="tahunan" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Rencana Edukasi Publik</div>
+                            <div class="deadline-date">Deadline: 30 Juni 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-06-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="tahunan" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Pelaksanaan Edukasi Publik</div>
+                            <div class="deadline-date">Deadline: 30 Juni 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-06-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="tahunan" data-uploaded="true">
+                        <div class="status-indicator uploaded"><i data-lucide="check-circle"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Tahunan Sistem Pembayaran</div>
+                            <div class="deadline-date">Deadline: 30 Juni 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-06-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="tahunan" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Manajemen dan Hasil Pengawasan Dewan Komisaris</div>
+                            <div class="deadline-date">Deadline: 30 Juni 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-06-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="tahunan" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Keuangan Audited</div>
+                            <div class="deadline-date">Deadline: 30 Juni 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-06-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="tahunan" data-uploaded="true">
+                        <div class="status-indicator uploaded"><i data-lucide="check-circle"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Audit Sistem Informasi</div>
+                            <div class="deadline-date">Deadline: 30 Juni 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-06-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="tahunan" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Pelaksanaan Pengujian Keamanan (Penetration Test)</div>
+                            <div class="deadline-date">Deadline: 30 Juni 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-06-30"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Laporan Insidental (kept for completeness, but less focus as per request) -->
+        <div class="section-group">
+            <h3 class="section-header">
+                <i data-lucide="file-text" class="icon"></i>
+                Laporan Insidental
+            </h3>
+            <div class="section-content">
+                <div class="kip-summary-card">
+                    <div class="kip-title">Status Laporan Insidental</div>
+                    <div class="kip-metrics">
+                        <div class="kip-metric-item">
+                            <span class="value" id="insidental-total-count">0</span>
+                            <span class="label">Total Laporan</span>
+                        </div>
+                        <div class="kip-metric-item">
+                            <span class="value uploaded-count" id="insidental-uploaded-count">0</span>
+                            <span class="label">Sudah Diunggah</span>
+                        </div>
+                        <div class="kip-metric-item">
+                            <span class="value pending-count" id="insidental-pending-count">0</span>
+                            <span class="label">Belum Diunggah</span>
+                        </div>
+                        <div class="kip-metric-item">
+                            <span class="value urgent-count" id="insidental-urgent-count">0</span>
+                            <span class="label">Mendesak</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-6">
+                    <div class="deadline-item" data-category="insidental" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Perubahan Pengurus</div>
+                            <div class="deadline-date">Deadline: 30 April 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-04-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="insidental" data-uploaded="true">
+                        <div class="status-indicator uploaded"><i data-lucide="check-circle"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Perubahan Alamat</div>
+                            <div class="deadline-date">Deadline: 30 April 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-04-30"></div>
+                    </div>
+                    <div class="deadline-item" data-category="insidental" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Perubahan Pemegang Saham</div>
+                            <div class="deadline-date">Deadline: 5 Mei 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-05-05"></div>
+                    </div>
+                    <div class="deadline-item" data-category="insidental" data-uploaded="false">
+                        <div class="status-indicator pending"><i data-lucide="clock"></i></div>
+                        <div class="deadline-content">
+                            <div class="deadline-name">Laporan Perubahan Modal</div>
+                            <div class="deadline-date">Deadline: 10 Mei 2025</div>
+                        </div>
+                        <div class="days-left" data-deadline="2025-05-10"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- End dashboard-content-card -->
+
+</div> <!-- End main-content-wrapper -->
+
+{% endblock %}
+
+{% block extra_scripts %}
 <script>
-  function updateClock() {
-    const now = new Date();
-    const jam = now.toLocaleTimeString('id-ID');
-    document.getElementById('clock').textContent = jam;
-  }
+    // Initialize Lucide icons
+    lucide.createIcons();
 
-  setInterval(updateClock, 1000);
-  updateClock();
+    /**
+     * Updates the digital clock display every second.
+     */
+    function updateClock() {
+        const now = new Date();
+        // Format time as HH:MM:SS
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const clockElement = document.getElementById('clock');
+        if (clockElement) {
+            clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+    }
+
+    /**
+     * Updates the deadline status and summary counts for all report categories.
+     * It calculates days left, applies styling, and updates the KIP summary cards.
+     */
+    function updateDeadlines() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize today to the start of the day
+
+        const categories = ['insidental', 'bulanan', 'triwulanan', 'tahunan'];
+        // Object to store counts for each category: { category: { total: 0, uploaded: 0, pending: 0, urgent: 0 } }
+        const categoryCounts = {};
+
+        // Initialize counts for all categories
+        categories.forEach(cat => {
+            categoryCounts[cat] = { total: 0, uploaded: 0, pending: 0, urgent: 0 };
+        });
+
+        // Iterate over each deadline item to update its status and accumulate counts
+        document.querySelectorAll('.deadline-item').forEach(itemElement => {
+            const deadlineDateStr = itemElement.querySelector('.days-left').getAttribute('data-deadline');
+            const category = itemElement.getAttribute('data-category');
+            const isUploaded = itemElement.getAttribute('data-uploaded') === 'true';
+
+            if (deadlineDateStr && category) {
+                categoryCounts[category].total++; // Increment total for this category
+
+                const deadlineDate = new Date(deadlineDateStr);
+                deadlineDate.setHours(0, 0, 0, 0); // Normalize deadline to the start of the day
+
+                const diffTime = deadlineDate.getTime() - today.getTime();
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Calculate days left
+
+                const daysLeftElement = itemElement.querySelector('.days-left');
+                const statusIndicatorElement = itemElement.querySelector('.status-indicator');
+
+                // Remove previous classes to ensure correct styling
+                itemElement.classList.remove('uploaded', 'pending', 'overdue');
+                daysLeftElement.classList.remove('urgent', 'warning', 'safe');
+                if (statusIndicatorElement) {
+                    statusIndicatorElement.classList.remove('uploaded', 'pending', 'overdue');
+                    // Clear existing icon to re-render
+                    statusIndicatorElement.innerHTML = '';
+                }
+
+                if (isUploaded) {
+                    // If uploaded, mark as uploaded and update count
+                    itemElement.classList.add('uploaded');
+                    categoryCounts[category].uploaded++;
+                    daysLeftElement.textContent = `Sudah Diunggah`;
+                    daysLeftElement.classList.add('safe'); // Green for uploaded
+                    if (statusIndicatorElement) {
+                        statusIndicatorElement.classList.add('uploaded');
+                        statusIndicatorElement.innerHTML = '<i data-lucide="check-circle"></i>';
+                    }
+                } else {
+                    // If not uploaded, mark as pending and check deadline urgency
+                    itemElement.classList.add('pending');
+                    categoryCounts[category].pending++;
+                    if (statusIndicatorElement) {
+                        statusIndicatorElement.classList.add('pending');
+                        statusIndicatorElement.innerHTML = '<i data-lucide="clock"></i>';
+                    }
+
+                    if (diffDays < 0) {
+                        // Overdue
+                        daysLeftElement.textContent = `Terlambat ${Math.abs(diffDays)} hari`;
+                        daysLeftElement.classList.add('urgent');
+                        itemElement.classList.remove('pending'); // Remove pending if overdue
+                        itemElement.classList.add('overdue');
+                        if (statusIndicatorElement) {
+                            statusIndicatorElement.classList.remove('pending');
+                            statusIndicatorElement.classList.add('overdue');
+                            statusIndicatorElement.innerHTML = '<i data-lucide="alert-circle"></i>'; // Alert icon for overdue
+                        }
+                        categoryCounts[category].urgent++; // Count as urgent if overdue
+                    } else if (diffDays === 0) {
+                        // Deadline Today
+                        daysLeftElement.textContent = `Deadline Hari Ini!`;
+                        daysLeftElement.classList.add('urgent');
+                        categoryCounts[category].urgent++; // Count as urgent
+                    } else if (diffDays <= 7) {
+                        // Urgent (within 7 days)
+                        daysLeftElement.textContent = `${diffDays} hari lagi`;
+                        daysLeftElement.classList.add('urgent');
+                        categoryCounts[category].urgent++; // Count as urgent
+                    } else if (diffDays <= 30) {
+                        // Warning (within 30 days)
+                        daysLeftElement.textContent = `${diffDays} hari lagi`;
+                        daysLeftElement.classList.add('warning');
+                    } else {
+                        // Safe (more than 30 days)
+                        daysLeftElement.textContent = `${diffDays} hari lagi`;
+                        daysLeftElement.classList.add('safe');
+                    }
+                }
+            }
+        });
+
+        // Update KIP summary cards with calculated counts
+        categories.forEach(cat => {
+            const totalCountElement = document.getElementById(`${cat}-total-count`);
+            const uploadedCountElement = document.getElementById(`${cat}-uploaded-count`);
+            const pendingCountElement = document.getElementById(`${cat}-pending-count`);
+            const urgentCountElement = document.getElementById(`${cat}-urgent-count`);
+
+            if (totalCountElement) {
+                totalCountElement.textContent = categoryCounts[cat].total;
+            }
+            if (uploadedCountElement) {
+                uploadedCountElement.textContent = categoryCounts[cat].uploaded;
+            }
+            if (pendingCountElement) {
+                pendingCountElement.textContent = categoryCounts[cat].pending;
+            }
+            if (urgentCountElement) {
+                urgentCountElement.textContent = categoryCounts[cat].urgent;
+            }
+        });
+
+        // Re-create Lucide icons after updating innerHTML for status indicators
+        lucide.createIcons();
+    }
+
+    // Initial calls when the script loads
+    updateClock();
+    updateDeadlines();
+
+    // Set intervals for continuous updates
+    setInterval(updateClock, 1000); // Update clock every second
+    setInterval(updateDeadlines, 60 * 1000); // Update deadlines every minute
 </script>
-
 {% endblock %}

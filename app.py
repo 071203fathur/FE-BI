@@ -1,15 +1,20 @@
+# Import modul-modul yang diperlukan dari Flask dan lainnya
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import requests
 from datetime import datetime
 import json
 
+# Inisialisasi aplikasi Flask
 app = Flask(__name__)
+
+# Konfigurasi kunci rahasia untuk sesi. Ini sangat penting untuk keamanan sesi.
+# Ganti ini dengan string acak yang kuat di produksi.
 app.secret_key = "supersecretkey"  # Kunci rahasia untuk pengelolaan sesi
 
-# Base URL untuk API backend Anda
+# URL dasar untuk API backend Anda
 API_BASE_URL = "http://20.205.26.22:8000/api/"
 
-# Dummy data bank (sesuaikan dengan kebutuhan produksi Anda jika diperlukan)
+# Data dummy bank (sesuaikan dengan kebutuhan produksi Anda jika diperlukan)
 # Data ini digunakan untuk mengisi dropdown "Nama PJP" di form KPSP
 banks = [
     {"id": 1, "nama": "PT Fliptech Lentera Inspirasi Pertiwi", "kategori": "Penyedia Jasa Pembayaran - Kategori Izin 3",
@@ -20,7 +25,7 @@ banks = [
      "no_izin": "19/200/DKSP/70", "tgl_izin": "10 Maret 2018"}
 ]
 
-# Helper function to convert human-readable field names to snake_case payload names
+# Fungsi pembantu untuk mengonversi nama bidang yang mudah dibaca menjadi nama payload snake_case
 def to_snake_case(name):
     """
     Mengubah nama field dari format spasi/judul ke snake_case.
@@ -80,9 +85,10 @@ def login():
     Jika berhasil, menyimpan token akses dalam sesi dan mengarahkan ke dasbor berdasarkan peran.
     """
     if request.method == "POST":
-        sandi_pjp = request.form["username"] # Mengasumsikan frontend mengirim 'username'
+        # PERBAIKAN: Mengubah 'username' menjadi 'sandi_pjp' untuk mencocokkan nama field di HTML
+        sandi_pjp = request.form["sandi_pjp"] 
         password = request.form["password"]
-        # Mengubah kunci dari 'username_or_email' menjadi 'sandi_pjp' sesuai error backend yang diterima
+        
         login_data = {"sandi_pjp": sandi_pjp, "password": password}
         try:
             response = requests.post(f"{API_BASE_URL}auth/login/", json=login_data)
@@ -110,6 +116,8 @@ def login():
             return render_template("login.html", error=error_message)
     return render_template("login.html")
 
+
+
 @app.route("/admin/dashboard")
 def admin_dashboard():
     """Merender dasbor admin, memerlukan peran admin."""
@@ -130,6 +138,11 @@ def profile_admin():
     if session.get("role") != "admin":
         return redirect(url_for("login"))
     return render_template("admin/profile.html")
+@app.route('/user/profile')
+def user_profile():
+    # Anda bisa menambahkan logika untuk mengambil data profil pengguna dari database di sini
+    # Misalnya: user_data = get_user_data_from_db()
+    return render_template("user/profile.html") #, user=user_data)
 
 @app.route("/admin/add_bank", methods=["POST"])
 def add_bank():
@@ -183,13 +196,44 @@ def base_page():
         return redirect(url_for("login"))
     return render_template("admin/base.html")
 
-def send_report_to_backend(endpoint_path, form_data, file_obj):
+def refresh_access_token():
+    """
+    Mencoba untuk memperbarui token akses menggunakan refresh token yang tersimpan di sesi.
+    Mengembalikan True jika berhasil, False jika gagal.
+    """
+    refresh_token = session.get('refresh_token')
+    if not refresh_token:
+        print("DEBUG: Tidak ada refresh token dalam sesi.")
+        return False
+    
+    refresh_url = f"{API_BASE_URL}auth/token/refresh/"
+    try:
+        refresh_response = requests.post(refresh_url, json={"refresh": refresh_token})
+        refresh_response.raise_for_status() # Angkat HTTPError untuk status kode 4xx/5xx
+
+        refresh_data = refresh_response.json()
+        new_access_token = refresh_data.get("access")
+
+        if new_access_token:
+            session["access_token"] = new_access_token
+            print("DEBUG: Token akses berhasil diperbarui.")
+            return True
+        else:
+            print(f"DEBUG: Gagal memperbarui token: {refresh_data.get('detail', 'Respons tidak valid.')}")
+            return False
+    except requests.exceptions.RequestException as e:
+        print(f"DEBUG: Kesalahan saat memperbarui token: {e}")
+        return False
+
+def send_report_to_backend(endpoint_path, form_data, file_obj, is_retry=False):
     """
     Fungsi generik untuk mengirim data laporan dan file ke API backend.
+    Mencakup logika percobaan ulang dengan refresh token.
     Args:
         endpoint_path (str): Jalur endpoint API tertentu (misalnya, "laporan/fraud/submit").
         form_data (dict): Kamus bidang formulir dan nilainya.
         file_obj (werkzeug.datastructures.FileStorage): Objek file yang diunggah.
+        is_retry (bool): Menunjukkan apakah ini percobaan ulang setelah refresh token.
     Returns:
         tuple: Sebuah tuple yang berisi (boolean_sukses, pesan, kode_status).
     """
@@ -198,41 +242,60 @@ def send_report_to_backend(endpoint_path, form_data, file_obj):
         return False, "Sesi tidak valid, silakan login kembali.", 401
 
     access_token = session.get('access_token')
+
     if not access_token:
-        print("DEBUG: Tidak ada access_token dalam sesi. Pengguna mungkin tidak login.")
-        return False, "Autentikasi gagal, silakan login kembali.", 401
+        print("DEBUG: Tidak ada access_token dalam sesi. Pengguna mungkin tidak login atau tidak diotorisasi API.")
+        return False, "Autentikasi gagal, silakan login kembali atau hubungi admin.", 401
 
     headers = {"Authorization": f"Bearer {access_token}"}
+    
+    data_to_send = {} # Inisialisasi dictionary baru untuk data yang akan dikirim
+
+    # Salin semua data form_data kecuali 'perusahaan' untuk diproses secara terpisah
+    for key, value in form_data.items():
+        # if key != "perusahaan":
+            data_to_send[key] = str(value) if value is not None else '' # Pastikan semua nilai top-level adalah string
+
+    # Hapus sandi_pjp dan nama_pjp jika tidak diharapkan oleh endpoint API tertentu.
+    # Berdasarkan dokumentasi API, bidang-bidang ini TIDAK diharapkan dalam payload pengiriman laporan.
+    # Informasi PJP harus diambil oleh backend dari token JWT.
+    if to_snake_case("Sandi PJP") in data_to_send:
+        print(f"DEBUG: Menghapus field '{to_snake_case('Sandi PJP')}' dari payload laporan.")
+        del data_to_send[to_snake_case("Sandi PJP")]
+    if to_snake_case("Nama PJP") in data_to_send:
+        print(f"DEBUG: Menghapus field '{to_snake_case('Nama PJP')}' dari payload laporan.")
+        del data_to_send[to_snake_case("Nama PJP")]
+
+    # Special handling for 'perusahaan' list to flatten it for multipart/form-data
+    # Menggunakan notasi hyphen-index-key (perusahaan-0-nama_perusahaan_kerjasama)
+    # if "perusahaan" in form_data and isinstance(form_data["perusahaan"], list):
+    #     perusahaan_list = form_data["perusahaan"]
+    #     for i, company_data in enumerate(perusahaan_list):
+    #         for key, value in company_data.items():
+    #             # Gunakan notasi hyphen untuk meratakan objek bersarang
+    #             # Contoh: perusahaan-0-nama_perusahaan_kerjasama
+    #             data_to_send[f"perusahaan-{i}-{key}"] = str(value) if value is not None else ''
+    #     print("DEBUG: 'perusahaan' diflatten menjadi field individual dengan notasi hyphen.")
+    
     files = {}
     if file_obj and file_obj.filename:
-        # Nama kunci untuk file harus cocok dengan yang diharapkan oleh API backend
-        # Berdasarkan Postman, kuncinya adalah 'file'
         files = {"file": (file_obj.filename, file_obj.stream, file_obj.mimetype)}
         print(f"DEBUG: File akan dikirim: {file_obj.filename}, MimeType: {file_obj.mimetype}")
     else:
         print("DEBUG: Tidak ada file yang akan dikirim.")
 
-    # Tambahkan sandi_pjp dan nama_pjp ke form_data secara otomatis
-    # Ini harusnya diambil dari profil PJP, untuk demonstrasi, diambil dari session.
-    # Nama PJP harusnya diambil dari database berdasarkan sandi_pjp
-    form_data[to_snake_case("Sandi PJP")] = session.get("username")
-    # Asumsi nama PJP bisa dicari di dummy banks atau database
-    found_bank = next((bank for bank in banks if bank["nama"] == request.form.get("nama_pjp")), None)
-    if found_bank:
-        form_data[to_snake_case("Nama PJP")] = found_bank["nama"]
-    else:
-        form_data[to_snake_case("Nama PJP")] = "Nama PJP Tidak Diketahui" # Fallback
-
-
     full_api_url = f"{API_BASE_URL}{endpoint_path}"
     print(f"\n--- DEBUG: Mengirim permintaan ke API Backend ---")
     print(f"URL: {full_api_url}")
-    print(f"Headers: {headers}")
-    print(f"Data Form: {form_data}")
-    print(f"Files: {files.keys() if files else 'No files'}") # Hanya tampilkan nama file, bukan kontennya
+    print(f"Headers (tanpa token): {json.dumps({k: v for k, v in headers.items() if k != 'Authorization'}, indent=2)}")
+    print(f"Data Form (sebelum pengiriman): {data_to_send}") # Tampilkan data yang akan dikirim
+    print(f"Files: {files.keys() if files else 'No files'}")
+    print(f"Percobaan Ulang: {is_retry}")
 
     try:
-        response = requests.post(full_api_url, headers=headers, data=form_data, files=files)
+        # Menggunakan `data=data_to_send` dan `files=files` akan secara otomatis
+        # mengatur `Content-Type` ke `multipart/form-data` dengan boundary yang benar.
+        response = requests.post(full_api_url, headers=headers, data=data_to_send, files=files)
         
         print(f"--- DEBUG: Respons dari API Backend ---")
         print(f"Status Code: {response.status_code}")
@@ -241,8 +304,20 @@ def send_report_to_backend(endpoint_path, form_data, file_obj):
             response_data = response.json()
             print(f"Response JSON: {json.dumps(response_data, indent=2)}")
         except json.JSONDecodeError:
-            response_data = {"message": response.text} # Ambil teks jika bukan JSON
+            response_data = {"message": response.text}
             print(f"Response Text (bukan JSON): {response.text}")
+        
+        # Penanganan 401 Unauthorized (mungkin karena token kedaluwarsa)
+        if response.status_code == 401 and not is_retry:
+            print("DEBUG: Menerima 401. Mencoba refresh token dan mengulang permintaan.")
+            if refresh_access_token():
+                # Rekursif panggil fungsi lagi, tandai sebagai percobaan ulang
+                return send_report_to_backend(endpoint_path, form_data, file_obj, is_retry=True)
+            else:
+                # Gagal refresh token, paksa logout
+                print("DEBUG: Gagal refresh token. Memaksa logout.")
+                session.clear() # Hapus semua sesi
+                return False, "Sesi kedaluwarsa atau tidak valid. Silakan login kembali.", 401
         
         if response.status_code == 201: # 201 Created for successful submissions
             return True, response_data.get("message", "Laporan berhasil dikirim!"), 201
@@ -258,11 +333,11 @@ def send_report_to_backend(endpoint_path, form_data, file_obj):
     except requests.exceptions.ConnectionError as e:
         print(f"DEBUG: Kesalahan Koneksi: {e}")
         return False, f"Gagal terhubung ke server API (koneksi ditolak atau server tidak tersedia): {e}", 500
-    except requests.exceptions.Timeout as e:
-        print(f"DEBUG: Kesalahan Timeout: {e}")
-        return False, f"Permintaan ke server API habis waktu: {e}", 500
+    # except requests.exceptions.Timeout as e:
+    #     print(f"DEBUG: Kesalahan Timeout: {e}")
+    #     return False, f"Permintaan ke server API habis waktu: {e}", 500
     except requests.exceptions.RequestException as e:
-        print(f"DEBUG: Kesalahan Permintaan Umum: {e}")
+        print(f"DEBUG: Terjadi kesalahan saat mengirim permintaan ke server API: {e}")
         return False, f"Terjadi kesalahan saat mengirim permintaan ke server API: {e}", 500
     except json.JSONDecodeError:
         print(f"DEBUG: Respon API bukan JSON yang valid atau kosong.")
@@ -270,7 +345,6 @@ def send_report_to_backend(endpoint_path, form_data, file_obj):
 
 
 # --- Rute Pengiriman Laporan ---
-
 @app.route("/submit/laporan-fraud", methods=["POST"])
 def submit_laporan_fraud():
     """Menangani pengiriman Laporan Fraud."""
@@ -281,16 +355,18 @@ def submit_laporan_fraud():
         return jsonify({"success": False, "message": "Format tanggal surat tidak valid"}), 400
 
     form_data = {
-        to_snake_case("Tahun Laporan"): int(request.form.get("tahun")),
-        to_snake_case("Periode Laporan"): request.form.get("bulan"),
-        to_snake_case("Nomor Surat"): request.form.get("nomor_surat"),
-        to_snake_case("Tanggal Surat"): formatted_tanggal_surat,
-        to_snake_case("Jumlah Fraud"): int(request.form.get("jumlah_fraud")),
-        to_snake_case("Jumlah Besar Kerugian"): int(request.form.get("kerugian").replace('.', '')),
-        to_snake_case("Keterangan Fraud"): request.form.get("keterangan_fraud"),
-        to_snake_case("Keterangan Tindak Lanjut"): request.form.get("tindak_lanjut")
+        "tahun_laporan": int(request.form.get("tahun_laporan")),
+        "periode_laporan": request.form.get("periode_laporan"),
+        "nomor_surat": request.form.get("nomor_surat"),
+        "tanggal_surat": formatted_tanggal_surat,
+        "jumlah_fraud": int(request.form.get("jumlah_fraud")),
+        # Menggunakan nama field API: besar_potensi_kerugian
+        "besar_potensi_kerugian": int(request.form.get("besar_potensi_kerugian")), 
+        "keterangan_fraud": request.form.get("keterangan_fraud"),
+        "keterangan_tindak_lanjut": request.form.get("keterangan_tindak_lanjut")
     }
-    file_laporan = request.files.get("file_laporan")
+    # Mengambil file menggunakan nama 'file' sesuai API
+    file_laporan = request.files.get("file") 
 
     success, message, status_code = send_report_to_backend("laporan/fraud/submit", form_data, file_laporan)
     return jsonify({"success": success, "message": message}), status_code
@@ -300,7 +376,9 @@ def form_laporan_fraud():
     """Merender formulir untuk Laporan Fraud."""
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
-    return render_template("user/forms/laporan_fraud.html")
+    # Mendapatkan tahun saat ini untuk dropdown tahun laporan
+    current_year = datetime.now().year
+    return render_template("user/forms/laporan_fraud.html", current_year=current_year)
 
 @app.route("/submit/laporan-dttot", methods=["POST"])
 def submit_laporan_dttot():
@@ -308,28 +386,25 @@ def submit_laporan_dttot():
     Menangani pengiriman Laporan DTTOT.
     """
     try:
-        # Asumsi DD/MM/YYYY untuk konsistensi jika tidak ditentukan lain
         formatted_tanggal_surat = datetime.strptime(request.form.get("tanggal_surat"), '%Y-%m-%d').strftime('%d/%m/%Y')
     except ValueError:
         return jsonify({"success": False, "message": "Format tanggal surat tidak valid"}), 400
 
     form_data = {
-        to_snake_case("Nomor Surat"): request.form.get("nomor_surat"),
-        to_snake_case("Tanggal Surat"): formatted_tanggal_surat,
-        to_snake_case("Tahun Laporan"): int(request.form.get("tahun")),
-        to_snake_case("Periode Laporan"): request.form.get("periode"),
-        to_snake_case("Jumlah Terduga Teroris"): int(request.form.get("jumlah_terduga")),
-        to_snake_case("Perihal"): request.form.get("perihal"),
-        to_snake_case("Organisasi Teroris"): request.form.get("organisasi_teroris"), # Added missing field
-        to_snake_case("Nomor Surat Kepolisian"): request.form.get("nomor_surat_kepolisian"), # Added missing field
-        to_snake_case("Keterangan"): request.form.get("keterangan")
+        "tahun_laporan": int(request.form.get("tahun_laporan")), # Sesuai tabel
+        "periode_laporan": request.form.get("periode_laporan"), # Sesuai tabel
+        "nomor_surat": request.form.get("nomor_surat"), # Sesuai tabel
+        "tanggal_surat": formatted_tanggal_surat, # Sesuai tabel
+        "perihal": request.form.get("perihal"), # Sesuai tabel
+        "jumlah_terduga_teroris": int(request.form.get("jumlah_terduga_teroris")), # Sesuai tabel
+        # "organisasi_teroris": request.form.get("organisasi_teroris"), # API doc doesn't have this field for DTTOT submit
+        # "nomor_surat_kepolisian": request.form.get("nomor_surat_kepolisian"), # API doc doesn't have this field for DTTOT submit
+        "keterangan": request.form.get("keterangan"), # Sesuai tabel
     }
-    file_laporan = request.files.get("file_laporan")
+    file_laporan = request.files.get("file") # Sesuai tabel
 
-    # Menggunakan fungsi send_report_to_backend untuk mengirim data ke API
     success, message, status_code = send_report_to_backend("laporan/dttot/submit", form_data, file_laporan)
     return jsonify({"success": success, "message": message}), status_code
-
 
 @app.route("/form/laporan-dttot")
 def form_laporan_dttot():
@@ -340,7 +415,7 @@ def form_laporan_dttot():
 
 @app.route("/form/laporan-keuangan-tahunan")
 def form_laporan_keuangan_tahunan():
-    """Merender formulir untuk Laporan Keuangan Tahunan."""
+    """Merender formulir untuk Laporan Keuangan Tahunan Audited."""
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
     return render_template("user/forms/laporan_keuangan_tahunan.html")
@@ -348,48 +423,84 @@ def form_laporan_keuangan_tahunan():
 @app.route("/submit/laporan-keuangan-tahunan", methods=["POST"])
 def submit_laporan_keuangan_tahunan():
     """
-    Menangani pengiriman Laporan Keuangan Tahunan.
+    Menangani pengiriman Laporan Keuangan Tahunan Audited.
     """
     try:
         formatted_tanggal_surat = datetime.strptime(request.form.get("tanggal_surat"), '%Y-%m-%d').strftime('%d/%m/%Y')
-        formatted_tanggal_opini = None
-        if request.form.get("tanggal_opini"):
-            formatted_tanggal_opini = datetime.strptime(request.form.get("tanggal_opini"), '%Y-%m-%d').strftime('%d/%m/%Y')
+        
+        # Auditor fields
+        tanggal_opini = request.form.get("tanggal_opini")
+        formatted_tanggal_opini = ''
+        if tanggal_opini:
+            formatted_tanggal_opini = datetime.strptime(tanggal_opini, '%Y-%m-%d').strftime('%d/%m/%Y')
+
     except ValueError:
-        return jsonify({"success": False, "message": "Format tanggal surat tidak valid"}), 400
+        return jsonify({"success": False, "message": "Format tanggal surat atau opini tidak valid"}), 400
+    
+    try:
+        # Data Numerik - Asumsi dari input type="number" di HTML, jadi tidak perlu .replace('.', '')
+        # Jika frontend melakukan pemformatan angka dengan titik/koma, Anda perlu menambahkan kembali .replace('.', '')
+        tahun_laporan = int(request.form.get("periode_laporan")) # Tahun Laporan dari HTML (sebelumnya bernama 'tahun')
+        modal_dasar = int(request.form.get("modal_dasar")) 
+        modal_disetor = int(request.form.get("modal_disetor"))
+        pendapatan = int(request.form.get("pendapatan"))
+        beban_pendapatan = int(request.form.get("beban_pendapatan")) # Sesuai tabel
+        beban_operasional = int(request.form.get("beban_operasional"))
+        laba = int(request.form.get("laba"))
+        rugi = int(request.form.get("rugi"))
+        kas_dan_setara_kas = int(request.form.get("kas_dan_setara_kas")) 
+        aset_lancar = int(request.form.get("aset_lancar")) 
+        aset_tetap = int(request.form.get("aset_tetap")) 
+        total_aset = int(request.form.get("total_aset"))
+        deposit = int(request.form.get("deposit")) 
+        hutang_jangka_pendek = int(request.form.get("hutang_jangka_pendek")) 
+        hutang_jangka_panjang = int(request.form.get("hutang_jangka_panjang")) 
+        total_hutang = int(request.form.get("total_liabilitas")) # Mapped to total_liabilitas in HTML
+        total_ekuitas = int(request.form.get("total_ekuitas")) 
+        saham_beredar = int(request.form.get("saham_beredar"))
+        harga_saham_per_lembar = int(request.form.get("harga_saham_per_lembar")) # Sesuaikan dengan nama di HTML
+        
+        # ATMR tidak ada di HTML yang terakhir diberikan atau di tabel image_5d66ef.png.
+        # Jika memang ada di form, pastikan inputnya ada di HTML.
+        # atmr = int(request.form.get("atmr")) # Jika ada di form, aktifkan baris ini
+
+    except ValueError as e:
+        return jsonify({"success": False, "message": f"Format angka tidak valid: {e}. Pastikan hanya memasukkan angka."}), 400
 
     form_data = {
-        to_snake_case("Tahun Laporan"): int(request.form.get("tahun")),
-        to_snake_case("Nomor Surat"): request.form.get("nomor_surat"),
-        to_snake_case("Tanggal Surat"): formatted_tanggal_surat,
-        to_snake_case("Modal Disetor"): int(request.form.get("modal_disetor").replace('.', '')),
-        to_snake_case("Jenis Audit"): request.form.get("jenis_audit"), # Not in detailed spec, keeping as is
-        to_snake_case("Kantor Akuntan"): request.form.get("kantor_akuntan"), # Not in detailed spec, keeping as is
-        to_snake_case("Tanggal Opini"): formatted_tanggal_opini, # Not in detailed spec, keeping as is
-        to_snake_case("Opini"): request.form.get("opini"), # Not in detailed spec, keeping as is
-        to_snake_case("Pendapatan"): int(request.form.get("pendapatan").replace('.', '')),
-        to_snake_case("Beban Pendapatan"): int(request.form.get("beban_pendapatan").replace('.', '')), # Corrected from beban_operasional
-        to_snake_case("Beban Operasional"): int(request.form.get("beban_operasional").replace('.', '')),
-        to_snake_case("Laba"): int(request.form.get("laba").replace('.', '')),
-        to_snake_case("Rugi"): int(request.form.get("rugi").replace('.', '')),
-        to_snake_case("Kas dan Setara Kas"): int(request.form.get("kas_dan_setara_kas").replace('.', '')), # Added missing field
-        to_snake_case("Aset Lancar"): int(request.form.get("aset_lancar").replace('.', '')), # Added missing field
-        to_snake_case("Aset Tetap"): int(request.form.get("aset_tetap").replace('.', '')), # Added missing field
-        to_snake_case("Total Aset"): int(request.form.get("total_aset").replace('.', '')),
-        to_snake_case("Hutang Jangka Pendek"): int(request.form.get("hutang_jangka_pendek").replace('.', '')), # Added missing field
-        to_snake_case("Hutang Jangka Panjang"): int(request.form.get("hutang_jangka_panjang").replace('.', '')), # Added missing field
-        to_snake_case("Total Hutang"): int(request.form.get("total_liabilitas").replace('.', '')), # Corrected from total_liabilitas
-        to_snake_case("Ekuitas"): int(request.form.get("total_equitas").replace('.', '')), # Corrected from total_equitas
-        to_snake_case("Saham Beredar"): int(request.form.get("saham_beredar").replace('.', '')), # Added missing field
-        to_snake_case("Harga"): int(request.form.get("harga").replace('.', '')), # Added missing field
-        to_snake_case("ATMR"): int(request.form.get("atmr").replace('.', '')), # Added missing field
+        "tahun_laporan": tahun_laporan, # Sesuai tabel (sebelumnya periode_laporan di HTML)
+        "nomor_surat": request.form.get("nomor_surat"),
+        "tanggal_surat": formatted_tanggal_surat,
+        "modal_dasar": modal_dasar, 
+        "modal_disetor": modal_disetor,
+        "jenis_audit": request.form.get("jenis_audit"), 
+        "kantor_akuntan": request.form.get("kantor_akuntan"), 
+        "tanggal_opini": formatted_tanggal_opini, 
+        "opini": request.form.get("opini"),
+        "pendapatan": pendapatan,
+        "beban_pendapatan": beban_pendapatan, # Sesuai tabel
+        "beban_operasional": beban_operasional,
+        "laba": laba,
+        "rugi": rugi,
+        "kas_dan_setara_kas": kas_dan_setara_kas, 
+        "aset_lancar": aset_lancar, 
+        "aset_tetap": aset_tetap, 
+        "total_aset": total_aset,
+        "deposit": deposit, 
+        "hutang_jangka_pendek": hutang_jangka_pendek, 
+        "hutang_jangka_panjang": hutang_jangka_panjang, 
+        "total_hutang": total_hutang, # Sesuai tabel (mapped from total_liabilitas in HTML)
+        "total_ekuitas": total_ekuitas, # Sesuai tabel
+        "going_concern": request.form.get("going_concern"), # Sesuai permintaan (textarea)
+        "saham_beredar": saham_beredar, 
+        "harga_saham_per_lembar": harga_saham_per_lembar, # Sesuai tabel (sebelumnya 'harga')
+        # "atmr": atmr, # Jika ada di form, aktifkan baris ini
+        "keterangan": request.form.get("keterangan"), # Sesuai permintaan (tetap ada)
     }
-    file_laporan = request.files.get("file_laporan")
+    file_laporan = request.files.get("file_laporan") # Sesuai HTML
 
-    # Menggunakan fungsi send_report_to_backend
     success, message, status_code = send_report_to_backend("laporan/keuangan-tahunan/submit", form_data, file_laporan)
     return jsonify({"success": success, "message": message}), status_code
-
 
 @app.route("/form/laporan-keuangan-triwulan")
 def form_laporan_keuangan_triwulan():
@@ -409,37 +520,53 @@ def submit_laporan_keuangan_triwulan():
     except ValueError:
         return jsonify({"success": False, "message": "Format tanggal surat tidak valid"}), 400
     
-    # Memastikan semua nilai numerik dikonversi ke integer dan menghilangkan tanda titik
+    # Memastikan semua nilai numerik dikonversi ke integer.
+    # Asumsi nilai dari input type="number" tidak memiliki tanda titik (ribuan)
     try:
-        modal_disetor = int(request.form.get("modal_disetor").replace('.', ''))
-        total_revenue = int(request.form.get("pendapatan").replace('.', ''))
-        cost_of_revenue = int(request.form.get("beban_operasional").replace('.', '')) # Mapped to beban_operasional as per form
-        profit = int(request.form.get("laba").replace('.', ''))
-        loss = int(request.form.get("rugi").replace('.', ''))
-        total_asset = int(request.form.get("total_aset").replace('.', ''))
-        liabilities = int(request.form.get("total_liabilitas").replace('.', ''))
-        equity = int(request.form.get("equity").replace('.', '')) # Menggunakan nama 'equity' dari HTML form
+        modal_dasar = int(request.form.get("modal_dasar")) # From API doc
+        modal_disetor = int(request.form.get("modal_disetor"))
+        total_aset = int(request.form.get("total_aset"))
+        aset_lancar = int(request.form.get("aset_lancar")) # From API doc
+        kas_dan_setara_kas = int(request.form.get("kas_dan_setara_kas")) # From API doc
+        aset_tetap = int(request.form.get("aset_tetap")) # From API doc
+        total_hutang = int(request.form.get("total_hutang")) # From API doc
+        hutang_jangka_pendek = int(request.form.get("hutang_jangka_pendek")) # From API doc
+        hutang_jangka_panjang = int(request.form.get("hutang_jangka_panjang")) # From API doc
+        total_ekuitas = int(request.form.get("total_ekuitas")) # From API doc
+        total_pendapatan = int(request.form.get("total_pendapatan")) # From API doc
+        pendapatan_fee = int(request.form.get("pendapatan_fee")) # From API doc
+        total_beban = int(request.form.get("total_beban")) # From API doc
+        beban_operasional = int(request.form.get("beban_operasional")) # From API doc
+        laba = int(request.form.get("laba"))
+        rugi = int(request.form.get("rugi"))
     except ValueError:
         return jsonify({"success": False, "message": "Format angka tidak valid. Pastikan hanya memasukkan angka."}), 400
 
     form_data = {
-        to_snake_case("Tahun Laporan"): int(request.form.get("tahun")),
-        to_snake_case("Periode Laporan"): request.form.get("triwulan"),
-        to_snake_case("Nomor Surat"): request.form.get("nomor_surat"),
-        to_snake_case("Tanggal Surat"): formatted_tanggal_surat,
-        to_snake_case("Modal Disetor"): modal_disetor,
-        to_snake_case("Total Revenue"): total_revenue,
-        to_snake_case("Cost of Revenue"): cost_of_revenue,
-        to_snake_case("Profit"): profit,
-        to_snake_case("Loss"): loss,
-        to_snake_case("Total Aset"): total_asset,
-        to_snake_case("Liabilities"): liabilities,
-        to_snake_case("Equity"): equity,
-        to_snake_case("Keterangan"): request.form.get("keterangan")
+        "tahun_laporan": int(request.form.get("tahun_laporan")),
+        "periode_laporan": request.form.get("periode_laporan"), # Periode Laporan (Triwulan)
+        "nomor_surat": request.form.get("nomor_surat"),
+        "tanggal_surat": formatted_tanggal_surat,
+        "modal_dasar": modal_dasar,
+        "modal_disetor": modal_disetor,
+        "total_aset": total_aset,
+        "aset_lancar": aset_lancar,
+        "kas_dan_setara_kas": kas_dan_setara_kas,
+        "aset_tetap": aset_tetap,
+        "total_hutang": total_hutang,
+        "hutang_jangka_pendek": hutang_jangka_pendek,
+        "hutang_jangka_panjang": hutang_jangka_panjang,
+        "total_ekuitas": total_ekuitas,
+        "total_pendapatan": total_pendapatan,
+        "pendapatan_fee": pendapatan_fee,
+        "total_beban": total_beban,
+        "beban_operasional": beban_operasional,
+        "laba": laba,
+        "rugi": rugi,
+        # "keterangan": request.form.get("keterangan"), # Not in API doc for Keuangan Triwulanan
     }
-    file_laporan = request.files.get("file_laporan")
+    file_laporan = request.files.get("file") # Sesuai tabel
 
-    # Menggunakan fungsi send_report_to_backend dengan endpoint yang sesuai
     success, message, status_code = send_report_to_backend("laporan/keuangan-triwulanan/submit", form_data, file_laporan)
     return jsonify({"success": success, "message": message}), status_code
 
@@ -457,46 +584,39 @@ def submit_laporan_gangguanit():
         
         # Ekstrak hanya bagian tanggal dari input datetime-local (YYYY-MM-DD) dan format ke DD/MM/YYYY
         waktu_kejadian_raw = request.form.get("waktu_kejadian")
+        formatted_waktu_kejadian = None
         if waktu_kejadian_raw:
-            # Check if it contains 'T' for time, if so, split it to get only date part.
-            if 'T' in waktu_kejadian_raw:
-                formatted_waktu_kejadian = datetime.strptime(waktu_kejadian_raw.split('T')[0], '%Y-%m-%d').strftime('%d/%m/%Y')
-            else: # Assume it's already just a date string in YYYY-MM-DD
-                formatted_waktu_kejadian = datetime.strptime(waktu_kejadian_raw, '%Y-%m-%d').strftime('%d/%m/%Y')
-        else:
-            formatted_waktu_kejadian = None
+            try:
+                # API expects DD/MM/YYYY HH:MM
+                # Assuming frontend sends YYYY-MM-DDTHH:MM
+                dt_object = datetime.strptime(waktu_kejadian_raw, '%Y-%m-%dT%H:%M')
+                formatted_waktu_kejadian = dt_object.strftime('%d/%m/%Y %H:%M')
+            except ValueError:
+                # If it's just date, try that format
+                try:
+                    dt_object = datetime.strptime(waktu_kejadian_raw, '%Y-%m-%d')
+                    formatted_waktu_kejadian = dt_object.strftime('%d/%m/%Y 00:00') # Default to midnight
+                except ValueError:
+                    return jsonify({"success": False, "message": f"Format waktu kejadian tidak valid. Harap gunakan YYYY-MM-DDTHH:MM atau YYYY-MM-DD."}), 400
+
     except ValueError as e:
         return jsonify({"success": False, "message": f"Format tanggal/waktu tidak valid: {e}"}), 400
 
     form_data = {
-        to_snake_case("Tahun Laporan"): int(request.form.get("tahun")),
-        to_snake_case("Periode Laporan"): request.form.get("periode"),
-        to_snake_case("Nomor Surat"): request.form.get("nomor_surat"),
-        to_snake_case("Tanggal Surat"): formatted_tanggal_surat,
-        to_snake_case("Waktu Kejadian"): formatted_waktu_kejadian,
-        to_snake_case("Jenis Gangguan"): request.form.get("jenis_gangguan"),
-        to_snake_case("Ringkasan"): request.form.get("ringkasan"), # Keep as 'ringkasan' for backend field
-        to_snake_case("Upaya Perbaikan"): request.form.get("upaya_perbaikan"),
-        to_snake_case("Status Penyelesaian"): request.form.get("status_penyelesaian") # Should be boolean, convert below
+        "nomor_surat": request.form.get("nomor_surat"),
+        "tanggal_surat": formatted_tanggal_surat,
+        "waktu_kejadian": formatted_waktu_kejadian,
+        "jenis_gangguan": request.form.get("jenis_gangguan"),
+        "upaya_perbaikan": request.form.get("upaya_perbaikan"),
+        "status_penyelesaian": request.form.get("status_penyelesaian"), # API expects string
+        # "tanggal_penyelesaian" not in API doc, "tahun_laporan", "bulan_laporan", "tanggal_laporan" are read-only
     }
+    # Remove optional field if empty or None
+    if not form_data["waktu_kejadian"]:
+        form_data.pop("waktu_kejadian")
 
-    # Convert status_penyelesaian to boolean
-    form_data[to_snake_case("Status Penyelesaian")] = form_data[to_snake_case("Status Penyelesaian")] == 'Terselesaikan'
 
-    # Tangani tanggal_penyelesaian opsional jika statusnya 'Terselesaikan'
-    tanggal_penyelesaian_raw = request.form.get("tanggal_penyelesaian")
-    if form_data[to_snake_case("Status Penyelesaian")] and tanggal_penyelesaian_raw:
-        try:
-            if 'T' in tanggal_penyelesaian_raw:
-                form_data[to_snake_case("Tanggal Penyelesaian")] = datetime.strptime(tanggal_penyelesaian_raw.split('T')[0], '%Y-%m-%d').strftime('%d/%m/%Y')
-            else:
-                form_data[to_snake_case("Tanggal Penyelesaian")] = datetime.strptime(tanggal_penyelesaian_raw, '%Y-%m-%d').strftime('%d/%m/%Y')
-        except ValueError:
-            return jsonify({"success": False, "message": "Format tanggal penyelesaian tidak valid"}), 400
-    else:
-        form_data[to_snake_case("Tanggal Penyelesaian")] = None # Ensure it's explicitly None if not set
-
-    file_laporan = request.files.get("file_laporan")
+    file_laporan = request.files.get("file_laporan") # file_laporan or file, assuming 'file' as per API
 
     success, message, status_code = send_report_to_backend("laporan/gangguan-it/submit", form_data, file_laporan)
     return jsonify({"success": success, "message": message}), status_code
@@ -822,6 +942,7 @@ def submit_laporan_keamanan_informasi():
 
 @app.route("/form/laporan-apuppt")
 def form_laporan_apuppt():
+    """Merender formulir untuk Laporan APU PPT."""
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
     return render_template("user/forms/laporan_apuppt.html")
@@ -837,36 +958,49 @@ def submit_laporan_apuppt():
         return jsonify({"success": False, "message": "Format tanggal surat tidak valid"}), 400
 
     form_data = {
-        to_snake_case("Tahun Laporan"): int(request.form.get("tahun")),
-        to_snake_case("Nomor Surat"): request.form.get("nomor_surat"),
-        to_snake_case("Tanggal Surat"): formatted_tanggal_surat,
-        to_snake_case("Nama Petugas"): request.form.get("nama_petugas"),
-        to_snake_case("SK Penunjukkan"): request.form.get("sk_penunjukkan"),
-        to_snake_case("User ID GoAML"): request.form.get("user_id_goaml"),
-        to_snake_case("User ID SIPESAT"): request.form.get("user_id_sipesat"),
-        to_snake_case("User ID PEP"): request.form.get("user_id_pep"),
-        to_snake_case("User ID SIPENDAR"): request.form.get("user_id_sipendar"),
-        to_snake_case("Jumlah LTKT"): int(request.form.get("jumlah_ltkt")),
-        to_snake_case("Jumlah LTKM"): int(request.form.get("jumlah_ltkm")),
-        to_snake_case("Jumlah LTKL"): int(request.form.get("jumlah_ltkl")),
-        to_snake_case("Lapor SIPESAT tw 1"): request.form.get("lapor_sipesat_tw_1") == 'on',
-        to_snake_case("Lapor SIPESAT tw 2"): request.form.get("lapor_sipesat_tw_2") == 'on',
-        to_snake_case("Lapor SIPESAT tw 3"): request.form.get("lapor_sipesat_tw_3") == 'on',
-        to_snake_case("Lapor SIPESAT tw 4"): request.form.get("lapor_sipesat_tw_4") == 'on',
-        to_snake_case("Lapor Pemblokiran DTTOT"): request.form.get("lapor_pemblokiran_dttot") == 'on',
-        to_snake_case("Lapor Pemblokiran DPPSPM"): request.form.get("lapor_pemblokiran_dppspm") == 'on',
-        to_snake_case("Tanggung Jawab Direksi"): request.form.get("tanggung_jawab_direksi"),
-        to_snake_case("Kebijakan Prosedur"): request.form.get("kebijakan_prosedur"),
-        to_snake_case("Metode PMPJ"): request.form.get("metode_pmpj"),
-        to_snake_case("Manajemen Risiko"): request.form.get("manajemen_risiko"),
-        to_snake_case("Manajemen SDM"): request.form.get("manajemen_sdm"),
-        to_snake_case("Sistem Pengendalian"): request.form.get("sistem_pengendalian"),
-        to_snake_case("Nama Penginput"): request.form.get("nama_penginput"),
-        to_snake_case("Email Penginput"): request.form.get("email_penginput"),
-        to_snake_case("Email Perusahaan"): request.form.get("email_perusahaan"),
-        to_snake_case("Nomor HP"): request.form.get("nomor_hp"),
+        "tahun_laporan": int(request.form.get("tahun_laporan")), # Sesuai HTML dan tabel
+        "nomor_surat": request.form.get("nomor_surat"),
+        "tanggal_surat": formatted_tanggal_surat,
+        "nama_petugas": request.form.get("nama_petugas"),
+        "sk_penunjukkan": request.form.get("sk_penunjukan"), # Sesuai tabel
+        "user_id_goaml": request.form.get("user_id_goaml"),
+        "user_id_sipesat": request.form.get("user_id_sipesat"),
+        "user_id_pep": request.form.get("user_id_pep"),
+        "user_id_sipendar": request.form.get("user_id_sipendar"),
+        "jumlah_ltkt": int(request.form.get("jumlah_ltkt")),
+        "jumlah_ltkm": int(request.form.get("jumlah_ltkm")),
+        "jumlah_ltkl": int(request.form.get("jumlah_ltkl")),
+        # API Doc fields (bools)
+        "lapor_sipesat_tw1": request.form.get("lapor_sipesat_tw_1") == 'True', 
+        "lapor_sipesat_tw2": request.form.get("lapor_sipesat_tw_2") == 'True', 
+        "lapor_sipesat_tw3": request.form.get("lapor_sipesat_tw_3") == 'True', 
+        "lapor_sipesat_tw4": request.form.get("lapor_sipesat_tw_4") == 'True', 
+        "lapor_goaml_tw1": request.form.get("lapor_goaml_tw_1") == 'True', # Added based on API doc
+        "lapor_goaml_tw2": request.form.get("lapor_goaml_tw_2") == 'True', # Added based on API doc
+        "lapor_goaml_tw3": request.form.get("lapor_goaml_tw_3") == 'True', # Added based on API doc
+        "lapor_goaml_tw4": request.form.get("lapor_goaml_tw_4") == 'True', # Added based on API doc
+        "lapor_pep_tw1": request.form.get("lapor_pep_tw_1") == 'True', # Added based on API doc
+        "lapor_pep_tw2": request.form.get("lapor_pep_tw_2") == 'True', # Added based on API doc
+        "lapor_pep_tw3": request.form.get("lapor_pep_tw_3") == 'True', # Added based on API doc
+        "lapor_pep_tw4": request.form.get("lapor_pep_tw_4") == 'True', # Added based on API doc
+        "lapor_sipendar_tw1": request.form.get("lapor_sipendar_tw_1") == 'True', # Added based on API doc
+        "lapor_sipendar_tw2": request.form.get("lapor_sipendar_tw_2") == 'True', # Added based on API doc
+        "lapor_sipendar_tw3": request.form.get("lapor_sipendar_tw_3") == 'True', # Added based on API doc
+        "lapor_sipendar_tw4": request.form.get("lapor_sipendar_tw_4") == 'True', # Added based on API doc
+        
+        # From existing form, check if needed by API
+        "tanggung_jawab_direksi": request.form.get("tanggung_jawab_direksi"),
+        "kebijakan_prosedur": request.form.get("kebijakan_prosedur"),
+        "metode_pmpj": request.form.get("metode_pmpj"),
+        "manajemen_risiko": request.form.get("manajemen_risiko"),
+        "manajemen_sdm": request.form.get("manajemen_sdm"),
+        "sistem_pengendalian": request.form.get("sistem_pengendalian"),
+        "nama_penginput": request.form.get("nama_penginput"),
+        "email_penginput": request.form.get("email_penginput"),
+        "email_perusahaan": request.form.get("email_perusahaan"),
+        "nomor_hp": request.form.get("nomor_hp"),
     }
-    file_laporan = request.files.get("file_laporan")
+    file_laporan = request.files.get("file") # Sesuai HTML
 
     success, message, status_code = send_report_to_backend("laporan/apuppt/submit", form_data, file_laporan)
     return jsonify({"success": success, "message": message}), status_code
@@ -913,6 +1047,7 @@ def submit_laporan_auditsi():
 
 @app.route("/form/laporan-dana-bukan-bank")
 def form_laporan_dana_bukan_bank():
+    """Merender formulir untuk Laporan Transaksi Dana Bukan Bank (LTDBB)."""
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
     return render_template("user/forms/laporan_dana_bukan_bank.html")
@@ -923,32 +1058,29 @@ def submit_laporan_dana_bukan_bank():
     Menangani pengiriman Laporan Transaksi Dana Bukan Bank (LTDBB).
     """
     try:
-        # Tanggal surat bisa dalam format YYYY-MM-DD (dari input type="date")
         tanggal_surat_raw = request.form.get("tanggal_surat")
         formatted_tanggal_surat = datetime.strptime(tanggal_surat_raw, '%Y-%m-%d').strftime('%d/%m/%Y')
     except ValueError:
         return jsonify({"success": False, "message": "Format tanggal surat tidak valid. Gunakan YYYY-MM-DD."}), 400
 
     form_data = {
-        to_snake_case("Nomor Surat"): request.form.get("nomor_surat"),
-        to_snake_case("Tanggal Surat"): formatted_tanggal_surat,
-        to_snake_case("Tahun Laporan"): int(request.form.get("tahun")),
-        to_snake_case("Periode Laporan"): request.form.get("periode"),
-        to_snake_case("Number Outgoing Transactions"): int(request.form.get("jumlah_keluar")),
-        to_snake_case("Amount Outgoing Transactions"): int(request.form.get("nilai_keluar").replace('.', '')),
-        to_snake_case("Number Incoming Transactions"): int(request.form.get("jumlah_masuk")),
-        to_snake_case("Amount Incoming Transactions"): int(request.form.get("nilai_masuk").replace('.', '')),
-        to_snake_case("Number Local Transactions"): int(request.form.get("jumlah_dalam")),
-        to_snake_case("Amount Local Transactions"): int(request.form.get("nilai_dalam").replace('.', '')),
-        to_snake_case("Keterangan"): request.form.get("keterangan"), # Keterangan tambahan
+        "tahun_laporan": int(request.form.get("tahun_laporan")), # Sesuai tabel
+        "periode_laporan": request.form.get("periode_laporan"), # Sesuai tabel
+        "nomor_surat": request.form.get("nomor_surat"), # Sesuai tabel
+        "tanggal_surat": formatted_tanggal_surat, # Sesuai tabel
+        "number_outgoing_transactions": int(request.form.get("number_outgoing_transactions")), # Sesuai tabel
+        "amount_outgoing_transactions": int(request.form.get("amount_outgoing_transactions")), # Sesuai tabel
+        "number_incoming_transactions": int(request.form.get("number_incoming_transactions")), # Sesuai tabel
+        "amount_incoming_transactions": int(request.form.get("amount_incoming_transactions")), # Sesuai tabel
+        "number_local_transactions": int(request.form.get("number_domestic_transactions")), # Changed to local as per API doc
+        "amount_local_transactions": int(request.form.get("amount_domestic_transactions")), # Changed to local as per API doc
+        # "keterangan": request.form.get("keterangan"), # Not in API doc for LTDBB submit
     }
     
-    file_laporan = request.files.get("bukti_lkpbu") # Nama file dari form HTML adalah 'bukti_lkpbu'
+    file_laporan = request.files.get("file") # Sesuai tabel
 
-    # Menggunakan fungsi send_report_to_backend untuk mengirim data ke API
     success, message, status_code = send_report_to_backend("laporan/ltdbb/submit", form_data, file_laporan)
     return jsonify({"success": success, "message": message}), status_code
-
 
 # --- Rute KPSP Baru (menggunakan perhitungan frontend) ---
 @app.route("/form/laporan-kpsp")
@@ -1092,29 +1224,38 @@ def submit_laporan_p2p():
     Menangani pengiriman Laporan Kerjasama P2P.
     """
     try:
-        formatted_tanggal_surat = datetime.strptime(request.form.get("tanggal_surat"), '%Y-%m-%d').strftime('%d/%m/%Y')
+        tanggal_surat_raw = request.form.get("tanggal_surat")
+        formatted_tanggal_surat = datetime.strptime(tanggal_surat_raw, '%Y-%m-%d').strftime('%d/%m/%Y')
     except ValueError:
         return jsonify({"success": False, "message": "Format tanggal surat tidak valid"}), 400
 
+    # Mengumpulkan data dari daftar perusahaan kerjasama P2P
+    # Karena frontend sekarang mengirimkan ini sebagai JSON string, kita ambil dari request.form
+    perusahaan_json_str = request.form.get("perusahaan")
     daftar_perusahaan_kerjasama_p2p_list = []
-    # If frontend sends structured JSON for daftar_perusahaan_kerjasama_p2p_json
-    # try:
-    #     p2p_json = request.form.get("daftar_perusahaan_kerjasama_p2p_json")
-    #     if p2p_json:
-    #         daftar_perusahaan_kerjasama_p2p_list = json.loads(p2p_json)
-    # except json.JSONDecodeError:
-    #     pass # Handle error
+    if perusahaan_json_str:
+        try:
+            daftar_perusahaan_kerjasama_p2p_list = json.loads(perusahaan_json_str)
+        except json.JSONDecodeError:
+            return jsonify({"success": False, "message": "Format data perusahaan tidak valid (bukan JSON)"}), 400
 
     form_data = {
-        to_snake_case("Tahun Laporan (tahun)"): int(request.form.get("tahun")),
-        to_snake_case("Periode Laporan (bulan)"): request.form.get("periode"),
-        to_snake_case("Nomor Surat"): request.form.get("nomor_surat"),
-        to_snake_case("Tanggal Surat"): formatted_tanggal_surat,
-        to_snake_case("Jumlah Perusahaan Kerjasama P2P"): int(request.form.get("jumlah_perusahaan_kerjasama_p2p")), # Assuming count
-        to_snake_case("Daftar Perusahaan Kerjasama P2P"): daftar_perusahaan_kerjasama_p2p_list, # Placeholder for structured data
+        "tahun_laporan": int(request.form.get("tahun_laporan")), # Sesuai tabel
+        "periode_laporan": request.form.get("periode_laporan"), # Sesuai tabel
+        "nomor_surat": request.form.get("nomor_surat"), # Sesuai tabel
+        "tanggal_surat": formatted_tanggal_surat, # Sesuai tabel
+        "jumlah_perusahaan_kerjasama_p2p": int(request.form.get("jumlah_perusahaan_kerjasama_p2p")), # Sesuai tabel
+        "perusahaan": daftar_perusahaan_kerjasama_p2p_list, # Data terstruktur
     }
-    file_laporan = request.files.get("file_laporan")
+    
+    file_laporan = request.files.get("file") # Nama field di form sekarang adalah 'file'
 
+    # Debugging: Print the form_data being sent to the backend
+    print("\n--- DEBUG: Payload for P2P Cooperation Report ---")
+    print(json.dumps(form_data, indent=2))
+    print("--- END DEBUG Payload ---\n")
+
+    # Menggunakan fungsi send_report_to_backend
     success, message, status_code = send_report_to_backend("laporan/kerjasama-p2p/submit", form_data, file_laporan)
     return jsonify({"success": success, "message": message}), status_code
 
@@ -1176,6 +1317,7 @@ def submit_laporan_pelaksanaan_pengujian_keamanan():
         to_snake_case("Nomor Surat"): request.form.get("nomor_surat"),
         to_snake_case("Tanggal Surat"): formatted_tanggal_surat,
         to_snake_case("Tanggal Selesai Audit"): formatted_tanggal_selesai_audit,
+        to_snake_case("Nama Auditor"): request.form.get("nama_auditor"),
         to_snake_case("Temuan Low"): int(request.form.get("temuan_low")),
         to_snake_case("Temuan Medium"): int(request.form.get("temuan_medium")),
         to_snake_case("Temuan High"): int(request.form.get("temuan_high")),
@@ -1466,9 +1608,9 @@ def logout():
     """Mencatat keluar pengguna dengan menghapus sesi."""
     session.pop("username", None)
     session.pop("access_token", None)
+    session.pop("refresh_token", None) # Hapus refresh token juga
     session.pop("role", None)
     return redirect(url_for("login"))
 
 if __name__ == "__main__":
     app.run(debug=True)
-

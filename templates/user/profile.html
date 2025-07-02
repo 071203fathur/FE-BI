@@ -1,0 +1,30 @@
+{% extends "user/base.html" %}
+
+{% block title %}Profil Pengguna{% endblock %}
+
+{% block content %}
+<div class="tw-container tw-mx-auto tw-p-6 tw-bg-white tw-rounded-lg tw-shadow-md">
+    <h2 class="tw-text-2xl tw-font-bold tw-text-biBlueDark tw-mb-6">Profil Pengguna</h2>
+
+    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
+        <div class="tw-bg-gray-50 tw-p-4 tw-rounded-md tw-border tw-border-gray-200">
+            <h3 class="tw-text-lg tw-font-semibold tw-text-gray-800 tw-mb-2">Informasi Dasar</h3>
+            <p class="tw-text-gray-700"><span class="tw-font-medium">Nama:</span> [Nama Pengguna]</p>
+            <p class="tw-text-gray-700"><span class="tw-font-medium">Email:</span> [Email Pengguna]</p>
+            <p class="tw-text-gray-700"><span class="tw-font-medium">Jabatan:</span> [Jabatan Pengguna]</p>
+        </div>
+
+        <div class="tw-bg-gray-50 tw-p-4 tw-rounded-md tw-border tw-border-gray-200">
+            <h3 class="tw-text-lg tw-font-semibold tw-text-gray-800 tw-mb-2">Detail Kontak</h3>
+            <p class="tw-text-gray-700"><span class="tw-font-medium">Telepon:</span> [Nomor Telepon]</p>
+            <p class="tw-text-gray-700"><span class="tw-font-medium">Alamat:</span> [Alamat Pengguna]</p>
+        </div>
+    </div>
+
+    <div class="tw-mt-8 tw-text-center">
+        <a href="#" class="tw-inline-block tw-px-6 tw-py-3 tw-bg-biBlueMedium tw-text-white tw-rounded-md hover:tw-bg-biBlueDark tw-transition-colors tw-duration-200 tw-shadow-md">
+            Edit Profil
+        </a>
+    </div>
+</div>
+{% endblock %}

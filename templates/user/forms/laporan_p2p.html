@@ -2,297 +2,449 @@
 
 {% block title %}Laporan Kerjasama P2P{% endblock %}
 
+{% block extra_head %}
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Mengatur font-family secara global untuk halaman ini */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Kelas utilitas untuk spinner */
+        .spinner-border {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            vertical-align: middle;
+            border: 0.25em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border .75s linear infinite;
+        }
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+        .d-none { display: none !important; } /* Utility untuk JS */
+
+        /* Custom styles to match Laporan Fraud form aesthetics */
+        .section-group {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .section-group .section-header {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1f2937;
+            background-color: #eef2f6;
+            padding: 0.8rem 1.5rem;
+            margin-top: 0;
+            margin-left: -1px;
+            margin-right: -1px;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e0e7eb;
+            border-top-left-radius: 11px;
+            border-top-right-radius: 11px;
+        }
+        .section-group .section-content {
+            padding: 1.5rem;
+            padding-top: 0;
+        }
+
+        /* Adjust font size for labels and inputs for precision */
+        .form-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .form-input {
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
+            width: 100%; /* Ensure full width */
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            color: #4b5563;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            outline: none;
+            box-shadow: none;
+        }
+        .form-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        textarea.form-input {
+            min-height: 80px;
+            resize: vertical;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center mt-4">
-    <div class="col-12 col-lg-10">
-        <div class="card shadow-lg p-4">
-            <div class="modal fade" id="successModalP2P" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-success text-white">
-                            <h5 class="modal-title">Sukses!</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p id="successMessageP2P">Laporan berhasil dikirim!</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tutup</button>
-                        </div>
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6 tw-font-sans">
+    
+    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">Laporan Kerjasama P2P</h2>
+    <p class="tw-text-center tw-text-sm tw-font-medium tw-text-red-700 tw-bg-red-50 tw-p-2 tw-rounded-lg tw-border tw-border-red-200">
+        Penyampaian data laporan ini tidak menggugurkan kewajiban pelaporan ke LKKPBU
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="tw-p-4 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('submit_laporan_p2p') }}" enctype="multipart/form-data" id="p2pCooperationForm" class="tw-space-y-6">
+        
+        <div class="section-group">
+            <h3 class="section-header">Informasi Laporan</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                    <div class="tw-space-y-1">
+                        <label for="tahun_laporan" class="tw-block form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
+                        <select class="tw-mt-1 tw-block tw-w-full form-input" id="tahun_laporan" name="tahun_laporan" required>
+                            <option value="">-- Pilih Tahun --</option>
+                            {% for year in range(2020, 2027) %}
+                            <option value="{{ year }}">{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="periode_laporan" class="tw-block form-label">Periode Laporan (Bulan) <span class="tw-text-red-500">*</span></label>
+                        <select class="tw-mt-1 tw-block tw-w-full form-input" id="periode_laporan" name="periode_laporan" required>
+                            <option value="">-- Pilih Bulan --</option>
+                            <option value="Januari">Januari</option>
+                            <option value="Februari">Februari</option>
+                            <option value="Maret">Maret</option>
+                            <option value="April">April</option>
+                            <option value="Mei">Mei</option>
+                            <option value="Juni">Juni</option>
+                            <option value="Juli">Juli</option>
+                            <option value="Agustus">Agustus</option>
+                            <option value="September">September</option>
+                            <option value="Oktober">Oktober</option>
+                            <option value="November">November</option>
+                            <option value="Desember">Desember</option>
+                        </select>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="tanggal_surat" class="tw-block form-label">Tanggal Surat <span class="tw-text-red-500">*</span></label>
+                        <input type="date" class="tw-mt-1 tw-block tw-w-full form-input" id="tanggal_surat" name="tanggal_surat" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="nomor_surat" class="tw-block form-label">Nomor Surat <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="nomor_surat" name="nomor_surat" required>
+                    </div>
+                    {# Moved "Dokumen Kerjasama" here #}
+                    <div class="tw-space-y-1 md:tw-col-span-2">
+                        <label for="file" class="tw-block form-label">Dokumen Laporan Kerjasama (PDF) <span class="tw-text-red-500">*</span></label>
+                        <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="file" name="file" accept=".pdf" required>
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF (Maks. 10MB)</p>
                     </div>
                 </div>
             </div>
-
-            <div class="modal fade" id="errorModalP2P" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-danger text-white">
-                            <h5 class="modal-title">Error!</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p id="errorMessageP2P">Terjadi kesalahan saat mengirim laporan.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal fade" id="loadingModalP2P" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body text-center py-4">
-                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <h5 class="mt-3 mb-0">Mengirim laporan...</h5>
-                            <p class="text-muted small">Harap tunggu sebentar</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <h3 class="text-center mb-4">Laporan Kerjasama P2P</h3>
-            <form method="POST" action="{{ url_for('submit_laporan_p2p') }}" enctype="multipart/form-data" id="p2pCooperationForm">
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Informasi Laporan</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="tahun" class="form-label">Tahun Laporan <span class="text-danger">*</span></label>
-                                <select class="form-select" id="tahun" name="tahun" required>
-                                    <option value="">-- Pilih Tahun --</option>
-                                    {% for year in range(2020, 2027) %}
-                                    <option value="{{ year }}">{{ year }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="periode" class="form-label">Periode Laporan (Bulan) <span class="text-danger">*</span></label>
-                                <select class="form-select" id="periode" name="periode" required>
-                                    <option value="">-- Pilih Bulan --</option>
-                                    <option value="Januari">Januari</option>
-                                    <option value="Februari">Februari</option>
-                                    <option value="Maret">Maret</option>
-                                    <option value="April">April</option>
-                                    <option value="Mei">Mei</option>
-                                    <option value="Juni">Juni</option>
-                                    <option value="Juli">Juli</option>
-                                    <option value="Agustus">Agustus</option>
-                                    <option value="September">September</option>
-                                    <option value="Oktober">Oktober</option>
-                                    <option value="November">November</option>
-                                    <option value="Desember">Desember</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="jumlah_perusahaan" class="form-label">Jumlah Perusahaan Kerjasama <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="jumlah_perusahaan" name="jumlah_perusahaan" min="0" required>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="nomor_surat" class="form-label">Nomor Surat <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Daftar Perusahaan Kerjasama P2P</h5>
-                    </div>
-                    <div class="card-body">
-                        <div id="companyListContainer">
-                            <div class="company-item mb-4 p-3 border rounded">
-                                <h6 class="mb-3">Perusahaan Kerjasama #<span class="company-number">1</span></h6>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="nama_perusahaan_1" class="form-label">Nama Perusahaan <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="nama_perusahaan_1" name="nama_perusahaan[]" required>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="peran_pjp_1" class="form-label">Peran PJP <span class="text-danger">*</span></label>
-                                        <select class="form-select" id="peran_pjp_1" name="peran_pjp[]" required>
-                                            <option value="">-- Pilih Peran --</option>
-                                            <option value="Penyelenggara">Penyelenggara</option>
-                                            <option value="Mitra">Mitra</option>
-                                            <option value="Penjamin">Penjamin</option>
-                                            <option value="Lainnya">Lainnya</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="tanggal_kerjasama_1" class="form-label">Tanggal Kerjasama <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" id="tanggal_kerjasama_1" name="tanggal_kerjasama[]" required>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="keterangan_1" class="form-label">Keterangan</label>
-                                        <input type="text" class="form-control" id="keterangan_1" name="keterangan[]">
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-outline-danger btn-sm remove-company" style="display: none;">Hapus</button>
-                            </div>
-                        </div>
-                        
-                        <div class="d-grid gap-2 mt-3">
-                            <button type="button" id="addCompanyBtn" class="btn btn-outline-primary">Tambah Perusahaan</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Lampiran</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="dokumen_kerjasama" class="form-label">Dokumen Kerjasama <span class="text-danger">*</span></label>
-                            <input type="file" class="form-control" id="dokumen_kerjasama" name="dokumen_kerjasama" accept=".pdf,.doc,.docx" required>
-                            <div class="form-text">Format: PDF, DOC, DOCX (Maks. 10MB)</div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="keterangan_umum" class="form-label">Keterangan Tambahan (Umum)</label>
-                            <textarea class="form-control" id="keterangan_umum" name="keterangan_umum" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <span class="submit-text">Kirim Laporan</span>
-                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                    </button>
-                    <button type="reset" class="btn btn-outline-secondary">Reset Form</button>
-                </div>
-            </form>
         </div>
-    </div>
-</div>
+        
+        <div class="section-group">
+            <h3 class="section-header">Daftar Perusahaan Kerjasama P2P</h3>
+            <div class="section-content">
+                <div class="tw-space-y-1 tw-mb-4">
+                    <label for="jumlah_perusahaan_kerjasama_p2p" class="tw-block form-label">Jumlah Perusahaan Kerjasama P2P <span class="tw-text-red-500">*</span></label>
+                    <input type="number" class="tw-mt-1 tw-block tw-w-full form-input" id="jumlah_perusahaan_kerjasama_p2p" name="jumlah_perusahaan_kerjasama_p2p" min="0" required value="1">
+                </div>
 
-<style>
-    .card {
-        margin-bottom: 1.5rem;
-    }
-    .card-header {
-        font-weight: 600;
-        padding: 1rem 1.25rem;
-    }
-    .form-text {
-        font-size: 0.8rem;
-        color: #6c757d;
-    }
-    .company-item {
-        position: relative;
-        padding-bottom: 1rem; /* Adjusted padding */
-    }
-    .remove-company {
-       /* position: absolute; Remove absolute positioning to keep it in flow */
-       /* right: 1rem; */
-       /* bottom: 1rem; */
-       margin-top: 0.5rem; /* Add some margin */
-    }
-    .btn-primary .spinner-border {
-        vertical-align: middle;
-        margin-left: 5px;
-    }
-</style>
+                <hr class="tw-border-gray-300 tw-my-4">
+
+                <div class="tw-space-y-2 tw-mb-4">
+                    <label for="excelFileInput" class="tw-block form-label">Impor Data Perusahaan dari Excel</label>
+                    <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="excelFileInput" accept=".xlsx, .xls">
+                    <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Unggah file Excel (.xlsx atau .xls) dengan format yang sesuai.</p>
+                    <div class="tw-flex tw-flex-wrap tw-gap-3 tw-mt-3">
+                        <button type="button" id="importExcelBtn" class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-lg tw-shadow-sm tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-150 tw-ease-in-out">
+                            <svg class="tw-w-4 tw-h-4 tw-mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Impor Excel
+                        </button>
+                        <button type="button" id="downloadTemplateBtn" class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-text-sm tw-font-medium tw-rounded-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-50 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
+                            <svg class="tw-w-4 tw-h-4 tw-mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Unduh Template CSV
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="tw-border-gray-300 tw-my-4">
+
+                <div id="companyListContainer" class="tw-space-y-4">
+                    <div class="company-item tw-p-4 tw-border-2 tw-border-dashed tw-border-gray-200 tw-rounded-lg tw-bg-white tw-relative">
+                        <h4 class="tw-text-lg tw-font-bold tw-text-gray-800 tw-mb-4">Perusahaan Kerjasama #<span class="company-number">1</span></h4>
+                        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2">
+                            <div class="tw-space-y-1">
+                                <label for="nama_perusahaan_kerjasama_1" class="tw-block form-label">Nama Perusahaan Kerjasama <span class="tw-text-red-500">*</span></label>
+                                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="nama_perusahaan_kerjasama_1" name="nama_perusahaan_kerjasama_1" required>
+                            </div>
+                            <div class="tw-space-y-1">
+                                <label for="peran_pjp_1" class="tw-block form-label">Peran PJP <span class="tw-text-red-500">*</span></label>
+                                <select class="tw-mt-1 tw-block tw-w-full form-input peran-pjp-select" id="peran_pjp_1" name="peran_pjp_1" required>
+                                    <option value="">-- Pilih Peran --</option>
+                                    <option value="Penyelenggara">Penyelenggara</option>
+                                    <option value="Mitra">Mitra</option>
+                                    <option value="Penjamin">Penjamin</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                                <div class="peran-pjp-custom-input tw-mt-2" style="display: none;">
+                                    <label for="peran_pjp_custom_1" class="tw-sr-only">Peran PJP Kustom</label>
+                                    <input type="text" class="tw-block tw-w-full form-input" id="peran_pjp_custom_1" name="peran_pjp_custom_1" placeholder="Masukkan peran kustom">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2">
+                            <div class="tw-space-y-1">
+                                <label for="tanggal_mulai_kerjasama_1" class="tw-block form-label">Tanggal Mulai Kerja Sama <span class="tw-text-red-500">*</span></label>
+                                <input type="date" class="tw-mt-1 tw-block tw-w-full form-input" id="tanggal_mulai_kerjasama_1" name="tanggal_mulai_kerjasama_1" required>
+                            </div>
+                            <div class="tw-space-y-1">
+                                <label for="tanggal_akhir_kerjasama_1" class="tw-block form-label">Tanggal Akhir Kerja Sama</label>
+                                <input type="date" class="tw-mt-1 tw-block tw-w-full form-input" id="tanggal_akhir_kerjasama_1" name="tanggal_akhir_kerjasama_1">
+                            </div>
+                            <div class="tw-space-y-1 md:tw-col-span-2">
+                                <label for="keterangan_perusahaan_1" class="tw-block form-label">Keterangan</label>
+                                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="keterangan_perusahaan_1" name="keterangan_perusahaan_1">
+                            </div>
+                        </div>
+                        <button type="button" class="remove-company-btn tw-absolute tw-top-3 tw-right-3 tw-text-red-600 hover:tw-text-red-800 tw-font-bold tw-p-1 tw-rounded-full tw-bg-red-100 hover:tw-bg-red-200 tw-transition-colors tw-duration-150" style="display: none;">
+                            <svg class="tw-w-5 tw-h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tw-flex tw-justify-center tw-mt-6 tw-mb-6">
+                    <button type="button" id="addCompanyBtn" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-indigo-600 hover:tw-bg-indigo-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105">
+                        <svg class="tw-w-5 tw-h-5 tw-mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Tambah Perusahaan
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+                <span class="submit-text">Kirim Laporan</span>
+                <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">Batal</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{# SheetJS (xlsx) library - Tetap diperlukan untuk import Excel #}
+<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('p2pCooperationForm');
-    const submitButton = form.querySelector('button[type="submit"]');
+    const submitButton = document.getElementById('submitButton');
     const submitText = submitButton.querySelector('.submit-text');
     const submitSpinner = submitButton.querySelector('.spinner-border');
     
-    const loadingModalElement = document.getElementById('loadingModalP2P');
-    const successModalElement = document.getElementById('successModalP2P');
-    const errorModalElement = document.getElementById('errorModalP2P');
-
-    const loadingModal = new bootstrap.Modal(loadingModalElement);
-    const successModal = new bootstrap.Modal(successModalElement);
-    const errorModal = new bootstrap.Modal(errorModalElement);
+    // --- Custom Modal/Message Box ---
+    // Pastikan .form-container ada di HTML Anda atau sesuaikan selector
+    const messageContainer = document.querySelector('.tw-max-w-4xl.tw-mx-auto'); 
     
-    const successMessageElement = document.getElementById('successMessageP2P');
-    const errorMessageElement = document.getElementById('errorMessageP2P');
+    function showMessageBox(message, type) {
+        let messageBox = document.getElementById('dynamicMessageBox');
+        if (!messageBox) {
+            messageBox = document.createElement('div');
+            messageBox.id = 'dynamicMessageBox';
+            messageBox.classList.add('tw-p-3', 'tw-rounded-lg', 'tw-mb-4', 'tw-text-center', 'tw-font-medium'); 
+            // Sisipkan setelah h2 dan p di dalam .max-w-4xl
+            const firstChild = messageContainer.querySelector('h2');
+            if (firstChild) {
+                firstChild.parentNode.insertBefore(messageBox, firstChild.nextSibling);
+            } else {
+                messageContainer.insertBefore(messageBox, messageContainer.firstChild);
+            }
+        }
 
-    let companyCounter = 1;
+        messageBox.textContent = message;
+        messageBox.classList.remove('tw-bg-green-100', 'tw-text-green-800', 'tw-border-green-300', 'tw-bg-red-100', 'tw-text-red-800', 'tw-border-red-300'); 
+        
+        if (type === 'success') {
+            messageBox.classList.add('tw-bg-green-100', 'tw-text-green-800', 'tw-border', 'tw-border-green-300');
+        } else if (type === 'error') {
+            messageBox.classList.add('tw-bg-red-100', 'tw-text-red-800', 'tw-border', 'tw-border-red-300');
+        }
+        
+        messageBox.style.display = 'block'; 
+        setTimeout(() => {
+            messageBox.style.display = 'none'; 
+        }, 5000);
+    }
+    // --- End Custom Modal/Message Box ---
+
     const companyListContainer = document.getElementById('companyListContainer');
-    const jumlahPerusahaanInput = document.getElementById('jumlah_perusahaan');
+    const jumlahPerusahaanInput = document.getElementById('jumlah_perusahaan_kerjasama_p2p');
+    const excelFileInput = document.getElementById('excelFileInput');
+    const importExcelBtn = document.getElementById('importExcelBtn');
+    const downloadTemplateBtn = document.getElementById('downloadTemplateBtn');
 
-    function updateCompanyNumbersAndRemoveButtons() {
+    /**
+     * Mengubah visibilitas kolom input PJP kustom berdasarkan pilihan dropdown.
+     * @param {HTMLSelectElement} selectElement - Elemen select untuk peran PJP.
+     */
+    function toggleCustomPjpInput(selectElement) {
+        const customInputContainer = selectElement.closest('.tw-space-y-1').querySelector('.peran-pjp-custom-input');
+        if (customInputContainer) {
+            const customInputField = customInputContainer.querySelector('input');
+            if (selectElement.value === 'Lainnya') {
+                customInputContainer.style.display = 'block';
+                customInputField.setAttribute('required', 'true');
+            } else {
+                customInputContainer.style.display = 'none';
+                customInputField.removeAttribute('required');
+                customInputField.value = ''; 
+            }
+        }
+    }
+
+    /**
+     * Memperbarui penomoran item perusahaan, mengelola tombol hapus, dan memperbarui ID/nama input.
+     * @param {boolean} updateJumlahPerusahaan - Apakah akan memperbarui input 'Jumlah Perusahaan'.
+     */
+    function updateCompanyNumbersAndRemoveButtons(updateJumlahPerusahaan = true) {
         const items = companyListContainer.querySelectorAll('.company-item');
         items.forEach((item, index) => {
             item.querySelector('.company-number').textContent = index + 1;
-            const removeBtn = item.querySelector('.remove-company');
-            if (items.length > 1) {
-                removeBtn.style.display = 'inline-block';
-            } else {
-                removeBtn.style.display = 'none';
+
+            const removeBtn = item.querySelector('.remove-company-btn');
+            if (removeBtn) {
+                if (items.length > 1) {
+                    removeBtn.style.display = 'inline-flex';
+                } else {
+                    removeBtn.style.display = 'none';
+                }
             }
-            // Update IDs and names for dynamic fields
-            item.querySelectorAll('input, select').forEach(input => {
+
+            // Update IDs and 'for' attributes for labels and 'name' attributes for inputs
+            item.querySelectorAll('input, select, textarea').forEach(input => {
                 const oldId = input.id;
+                const newIdx = index + 1;
+
+                // Update ID
+                if (oldId && oldId.match(/_\d+$/)) {
+                    input.id = oldId.replace(/_\d+$/, '_' + newIdx);
+                } else if (oldId && oldId.startsWith('peran_pjp_custom_')) {
+                    input.id = `peran_pjp_custom_${newIdx}`;
+                }
+
+                // Update name (ensure no [] for dynamic collection)
                 const oldName = input.name;
-                if (oldId) input.id = oldId.replace(/_[\d]+$/, '_' + (index + 1));
-                if (oldName) input.name = oldName.replace(/\[\]$/, '_' + (index + 1)).replace(/_[\d]+$/, '_' + (index + 1));
+                if (oldName && oldName.endsWith('[]')) { // This case should ideally not happen now with fixed names
+                    input.name = oldName.replace(/\[\]$/, `_${newIdx}`); 
+                } else if (oldName && oldName.match(/_\d+$/)) {
+                    input.name = oldName.replace(/_\d+$/, '_' + newIdx);
+                } else if (oldName && oldName.startsWith('peran_pjp_custom_')) {
+                    input.name = `peran_pjp_custom_${newIdx}`;
+                } else if (oldName && !oldName.match(/_\d+$/) && !oldName.startsWith('peran_pjp_custom_')) {
+                    // For initial elements that might not have a number, e.g., 'nama_perusahaan_kerjasama' becomes 'nama_perusahaan_kerjasama_1'
+                    input.name = `${oldName}_${newIdx}`;
+                }
+                
+                const label = item.querySelector(`label[for="${oldId}"]`);
+                if (label) {
+                    label.setAttribute('for', input.id);
+                }
             });
+
+            const peranPjpSelect = item.querySelector('.peran-pjp-select');
+            if (peranPjpSelect) {
+                // Hapus listener lama untuk mencegah duplikasi
+                // (Ini penting jika updateCompanyNumbersAndRemoveButtons dipanggil berulang kali)
+                const oldListener = peranPjpSelect._changeListener; // Simpan referensi listener
+                if (oldListener) {
+                    peranPjpSelect.removeEventListener('change', oldListener);
+                }
+                const newListener = function() { toggleCustomPjpInput(this); };
+                peranPjpSelect.addEventListener('change', newListener);
+                peranPjpSelect._changeListener = newListener; // Simpan referensi listener baru
+                
+                // Panggil sekali untuk memastikan status awal yang benar
+                toggleCustomPjpInput(peranPjpSelect);
+            }
         });
-        if (jumlahPerusahaanInput) {
+
+        if (updateJumlahPerusahaan && jumlahPerusahaanInput) {
             jumlahPerusahaanInput.value = items.length;
         }
-        companyCounter = items.length;
     }
     
-    function createCompanyItem(index) {
+    /**
+     * Membuat struktur HTML item perusahaan baru dan secara opsional mengisinya dengan data.
+     * @param {number} index - Indeks untuk item baru (berbasis 0).
+     * @param {object} [data={}] - Objek data opsional untuk mengisi bidang.
+     * @returns {HTMLDivElement} Elemen item perusahaan baru.
+     */
+    function createCompanyItem(index, data = {}) {
+        const newIdx = index + 1; 
         const newItem = document.createElement('div');
-        newItem.className = 'company-item mb-4 p-3 border rounded';
+        newItem.className = 'company-item tw-p-4 tw-border-2 tw-border-dashed tw-border-gray-200 tw-rounded-lg tw-bg-white tw-relative'; // Changed tw-p-6 to tw-p-4
         newItem.innerHTML = `
-            <h6 class="mb-3">Perusahaan Kerjasama #<span class="company-number">${index + 1}</span></h6>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="nama_perusahaan_${index + 1}" class="form-label">Nama Perusahaan <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="nama_perusahaan_${index + 1}" name="nama_perusahaan[]" required>
+            <h4 class="tw-text-lg tw-font-bold tw-text-gray-800 tw-mb-4">Perusahaan Kerjasama #<span class="company-number">${newIdx}</span></h4>
+            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> <!-- Changed tw-gap-y-4 to tw-gap-y-2 -->
+                <div class="tw-space-y-1">
+                    <label for="nama_perusahaan_kerjasama_${newIdx}" class="tw-block form-label">Nama Perusahaan Kerjasama <span class="tw-text-red-500">*</span></label>
+                    <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="nama_perusahaan_kerjasama_${newIdx}" name="nama_perusahaan_kerjasama_${newIdx}" required value="${data['Nama Perusahaan'] || ''}">
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label for="peran_pjp_${index + 1}" class="form-label">Peran PJP <span class="text-danger">*</span></label>
-                    <select class="form-select" id="peran_pjp_${index + 1}" name="peran_pjp[]" required>
+                <div class="tw-space-y-1">
+                    <label for="peran_pjp_${newIdx}" class="tw-block form-label">Peran PJP <span class="tw-text-red-500">*</span></label>
+                    <select class="tw-mt-1 tw-block tw-w-full form-input peran-pjp-select" id="peran_pjp_${newIdx}" name="peran_pjp_${newIdx}" required>
                         <option value="">-- Pilih Peran --</option>
-                        <option value="Penyelenggara">Penyelenggara</option>
-                        <option value="Mitra">Mitra</option>
-                        <option value="Penjamin">Penjamin</option>
-                        <option value="Lainnya">Lainnya</option>
+                        <option value="Penyelenggara" ${data['Peran PJP (Dropdown)'] === 'Penyelenggara' ? 'selected' : ''}>Penyelenggara</option>
+                        <option value="Mitra" ${data['Peran PJP (Dropdown)'] === 'Mitra' ? 'selected' : ''}>Mitra</option>
+                        <option value="Penjamin" ${data['Peran PJP (Dropdown)'] === 'Penjamin' ? 'selected' : ''}>Penjamin</option>
+                        <option value="Lainnya" ${data['Peran PJP (Dropdown)'] === 'Lainnya' ? 'selected' : ''}>Lainnya</option>
                     </select>
+                    <div class="peran-pjp-custom-input tw-mt-2" style="display: none;">
+                        <label for="peran_pjp_custom_${newIdx}" class="tw-sr-only">Peran PJP Kustom</label>
+                        <input type="text" class="tw-block tw-w-full form-input" id="peran_pjp_custom_${newIdx}" name="peran_pjp_custom_${newIdx}" placeholder="Masukkan peran kustom" value="${data['Peran PJP Kustom (Jika Lainnya)'] || ''}">
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="tanggal_kerjasama_${index + 1}" class="form-label">Tanggal Kerjasama <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" id="tanggal_kerjasama_${index + 1}" name="tanggal_kerjasama[]" required>
+            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2">
+                <div class="tw-space-y-1">
+                    <label for="tanggal_mulai_kerjasama_${newIdx}" class="tw-block form-label">Tanggal Mulai Kerja Sama <span class="tw-text-red-500">*</span></label>
+                    <input type="date" class="tw-mt-1 tw-block tw-w-full form-input" id="tanggal_mulai_kerjasama_${newIdx}" name="tanggal_mulai_kerjasama_${newIdx}" required value="${data['Tanggal Mulai Kerjasama (YYYY-MM-DD)'] || ''}">
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label for="keterangan_${index + 1}" class="form-label">Keterangan</label>
-                    <input type="text" class="form-control" id="keterangan_${index + 1}" name="keterangan[]">
+                <div class="tw-space-y-1">
+                    <label for="tanggal_akhir_kerjasama_${newIdx}" class="tw-block form-label">Tanggal Akhir Kerja Sama</label>
+                    <input type="date" class="tw-mt-1 tw-block tw-w-full form-input" id="tanggal_akhir_kerjasama_${newIdx}" name="tanggal_akhir_kerjasama_${newIdx}" value="${data['Tanggal Akhir Kerjasama (YYYY-MM-DD)'] || ''}">
+                </div>
+                <div class="tw-space-y-1 md:tw-col-span-2">
+                    <label for="keterangan_perusahaan_${newIdx}" class="tw-block form-label">Keterangan</label>
+                    <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="keterangan_perusahaan_${newIdx}" name="keterangan_perusahaan_${newIdx}" value="${data['Keterangan Perusahaan'] || ''}">
                 </div>
             </div>
-            <button type="button" class="btn btn-outline-danger btn-sm remove-company">Hapus</button>
+            <button type="button" class="remove-company-btn tw-absolute tw-top-3 tw-right-3 tw-text-red-600 hover:tw-text-red-800 tw-font-bold tw-p-1 tw-rounded-full tw-bg-red-100 hover:tw-bg-red-200 tw-transition-colors tw-duration-150" style="display: none;">
+                <svg class="tw-w-5 tw-h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+            </button>
         `;
-        newItem.querySelector('.remove-company').addEventListener('click', function() {
+        
+        newItem.querySelector('.remove-company-btn').addEventListener('click', function() {
             newItem.remove();
             updateCompanyNumbersAndRemoveButtons();
         });
+
+        const peranPjpSelect = newItem.querySelector('.peran-pjp-select');
+        peranPjpSelect.addEventListener('change', function() {
+            toggleCustomPjpInput(this);
+        });
+        toggleCustomPjpInput(peranPjpSelect); // Initialize custom input visibility
+
         return newItem;
     }
 
@@ -319,15 +471,182 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             updateCompanyNumbersAndRemoveButtons();
         });
-        // Initial sync if the input has a value (e.g. from server-side rendering or error repopulation)
-        if (parseInt(jumlahPerusahaanInput.value) > 1 && companyListContainer.children.length === 1) {
-             const initialCount = parseInt(jumlahPerusahaanInput.value);
-             for (let i = 1; i < initialCount; i++) { // Start from 1 because one item is already there
-                companyListContainer.appendChild(createCompanyItem(i));
-             }
-        }
     }
-    updateCompanyNumbersAndRemoveButtons(); // Initial call to set button visibility
+
+    // Excel Import Logic
+    importExcelBtn.addEventListener('click', function() {
+        const file = excelFileInput.files[0];
+        if (!file) {
+            showMessageBox('Harap pilih file Excel terlebih dahulu.', 'error');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array', cellDates: true, raw: false }); 
+                
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                
+                // Use header: 1 to get an array of arrays, with the first array being headers
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false });
+
+                if (jsonData.length < 2) { // Minimum 2 rows: header + at least one data row
+                    showMessageBox('File Excel kosong atau hanya berisi header.', 'error');
+                    return;
+                }
+
+                const headers = jsonData[0].map(h => String(h).trim()); // Trim headers
+                const companyDataRows = jsonData.slice(1);
+
+                const expectedExcelHeaders = [
+                    'Nama Perusahaan',
+                    'Peran PJP (Dropdown)',
+                    'Peran PJP Kustom (Jika Lainnya)',
+                    'Tanggal Mulai Kerjasama (YYYY-MM-DD)',
+                    'Tanggal Akhir Kerjasama (YYYY-MM-DD)',
+                    'Keterangan Perusahaan'
+                ];
+
+                const headerMap = {};
+                let isValidHeaderSet = true;
+                expectedExcelHeaders.forEach(expectedH => {
+                    const actualFoundHeader = headers.find(h => h === expectedH);
+                    if (actualFoundHeader) {
+                        headerMap[expectedH] = actualFoundHeader;
+                    } else {
+                        isValidHeaderSet = false;
+                    }
+                });
+
+                if (!isValidHeaderSet) {
+                    showMessageBox('File Excel tidak memiliki semua kolom header yang diperlukan sesuai template. Harap gunakan template yang diunduh atau periksa format header.', 'error');
+                    return;
+                }
+
+                companyListContainer.innerHTML = ''; // Clear existing items
+                
+                let validImportedCompanies = 0;
+
+                companyDataRows.forEach((row, index) => {
+                    // Skip empty rows (rows where all cells are empty or just whitespace)
+                    if (row.filter(cell => cell !== undefined && cell !== null && String(cell).trim() !== '').length === 0) {
+                        return; 
+                    }
+
+                    const companyRawData = {};
+                    expectedExcelHeaders.forEach(expectedH => {
+                        const actualColHeader = headerMap[expectedH];
+                        const colIndex = headers.indexOf(actualColHeader); 
+                        if (colIndex !== -1) {
+                            companyRawData[expectedH] = row[colIndex];
+                        }
+                    });
+
+                    // Basic validation for required fields
+                    if (!companyRawData['Nama Perusahaan'] || 
+                        !companyRawData['Peran PJP (Dropdown)'] || 
+                        !companyRawData['Tanggal Mulai Kerjasama (YYYY-MM-DD)']) {
+                        console.warn(`Baris ${index + 2} di Excel diabaikan karena data wajib tidak lengkap.`);
+                        return; 
+                    }
+
+                    const convertExcelDate = (excelDate) => {
+                        if (excelDate instanceof Date) { // If SheetJS already converted it to Date object
+                            return excelDate.toISOString().split('T')[0];
+                        }
+                        if (typeof excelDate === 'string' && excelDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                            return excelDate; // Already in YYYY-MM-DD format
+                        }
+                        // Handle numeric Excel dates
+                        if (typeof excelDate === 'number' && !isNaN(excelDate)) { 
+                            // Excel's epoch is 1899-12-30. JS epoch is 1970-01-01.
+                            // 25569 is the number of days between the two epochs.
+                            const date = new Date(Math.round((excelDate - 25569) * 86400 * 1000));
+                            if (!isNaN(date.getTime())) { // Check for valid date
+                                return date.toISOString().split('T')[0];
+                            }
+                        }
+                        console.warn(`Invalid or unparsable date format for cell data:`, excelDate);
+                        return ''; 
+                    };
+
+                    const namaPerusahaan = String(companyRawData['Nama Perusahaan'] || '').trim();
+                    const peranPjp = String(companyRawData['Peran PJP (Dropdown)'] || '').trim();
+                    const peranPjpKustom = String(companyRawData['Peran PJP Kustom (Jika Lainnya)'] || '').trim();
+                    const tanggalMulai = convertExcelDate(companyRawData['Tanggal Mulai Kerjasama (YYYY-MM-DD)']);
+                    const tanggalAkhir = convertExcelDate(companyRawData['Tanggal Akhir Kerjasama (YYYY-MM-DD)']);
+                    const keteranganPerusahaan = String(companyRawData['Keterangan Perusahaan'] || '').trim();
+
+                    const formattedCompanyData = {
+                        'Nama Perusahaan': namaPerusahaan,
+                        'Peran PJP (Dropdown)': peranPjp, // Use the dropdown value for selection
+                        'Peran PJP Kustom (Jika Lainnya)': peranPjpKustom, // Use for custom input
+                        'Tanggal Mulai Kerjasama (YYYY-MM-DD)': tanggalMulai,
+                        'Tanggal Akhir Kerjasama (YYYY-MM-DD)': tanggalAkhir,
+                        'Keterangan Perusahaan': keteranganPerusahaan
+                    };
+
+                    companyListContainer.appendChild(createCompanyItem(validImportedCompanies, formattedCompanyData));
+                    validImportedCompanies++;
+                });
+
+                if (validImportedCompanies > 0) {
+                    jumlahPerusahaanInput.value = validImportedCompanies; 
+                    updateCompanyNumbersAndRemoveButtons(false); // Don't update jumlahPerusahaanInput again
+                    showMessageBox(`${validImportedCompanies} perusahaan berhasil diimpor dari Excel.`, 'success');
+                } else {
+                    showMessageBox('Tidak ada data perusahaan yang valid ditemukan dalam file Excel. Pastikan data tidak kosong dan format header sesuai.', 'error');
+                    // Re-add a default empty item if all imported data was invalid
+                    if (companyListContainer.children.length === 0) {
+                        companyListContainer.appendChild(createCompanyItem(0));
+                        jumlahPerusahaanInput.value = 1;
+                    }
+                    updateCompanyNumbersAndRemoveButtons();
+                }
+
+            } catch (error) {
+                console.error('Error reading Excel file:', error);
+                showMessageBox(`Terjadi kesalahan saat membaca file Excel: ${error.message}. Pastikan format file benar dan tidak rusak.`, 'error');
+            } finally {
+                excelFileInput.value = ''; // Clear the file input after processing
+            }
+        };
+        reader.onerror = function(errorEvent) {
+            console.error('FileReader error:', errorEvent);
+            showMessageBox(`Gagal membaca file: ${errorEvent.target.error.message || 'Unknown error'}.`, 'error');
+            excelFileInput.value = ''; // Clear the file input on error
+        };
+        reader.readAsArrayBuffer(file); 
+    });
+
+    // Download Excel Template Logic
+    downloadTemplateBtn.addEventListener('click', function() {
+        const csvHeaders = [
+            'Nama Perusahaan',
+            'Peran PJP (Dropdown)',
+            'Peran PJP Kustom (Jika Lainnya)',
+            'Tanggal Mulai Kerjasama (YYYY-MM-DD)',
+            'Tanggal Akhir Kerjasama (YYYY-MM-DD)',
+            'Keterangan Perusahaan'
+        ];
+        const csvContent = csvHeaders.join(',') + "\n"; 
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = "Template_Daftar_Perusahaan_P2P.csv"; 
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showMessageBox('Template CSV telah diunduh. Harap diperhatikan bahwa file CSV tidak mendukung fitur dropdown atau date picker di dalamnya.', 'success');
+    });
+
+    // Memastikan tombol hapus muncul jika ada lebih dari 1 perusahaan saat memuat halaman
+    updateCompanyNumbersAndRemoveButtons(); 
 
     const tanggalSuratInput = document.getElementById('tanggal_surat');
     if(tanggalSuratInput){
@@ -339,80 +658,182 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         let formIsValid = true;
         
-        const tahun = document.getElementById('tahun').value;
+        const tahun = document.getElementById('tahun_laporan').value;
         const currentYear = new Date().getFullYear();
-        if (parseInt(tahun) > currentYear) {
-            errorMessageElement.textContent = 'Tahun laporan tidak boleh melebihi tahun berjalan.';
-            errorModal.show();
+        // Validasi tahun laporan: tahun sekarang, tahun sebelumnya, atau tahun berikutnya.
+        if (parseInt(tahun) > currentYear + 1 || parseInt(tahun) < currentYear - 1 ) {
+            showMessageBox('Tahun laporan harus tahun sekarang, tahun sebelumnya, atau tahun berikutnya.', 'error');
             formIsValid = false;
         }
         
-        const fileInput = document.getElementById('dokumen_kerjasama');
-        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) { // 10MB
-            errorMessageElement.textContent = 'Ukuran file lampiran melebihi 10MB.';
-            errorModal.show();
+        const fileInput = document.getElementById('file');
+        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) { 
+            showMessageBox('Ukuran file lampiran melebihi 10MB.', 'error');
             formIsValid = false;
         }
         
         const companyCountDeclared = parseInt(jumlahPerusahaanInput.value) || 0;
         const actualCompanyCount = companyListContainer.children.length;
+
         if (companyCountDeclared !== actualCompanyCount) {
-            errorMessageElement.textContent = 'Jumlah perusahaan yang dideklarasikan tidak sesuai dengan detail yang diinput.';
-            errorModal.show();
+            showMessageBox('Jumlah perusahaan yang dideklarasikan tidak sesuai dengan detail yang diinput. Harap periksa kembali jumlah atau detail perusahaan.', 'error');
             formIsValid = false;
         }
         if (actualCompanyCount === 0 && companyCountDeclared > 0) {
-             errorMessageElement.textContent = 'Harap tambahkan detail perusahaan kerjasama sesuai jumlah yang dideklarasikan.';
-            errorModal.show();
+            showMessageBox('Harap tambahkan detail perusahaan kerjasama sesuai jumlah yang dideklarasikan.', 'error');
             formIsValid = false;
         }
+        // Kondisi ini bisa dihapus jika jumlah_perusahaan_kerjasama_p2p = 0 diizinkan dengan daftar perusahaan kosong
+        // if (actualCompanyCount > 0 && companyCountDeclared === 0) {
+        //     showMessageBox('Jumlah perusahaan yang dideklarasikan harus lebih besar dari 0 jika ada detail perusahaan yang diisi.', 'error');
+        //     formIsValid = false;
+        // }
 
+        const companyItems = companyListContainer.querySelectorAll('.company-item');
+        const perusahaanDataArray = [];
 
-        if (!formIsValid) return;
+        companyItems.forEach((item, index) => {
+            // Ambil input berdasarkan atribut 'name' yang sudah diperbarui dengan index
+            const namaPerusahaanInput = item.querySelector(`input[name="nama_perusahaan_kerjasama_${index+1}"]`);
+            const peranPjpSelect = item.querySelector(`select[name="peran_pjp_${index+1}"]`);
+            const peranPjpCustomInput = item.querySelector(`input[name="peran_pjp_custom_${index+1}"]`);
+            const tanggalMulaiInput = item.querySelector(`input[name="tanggal_mulai_kerjasama_${index+1}"]`);
+            const tanggalAkhirInput = item.querySelector(`input[name="tanggal_akhir_kerjasama_${index+1}"]`);
+            const keteranganPerusahaanInput = item.querySelector(`input[name="keterangan_perusahaan_${index+1}"]`);
+
+            // Validasi di sisi klien
+            if (!namaPerusahaanInput.value.trim()) {
+                showMessageBox(`Nama Perusahaan Kerjasama untuk perusahaan #${index + 1} tidak boleh kosong.`, 'error');
+                formIsValid = false;
+            }
+            if (!peranPjpSelect.value) {
+                showMessageBox(`Peran PJP untuk perusahaan #${index + 1} tidak boleh kosong.`, 'error');
+                formIsValid = false;
+            }
+            let peranPjpValue = peranPjpSelect.value;
+            if (peranPjpSelect.value === 'Lainnya') {
+                if (!peranPjpCustomInput || !peranPjpCustomInput.value.trim()) {
+                    showMessageBox(`Peran PJP kustom untuk perusahaan #${index + 1} tidak boleh kosong.`, 'error');
+                    formIsValid = false;
+                } else {
+                    peranPjpValue = peranPjpCustomInput.value.trim();
+                }
+            }
+            if (!tanggalMulaiInput.value) {
+                showMessageBox(`Tanggal Mulai Kerja Sama untuk perusahaan #${index + 1} tidak boleh kosong.`, 'error');
+                formIsValid = false;
+            }
+
+            perusahaanDataArray.push({
+                "nama_perusahaan_kerjasama": namaPerusahaanInput.value.trim(),
+                "peran_pjp": peranPjpValue,
+                "tanggal_mulai_kerjasama": tanggalMulaiInput.value, // Format YYYY-MM-DD
+                "tanggal_akhir_kerjasama": tanggalAkhirInput.value || null, // Kirim null jika kosong
+                "keterangan": keteranganPerusahaanInput.value.trim() || null // Kirim null jika kosong
+            });
+        });
+        
+        if (!formIsValid) {
+            console.log("Form tidak valid, pengiriman dibatalkan.");
+            return;
+        }
 
         submitButton.disabled = true;
         submitText.textContent = 'Mengirim...';
         submitSpinner.classList.remove('d-none');
-        loadingModal.show();
+
+        // Manual construction of FormData to handle 'perusahaan' array as JSON string
+        const formData = new FormData();
+        formData.append('nomor_surat', document.getElementById('nomor_surat').value);
+        formData.append('tanggal_surat', document.getElementById('tanggal_surat').value); // YYYY-MM-DD, backend will convert to DD/MM/YYYY
+        formData.append('tahun_laporan', document.getElementById('tahun_laporan').value);
+        formData.append('periode_laporan', document.getElementById('periode_laporan').value);
+        formData.append('jumlah_perusahaan_kerjasama_p2p', document.getElementById('jumlah_perusahaan_kerjasama_p2p').value);
         
-        const formData = new FormData(this);
-        // Backend needs to handle 'nama_perusahaan[]', 'peran_pjp[]' etc. as lists
+        // Append the company data as a JSON string
+        // Ini adalah bagian kunci yang memastikan backend menerima array objek yang benar
+        if (perusahaanDataArray.length > 0) {
+            formData.append('perusahaan', JSON.stringify(perusahaanDataArray));
+        }
+
+        const file = fileInput.files[0];
+        if (file) {
+            formData.append('file', file);
+        } else {
+            // Jika file wajib tetapi tidak dipilih, ini sudah ditangani oleh atribut 'required'
+            // pada input file. Tidak perlu menambahkan blob kosong di sini.
+        }
         
         fetch(this.action, {
             method: 'POST',
             body: formData,
-            headers: { 'Accept': 'application/json' }
+            // Headers: FormData akan secara otomatis mengatur 'Content-Type: multipart/form-data' dengan boundary
+            // Jangan mengatur Content-Type secara manual di sini untuk FormData.
         })
         .then(response => {
-            loadingModal.hide();
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
+
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Gagal mengirim laporan (status non-2xx)');
+                }).catch(() => {
+                    throw new Error('Gagal mengirim laporan (respons tidak valid dari server).');
+                });
+            }
             return response.json();
         })
         .then(data => {
             if (data.success) {
-                successMessageElement.textContent = data.message || 'Laporan berhasil dikirim!';
-                successModal.show();
+                showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
                 form.reset();
-                companyListContainer.innerHTML = ''; // Clear dynamic fields
-                companyListContainer.appendChild(createCompanyItem(0)); // Add back one initial item
+                // Reset daftar perusahaan kembali ke satu item default
+                companyListContainer.innerHTML = ''; 
+                companyListContainer.appendChild(createCompanyItem(0)); 
                 updateCompanyNumbersAndRemoveButtons();
             } else {
-                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
-                errorModal.show();
+                showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            loadingModal.hide();
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
-            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
-            errorModal.show();
+            showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server.', 'error');
         });
     });
+
+    // Logika reset form: mengembalikan daftar perusahaan ke satu item default
+    form.addEventListener('reset', function() {
+        while (companyListContainer.children.length > 1) {
+            companyListContainer.lastElementChild.remove();
+        }
+        const firstItem = companyListContainer.querySelector('.company-item');
+        if (firstItem) {
+            firstItem.querySelector('.peran-pjp-select').value = '';
+            toggleCustomPjpInput(firstItem.querySelector('.peran-pjp-select'));
+            // Reset nilai input spesifik pada item pertama
+            firstItem.querySelector('input[name="nama_perusahaan_kerjasama_1"]').value = ''; 
+            firstItem.querySelector('input[name="tanggal_mulai_kerjasama_1"]').value = ''; 
+            firstItem.querySelector('input[name="tanggal_akhir_kerjasama_1"]').value = ''; 
+            firstItem.querySelector('input[name="keterangan_perusahaan_1"]').value = ''; 
+        }
+        jumlahPerusahaanInput.value = 1;
+        updateCompanyNumbersAndRemoveButtons();
+    });
+
+    // Inisialisasi: Jika jumlah perusahaan lebih dari 1 saat pemuatan, tambahkan item yang sesuai
+    // Ini menangani kasus jika nilai default jumlah_perusahaan_kerjasama_p2p adalah > 1
+    if (parseInt(jumlahPerusahaanInput.value) > 1 && companyListContainer.children.length === 1) {
+        const initialCount = parseInt(jumlahPerusahaanInput.value);
+        for (let i = 1; i < initialCount; i++) { 
+            companyListContainer.appendChild(createCompanyItem(i));
+        }
+    }
+    // Pastikan penomoran dan tombol hapus diperbarui saat halaman dimuat
+    updateCompanyNumbersAndRemoveButtons(); 
 });
 </script>
 {% endblock %}

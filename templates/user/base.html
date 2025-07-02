@@ -5,83 +5,476 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Dashboard User{% endblock %}</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    {# Favicon #}
+    <link rel="icon" href="{{ url_for('static', filename='BI.png') }}" type="image/png">
+
+    {# Tailwind CSS CDN #}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        prefix: "tw-",
+        theme: {
+            extend: {
+                colors: {
+                    // Palet warna Bank Indonesia yang lebih profesional
+                    biBlueDark: '#003366', // Biru gelap utama
+                    biBlueMedium: '#0056b3', // Biru sedang untuk aksen
+                    biBlueLight: '#007bff', // Biru terang untuk highlight
+                    biGold: '#FFD700',       // Emas/kuning untuk aksen penting
+                    biRed: '#DC3545',        // Merah untuk tindakan bahaya/logout
+                    biOffWhite: '#F8F9FA',   // Putih keabu-abuan untuk latar belakang elemen
+                    biGrayText: '#4B5563',   // Abu-abu gelap untuk teks
+                    biBorderGray: '#D1D5DB', // Abu-abu terang untuk border
+                    biBgLight: '#F9FAFB',    // Abu-abu sangat terang untuk latar belakang
+                    biBlueBg: '#E0F2F7',     // Biru sangat terang untuk latar belakang bagian
+                    biDarkBlueBg: '#002244', // Biru sangat gelap untuk footer atau elemen kuat
+                }
+            }
+        },
+        corePlugins: {
+            preflight: false,
+        }
+    }
+    </script>
+    {# Font Inter #}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Warna fallback */
+            /* Menambahkan overlay gradien semi-transparan pada gambar latar belakang */
+            background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('https://i0.wp.com/news.sah.co.id/wp-content/uploads/2025/02/bank-indonesia.jpg?w=1500&ssl=1');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            padding-top: 4rem; /* Menambahkan padding agar konten tidak tertutup navbar fixed */
+        }
+
+        /* Gaya kustom untuk modal konfirmasi */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .custom-modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: fadeInScale 0.3s ease-out forwards;
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .custom-modal-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        .custom-modal-body {
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+        }
+        .custom-modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .custom-modal-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .custom-modal-button.confirm {
+            background-color: #ef4444; /* red-500 */
+            color: white;
+        }
+        .custom-modal-button.confirm:hover {
+            background-color: #dc2626; /* red-600 */
+            transform: translateY(-1px);
+        }
+        .custom-modal-button.cancel {
+            background-color: #e5e7eb; /* gray-200 */
+            color: #374151; /* gray-800 */
+        }
+        .custom-modal-button.cancel:hover {
+            background-color: #d1d5db; /* gray-300 */
+            transform: translateY(-1px);
+        }
+
+        /* Gaya Kustom untuk Dropdown */
+        .dropdown-menu-container {
+            background-color: white;
+            border: 1px solid white; /* Border putih */
+            box-shadow: none; /* Menghapus box-shadow agar tidak ada bayangan gelap */
+            border-radius: 0.375rem; /* tw-rounded-md */
+            outline: none; /* focus:tw-outline-none */
+        }
+
+        .dropdown-menu-item {
+            color: #4b5563; /* tw-text-gray-700 */
+            display: block; /* tw-block */
+            padding: 0.5rem 1rem; /* tw-px-4 tw-py-2 */
+            font-size: 0.875rem; /* tw-text-sm */
+            transition-property: background-color, color; /* tw-transition-colors */
+            transition-duration: 150ms; /* tw-duration-150 */
+        }
+
+        .dropdown-menu-item:hover {
+            background-color: #003366; /* biBlueBg */
+            color: #ffffff; /* biBlueDark */
+            border-radius: 0.375rem;
+        }
+
+        /* Gaya untuk tombol dropdown (teks biasa tanpa border) */
+        .dropdown-toggle-button {
+            color: #003366; /* biBlueDark */
+            padding: 0.5rem 0.75rem; /* tw-px-3 tw-py-2 */
+            font-size: 1rem; /* tw-text-sm */
+            font-weight: 700; /* tw-font-medium */
+            outline: none; /* focus:tw-outline-none */
+            transition-property: color; /* tw-transition-colors */
+            transition-duration: 150ms; /* tw-duration-150 */
+            background-color: white;
+            border: 1px solid white; /* Border putih untuk tombol dropdown */
+        }
+
+        .dropdown-toggle-button:hover {
+            background-color: #003366;
+            border-radius: 0.375rem;
+            color: #ffffff; /* biBlueMedium */
+        }
+
+        /* Gaya untuk mobile dropdown (tombol) */
+        .mobile-dropdown-toggle-button {
+            color: #60A5FA; /* blue-300, disesuaikan agar lebih terlihat di bg putih */
+            background-color: transparent;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 500;
+            width: 100%;
+            text-align: left;
+            transition-property: background-color, color;
+            transition-duration: 150ms;
+            border: 1px solid white; /* Border putih untuk tombol dropdown mobile */
+        }
+
+        .mobile-dropdown-toggle-button:hover {
+            background-color: #0056b3; /* biBlueMedium */
+            color: white;
+        }
+
+        /* Gaya untuk mobile dropdown items */
+        .mobile-dropdown-item {
+            color: #4B5563; /* gray-700, disesuaikan agar lebih terlihat di bg putih */
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition-property: background-color, color;
+            transition-duration: 150ms;
+        }
+
+        .mobile-dropdown-item:hover {
+            background-color: #E0F2F7; /* biBlueBg */
+            color: #003366; /* biBlueDark */
+        }
+
+        /* Gaya untuk navbar saat di-scroll */
+        .navbar-scrolled {
+            background-color: rgba(255, 255, 255, 0.9); /* Sedikit transparan */
+            backdrop-filter: blur(5px); /* Efek blur untuk tampilan frosted glass */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Bayangan lebih jelas saat di-scroll */
+        }
+
+    </style>
     {% block extra_head %}{% endblock %}
 </head>
-<body>
+<body class="tw-bg-gray-100 tw-pt-16"> {# Menambahkan padding-top untuk navbar fixed #}
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-    <div class="container">
-        <a class="navbar-brand" href="{{ url_for('user_dashboard') }}">
-            <img src="{{ url_for('static', filename='BI_Logo.png') }}" alt="Logo Bank Indonesia" height="40">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#userNavbar" aria-controls="userNavbar" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<nav class="tw-bg-white tw-shadow-lg tw-fixed tw-top-0 tw-left-0 tw-right-0 tw-z-50 tw-transition-all tw-duration-300" id="main-navbar"> {# Navbar fixed #}
+    {# Container utama navbar dengan padding horizontal #}
+    <div class="tw-max-w-full tw-mx-auto tw-px-4 sm:tw-px-6 lg:tw-px-8">
+        <div class="tw-flex tw-justify-between tw-h-16 tw-items-center">
+            {# Grup Kiri: Logo Bank Indonesia #}
+            <div class="tw-flex tw-items-center">
+                <a class="tw-flex-shrink-0 tw-flex tw-items-center" href="{{ url_for('user_dashboard') }}">
+                    <img class="tw-h-12 sm:tw-h-14 tw-w-auto" src="{{ url_for('static', filename='BI_Logo.png') }}" alt="Logo Bank Indonesia">
+                </a>
+            </div>
 
-        <div class="collapse navbar-collapse" id="userNavbar">
-            <ul class="navbar-nav me-auto">
-                </ul>
-
-            <ul class="navbar-nav mx-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="laporanBulananDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {# Grup Tengah: Laporan Bulanan, Triwulanan, Tahunan #}
+            <div class="tw-hidden md:tw-flex md:tw-items-center tw-space-x-6 tw-mx-auto"> {# tw-mx-auto untuk menengahkan #}
+                <!-- Laporan Bulanan Dropdown -->
+                <div class="tw-relative">
+                    <button type="button" class="dropdown-toggle-button dropdown-toggle" id="laporanBulananDropdown" aria-expanded="false">
                         Laporan Bulanan
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="laporanBulananDropdown">
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_fraud') }}">Laporan Fraud</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_dana_bukan_bank') }}">Laporan Transaksi Dana Bukan Bank (LTDBB)</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_gangguanit') }}">Laporan Gangguan IT</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_p2p') }}">Laporan Kerjasama P2P</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_dttot') }}">Laporan DTTOT</a></li>
-                    </ul>
-                </li>
+                        <svg class="tw-ml-2 tw-h-4 tw-w-4 tw-inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="tw-origin-top-left tw-absolute tw-left-0 tw-mt-2 tw-w-64 dropdown-menu-container tw-hidden" role="menu" aria-orientation="vertical" aria-labelledby="laporanBulananDropdown">
+                        <div class="tw-py-1" role="none">
+                            <a href="{{ url_for('form_laporan_fraud') }}" class="dropdown-menu-item" role="menuitem">Laporan Fraud</a>
+                            <a href="{{ url_for('form_laporan_dana_bukan_bank') }}" class="dropdown-menu-item" role="menuitem">Laporan Transaksi Dana Bukan Bank (LTDBB)</a>
+                            <a href="{{ url_for('form_laporan_gangguanit') }}" class="dropdown-menu-item" role="menuitem">Laporan Gangguan IT</a>
+                            <a href="{{ url_for('form_laporan_p2p') }}" class="dropdown-menu-item" role="menuitem">Laporan Kerjasama P2P</a>
+                            <a href="{{ url_for('form_laporan_dttot') }}" class="dropdown-menu-item" role="menuitem">Laporan DTTOT</a>
+                        </div>
+                    </div>
+                </div>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="laporanTriwulanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <!-- Laporan Triwulanan Dropdown -->
+                <div class="tw-relative">
+                    <button type="button" class="dropdown-toggle-button dropdown-toggle" id="laporanTriwulanDropdown" aria-expanded="false">
                         Laporan Triwulanan
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="laporanTriwulanDropdown">
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_keuangan_triwulan') }}">Laporan Keuangan Triwulan</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_pppk') }}">Laporan Keluhan Nasabah dan Perlindungan Konsumen</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_sksp_triwulan') }}">Laporan SKSP Triwulan</a></li>
-                    </ul>
-                </li>
+                        <svg class="tw-ml-2 tw-h-4 tw-w-4 tw-inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="tw-origin-top-right tw-absolute tw-left-0 tw-mt-2 tw-w-64 dropdown-menu-container tw-hidden" role="menu" aria-orientation="vertical" aria-labelledby="laporanTriwulanDropdown">
+                        <div class="tw-py-1" role="none">
+                            <a href="{{ url_for('form_laporan_keuangan_triwulan') }}" class="dropdown-menu-item" role="menuitem">Laporan Keuangan Triwulan</a>
+                            <a href="{{ url_for('form_laporan_pppk') }}" class="dropdown-menu-item" role="menuitem">Laporan Keluhan Nasabah dan Perlindungan Konsumen</a>
+                            <a href="{{ url_for('form_laporan_sksp_triwulan') }}" class="dropdown-menu-item" role="menuitem">Laporan SKSP Triwulan</a>
+                        </div>
+                    </div>
+                </div>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="laporanTahunanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <!-- Laporan Tahunan Dropdown -->
+                <div class="tw-relative">
+                    <button type="button" class="dropdown-toggle-button dropdown-toggle" id="laporanTahunanDropdown" aria-expanded="false">
                         Laporan Tahunan
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="laporanTahunanDropdown">
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_keuangan_tahunan') }}">Laporan Keuangan Tahunan</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_apuppt') }}">Laporan APU PPT</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_rencana_edukasi_publik') }}">Laporan Rencana Edukasi Publik</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_pelaksanaan_edukasi_publik') }}">Laporan Pelaksanaan Edukasi Publik</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_manajemen') }}">Laporan Manajemen & Hasil Pengawasan Dewan Komisaris</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_auditsi') }}">Laporan Audit Sistem Informasi</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_pelaksanaan_pengujian_keamanan') }}">Laporan Pengujian Keamanan (Penetration Test)</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_sksp_tahunan') }}">Laporan SKSP Tahunan</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_kpsp') }}">Laporan Perhitungan KPSP</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('form_laporan_tahunan_sp') }}">Laporan Tahunan Sistem Pembayaran</a></li>
-                        </ul>
-                </li>
-            </ul>
+                        <svg class="tw-ml-2 tw-h-4 tw-w-4 tw-inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="tw-origin-top-right tw-absolute tw-left-0 tw-mt-2 tw-w-80 dropdown-menu-container tw-hidden" role="menu" aria-orientation="vertical" aria-labelledby="laporanTahunanDropdown">
+                        <div class="tw-py-1" role="none">
+                            <a href="{{ url_for('form_laporan_keuangan_tahunan') }}" class="dropdown-menu-item" role="menuitem">Laporan Keuangan Tahunan</a>
+                            <a href="{{ url_for('form_laporan_apuppt') }}" class="dropdown-menu-item" role="menuitem">Laporan APU PPT</a>
+                            <a href="{{ url_for('form_laporan_rencana_edukasi_publik') }}" class="dropdown-menu-item" role="menuitem">Laporan Rencana Edukasi Publik</a>
+                            <a href="{{ url_for('form_laporan_pelaksanaan_edukasi_publik') }}" class="dropdown-menu-item" role="menuitem">Laporan Pelaksanaan Edukasi Publik</a>
+                            <a href="{{ url_for('form_laporan_manajemen') }}" class="dropdown-menu-item" role="menuitem">Laporan Manajemen & Hasil Pengawasan Dewan Komisaris</a>
+                            <a href="{{ url_for('form_laporan_auditsi') }}" class="dropdown-menu-item" role="menuitem">Laporan Audit Sistem Informasi</a>
+                            <a href="{{ url_for('form_laporan_pelaksanaan_pengujian_keamanan') }}" class="dropdown-menu-item" role="menuitem">Laporan Pengujian Keamanan (Penetration Test)</a>
+                            <a href="{{ url_for('form_laporan_sksp_tahunan') }}" class="dropdown-menu-item" role="menuitem">Laporan SKSP Tahunan</a>
+                            <a href="{{ url_for('form_laporan_kpsp') }}" class="dropdown-menu-item" role="menuitem">Laporan Perhitungan KPSP</a>
+                            <a href="{{ url_for('form_laporan_tahunan_sp') }}" class="dropdown-menu-item" role="menuitem">Laporan Tahunan Sistem Pembayaran</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link text-danger" href="{{ url_for('logout') }}">Logout</a>
-                </li>
-            </ul>
+            {# Grup Kanan: Profil dan Logout #}
+            <div class="tw-hidden md:tw-flex md:tw-items-center tw-space-x-6"> {# Tidak perlu tw-ml-auto di sini lagi #}
+                <!-- Tombol Profil -->
+                <a href="{{ url_for('user_profile') }}" class="tw-text-biBlueDark hover:tw-text-biBlueMedium tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-transition-colors tw-duration-200">Profil</a>
+                <button type="button" class="tw-bg-biRed hover:tw-bg-red-600 tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-transition-colors tw-duration-200 tw-shadow-md" id="logoutButton">Logout</button>
+            </div>
+
+            {# Mobile Menu Button #}
+            <div class="tw-flex tw-items-center md:tw-hidden">
+                <button type="button" class="tw-inline-flex tw-items-center tw-justify-center tw-p-2 tw-rounded-md tw-text-biBlueDark hover:tw-text-white hover:tw-bg-biBlueMedium focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-white" aria-controls="mobile-menu" aria-expanded="false" id="mobile-menu-button">
+                    <span class="tw-sr-only">Open main menu</span>
+                    <svg class="tw-block tw-h-6 tw-w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <svg class="tw-hidden tw-h-6 tw-w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="md:tw-hidden tw-hidden" id="mobile-menu">
+        <div class="tw-px-4 tw-pt-2 tw-pb-3 tw-space-y-1 sm:tw-px-6 tw-bg-white">
+            <a href="{{ url_for('user_dashboard') }}" class="mobile-dropdown-item tw-text-base" role="menuitem">Dashboard</a>
+            <a href="{{ url_for('user_profile') }}" class="mobile-dropdown-item tw-text-base" role="menuitem">Profil</a>
+
+            <div class="tw-relative">
+                <button type="button" class="mobile-dropdown-toggle-button mobile-dropdown-toggle" aria-expanded="false">
+                    Laporan Bulanan
+                    <svg class="tw-ml-2 tw-h-4 tw-w-4 tw-inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div class="tw-pl-8 tw-pr-4 tw-pb-2 tw-space-y-1 tw-hidden tw-bg-white">
+                    <a href="{{ url_for('form_laporan_fraud') }}" class="mobile-dropdown-item" role="menuitem">Laporan Fraud</a>
+                    <a href="{{ url_for('form_laporan_dana_bukan_bank') }}" class="mobile-dropdown-item" role="menuitem">Laporan Transaksi Dana Bukan Bank (LTDBB)</a>
+                    <a href="{{ url_for('form_laporan_gangguanit') }}" class="mobile-dropdown-item" role="menuitem">Laporan Gangguan IT</a>
+                    <a href="{{ url_for('form_laporan_p2p') }}" class="mobile-dropdown-item" role="menuitem">Laporan Kerjasama P2P</a>
+                    <a href="{{ url_for('form_laporan_dttot') }}" class="mobile-dropdown-item" role="menuitem">Laporan DTTOT</a>
+                </div>
+            </div>
+
+            <div class="tw-relative">
+                <button type="button" class="mobile-dropdown-toggle-button mobile-dropdown-toggle" aria-expanded="false">
+                    Laporan Triwulanan
+                    <svg class="tw-ml-2 tw-h-4 tw-w-4 tw-inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div class="tw-pl-8 tw-pr-4 tw-pb-2 tw-space-y-1 tw-hidden tw-bg-white">
+                    <a href="{{ url_for('form_laporan_keuangan_triwulan') }}" class="mobile-dropdown-item" role="menuitem">Laporan Keuangan Triwulan</a>
+                    <a href="{{ url_for('form_laporan_pppk') }}" class="mobile-dropdown-item" role="menuitem">Laporan Keluhan Nasabah dan Perlindungan Konsumen</a>
+                    <a href="{{ url_for('form_laporan_sksp_triwulan') }}" class="mobile-dropdown-item" role="menuitem">Laporan SKSP Triwulan</a>
+                </div>
+            </div>
+
+            <div class="tw-relative">
+                <button type="button" class="mobile-dropdown-toggle-button mobile-dropdown-toggle" aria-expanded="false">
+                    Laporan Tahunan
+                    <svg class="tw-ml-2 tw-h-4 tw-w-4 tw-inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div class="tw-pl-8 tw-pr-4 tw-pb-2 tw-space-y-1 tw-hidden tw-bg-white">
+                    <a href="{{ url_for('form_laporan_keuangan_tahunan') }}" class="mobile-dropdown-item" role="menuitem">Laporan Keuangan Tahunan</a>
+                    <a href="{{ url_for('form_laporan_apuppt') }}" class="mobile-dropdown-item" role="menuitem">Laporan APU PPT</a>
+                    <a href="{{ url_for('form_laporan_rencana_edukasi_publik') }}" class="mobile-dropdown-item" role="menuitem">Laporan Rencana Edukasi Publik</a>
+                    <a href="{{ url_for('form_laporan_pelaksanaan_edukasi_publik') }}" class="mobile-dropdown-item" role="menuitem">Laporan Pelaksanaan Edukasi Publik</a>
+                    <a href="{{ url_for('form_laporan_manajemen') }}" class="mobile-dropdown-item" role="menuitem">Laporan Manajemen & Hasil Pengawasan Dewan Komisaris</a>
+                    <a href="{{ url_for('form_laporan_auditsi') }}" class="mobile-dropdown-item" role="menuitem">Laporan Audit Sistem Informasi</a>
+                    <a href="{{ url_for('form_laporan_pelaksanaan_pengujian_keamanan') }}" class="mobile-dropdown-item" role="menuitem">Laporan Pengujian Keamanan (Penetration Test)</a>
+                    <a href="{{ url_for('form_laporan_sksp_tahunan') }}" class="mobile-dropdown-item" role="menuitem">Laporan SKSP Tahunan</a>
+                    <a href="{{ url_for('form_laporan_kpsp') }}" class="mobile-dropdown-item" role="menuitem">Laporan Perhitungan KPSP</a>
+                    <a href="{{ url_for('form_laporan_tahunan_sp') }}" class="mobile-dropdown-item" role="menuitem">Laporan Tahunan Sistem Pembayaran</a>
+                </div>
+            </div>
+            <button type="button" class="tw-bg-biRed hover:tw-bg-red-600 tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-transition-colors tw-duration-200 tw-shadow-md tw-mt-4 tw-w-full" id="logoutButtonMobile">Logout</button>
         </div>
     </div>
 </nav>
 
-<div class="container mt-4">
+<div class="tw-container tw-mx-auto tw-mt-4 tw-px-4 sm:tw-px-6 lg:tw-px-8">
     {% block content %}{% endblock %}
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{# Modal Konfirmasi Logout Kustom #}
+<div id="logoutConfirmationModal" class="custom-modal-overlay tw-hidden">
+    <div class="custom-modal-content">
+        <div class="custom-modal-header">Konfirmasi Logout</div>
+        <div class="custom-modal-body">Apakah Anda yakin ingin keluar dari akun Anda?</div>
+        <div class="custom-modal-buttons">
+            <button id="cancelLogoutBtn" class="custom-modal-button cancel">Batal</button>
+            <button id="confirmLogoutBtn" class="custom-modal-button confirm">Logout</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = mobileMenuButton.querySelector('svg.tw-block:not(.tw-hidden)');
+        const closeIcon = mobileMenuButton.querySelector('svg.tw-hidden');
+        const mainNavbar = document.getElementById('main-navbar'); // Dapatkan elemen navbar
+
+        // Tombol logout dan dialog konfirmasi
+        const logoutButtonDesktop = document.getElementById('logoutButton');
+        const logoutButtonMobile = document.getElementById('logoutButtonMobile');
+
+        function showLogoutModal(event) {
+            event.preventDefault();
+            const logoutModal = document.getElementById('logoutConfirmationModal');
+            if (logoutModal) {
+                logoutModal.classList.remove('tw-hidden');
+            }
+        }
+
+        if (logoutButtonDesktop) {
+            logoutButtonDesktop.addEventListener('click', showLogoutModal);
+        }
+        if (logoutButtonMobile) {
+            logoutButtonMobile.addEventListener('click', showLogoutModal);
+        }
+
+        // Tangani konfirmasi dalam modal kustom
+        const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+        const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+        const logoutConfirmationModal = document.getElementById('logoutConfirmationModal');
+
+        if (confirmLogoutBtn) {
+            confirmLogoutBtn.addEventListener('click', function() {
+                window.location.href = '{{ url_for("logout") }}';
+            });
+        }
+        if (cancelLogoutBtn) {
+            cancelLogoutBtn.addEventListener('click', function() {
+                if (logoutConfirmationModal) {
+                    logoutConfirmationModal.classList.add('tw-hidden');
+                }
+            });
+        }
+
+        // Toggle visibilitas menu seluler
+        mobileMenuButton.addEventListener('click', function() {
+            mobileMenu.classList.toggle('tw-hidden');
+            menuIcon.classList.toggle('tw-hidden');
+            closeIcon.classList.toggle('tw-hidden');
+            this.setAttribute('aria-expanded', mobileMenu.classList.contains('tw-hidden') ? 'false' : 'true');
+        });
+
+        // Tangani dropdown desktop
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation(); // Mencegah klik dokumen menutup segera
+
+                const dropdownMenu = this.nextElementSibling;
+                // Tutup dropdown lain yang terbuka
+                document.querySelectorAll('.tw-relative > div[role="menu"]').forEach(menu => {
+                    if (menu !== dropdownMenu && !menu.classList.contains('tw-hidden')) {
+                        menu.classList.add('tw-hidden');
+                    }
+                });
+
+                dropdownMenu.classList.toggle('tw-hidden');
+                this.setAttribute('aria-expanded', dropdownMenu.classList.contains('tw-hidden') ? 'false' : 'true');
+            });
+        });
+
+        // Tutup dropdown desktop saat mengklik di luar
+        document.addEventListener('click', function(event) {
+            dropdownToggles.forEach(toggle => {
+                const dropdownMenu = toggle.nextElementSibling;
+                // Pastikan klik berada di luar toggle dan menu dropdown
+                if (dropdownMenu && !dropdownMenu.classList.contains('tw-hidden') && !toggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.add('tw-hidden');
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+
+        // Tangani dropdown seluler
+        const mobileDropdownToggles = document.querySelectorAll('.mobile-dropdown-toggle');
+        mobileDropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function(event) {
+                event.preventDefault();
+                const dropdownMenu = this.nextElementSibling;
+                dropdownMenu.classList.toggle('tw-hidden');
+                this.setAttribute('aria-expanded', dropdownMenu.classList.contains('tw-hidden') ? 'false' : 'true');
+            });
+        });
+
+        // Efek opacity navbar saat di-scroll
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) { // Tambahkan kelas navbar-scrolled jika scroll lebih dari 50px
+                mainNavbar.classList.add('navbar-scrolled');
+            } else { // Hapus kelas jika kembali ke atas
+                mainNavbar.classList.remove('navbar-scrolled');
+            }
+        });
+    });
+</script>
 {% block extra_scripts %}{% endblock %}
 </body>
 </html>
