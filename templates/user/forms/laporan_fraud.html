@@ -3,132 +3,284 @@
 {% block title %}Form Laporan Fraud{% endblock %}
 
 {% block extra_head %}
-    <!-- Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Mengatur font-family secara global untuk halaman ini */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Kelas utilitas untuk spinner */
-        .spinner-border {
-            display: inline-block;
-            width: 1.5rem;
-            height: 1.5rem;
-            vertical-align: middle;
-            border: 0.25em solid currentColor;
-            border-right-color: transparent;
-            border-radius: 50%;
-            animation: spinner-border .75s linear infinite;
-        }
-        @keyframes spinner-border {
-            to { transform: rotate(360deg); }
-        }
-        .d-none { display: none !important; } /* Utility untuk JS */
+<!-- Font Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Mengatur font-family secara global untuk halaman ini */
+    body {
+        font-family: 'Inter', sans-serif;
+    }
 
-        /* Custom styles to match Laporan P2P form aesthetics */
-        .section-group {
-            background-color: #ffffff; /* Override tw-bg-gray-50 */
-            border: 1px solid #e5e7eb; /* Override tw-border-gray-200 */
-            border-radius: 12px; /* Consistent with main container's tw-rounded-2xl, or tw-rounded-xl (1rem) for sub-sections */
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Override tw-shadow-inner, add a softer shadow */
-            padding: 0; /* Remove padding from this wrapper for h3 to expand */
-            margin-bottom: 1.5rem; /* Space below each section group */
-            overflow: hidden; /* Important for border-radius on h3 */
-        }
+    /* Kelas utilitas untuk spinner */
+    .spinner-border {
+        display: inline-block;
+        width: 1.5rem;
+        height: 1.5rem;
+        vertical-align: middle;
+        border: 0.25em solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spinner-border .75s linear infinite;
+    }
 
-        .section-group .section-header {
-            /* Styles for h3 elements acting as section headers */
-            font-size: 1.15rem; /* Precise font size */
-            font-weight: 700; /* Bold */
-            color: #1f2937; /* Dark gray text */
-            background-color: #eef2f6; /* Light gray background, matches fraud form */
-            padding: 0.8rem 1.5rem; /* Padding inside the header */
-            margin-top: 0; /* Remove default top margin */
-            /* Negative margins to pull h3 to the edge of the parent section-group */
-            margin-left: -1px; /* Compensate for the parent's border */
-            margin-right: -1px; /* Compensate for the parent's border */
-            margin-bottom: 1rem; /* Space between header and form fields below */
-            border-bottom: 1px solid #e0e7eb; /* Bottom border for separation */
-            /* Border radius for top corners, matching parent section-group */
-            border-top-left-radius: 11px; /* slightly less than parent's 12px */
-            border-top-right-radius: 11px; /* slightly less than parent's 12px */
+    @keyframes spinner-border {
+        to {
+            transform: rotate(360deg);
         }
-        .section-group .section-content {
-            /* Padding for the content within the section-group after the header */
-            padding: 1.5rem; /* Matches the original tw-p-6 padding */
-            padding-top: 0; /* No top padding, as it's covered by header's margin-bottom */
-        }
+    }
 
-        /* Adjust font size for labels and inputs for precision */
-        .form-label {
-            font-size: 0.95rem; /* Slightly larger than text-sm */
-            font-weight: 600; /* Semibold */
-            color: #374151; /* Darker gray text */
+    .d-none {
+        display: none !important;
+    }
+
+    /* Utility untuk JS */
+
+    /* Custom styles to match Laporan P2P form aesthetics */
+    .section-group {
+        background-color: #ffffff;
+        /* Override tw-bg-gray-50 */
+        border: 1px solid #e5e7eb;
+        /* Override tw-border-gray-200 */
+        border-radius: 12px;
+        /* Consistent with main container's tw-rounded-2xl, or tw-rounded-xl (1rem) for sub-sections */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        /* Override tw-shadow-inner, add a softer shadow */
+        padding: 0;
+        /* Remove padding from this wrapper for h3 to expand */
+        margin-bottom: 1.5rem;
+        /* Space below each section group */
+        overflow: hidden;
+        /* Important for border-radius on h3 */
+    }
+
+    .section-group .section-header {
+        /* Styles for h3 elements acting as section headers */
+        font-size: 1.15rem;
+        /* Precise font size */
+        font-weight: 700;
+        /* Bold */
+        color: #1f2937;
+        /* Dark gray text */
+        background-color: #eef2f6;
+        /* Light gray background, matches fraud form */
+        padding: 0.8rem 1.5rem;
+        /* Padding inside the header */
+        margin-top: 0;
+        /* Remove default top margin */
+        /* Negative margins to pull h3 to the edge of the parent section-group */
+        margin-left: -1px;
+        /* Compensate for the parent's border */
+        margin-right: -1px;
+        /* Compensate for the parent's border */
+        margin-bottom: 1rem;
+        /* Space between header and form fields below */
+        border-bottom: 1px solid #e0e7eb;
+        /* Bottom border for separation */
+        /* Border radius for top corners, matching parent section-group */
+        border-top-left-radius: 11px;
+        /* slightly less than parent's 12px */
+        border-top-right-radius: 11px;
+        /* slightly less than parent's 12px */
+    }
+
+    .section-group .section-content {
+        /* Padding for the content within the section-group after the header */
+        padding: 1.5rem;
+        /* Matches the original tw-p-6 padding */
+        padding-top: 0;
+        /* No top padding, as it's covered by header's margin-bottom */
+    }
+
+    /* Adjust font size for labels and inputs for precision */
+    .form-label {
+        font-size: 0.95rem;
+        /* Slightly larger than text-sm */
+        font-weight: 600;
+        /* Semibold */
+        color: #374151;
+        /* Darker gray text */
+    }
+
+    .form-input {
+        font-size: 0.9rem;
+        /* Slightly larger than text-sm for inputs */
+        padding: 0.7rem 1rem;
+        /* Adjusted padding for inputs */
+        font-family: inherit; /* Menambahkan ini untuk menyeragamkan font placeholder */
+    }
+
+    /* Styles for the loading overlay */
+    #loadingOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Ensure it's on top of everything */
+        backdrop-filter: blur(3px); /* Optional: blur background */
+    }
+
+    #loadingOverlay .spinner-border {
+        width: 3rem; /* Larger spinner for the overlay */
+        height: 3rem;
+        border-width: 0.35em; /* Thicker border */
+        color: #ffffff; /* White spinner */
+    }
+
+    /* Styles for the message box backdrop */
+    #messageBoxBackdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6); /* Darker semi-transparent black */
+        backdrop-filter: blur(5px); /* Stronger blur for pop-up background */
+        z-index: 1000; /* Below the message box, above other content */
+        display: none; /* Hidden by default */
+    }
+
+    /* Styles for the message box pop-up */
+    #dynamicMessageBox {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 1001; /* Above the backdrop */
+        display: none; /* Hidden by default */
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-align: center;
+        max-width: 400px; /* Limit width */
+        width: 90%; /* Responsive width */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem; /* Space between elements */
+    }
+
+    #dynamicMessageBox.success {
+        background-color: #d4edda; /* Light green */
+        color: #155724; /* Dark green text */
+        border: 1px solid #c3e6cb;
+    }
+
+    #dynamicMessageBox.error {
+        background-color: #f8d7da; /* Light red */
+        color: #721c24; /* Dark red text */
+        border: 1px solid #f5c6cb;
+    }
+
+    #dynamicMessageBox .icon-container {
+        font-size: 3rem; /* Large icon size */
+        line-height: 1;
+        animation: fade-in-scale 0.5s ease-out forwards; /* Animation for icon */
+    }
+
+    @keyframes fade-in-scale {
+        from {
+            opacity: 0;
+            transform: scale(0.5);
         }
-        .form-input {
-            font-size: 0.9rem; /* Slightly larger than text-sm for inputs */
-            padding: 0.7rem 1rem; /* Adjusted padding for inputs */
+        to {
+            opacity: 1;
+            transform: scale(1);
         }
-    </style>
+    }
+
+    #dynamicMessageBox .ok-button {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 700;
+        transition: background-color 0.3s ease;
+    }
+
+    #dynamicMessageBox .ok-button:hover {
+        background-color: #45a049;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6 tw-font-sans">
-    
-    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">Formulir Laporan Fraud</h2>
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6">
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="tw-p-4 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+    <h2
+        class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">
+        Formulir Laporan Fraud</h2>
 
-    <form id="fraudForm" action="{{ url_for('submit_laporan_fraud') }}" method="POST" enctype="multipart/form-data" class="tw-space-y-6">
+    <form id="fraudForm" action="{{ url_for('submit_laporan_fraud') }}" method="POST" enctype="multipart/form-data"
+        class="tw-space-y-6">
         <div class="section-group">
             <h3 class="section-header">Informasi Laporan</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
-                    <div class="tw-space-y-1">
-                        <label for="tahun_laporan" class="tw-block form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
-                        <select id="tahun_laporan" name="tahun_laporan" required class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
-                            <option value="">-- Pilih Tahun --</option>
-                            {% for year in range(current_year - 1, current_year + 2) %}
-                                <option value="{{ year }}" {% if request.form and request.form.tahun_laporan == year|string %}selected{% endif %}>
+                <div class="tw-flex tw-w-full">
+                    <div class="tw-flex tw-w-1/2 tw-flex-col tw-pr-2">
+                        <div class="tw-my-2">
+                            <label for="tahun_laporan" class="tw-block form-label">Tahun Laporan <span
+                                        class="tw-text-red-500">*</span></label>
+                            <select id="tahun_laporan" name="tahun_laporan" required
+                                class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
+                                <option value="">-- Pilih Tahun --</option>
+                                {% for year in range(current_year - 1, current_year + 2) %}
+                                <option value="{{ year }}" {% if request.form and
+                                        request.form.tahun_laporan==year|string %}selected{% endif %}>
                                     {{ year }}
                                 </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="tw-space-y-1">
-                        <label for="periode_laporan" class="tw-block form-label">Bulan Laporan <span class="tw-text-red-500">*</span></label>
-                        <select id="periode_laporan" name="periode_laporan" required class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
-                            <option value="">-- Pilih Bulan --</option>
-                            {% for bulan in ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] %}
-                                <option value="{{ bulan }}" {% if request.form and request.form.periode_laporan == bulan %}selected{% endif %}>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="tw-my-2">
+                            <label for="periode_laporan" class="tw-block form-label">Bulan Laporan <span
+                                        class="tw-text-red-500">*</span></label>
+                            <select id="periode_laporan" name="periode_laporan" required
+                                class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
+                                <option value="">-- Pilih Bulan --</option>
+                                {% for bulan in ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
+                                'Agustus', 'September', 'Oktober', 'November', 'Desember'] %}
+                                <option value="{{ bulan }}" {% if request.form and request.form.periode_laporan==bulan
+                                        %}selected{% endif %}>
                                     {{ bulan }}
                                 </option>
-                            {% endfor %}
-                        </select>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="nomor_surat" class="tw-block form-label">Nomor Surat <span class="tw-text-red-500">*</span></label>
-                        <input type="text" id="nomor_surat" name="nomor_surat" placeholder="Masukkan Nomor Surat" value="{{ request.form.nomor_surat if request.form }}" required class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
+                    <div class="tw-flex tw-w-1/2 tw-flex-col tw-pl-2">
+                        <div class="tw-flex tw-flex-col tw-my-2">
+                            <label for="nomor_surat" class="tw-block form-label">Nomor Surat <span
+                                        class="tw-text-red-500">*</span></label>
+                            <input type="text" id="nomor_surat" name="nomor_surat" placeholder="Masukkan Nomor Surat"
+                                value="{{ request.form.nomor_surat if request.form }}" required
+                                class="tw-mt-1 form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
+                        </div>
+                        <div class="tw-flex tw-flex-col tw-my-2">
+                            <label for="tanggal_surat" class="tw-block form-label">Tanggal Surat <span
+                                        class="tw-text-red-500">*</span></label>
+                            <input type="date" id="tanggal_surat" name="tanggal_surat"
+                                value="{{ request.form.tanggal_surat if request.form }}" required
+                                class="tw-mt-1 form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
+                        </div>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="tanggal_surat" class="tw-block form-label">Tanggal Surat <span class="tw-text-red-500">*</span></label>
-                        <input type="date" id="tanggal_surat" name="tanggal_surat" value="{{ request.form.tanggal_surat if request.form }}" required class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
-                    </div>
-                    {# Moved "Unggah Dokumen Pendukung" here #}
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label for="file" class="tw-block form-label">Pilih File Laporan (PDF) <span class="tw-text-red-500">*</span></label>
-                        <input type="file" id="file" name="file" accept=".pdf" required class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out">
+                </div>
+                {# Moved "Unggah Dokumen Pendukung" here #}
+                <div class="tw-flex tw-flex-col md:tw-col-span-2 tw-mt-3">
+                        <label for="file" class="tw-flex form-label">Pilih File Laporan (PDF) <span
+                                class="tw-text-red-500">*</span></label>
+                        <input type="file" id="file" name="file" accept=".pdf" required
+                            class="tw-flex tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out">
                         <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Ukuran file maksimal: 2MB</p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -136,112 +288,156 @@
         <div class="section-group">
             <h3 class="section-header">Detail Fraud</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
-                    <div class="tw-space-y-1">
-                        <label for="jumlah_fraud" class="tw-block form-label">Jumlah Kasus Fraud <span class="tw-text-red-500">*</span></label>
-                        <input type="number" id="jumlah_fraud" name="jumlah_fraud" placeholder="Masukkan jumlah kasus" value="{{ request.form.jumlah_fraud if request.form }}" required class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
+                <div class="tw-flex tw-flex-col">
+                    <div class="tw-flex tw-w-full tw-my-2">
+                        <div class="tw-flex tw-flex-col tw-w-1/2 tw-pr-2 ">
+                            <label for="jumlah_fraud" class="tw-block form-label">Jumlah Kasus Fraud <span
+                                        class="tw-text-red-500">*</span></label>
+                            <input type="number" id="jumlah_fraud" name="jumlah_fraud" placeholder="Masukkan jumlah kasus"
+                                value="{{ request.form.jumlah_fraud if request.form }}" required
+                                class="tw-mt-1 form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
+                        </div>
+                        <div class="tw-flex tw-flex-col tw-w-1/2 tw-pl-2">
+                            <label for="besar_potensi_kerugian" class="tw-block form-label">Jumlah Besar/Potensi Kerugian
+                                (Rp) <span class="tw-text-red-500">*</span></label>
+                            <input type="number" id="besar_potensi_kerugian" name="besar_potensi_kerugian"
+                                placeholder="Masukkan nilai kerugian"
+                                value="{{ request.form.besar_potensi_kerugian if request.form }}" required min="0"
+                                class="tw-mt-1 form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
+                        </div>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="besar_potensi_kerugian" class="tw-block form-label">Jumlah Besar/Potensi Kerugian (Rp) <span class="tw-text-red-500">*</span></label>
-                        <input type="number" id="besar_potensi_kerugian" name="besar_potensi_kerugian" placeholder="Masukkan nilai kerugian" value="{{ request.form.besar_potensi_kerugian if request.form }}" required min="0" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">
-                    </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
+                    <div class="tw-flex tw-flex-col md:tw-col-span-2 tw-my-2">
                         <label for="keterangan_fraud" class="tw-block form-label">Keterangan Fraud</label>
-                        <textarea id="keterangan_fraud" name="keterangan_fraud" rows="3" placeholder="Jelaskan detail kasus fraud" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">{{ request.form.keterangan_fraud if request.form }}</textarea>
+                        <textarea id="keterangan_fraud" name="keterangan_fraud" rows="3"
+                            placeholder="Jelaskan detail kasus fraud"
+                            class="tw-mt-1 form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">{{ request.form.keterangan_fraud if request.form }}</textarea>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label for="keterangan_tindak_lanjut" class="tw-block form-label">Keterangan Tindak Lanjut</label>
-                        <textarea id="keterangan_tindak_lanjut" name="keterangan_tindak_lanjut" rows="3" placeholder="Jelaskan tindak lanjut yang telah dilakukan" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">{{ request.form.keterangan_tindak_lanjut if request.form }}</textarea>
+                    <div class="tw-flex tw-flex-col md:tw-col-span-2 tw-my-2">
+                        <label for="keterangan_tindak_lanjut" class="tw-block form-label">Keterangan Tindak
+                            Lanjut</label>
+                        <textarea id="keterangan_tindak_lanjut" name="keterangan_tindak_lanjut" rows="3"
+                            placeholder="Jelaskan tindak lanjut yang telah dilakukan"
+                            class="tw-mt-1 form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">{{ request.form.keterangan_tindak_lanjut if request.form }}</textarea>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
-            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+            <button type="submit"
+                class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105"
+                id="submitButton">
                 <span class="submit-text">Kirim Laporan</span>
-                <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
+                <span
+                    class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none"
+                    role="status" aria-hidden="true"></span>
             </button>
-            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">Batal</button>
+            <button type="button"
+                class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105"
+                onclick="window.history.back()">Batal</button>
         </div>
     </form>
 </div>
 
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="d-none">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<!-- Message Box Backdrop -->
+<div id="messageBoxBackdrop" class="d-none"></div>
+
+<!-- Dynamic Message Box (Pop-up) -->
+<div id="dynamicMessageBox" class="d-none">
+    <div id="messageBoxIcon" class="icon-container"></div>
+    <p id="messageBoxContent"></p>
+    <button id="messageBoxOkButton" class="ok-button d-none">Oke</button>
+</div>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('fraudForm');
         const submitButton = document.getElementById('submitButton');
         const submitText = submitButton.querySelector('.submit-text');
         const submitSpinner = submitButton.querySelector('.spinner-border');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const messageBoxBackdrop = document.getElementById('messageBoxBackdrop');
+        const dynamicMessageBox = document.getElementById('dynamicMessageBox');
+        const messageBoxContent = document.getElementById('messageBoxContent');
+        const messageBoxIcon = document.getElementById('messageBoxIcon');
+        const messageBoxOkButton = document.getElementById('messageBoxOkButton');
 
-        // --- Custom Modal/Message Box ---
-        const messageContainer = document.querySelector('.tw-max-w-4xl.tw-mx-auto'); 
-        
+        // Event listener for the "Oke" button to close the message box
+        messageBoxOkButton.addEventListener('click', () => {
+            dynamicMessageBox.classList.add('d-none');
+            messageBoxBackdrop.classList.add('d-none');
+        });
+
         function showMessageBox(message, type) {
-            let messageBox = document.getElementById('dynamicMessageBox');
-            if (!messageBox) {
-                messageBox = document.createElement('div');
-                messageBox.id = 'dynamicMessageBox';
-                messageBox.classList.add('tw-p-3', 'tw-rounded-lg', 'tw-mb-4', 'tw-text-center', 'tw-font-medium'); 
-                const firstChild = messageContainer.querySelector('h2');
-                if (firstChild) {
-                    firstChild.parentNode.insertBefore(messageBox, firstChild.nextSibling);
-                } else {
-                    messageContainer.insertBefore(messageBox, messageContainer.firstChild);
-                }
-            }
+            messageBoxContent.textContent = message;
+            dynamicMessageBox.classList.remove('success', 'error');
+            messageBoxIcon.innerHTML = '';
+            messageBoxOkButton.classList.add('d-none');
+            messageBoxBackdrop.classList.remove('d-none');
 
-            messageBox.textContent = message;
-            messageBox.classList.remove('tw-bg-green-100', 'tw-text-green-800', 'tw-border-green-300', 'tw-bg-red-100', 'tw-text-red-800', 'tw-border-red-300'); 
-            
             if (type === 'success') {
-                messageBox.classList.add('tw-bg-green-100', 'tw-text-green-800', 'tw-border', 'tw-border-green-300');
+                dynamicMessageBox.classList.add('success');
+                messageBoxIcon.innerHTML = '&#10003;'; // Checkmark icon
+                messageBoxOkButton.classList.remove('d-none');
             } else if (type === 'error') {
-                messageBox.classList.add('tw-bg-red-100', 'tw-text-red-800', 'tw-border', 'tw-border-red-300');
+                dynamicMessageBox.classList.add('error');
+                messageBoxIcon.innerHTML = '&#x2716;'; // Cross mark icon
+                setTimeout(() => {
+                    dynamicMessageBox.classList.add('d-none');
+                    messageBoxBackdrop.classList.add('d-none');
+                }, 5000);
             }
-            
-            messageBox.style.display = 'block'; 
-            setTimeout(() => {
-                messageBox.style.display = 'none'; 
-            }, 5000);
+            dynamicMessageBox.classList.remove('d-none');
         }
-        // --- End Custom Modal/Message Box ---
 
         const tanggalSuratInput = document.getElementById('tanggal_surat');
-        if(tanggalSuratInput){
+        if (tanggalSuratInput) {
             const today = new Date().toISOString().split('T')[0];
             tanggalSuratInput.max = today;
         }
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Mencegah pengiriman form default
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
             let formIsValid = true;
 
             const tahun = document.getElementById('tahun_laporan').value;
             const currentYear = new Date().getFullYear();
-            // Validasi tahun laporan: tahun sekarang, tahun sebelumnya, atau tahun berikutnya.
-            if (parseInt(tahun) > currentYear + 1 || parseInt(tahun) < currentYear - 1 ) {
+            if (parseInt(tahun) > currentYear + 1 || parseInt(tahun) < currentYear - 1) {
                 showMessageBox('Tahun laporan harus tahun sekarang, tahun sebelumnya, atau tahun berikutnya.', 'error');
                 formIsValid = false;
             }
 
-            const fileInput = document.getElementById('file');
-            if (fileInput.files[0] && fileInput.files[0].size > 2 * 1024 * 1024) { // 2MB limit
-                showMessageBox('Ukuran file lampiran melebihi 2MB.', 'error');
-                formIsValid = false;
-            }
+            // --- REMOVED FILE SIZE VALIDATION ---
+            // const fileInput = document.getElementById('file');
+            // if (fileInput.files[0] && fileInput.files[0].size > 2 * 1024 * 1024) { // 2MB limit
+            //     showMessageBox('Ukuran file lampiran melebihi 2MB.', 'error');
+            //     formIsValid = false;
+            // }
+            // --- END REMOVED FILE SIZE VALIDATION ---
 
             if (!formIsValid) {
-                console.log("Form tidak valid, pengiriman dibatalkan.");
+                console.log("Form is invalid, submission cancelled.");
+                submitButton.disabled = false;
+                submitText.textContent = 'Kirim Laporan';
+                submitSpinner.classList.add('d-none');
+                loadingOverlay.classList.add('d-none');
                 return;
             }
 
             submitButton.disabled = true;
             submitText.textContent = 'Mengirim...';
-            submitSpinner.classList.remove('d-none'); // Tampilkan spinner
+            submitSpinner.classList.remove('d-none');
+            loadingOverlay.classList.remove('d-none');
 
             const formData = new FormData(this);
-            
+
             fetch(this.action, {
                 method: 'POST',
                 body: formData,
@@ -252,13 +448,17 @@
             .then(response => {
                 submitButton.disabled = false;
                 submitText.textContent = 'Kirim Laporan';
-                submitSpinner.classList.add('d-none'); // Sembunyikan spinner
+                submitSpinner.classList.add('d-none');
+                loadingOverlay.classList.add('d-none');
 
                 if (!response.ok) {
                     return response.json().then(errorData => {
-                        throw new Error(errorData.message || 'Gagal mengirim laporan (status non-2xx)');
-                    }).catch(() => {
-                        throw new Error('Gagal mengirim laporan (respons tidak valid dari server).');
+                        throw new Error(errorData.message || JSON.stringify(errorData) || 'Gagal mengirim laporan (status non-2xx)');
+                    }).catch(jsonError => {
+                        console.error("Error parsing JSON from non-OK response:", jsonError);
+                        return response.text().then(text => {
+                            throw new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
+                        });
                     });
                 }
                 return response.json();
@@ -266,7 +466,7 @@
             .then(data => {
                 if (data.success) {
                     showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
-                    form.reset(); // Reset form
+                    form.reset();
                 } else {
                     showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
                 }
@@ -275,7 +475,8 @@
                 console.error('Error:', error);
                 submitButton.disabled = false;
                 submitText.textContent = 'Kirim Laporan';
-                submitSpinner.classList.add('d-none'); // Sembunyikan spinner
+                submitSpinner.classList.add('d-none');
+                loadingOverlay.classList.add('d-none');
                 showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server.', 'error');
             });
         });
