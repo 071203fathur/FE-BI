@@ -63,6 +63,8 @@
         font-weight: 600;
         color: #374151;
         margin-bottom: 0.5rem;
+        display: flex; /* Make label a flex container */
+        align-items: center; /* Align items vertically */
     }
 
     .form-input {
@@ -142,6 +144,170 @@
             padding: 1rem;
         }
     }
+
+    /* Styles for the loading overlay */
+    #loadingOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Ensure it's on top of everything */
+        backdrop-filter: blur(3px); /* Optional: blur background */
+    }
+
+    #loadingOverlay .spinner-border {
+        width: 3rem; /* Larger spinner for the overlay */
+        height: 3rem;
+        border-width: 0.35em; /* Thicker border */
+        color: #ffffff; /* White spinner */
+    }
+
+    /* Styles for the message box backdrop */
+    #messageBoxBackdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6); /* Darker semi-transparent black */
+        backdrop-filter: blur(5px); /* Stronger blur for pop-up background */
+        z-index: 1000; /* Below the message box, above other content */
+        display: none; /* Hidden by default */
+    }
+
+    /* Styles for the message box pop-up */
+    #dynamicMessageBox {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 1001; /* Above the backdrop */
+        display: none; /* Hidden by default */
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-align: center;
+        max-width: 400px; /* Limit width */
+        width: 90%; /* Responsive width */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem; /* Space between elements */
+    }
+
+    #dynamicMessageBox.success {
+        background-color: #d4edda; /* Light green */
+        color: #155724; /* Dark green text */
+        border: 1px solid #c3e6cb;
+    }
+
+    #dynamicMessageBox.error {
+        background-color: #f8d7da; /* Light red */
+        color: #721c24; /* Dark red text */
+        border: 1px solid #f5c6cb;
+    }
+
+    #dynamicMessageBox .icon-container {
+        font-size: 3rem; /* Large icon size */
+        line-height: 1;
+        animation: fade-in-scale 0.5s ease-out forwards; /* Animation for icon */
+    }
+
+    @keyframes fade-in-scale {
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    #dynamicMessageBox .ok-button {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 700;
+        transition: background-color 0.3s ease;
+    }
+
+    #dynamicMessageBox .ok-button:hover {
+        background-color: #45a049;
+    }
+
+    /* Tooltip styles */
+    .tooltip-container {
+        position: relative;
+        display: inline-block;
+        margin-left: 0.5rem; /* Space between label and icon */
+    }
+
+    .tooltip-icon {
+        width: 16px; /* Reduced from 18px */
+        height: 16px; /* Reduced from 18px */
+        border-radius: 50%;
+        background-color: #6366f1; /* Indigo color */
+        color: white;
+        font-size: 0.7rem; /* Reduced from 0.8rem */
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .tooltip-icon:hover {
+        background-color: #4f46e5; /* Darker indigo on hover */
+    }
+
+    .tooltip-text {
+        visibility: hidden;
+        width: 250px; /* Adjust width as needed */
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 10px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%; /* Position above the icon */
+        left: 50%;
+        margin-left: -125px; /* Center the tooltip */
+        opacity: 0;
+        transition: opacity 0.3s, visibility 0.3s;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .tooltip-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #333 transparent transparent transparent;
+    }
+
+    .tooltip-container:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
 </style>
 {% endblock %}
 
@@ -151,16 +317,6 @@
         Laporan Keuangan Triwulan
     </h2>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="tw-p-4 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
     <form method="POST" action="{{ url_for('submit_laporan_keuangan_triwulan') }}" enctype="multipart/form-data" id="triwulanForm" class="tw-space-y-6">
         
         <!-- Informasi Umum Laporan Section -->
@@ -169,17 +325,29 @@
             <div class="section-content">
                 <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
                     <div>
-                        <label for="tahun_laporan" class="form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
+                        <label for="tahun_laporan" class="form-label">
+                            Tahun Laporan <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Tahun fiskal atau periode akuntansi yang dicakup oleh laporan keuangan ini.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
                         <select class="form-input" id="tahun_laporan" name="tahun_laporan" required>
                             <option value="">-- Pilih Tahun --</option>
-                            {% for year in range(2018, 2027) %}
+                            {% for year in range(current_year - 1, current_year + 2) %}
                             <option value="{{ year }}">{{ year }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     
                     <div>
-                        <label for="periode_laporan" class="form-label">Periode Laporan <span class="tw-text-red-500">*</span></label>
+                        <label for="periode_laporan" class="form-label">
+                            Periode Laporan <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Kuartal spesifik (Q1, Q2, Q3, Q4) dalam tahun laporan yang disajikan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
                         <select class="form-input" id="periode_laporan" name="periode_laporan" required>
                             <option value="">-- Pilih Triwulan --</option>
                             <option value="Q1">Q1</option>
@@ -190,22 +358,40 @@
                     </div>
                     
                     <div>
-                        <label for="nomor_surat" class="form-label">Nomor Surat <span class="tw-text-red-500">*</span></label>
+                        <label for="nomor_surat" class="form-label">
+                            Nomor Surat <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nomor referensi unik untuk dokumen resmi laporan keuangan ini.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
                         <input type="text" class="form-input" id="nomor_surat" name="nomor_surat" required>
                     </div>
                     
                     <div>
-                        <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="tw-text-red-500">*</span></label>
+                        <label for="tanggal_surat" class="form-label">
+                            Tanggal Surat <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Tanggal resmi penerbitan atau penyerahan laporan keuangan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
                         <input type="date" class="form-input" id="tanggal_surat" name="tanggal_surat" required>
                     </div>
                     
                     <div class="md:tw-col-span-2">
-                        <label for="file" class="form-label">Upload Laporan Keuangan (PDF) <span class="tw-text-red-500">*</span></label>
+                        <label for="file" class="form-label">
+                            Upload Laporan Keuangan (PDF) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Dokumen utama laporan keuangan yang berisi detail lengkap, biasanya dalam format PDF.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
                         <div class="file-input-container">
                             <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
-                                   id="file" name="file" accept=".pdf" required>
+                                        id="file" name="file" accept=".pdf" required>
                         </div>
-                        <p class="tw-text-sm tw-text-gray-500 tw-mt-2">Format: PDF (Maks. 10MB)</p>
+                        <p class="tw-text-sm tw-text-gray-500 tw-mt-2">Format: PDF (Maks. 5MB)</p>
                     </div>
                 </div>
             </div>
@@ -215,49 +401,51 @@
         <div class="section-group">
             <h3 class="section-header">Informasi Keuangan</h3>
             <div class="section-content">
-                
-                <!-- Modal & Ekuitas -->
-                <div class="nested-section-group">
-                    <h4>Modal & Ekuitas</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                        <div>
-                            <label for="modal_dasar" class="form-label">Modal Dasar (Rp) <span class="tw-text-red-500">*</span></label>
-                            <input type="number" class="form-input" id="modal_dasar" name="modal_dasar" min="0" required>
-                        </div>
-                        
-                        <div>
-                            <label for="modal_disetor" class="form-label">Modal Disetor (Rp) <span class="tw-text-red-500">*</span></label>
-                            <input type="number" class="form-input" id="modal_disetor" name="modal_disetor" min="0" required>
-                        </div>
-                        
-                        <div class="md:tw-col-span-2">
-                            <label for="total_ekuitas" class="form-label">Total Ekuitas (Rp) <span class="tw-text-red-500">*</span></label>
-                            <input type="number" class="form-input" id="total_ekuitas" name="total_ekuitas" min="0" required>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Aset -->
                 <div class="nested-section-group">
                     <h4>Aset</h4>
                     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
                         <div>
-                            <label for="aset_lancar" class="form-label">Aset Lancar (Rp) <span class="tw-text-red-500">*</span></label>
+                            <label for="aset_lancar" class="form-label">
+                                Total Aset Lancar (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Sumber daya yang diharapkan dapat dikonversi menjadi kas atau digunakan dalam satu tahun atau siklus operasi normal.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
                             <input type="number" class="form-input" id="aset_lancar" name="aset_lancar" min="0" required>
                         </div>
                         
                         <div>
-                            <label for="kas_setara_kas" class="form-label">Kas dan Setara Kas (Rp) <span class="tw-text-red-500">*</span></label>
-                            <input type="number" class="form-input" id="kas_setara_kas" name="kas_setara_kas" min="0" required>
+                            <label for="kas_dan_setara_kas" class="form-label">
+                                Kas dan Setara Kas (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Uang tunai yang tersedia segera dan investasi yang sangat likuid yang mudah diubah menjadi kas.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
+                            <input type="number" class="form-input" id="kas_dan_setara_kas" name="kas_dan_setara_kas" min="0" required>
                         </div>
                         
                         <div class="md:tw-col-span-2">
-                            <label for="aset_tetap" class="form-label">Aset Tetap (Rp) <span class="tw-text-red-500">*</span></label>
+                            <label for="aset_tetap" class="form-label">
+                                Aset Tetap (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Aset berwujud yang digunakan dalam operasi bisnis dan memiliki masa manfaat lebih dari satu tahun, seperti properti, pabrik, dan peralatan.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
                             <input type="number" class="form-input" id="aset_tetap" name="aset_tetap" min="0" required>
                         </div>
                         
                         <div class="md:tw-col-span-2">
-                            <label for="total_aset" class="form-label">Total Aset (Rp) <span class="tw-text-red-500">*</span></label>
+                            <label for="total_aset" class="form-label">
+                                Total Aset (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Jumlah seluruh aset yang dimiliki perusahaan, baik lancar maupun tidak lancar. Ini mencerminkan total sumber daya ekonomi perusahaan.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
                             <input type="number" class="form-input" id="total_aset" name="total_aset" min="0" required>
                         </div>
                     </div>
@@ -268,18 +456,75 @@
                     <h4>Hutang</h4>
                     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
                         <div>
-                            <label for="hutang_jangka_pendek" class="form-label">Hutang Jangka Pendek (Rp) <span class="tw-text-red-500">*</span></label>
+                            <label for="hutang_jangka_pendek" class="form-label">
+                                Hutang Jangka Pendek (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Kewajiban keuangan yang jatuh tempo dalam satu tahun atau siklus operasi normal perusahaan.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
                             <input type="number" class="form-input" id="hutang_jangka_pendek" name="hutang_jangka_pendek" min="0" required>
                         </div>
                         
                         <div>
-                            <label for="hutang_jangka_panjang" class="form-label">Hutang Jangka Panjang (Rp) <span class="tw-text-red-500">*</span></label>
+                            <label for="hutang_jangka_panjang" class="form-label">
+                                Hutang Jangka Panjang (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Kewajiban keuangan yang jatuh tempo lebih dari satu tahun.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
                             <input type="number" class="form-input" id="hutang_jangka_panjang" name="hutang_jangka_panjang" min="0" required>
                         </div>
                         
                         <div class="md:tw-col-span-2">
-                            <label for="total_hutang" class="form-label">Total Hutang (Rp) <span class="tw-text-red-500">*</span></label>
+                            <label for="total_hutang" class="form-label">
+                                Total Hutang (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Jumlah seluruh kewajiban keuangan perusahaan, baik jangka pendek maupun jangka panjang.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
                             <input type="number" class="form-input" id="total_hutang" name="total_hutang" min="0" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Modal & Ekuitas -->
+                <div class="nested-section-group">
+                    <h4>Modal & Ekuitas</h4>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                        <div>
+                            <label for="modal_dasar" class="form-label">
+                                Modal Dasar (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Jumlah modal yang diizinkan untuk diterbitkan oleh perusahaan sesuai anggaran dasar.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
+                            <input type="number" class="form-input" id="modal_dasar" name="modal_dasar" min="0" required>
+                        </div>
+                        
+                        <div>
+                            <label for="modal_disetor" class="form-label">
+                                Modal Disetor (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Bagian dari modal dasar yang telah disetor oleh pemegang saham.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
+                            <input type="number" class="form-input" id="modal_disetor" name="modal_disetor" min="0" required>
+                        </div>
+                        
+                        <div class="md:tw-col-span-2">
+                            <label for="total_ekuitas" class="form-label">
+                                Total Ekuitas (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Sisa klaim pemilik atas aset setelah dikurangi kewajiban. Ini adalah nilai bersih perusahaan.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
+                            <input type="number" class="form-input" id="total_ekuitas" name="total_ekuitas" min="0" required>
                         </div>
                     </div>
                 </div>
@@ -289,22 +534,46 @@
                     <h4>Pendapatan & Beban</h4>
                     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
                         <div>
-                            <label for="total_pendapatan" class="form-label">Total Pendapatan (Rp) <span class="tw-text-red-500">*</span></label>
+                            <label for="total_pendapatan" class="form-label">
+                                Total Pendapatan (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Total penerimaan yang diperoleh perusahaan dari aktivitas operasional utamanya sebelum dikurangi beban.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
                             <input type="number" class="form-input" id="total_pendapatan" name="total_pendapatan" min="0" required>
                         </div>
                         
                         <div>
-                            <label for="pendapatan_fee" class="form-label">Pendapatan Fee (Rp) <span class="tw-text-red-500">*</span></label>
+                            <label for="pendapatan_fee" class="form-label">
+                                Pendapatan Fee (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Pendapatan yang diperoleh dari penyediaan jasa, bukan penjualan barang.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
                             <input type="number" class="form-input" id="pendapatan_fee" name="pendapatan_fee" min="0" required>
                         </div>
                         
                         <div>
-                            <label for="total_beban" class="form-label">Total Beban (Rp) <span class="tw-text-red-500">*</span></label>
+                            <label for="total_beban" class="form-label">
+                                Total Beban (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Seluruh biaya yang dikeluarkan perusahaan untuk menghasilkan pendapatan.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
                             <input type="number" class="form-input" id="total_beban" name="total_beban" min="0" required>
                         </div>
                         
                         <div>
-                            <label for="beban_operasional" class="form-label">Beban Operasional (Rp) <span class="tw-text-red-500">*</span></label>
+                            <label for="beban_operasional" class="form-label">
+                                Beban Operasional (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Biaya yang terkait langsung dengan kegiatan operasional inti perusahaan, tidak termasuk beban non-operasional.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
                             <input type="number" class="form-input" id="beban_operasional" name="beban_operasional" min="0" required>
                         </div>
                     </div>
@@ -315,12 +584,24 @@
                     <h4>Laba / Rugi Bersih</h4>
                     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
                         <div>
-                            <label for="laba" class="form-label">Laba (Rp) <span class="tw-text-red-500">*</span></label>
+                            <label for="laba" class="form-label">
+                                Laba (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Keuntungan bersih yang diperoleh perusahaan setelah semua pendapatan dikurangi semua beban.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
                             <input type="number" class="form-input" id="laba" name="laba" min="0" required>
                         </div>
                         
                         <div>
-                            <label for="rugi" class="form-label">Rugi (Rp) <span class="tw-text-red-500">*</span></label>
+                            <label for="rugi" class="form-label">
+                                Rugi (Rp) <span class="tw-text-red-500">*</span>
+                                <span class="tooltip-container">
+                                    <span class="tooltip-icon" data-tooltip="Kerugian bersih yang dialami perusahaan ketika total beban melebihi total pendapatan.">!</span>
+                                    <span class="tooltip-text"></span>
+                                </span>
+                            </label>
                             <input type="number" class="form-input" id="rugi" name="rugi" min="0" required>
                         </div>
                     </div>
@@ -349,46 +630,71 @@
     </div>
 </div>
 
+<!-- Message Box Backdrop -->
+<div id="messageBoxBackdrop" class="d-none"></div>
+
+<!-- Dynamic Message Box (Pop-up) -->
+<div id="dynamicMessageBox" class="d-none">
+    <div id="messageBoxIcon" class="icon-container"></div>
+    <p id="messageBoxContent"></p>
+    <button id="messageBoxOkButton" class="ok-button d-none">Oke</button>
+</div>
+
+{% block extra_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('triwulanForm');
     const submitButton = document.getElementById('submitButton');
     const submitText = submitButton.querySelector('.submit-text');
     const submitSpinner = submitButton.querySelector('.spinner-border');
-    
-    // Message box functionality
-    const messageContainer = document.querySelector('.tw-max-w-4xl.tw-mx-auto'); 
-    
-    function showMessageBox(message, type) {
-        let messageBox = document.getElementById('dynamicMessageBox');
-        if (!messageBox) {
-            messageBox = document.createElement('div');
-            messageBox.id = 'dynamicMessageBox';
-            messageBox.classList.add('tw-p-3', 'tw-rounded-lg', 'tw-mb-4', 'tw-text-center', 'tw-font-medium'); 
-            const firstChild = messageContainer.querySelector('h2');
-            if (firstChild) {
-                firstChild.parentNode.insertBefore(messageBox, firstChild.nextSibling);
-            } else {
-                messageContainer.insertBefore(messageBox, messageContainer.firstChild);
-            }
-        }
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const messageBoxBackdrop = document.getElementById('messageBoxBackdrop');
+    const dynamicMessageBox = document.getElementById('dynamicMessageBox');
+    const messageBoxContent = document.getElementById('messageBoxContent');
+    const messageBoxIcon = document.getElementById('messageBoxIcon');
+    const messageBoxOkButton = document.getElementById('messageBoxOkButton');
 
-        messageBox.textContent = message;
-        messageBox.classList.remove('tw-bg-green-100', 'tw-text-green-800', 'tw-border-green-300', 'tw-bg-red-100', 'tw-text-red-800', 'tw-border-red-300'); 
-        
+    // Tambahkan flag untuk mencegah pengiriman ganda
+    let isSubmitting = false;
+
+    // Event listener for the "Oke" button to close the message box
+    messageBoxOkButton.addEventListener('click', () => {
+        dynamicMessageBox.classList.add('d-none');
+        messageBoxBackdrop.classList.add('d-none');
+    });
+
+    /**
+     * Menampilkan kotak pesan kustom dengan pesan dan tipe (sukses/error) tertentu.
+     * @param {string} message - Pesan yang akan ditampilkan.
+     * @param {'success'|'error'} type - Tipe pesan ('success' atau 'error').
+     */
+    function showMessageBox(message, type) {
+        messageBoxContent.textContent = message;
+        dynamicMessageBox.classList.remove('success', 'error'); // Hapus kelas tipe sebelumnya
+        messageBoxIcon.innerHTML = ''; // Hapus ikon sebelumnya
+        messageBoxOkButton.classList.add('d-none'); // Sembunyikan tombol OK secara default
+        messageBoxBackdrop.classList.remove('d-none'); // Tampilkan latar belakang
+
         if (type === 'success') {
-            messageBox.classList.add('tw-bg-green-100', 'tw-text-green-800', 'tw-border', 'tw-border-green-300');
+            dynamicMessageBox.classList.add('success');
+            messageBoxIcon.innerHTML = '&#10003;'; // Ikon centang
+            messageBoxOkButton.classList.remove('d-none'); // Tampilkan tombol OK untuk sukses
         } else if (type === 'error') {
-            messageBox.classList.add('tw-bg-red-100', 'tw-text-red-800', 'tw-border', 'tw-border-red-300');
+            dynamicMessageBox.classList.add('error');
+            messageBoxIcon.innerHTML = '&#x2716;'; // Ikon silang
+            messageBoxOkButton.classList.remove('d-none'); // Tampilkan tombol OK untuk error (pengguna menutup secara manual)
+            // Untuk error, akan otomatis sembunyi setelah 5 detik jika tombol OK tidak diklik
+            setTimeout(() => {
+                if (!dynamicMessageBox.classList.contains('d-none')) { // Hanya sembunyikan jika belum disembunyikan secara manual
+                    dynamicMessageBox.classList.add('d-none');
+                    messageBoxBackdrop.classList.add('d-none');
+                }
+            }, 5000);
         }
-        
-        messageBox.style.display = 'block'; 
-        setTimeout(() => {
-            messageBox.style.display = 'none'; 
-        }, 5000);
+        dynamicMessageBox.classList.remove('d-none'); // Tampilkan kotak pesan
     }
 
-    // Date validation
+    // Validasi tanggal
     const tanggalSuratInput = document.getElementById('tanggal_surat');
     if(tanggalSuratInput){
         const today = new Date().toISOString().split('T')[0];
@@ -417,12 +723,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form submission
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+        e.stopImmediatePropagation(); // Hentikan penyebaran event lebih lanjut
+
+        // Periksa apakah formulir sedang dalam proses pengiriman
+        if (isSubmitting) {
+            console.log("Pengiriman formulir sudah berjalan. Mengabaikan.");
+            return;
+        }
+
         let formIsValid = true;
+
+        // Validasi tahun laporan (tahun saat ini +/- 1 tahun)
+        const tahun = document.getElementById('tahun_laporan').value;
+        const currentYear = new Date().getFullYear();
+        if (parseInt(tahun) > currentYear + 1 || parseInt(tahun) < currentYear - 1) {
+            showMessageBox('Tahun laporan harus tahun sekarang, tahun sebelumnya, atau tahun berikutnya.', 'error');
+            formIsValid = false;
+        }
 
         // File validation
         const fileInput = document.getElementById('file'); 
-        if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
-            showMessageBox('Ukuran file laporan melebihi 10MB.', 'error');
+        if (fileInput.files[0] && fileInput.files[0].size > 5 * 1024 * 1024) { // Mengubah batas menjadi 5MB
+            showMessageBox('Ukuran file laporan melebihi 5MB.', 'error');
             formIsValid = false;
         }
 
@@ -435,13 +757,22 @@ document.addEventListener('DOMContentLoaded', function() {
             formIsValid = false;
         }
 
-        if (!formIsValid) return;
+        if (!formIsValid) {
+            // Pastikan status loading direset jika validasi sisi klien gagal
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            loadingOverlay.classList.add('d-none');
+            isSubmitting = false; // Reset flag
+            return;
+        }
 
         // Show loading state
+        isSubmitting = true;
         submitButton.disabled = true;
         submitText.textContent = 'Mengirim...';
         submitSpinner.classList.remove('d-none');
-        document.getElementById('loadingOverlay').classList.remove('d-none');
+        loadingOverlay.classList.remove('d-none');
         
         const formData = new FormData(this);
         
@@ -451,16 +782,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: { 'Accept': 'application/json' }
         })
         .then(response => {
-            submitButton.disabled = false;
-            submitText.textContent = 'Kirim Laporan';
-            submitSpinner.classList.add('d-none');
-            document.getElementById('loadingOverlay').classList.add('d-none');
-
             if (!response.ok) {
                 return response.json().then(errorData => {
-                    throw new Error(errorData.message || 'Gagal mengirim laporan (status non-2xx)');
-                }).catch(() => {
-                    throw new Error('Gagal mengirim laporan (respons tidak valid dari server).');
+                    throw new Error(errorData.message || JSON.stringify(errorData) || 'Gagal mengirim laporan (status non-2xx)');
+                }).catch(jsonError => {
+                    console.error("Error parsing JSON from non-OK response:", jsonError);
+                    return response.text().then(text => {
+                        throw new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
+                    });
                 });
             }
             return response.json();
@@ -475,13 +804,30 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error:', error);
+            showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server.', 'error');
+        })
+        .finally(() => {
+            // Pastikan status loading selalu direset
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
-            document.getElementById('loadingOverlay').classList.add('d-none');
-            showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server.', 'error');
+            loadingOverlay.classList.add('d-none');
+            isSubmitting = false; // Reset flag saat pengiriman selesai
         });
+    });
+
+    // Tooltip functionality
+    const tooltipContainers = document.querySelectorAll('.tooltip-container');
+    tooltipContainers.forEach(container => {
+        const tooltipIcon = container.querySelector('.tooltip-icon');
+        const tooltipText = container.querySelector('.tooltip-text');
+        const tooltipContent = tooltipIcon.getAttribute('data-tooltip');
+
+        if (tooltipContent) {
+            tooltipText.textContent = tooltipContent;
+        }
     });
 });
 </script>
+{% endblock %}
 {% endblock %}

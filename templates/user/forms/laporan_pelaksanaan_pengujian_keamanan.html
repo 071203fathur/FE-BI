@@ -3,80 +3,255 @@
 {% block title %}Laporan Pelaksanaan Pengujian Keamanan{% endblock %}
 
 {% block extra_head %}
-    <!-- Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Mengatur font-family secara global untuk halaman ini */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Kelas utilitas untuk spinner */
-        .spinner-border {
-            display: inline-block;
-            width: 1.5rem;
-            height: 1.5rem;
-            vertical-align: middle;
-            border: 0.25em solid currentColor;
-            border-right-color: transparent;
-            border-radius: 50%;
-            animation: spinner-border .75s linear infinite;
-        }
-        @keyframes spinner-border {
-            to { transform: rotate(360deg); }
-        }
-        .d-none { display: none !important; } /* Utility untuk JS */
+<!-- Font Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Global styles */
+    body {
+        font-family: 'Inter', sans-serif;
+    }
 
-        /* Custom styles to match Laporan P2P/Fraud form aesthetics */
-        .section-group {
-            background-color: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 0;
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-        }
+    /* Spinner utility */
+    .spinner-border {
+        display: inline-block;
+        width: 1.5rem;
+        height: 1.5rem;
+        vertical-align: middle;
+        border: 0.25em solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spinner-border .75s linear infinite;
+    }
 
+    @keyframes spinner-border {
+        to { transform: rotate(360deg); }
+    }
+
+    .d-none { display: none !important; }
+
+    /* Section styling */
+    .section-group {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 0;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+
+    .section-group .section-header {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+        background-color: #eef2f6;
+        padding: 1rem 1.5rem;
+        margin: 0 -1px 1rem -1px;
+        border-bottom: 1px solid #e0e7eb;
+        border-top-left-radius: 11px;
+        border-top-right-radius: 11px;
+    }
+
+    .section-group .section-content {
+        padding: 1.5rem;
+        padding-top: 0;
+    }
+
+    /* Form elements */
+    .form-label {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+        font-size: 1rem;
+        padding: 1rem;
+        width: 100%;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        color: #4b5563;
+        transition: all 0.2s ease;
+        min-height: 50px;
+        box-sizing: border-box;
+    }
+
+    /* Date inputs */
+    input[type="date"].form-input {
+        font-size: 1rem;
+        padding: 1rem;
+        min-height: 50px;
+        appearance: none;
+        background-color: white;
+    }
+
+    /* Select dropdowns */
+    select.form-input {
+        font-size: 1rem;
+        padding: 1rem;
+        min-height: 50px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px 12px;
+        padding-right: 2.5rem;
+    }
+
+    /* File input */
+    .file-input-container {
+        margin-top: 0.5rem;
+    }
+    
+    .file-input-container input[type="file"] {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    /* Nested sections */
+    .nested-section-group {
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background-color: #f9fafb;
+    }
+
+    .nested-section-group h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .form-input {
+            padding: 0.9rem;
+            min-height: 45px;
+        }
+        
         .section-group .section-header {
             font-size: 1.15rem;
-            font-weight: 700;
-            color: #1f2937;
-            background-color: #eef2f6;
-            padding: 0.8rem 1.5rem;
-            margin-top: 0;
-            margin-left: -1px;
-            margin-right: -1px;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid #e0e7eb;
-            border-top-left-radius: 11px;
-            border-top-right-radius: 11px;
+            padding: 0.9rem 1rem;
         }
-        .section-group .section-content {
-            padding: 1.5rem;
-            padding-top: 0;
+        
+        .nested-section-group {
+            padding: 1rem;
         }
+    }
 
-        /* Adjust font size for labels and inputs for precision */
-        .form-label {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #374151;
+    /* Styles for the loading overlay */
+    #loadingOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(3px);
+    }
+
+    #loadingOverlay .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        border-width: 0.35em;
+        color: #ffffff;
+    }
+
+    /* Styles for the message box backdrop */
+    #messageBoxBackdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        display: none;
+    }
+
+    /* Styles for the message box pop-up */
+    #dynamicMessageBox {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 1001;
+        display: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    #dynamicMessageBox.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    #dynamicMessageBox.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    #dynamicMessageBox .icon-container {
+        font-size: 3rem;
+        line-height: 1;
+        animation: fade-in-scale 0.5s ease-out forwards;
+    }
+
+    @keyframes fade-in-scale {
+        from {
+            opacity: 0;
+            transform: scale(0.5);
         }
-        .form-input {
-            font-size: 0.9rem;
-            padding: 0.7rem 1rem;
+        to {
+            opacity: 1;
+            transform: scale(1);
         }
-        .form-text {
-            font-size: 0.75rem; /* Smaller text for hints */
-            color: #6b7280; /* gray-500 */
-            margin-top: 0.25rem;
-        }
-    </style>
+    }
+
+    #dynamicMessageBox .ok-button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 700;
+        transition: background-color 0.3s ease;
+    }
+
+    #dynamicMessageBox .ok-button:hover {
+        background-color: #45a049;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6 tw-font-sans">
-    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">Laporan Pelaksanaan Pengujian Keamanan (Penetration Test)</h2>
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6">
+    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">
+        Laporan Pelaksanaan Pengujian Keamanan (Penetration Test)
+    </h2>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -90,218 +265,266 @@
 
     <form method="POST" action="{{ url_for('submit_laporan_pelaksanaan_pengujian_keamanan') }}" enctype="multipart/form-data" id="penetrationTestForm" class="tw-space-y-6">
         
+        <!-- Informasi Umum Laporan Section -->
         <div class="section-group">
             <h3 class="section-header">Informasi Umum Laporan</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
-                    <div class="tw-space-y-1">
-                        <label for="tahun_laporan" class="tw-block form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
-                        <select class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="tahun_laporan" name="tahun_laporan" required>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                    <div>
+                        <label for="tahun_laporan" class="form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
+                        <select class="form-input" id="tahun_laporan" name="tahun_laporan" required>
                             <option value="">-- Pilih Tahun --</option>
-                            {% for year in range(2020, 2027) %}
+                            {% for year in range(current_year - 1, current_year + 2) %} {# Adjusted range for year validation #}
                             <option value="{{ year }}">{{ year }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="nomor_surat" class="tw-block form-label">Nomor Surat <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="nomor_surat" name="nomor_surat" required>
+                    
+                    <div>
+                        <label for="nomor_surat" class="form-label">Nomor Surat <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="form-input" id="nomor_surat" name="nomor_surat" required>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label for="tanggal_surat" class="tw-block form-label">Tanggal Surat <span class="tw-text-red-500">*</span></label>
-                        <input type="date" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="tanggal_surat" name="tanggal_surat" required>
+                    
+                    <div>
+                        <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="tw-text-red-500">*</span></label>
+                        <input type="date" class="form-input" id="tanggal_surat" name="tanggal_surat" required>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label for="file" class="tw-block form-label">Upload File Laporan (PDF) <span class="tw-text-red-500">*</span></label>
-                        <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="file" name="file" accept=".pdf" required>
-                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF (Maks. 10MB)</p>
+                    
+                    <div class="md:tw-col-span-2">
+                        <label for="file" class="form-label">Upload Laporan (PDF) <span class="tw-text-red-500">*</span></label>
+                        <div class="file-input-container">
+                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
+                                   id="file" name="file" accept=".pdf" required>
+                        </div>
+                        <p class="tw-text-sm tw-text-gray-500 tw-mt-2">Format: PDF (Maks. 10MB)</p>
                     </div>
                 </div>
             </div>
         </div>
-        
+
+        <!-- Informasi Pengujian Section -->
         <div class="section-group">
             <h3 class="section-header">Informasi Pengujian</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
-                    <div class="tw-space-y-1">
-                        <label for="tanggal_selesai_audit" class="tw-block form-label">Tanggal Selesai Pengujian <span class="tw-text-red-500">*</span></label>
-                        <input type="date" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="tanggal_selesai_audit" name="tanggal_selesai_audit" required>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                    <div>
+                        <label for="tanggal_selesai_audit" class="form-label">Tanggal Selesai Pengujian <span class="tw-text-red-500">*</span></label>
+                        <input type="date" class="form-input" id="tanggal_selesai_audit" name="tanggal_selesai_audit" required>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="nama_auditor" class="tw-block form-label">Nama Penguji <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="nama_auditor" name="nama_auditor" required>
+                    
+                    <div>
+                        <label for="nama_auditor" class="form-label">Nama Penguji <span class="tw-text-red-500">*</span></label>
+                        <input type="text" class="form-input" id="nama_auditor" name="nama_auditor" required>
                     </div>
                 </div>
             </div>
         </div>
-        
+
+        <!-- Temuan Celah Keamanan Section -->
         <div class="section-group">
-            <h3 class="section-header">Temuan Celah Keamanan Berdasarkan Kategori</h3>
+            <h3 class="section-header">Temuan Celah Keamanan</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
-                    <div class="tw-space-y-1">
-                        <label for="temuan_low" class="tw-block form-label">Temuan Low (Jumlah) <span class="tw-text-red-500">*</span></label>
-                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="temuan_low" name="temuan_low" min="0" required>
+                
+                <!-- Temuan Low -->
+                <div class="nested-section-group">
+                    <h4>Temuan Low</h4>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                        <div>
+                            <label for="temuan_low" class="form-label">Jumlah Temuan <span class="tw-text-red-500">*</span></label>
+                            <input type="number" class="form-input" id="temuan_low" name="temuan_low" min="0" required value="0"> {# Added default value #}
+                        </div>
+                        
+                        <div>
+                            <label for="keterangan_temuan_low" class="form-label">Keterangan <span class="tw-text-red-500">*</span></label>
+                            <textarea class="form-input" id="keterangan_temuan_low" name="keterangan_temuan_low" rows="3" required></textarea>
+                        </div>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="keterangan_temuan_low" class="tw-block form-label">Keterangan Temuan Low <span class="tw-text-red-500">*</span></label>
-                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="keterangan_temuan_low" name="keterangan_temuan_low" rows="2" required></textarea>
+                </div>
+
+                <!-- Temuan Medium -->
+                <div class="nested-section-group">
+                    <h4>Temuan Medium</h4>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                        <div>
+                            <label for="temuan_medium" class="form-label">Jumlah Temuan <span class="tw-text-red-500">*</span></label>
+                            <input type="number" class="form-input" id="temuan_medium" name="temuan_medium" min="0" required value="0"> {# Added default value #}
+                        </div>
+                        
+                        <div>
+                            <label for="keterangan_temuan_medium" class="form-label">Keterangan <span class="tw-text-red-500">*</span></label>
+                            <textarea class="form-input" id="keterangan_temuan_medium" name="keterangan_temuan_medium" rows="3" required></textarea>
+                        </div>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="temuan_medium" class="tw-block form-label">Temuan Medium (Jumlah) <span class="tw-text-red-500">*</span></label>
-                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="temuan_medium" name="temuan_medium" min="0" required>
+                </div>
+
+                <!-- Temuan High -->
+                <div class="nested-section-group">
+                    <h4>Temuan High</h4>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                        <div>
+                            <label for="temuan_high" class="form-label">Jumlah Temuan <span class="tw-text-red-500">*</span></label>
+                            <input type="number" class="form-input" id="temuan_high" name="temuan_high" min="0" required value="0"> {# Added default value #}
+                        </div>
+                        
+                        <div>
+                            <label for="keterangan_temuan_high" class="form-label">Keterangan <span class="tw-text-red-500">*</span></label>
+                            <textarea class="form-input" id="keterangan_temuan_high" name="keterangan_temuan_high" rows="3" required></textarea>
+                        </div>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="keterangan_temuan_medium" class="tw-block form-label">Keterangan Temuan Medium <span class="tw-text-red-500">*</span></label>
-                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="keterangan_temuan_medium" name="keterangan_temuan_medium" rows="2" required></textarea>
-                    </div>
-                    <div class="tw-space-y-1">
-                        <label for="temuan_high" class="tw-block form-label">Temuan High (Jumlah) <span class="tw-text-red-500">*</span></label>
-                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="temuan_high" name="temuan_high" min="0" required>
-                    </div>
-                    <div class="tw-space-y-1">
-                        <label for="keterangan_temuan_high" class="tw-block form-label">Keterangan Temuan High <span class="tw-text-red-500">*</span></label>
-                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="keterangan_temuan_high" name="keterangan_temuan_high" rows="2" required></textarea>
-                    </div>
-                    <div class="tw-space-y-1">
-                        <label for="temuan_critical" class="tw-block form-label">Temuan Critical (Jumlah) <span class="tw-text-red-500">*</span></label>
-                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="temuan_critical" name="temuan_critical" min="0" required>
-                    </div>
-                    <div class="tw-space-y-1">
-                        <label for="keterangan_temuan_critical" class="tw-block form-label">Keterangan Temuan Critical <span class="tw-text-red-500">*</span></label>
-                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="keterangan_temuan_critical" name="keterangan_temuan_critical" rows="2" required></textarea>
+                </div>
+
+                <!-- Temuan Critical -->
+                <div class="nested-section-group">
+                    <h4>Temuan Critical</h4>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                        <div>
+                            <label for="temuan_critical" class="form-label">Jumlah Temuan <span class="tw-text-red-500">*</span></label>
+                            <input type="number" class="form-input" id="temuan_critical" name="temuan_critical" min="0" required value="0"> {# Added default value #}
+                        </div>
+                        
+                        <div>
+                            <label for="keterangan_temuan_critical" class="form-label">Keterangan <span class="tw-text-red-500">*</span></label>
+                            <textarea class="form-input" id="keterangan_temuan_critical" name="keterangan_temuan_critical" rows="3" required></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
+        <!-- Status Temuan Section -->
         <div class="section-group">
-            <h3 class="section-header">Temuan Pengujian</h3>
+            <h3 class="section-header">Status Temuan</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
-                    <div class="tw-space-y-1">
-                        <label for="jumlah_temuan" class="tw-block form-label">Total Jumlah Temuan (Otomatis) <span class="tw-text-red-500">*</span></label>
-                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-gray-100 tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="jumlah_temuan" name="jumlah_temuan" min="0" required readonly>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                    <div>
+                        <label for="jumlah_temuan" class="form-label">Total Jumlah Temuan <span class="tw-text-red-500">*</span></label>
+                        <input type="number" class="form-input tw-bg-gray-100" id="jumlah_temuan" name="jumlah_temuan" min="0" required readonly value="0"> {# Added default value #}
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="jumlah_temuan_diselesaikan" class="tw-block form-label">Jumlah Temuan Diselesaikan <span class="tw-text-red-500">*</span></label>
-                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="jumlah_temuan_diselesaikan" name="jumlah_temuan_diselesaikan" min="0" required>
+                    
+                    <div>
+                        <label for="jumlah_temuan_diselesaikan" class="form-label">Temuan Diselesaikan <span class="tw-text-red-500">*</span></label>
+                        <input type="number" class="form-input" id="jumlah_temuan_diselesaikan" name="jumlah_temuan_diselesaikan" min="0" required value="0"> {# Added default value #}
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label for="keterangan_temuan_diselesaikan" class="tw-block form-label">Keterangan Temuan Diselesaikan</label>
-                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="keterangan_temuan_diselesaikan" name="keterangan_temuan_diselesaikan" rows="3"></textarea>
+                    
+                    <div class="md:tw-col-span-2">
+                        <label for="keterangan_temuan_diselesaikan" class="form-label">Keterangan Temuan Diselesaikan</label>
+                        <textarea class="form-input" id="keterangan_temuan_diselesaikan" name="keterangan_temuan_diselesaikan" rows="3"></textarea>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label for="jumlah_temuan_belum_terselesaikan" class="tw-block form-label">Jumlah Temuan Belum Diselesaikan <span class="tw-text-red-500">*</span></label>
-                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="jumlah_temuan_belum_terselesaikan" name="jumlah_temuan_belum_terselesaikan" min="0" required>
+                    
+                    <div class="md:tw-col-span-2">
+                        <label for="jumlah_temuan_belum_terselesaikan" class="form-label">Temuan Belum Diselesaikan <span class="tw-text-red-500">*</span></label>
+                        <input type="number" class="form-input" id="jumlah_temuan_belum_terselesaikan" name="jumlah_temuan_belum_diselesaikan" min="0" required readonly value="0"> {# Changed name to match API, added default value #}
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label for="keterangan_temuan_belum_terselesaikan" class="tw-block form-label">Keterangan Temuan Belum Diselesaikan</label>
-                        <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="keterangan_temuan_belum_diselesaikan" name="keterangan_temuan_belum_diselesaikan" rows="5"></textarea>
+                    
+                    <div class="md:tw-col-span-2">
+                        <label for="keterangan_temuan_belum_diselesaikan" class="form-label">Keterangan Temuan Belum Diselesaikan</label>
+                        <textarea class="form-input" id="keterangan_temuan_belum_diselesaikan" name="keterangan_temuan_belum_diselesaikan" rows="4"></textarea>
                     </div>
                 </div>
             </div>
         </div>
-        
+
+        <!-- Kesimpulan Section -->
         <div class="section-group">
             <h3 class="section-header">Kesimpulan</h3>
             <div class="section-content">
-                <div class="tw-space-y-1">
-                    <label for="kesimpulan_auditor" class="tw-block form-label">Kesimpulan/Opini Penguji <span class="tw-text-red-500">*</span></label>
-                    <textarea class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="kesimpulan_auditor" name="kesimpulan_auditor" rows="5" required></textarea>
-                    <p class="form-text">Ringkasan hasil pengujian dan opini penguji</p>
+                <div>
+                    <label for="kesimpulan_auditor" class="form-label">Kesimpulan/Opini Penguji <span class="tw-text-red-500">*</span></label>
+                    <textarea class="form-input" id="kesimpulan_auditor" name="kesimpulan_auditor" rows="5" required></textarea>
+                    <p class="tw-text-sm tw-text-gray-500 tw-mt-2">Ringkasan hasil pengujian dan opini penguji</p>
                 </div>
             </div>
         </div>
-        
+
+        <!-- Form Actions -->
         <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
-            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
                 <span class="submit-text">Kirim Laporan</span>
                 <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
             </button>
-            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">Batal</button>
+            
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">
+                Batal
+            </button>
         </div>
     </form>
 </div>
 
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="d-none">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<!-- Message Box Backdrop -->
+<div id="messageBoxBackdrop" class="d-none"></div>
+
+<!-- Dynamic Message Box (Pop-up) -->
+<div id="dynamicMessageBox" class="d-none">
+    <div id="messageBoxIcon" class="icon-container"></div>
+    <p id="messageBoxContent"></p>
+    <button id="messageBoxOkButton" class="ok-button d-none">Oke</button>
+</div>
+
+{% block extra_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('penetrationTestForm');
     const submitButton = document.getElementById('submitButton');
     const submitText = submitButton.querySelector('.submit-text');
     const submitSpinner = submitButton.querySelector('.spinner-border');
-    
-    // --- Custom Modal/Message Box ---
-    const messageContainer = document.querySelector('.tw-max-w-4xl.tw-mx-auto'); 
-    
-    function showMessageBox(message, type) {
-        let messageBox = document.getElementById('dynamicMessageBox');
-        if (!messageBox) {
-            messageBox = document.createElement('div');
-            messageBox.id = 'dynamicMessageBox';
-            messageBox.classList.add('tw-p-3', 'tw-rounded-lg', 'tw-mb-4', 'tw-text-center', 'tw-font-medium'); 
-            const firstChild = messageContainer.querySelector('h2');
-            if (firstChild) {
-                firstChild.parentNode.insertBefore(messageBox, firstChild.nextSibling);
-            } else {
-                messageContainer.insertBefore(messageBox, messageContainer.firstChild);
-            }
-        }
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const messageBoxBackdrop = document.getElementById('messageBoxBackdrop');
+    const dynamicMessageBox = document.getElementById('dynamicMessageBox');
+    const messageBoxContent = document.getElementById('messageBoxContent');
+    const messageBoxIcon = document.getElementById('messageBoxIcon');
+    const messageBoxOkButton = document.getElementById('messageBoxOkButton');
 
-        messageBox.textContent = message;
-        messageBox.classList.remove('tw-bg-green-100', 'tw-text-green-800', 'tw-border-green-300', 'tw-bg-red-100', 'tw-text-red-800', 'tw-border-red-300'); 
-        
-        if (type === 'success') {
-            messageBox.classList.add('tw-bg-green-100', 'tw-text-green-800', 'tw-border', 'tw-border-green-300');
-        } else if (type === 'error') {
-            messageBox.classList.add('tw-bg-red-100', 'tw-text-red-800', 'tw-border', 'tw-border-red-300');
-        }
-        
-        messageBox.style.display = 'block'; 
-        setTimeout(() => {
-            messageBox.style.display = 'none'; 
-        }, 5000);
-    }
-    // --- End Custom Modal/Message Box ---
+    // Flag to prevent double submission
+    let isSubmitting = false;
 
-    const temuanLowInput = document.getElementById('temuan_low');
-    const temuanMediumInput = document.getElementById('temuan_medium');
-    const temuanHighInput = document.getElementById('temuan_high');
-    const temuanCriticalInput = document.getElementById('temuan_critical');
-    const jumlahTemuanInput = document.getElementById('jumlah_temuan');
-    const jumlahTemuanDiselesaikanInput = document.getElementById('jumlah_temuan_diselesaikan');
-    const jumlahTemuanBelumDiselesaikanInput = document.getElementById('jumlah_temuan_belum_terselesaikan');
-
-
-    function calculateTotalFindings() {
-        const low = parseInt(temuanLowInput.value) || 0;
-        const medium = parseInt(temuanMediumInput.value) || 0;
-        const high = parseInt(temuanHighInput.value) || 0;
-        const critical = parseInt(temuanCriticalInput.value) || 0;
-        
-        jumlahTemuanInput.value = low + medium + high + critical;
-        calculateUnresolvedFindings(); // Also update unresolved when total changes
-    }
-    
-    function calculateUnresolvedFindings() {
-        const total = parseInt(jumlahTemuanInput.value) || 0;
-        const resolved = parseInt(jumlahTemuanDiselesaikanInput.value) || 0;
-        jumlahTemuanBelumDiselesaikanInput.value = total - resolved;
-    }
-
-    [temuanLowInput, temuanMediumInput, temuanHighInput, temuanCriticalInput].forEach(input => {
-        input.addEventListener('input', calculateTotalFindings);
+    // Event listener for the "Oke" button to close the message box
+    messageBoxOkButton.addEventListener('click', () => {
+        dynamicMessageBox.classList.add('d-none');
+        messageBoxBackdrop.classList.add('d-none');
     });
-    
-    jumlahTemuanDiselesaikanInput.addEventListener('input', calculateUnresolvedFindings);
 
-    // Initial calculation on load
-    calculateTotalFindings();
-    calculateUnresolvedFindings();
+    /**
+     * Show custom message box with message and type (success/error)
+     * @param {string} message - Message to display
+     * @param {'success'|'error'} type - Message type ('success' or 'error')
+     */
+    function showMessageBox(message, type) {
+        messageBoxContent.textContent = message;
+        dynamicMessageBox.classList.remove('success', 'error');
+        messageBoxIcon.innerHTML = '';
+        messageBoxOkButton.classList.add('d-none');
+        messageBoxBackdrop.classList.remove('d-none');
 
+        if (type === 'success') {
+            dynamicMessageBox.classList.add('success');
+            messageBoxIcon.innerHTML = '&#10003;'; // Checkmark icon
+            messageBoxOkButton.classList.remove('d-none');
+        } else if (type === 'error') {
+            dynamicMessageBox.classList.add('error');
+            messageBoxIcon.innerHTML = '&#x2716;'; // Cross icon
+            messageBoxOkButton.classList.remove('d-none'); // Make sure button is visible for error too
+            setTimeout(() => {
+                if (!dynamicMessageBox.classList.contains('d-none')) {
+                    dynamicMessageBox.classList.add('d-none');
+                    messageBoxBackdrop.classList.add('d-none');
+                }
+            }, 5000);
+        }
+        dynamicMessageBox.classList.remove('d-none');
+    }
+
+    // Date validation
     const tanggalSuratInput = document.getElementById('tanggal_surat');
     const tanggalSelesaiAuditInput = document.getElementById('tanggal_selesai_audit');
+    const tahunLaporanInput = document.getElementById('tahun_laporan');
+
     if(tanggalSuratInput) {
         const today = new Date().toISOString().split('T')[0];
         tanggalSuratInput.max = today;
@@ -310,51 +533,128 @@ document.addEventListener('DOMContentLoaded', function() {
         const today = new Date().toISOString().split('T')[0];
         tanggalSelesaiAuditInput.max = today;
     }
+
+    // Function to strip leading zeros from number inputs
+    function stripLeadingZeros(event) {
+        const input = event.target;
+        if (input.value !== '') {
+            // Convert to number and then back to string to remove leading zeros
+            // Use parseFloat to handle potential decimal numbers if needed,
+            // but for integer counts, parseInt is more appropriate.
+            // Since these are counts, parseInt is fine.
+            input.value = parseInt(input.value, 10).toString();
+        }
+    }
+
+    // Findings calculation
+    const temuanLowInput = document.getElementById('temuan_low');
+    const temuanMediumInput = document.getElementById('temuan_medium');
+    const temuanHighInput = document.getElementById('temuan_high');
+    const temuanCriticalInput = document.getElementById('temuan_critical');
+    const jumlahTemuanInput = document.getElementById('jumlah_temuan');
+    const jumlahTemuanDiselesaikanInput = document.getElementById('jumlah_temuan_diselesaikan');
+    const jumlahTemuanBelumDiselesaikanInput = document.getElementById('jumlah_temuan_belum_terselesaikan');
+
+    function calculateTotalFindings() {
+        // Use parseInt(value, 10) to ensure base 10 parsing and handle empty string as 0
+        const low = parseInt(temuanLowInput.value, 10) || 0;
+        const medium = parseInt(temuanMediumInput.value, 10) || 0;
+        const high = parseInt(temuanHighInput.value, 10) || 0;
+        const critical = parseInt(temuanCriticalInput.value, 10) || 0;
+        
+        jumlahTemuanInput.value = low + medium + high + critical;
+        calculateUnresolvedFindings();
+    }
     
+    function calculateUnresolvedFindings() {
+        const total = parseInt(jumlahTemuanInput.value, 10) || 0;
+        const resolved = parseInt(jumlahTemuanDiselesaikanInput.value, 10) || 0;
+        jumlahTemuanBelumDiselesaikanInput.value = total - resolved;
+    }
+
+    // Attach input event listeners for stripping leading zeros and recalculating
+    [temuanLowInput, temuanMediumInput, temuanHighInput, temuanCriticalInput, jumlahTemuanDiselesaikanInput].forEach(input => {
+        input.addEventListener('input', stripLeadingZeros);
+        input.addEventListener('input', calculateTotalFindings); // Recalculate after stripping zeros
+    });
+    
+    // The total and unresolved fields are readonly, so they only need recalculation
+    // and don't need the stripLeadingZeros listener directly.
+    jumlahTemuanDiselesaikanInput.addEventListener('input', calculateUnresolvedFindings);
+
+    // Initial calculation on load
+    calculateTotalFindings();
+    calculateUnresolvedFindings();
+
+    // Form submission
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+        e.stopImmediatePropagation();
+
+        // Check if form is already submitting
+        if (isSubmitting) {
+            console.log("Form submission already in progress. Ignoring.");
+            return;
+        }
+
         let formIsValid = true;
-        
-        const tahun = document.getElementById('tahun_laporan').value;
+
+        // Year validation
+        const tahun = parseInt(tahunLaporanInput.value);
         const currentYear = new Date().getFullYear();
-        if (parseInt(tahun) > currentYear) {
-            showMessageBox('Tahun laporan tidak boleh melebihi tahun berjalan.', 'error');
+        if (isNaN(tahun) || tahun < (currentYear - 1) || tahun > (currentYear + 1)) {
+            showMessageBox('Tahun laporan harus tahun sekarang, tahun sebelumnya, atau tahun berikutnya.', 'error');
             formIsValid = false;
         }
         
-        if (tanggalSelesaiAuditInput.value && tanggalSuratInput.value && new Date(tanggalSelesaiAuditInput.value) < new Date(tanggalSuratInput.value)) {
+        // Date validation
+        const tanggalSurat = new Date(tanggalSuratInput.value);
+        const tanggalSelesaiAudit = new Date(tanggalSelesaiAuditInput.value);
+
+        if (tanggalSuratInput.value && tanggalSelesaiAuditInput.value && tanggalSelesaiAudit < tanggalSurat) {
             showMessageBox('Tanggal selesai pengujian tidak boleh sebelum tanggal surat.', 'error');
             formIsValid = false;
         }
 
-        // Temuan Diselesaikan vs Jumlah Temuan validation
-        const totalFindings = parseInt(jumlahTemuanInput.value) || 0;
-        const resolvedFindings = parseInt(jumlahTemuanDiselesaikanInput.value) || 0;
+        // Findings validation
+        const totalFindings = parseInt(jumlahTemuanInput.value, 10) || 0;
+        const resolvedFindings = parseInt(jumlahTemuanDiselesaikanInput.value, 10) || 0;
+        
         if (resolvedFindings > totalFindings) {
             showMessageBox('Jumlah temuan diselesaikan tidak boleh melebihi total temuan.', 'error');
             formIsValid = false;
         }
 
-        // Jumlah Temuan Belum Diselesaikan vs Calculated value
-        const declaredUnresolvedCount = parseInt(jumlahTemuanBelumDiselesaikanInput.value) || 0;
+        // Unresolved findings validation
+        const declaredUnresolvedCount = parseInt(jumlahTemuanBelumDiselesaikanInput.value, 10) || 0;
         const calculatedUnresolvedCount = totalFindings - resolvedFindings;
         if (declaredUnresolvedCount !== calculatedUnresolvedCount) {
             showMessageBox(`Jumlah Temuan Belum Diselesaikan (${declaredUnresolvedCount}) tidak sesuai dengan perhitungan (Total Temuan - Temuan Diselesaikan = ${calculatedUnresolvedCount}). Harap periksa kembali.`, 'error');
             formIsValid = false;
         }
 
-        // File size validation for main report
+        // File validation
         const fileInput = document.getElementById('file'); 
         if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) { // 10MB
-            showMessageBox('Ukuran file dokumen laporan melebihi 10MB.', 'error');
+            showMessageBox('Ukuran file laporan melebihi 10MB.', 'error');
             formIsValid = false;
         }
 
-        if (!formIsValid) return;
+        if (!formIsValid) {
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            loadingOverlay.classList.add('d-none');
+            isSubmitting = false;
+            return;
+        }
 
+        // Show loading state
+        isSubmitting = true;
         submitButton.disabled = true;
         submitText.textContent = 'Mengirim...';
         submitSpinner.classList.remove('d-none');
+        loadingOverlay.classList.remove('d-none');
         
         const formData = new FormData(this);
         
@@ -364,40 +664,44 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: { 'Accept': 'application/json' }
         })
         .then(response => {
+            // Re-enable button and hide spinner/overlay regardless of initial response status
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
+            loadingOverlay.classList.add('d-none');
+
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || JSON.stringify(errorData) || 'Gagal mengirim laporan (status non-2xx)');
+                }).catch(jsonError => {
+                    console.error("Error parsing JSON from non-OK response:", jsonError);
+                    return response.text().then(text => {
+                        throw new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
+                    });
+                });
+            }
             return response.json();
         })
         .then(data => {
             if (data.success) {
                 showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
-                form.reset(); // Reset all form fields
-                calculateTotalFindings(); // Recalculate total after reset
-                calculateUnresolvedFindings(); // Recalculate unresolved after reset
+                form.reset();
+                calculateTotalFindings(); // Recalculate after reset
+                calculateUnresolvedFindings(); // Recalculate after reset
             } else {
                 showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            submitButton.disabled = false;
-            submitText.textContent = 'Kirim Laporan';
-            submitSpinner.classList.add('d-none');
             showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server.', 'error');
+        })
+        .finally(() => {
+            // Ensure isSubmitting flag is reset even if there's an unhandled error
+            isSubmitting = false;
         });
-    });
-
-    // Reset form listener
-    form.addEventListener('reset', function() {
-        // The default form.reset() will handle clearing all fields.
-        // Recalculate totals after reset to ensure display is correct.
-        setTimeout(() => {
-            calculateTotalFindings();
-            calculateUnresolvedFindings();
-        }, 0);
     });
 });
 </script>
-
+{% endblock %}
 {% endblock %}

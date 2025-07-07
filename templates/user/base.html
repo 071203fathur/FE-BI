@@ -224,6 +224,17 @@
             <div class="tw-hidden md:tw-flex md:tw-items-center tw-space-x-6 tw-mx-auto"> {# tw-mx-auto untuk menengahkan #}
                 <!-- Laporan Bulanan Dropdown -->
                 <div class="tw-relative">
+                    <button type="button" class="dropdown-toggle-button dropdown-toggle" id="laporanBulananInsidental" aria-expanded="false">
+                        Laporan Insidental
+                        <svg class="tw-ml-2 tw-h-4 tw-w-4 tw-inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="tw-origin-top-left tw-absolute tw-left-0 tw-mt-2 tw-w-64 dropdown-menu-container tw-hidden" role="menu" aria-orientation="vertical" aria-labelledby="laporanBulananDropdown">
+                        <div class="tw-py-1" role="none">
+                            <a href="{{ url_for('form_laporan_gangguanit') }}" class="dropdown-menu-item" role="menuitem">Laporan Gangguan IT</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="tw-relative">
                     <button type="button" class="dropdown-toggle-button dropdown-toggle" id="laporanBulananDropdown" aria-expanded="false">
                         Laporan Bulanan
                         <svg class="tw-ml-2 tw-h-4 tw-w-4 tw-inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -239,6 +250,7 @@
                     </div>
                 </div>
 
+
                 <!-- Laporan Triwulanan Dropdown -->
                 <div class="tw-relative">
                     <button type="button" class="dropdown-toggle-button dropdown-toggle" id="laporanTriwulanDropdown" aria-expanded="false">
@@ -248,8 +260,8 @@
                     <div class="tw-origin-top-right tw-absolute tw-left-0 tw-mt-2 tw-w-64 dropdown-menu-container tw-hidden" role="menu" aria-orientation="vertical" aria-labelledby="laporanTriwulanDropdown">
                         <div class="tw-py-1" role="none">
                             <a href="{{ url_for('form_laporan_keuangan_triwulan') }}" class="dropdown-menu-item" role="menuitem">Laporan Keuangan Triwulan</a>
-                            <a href="{{ url_for('form_laporan_pppk') }}" class="dropdown-menu-item" role="menuitem">Laporan Keluhan Nasabah dan Perlindungan Konsumen</a>
-                            <a href="{{ url_for('form_laporan_sksp_triwulan') }}" class="dropdown-menu-item" role="menuitem">Laporan SKSP Triwulan</a>
+                            <!-- <a href="{{ url_for('form_laporan_pppk') }}" class="dropdown-menu-item" role="menuitem">Laporan Keluhan Nasabah dan Perlindungan Konsumen</a>
+                            <a href="{{ url_for('form_laporan_sksp_triwulan') }}" class="dropdown-menu-item" role="menuitem">Laporan SKSP Triwulan</a> -->
                         </div>
                     </div>
                 </div>
@@ -264,12 +276,12 @@
                         <div class="tw-py-1" role="none">
                             <a href="{{ url_for('form_laporan_keuangan_tahunan') }}" class="dropdown-menu-item" role="menuitem">Laporan Keuangan Tahunan</a>
                             <a href="{{ url_for('form_laporan_apuppt') }}" class="dropdown-menu-item" role="menuitem">Laporan APU PPT</a>
-                            <a href="{{ url_for('form_laporan_rencana_edukasi_publik') }}" class="dropdown-menu-item" role="menuitem">Laporan Rencana Edukasi Publik</a>
-                            <a href="{{ url_for('form_laporan_pelaksanaan_edukasi_publik') }}" class="dropdown-menu-item" role="menuitem">Laporan Pelaksanaan Edukasi Publik</a>
+                            <!-- <a href="{{ url_for('form_laporan_rencana_edukasi_publik') }}" class="dropdown-menu-item" role="menuitem">Laporan Rencana Edukasi Publik</a>
+                            <a href="{{ url_for('form_laporan_pelaksanaan_edukasi_publik') }}" class="dropdown-menu-item" role="menuitem">Laporan Pelaksanaan Edukasi Publik</a> -->
                             <a href="{{ url_for('form_laporan_manajemen') }}" class="dropdown-menu-item" role="menuitem">Laporan Manajemen & Hasil Pengawasan Dewan Komisaris</a>
                             <a href="{{ url_for('form_laporan_auditsi') }}" class="dropdown-menu-item" role="menuitem">Laporan Audit Sistem Informasi</a>
                             <a href="{{ url_for('form_laporan_pelaksanaan_pengujian_keamanan') }}" class="dropdown-menu-item" role="menuitem">Laporan Pengujian Keamanan (Penetration Test)</a>
-                            <a href="{{ url_for('form_laporan_sksp_tahunan') }}" class="dropdown-menu-item" role="menuitem">Laporan SKSP Tahunan</a>
+                            <!-- <a href="{{ url_for('form_laporan_sksp_tahunan') }}" class="dropdown-menu-item" role="menuitem">Laporan SKSP Tahunan</a> -->
                             <a href="{{ url_for('form_laporan_kpsp') }}" class="dropdown-menu-item" role="menuitem">Laporan Perhitungan KPSP</a>
                             <a href="{{ url_for('form_laporan_tahunan_sp') }}" class="dropdown-menu-item" role="menuitem">Laporan Tahunan Sistem Pembayaran</a>
                         </div>
@@ -306,6 +318,15 @@
 
             <div class="tw-relative">
                 <button type="button" class="mobile-dropdown-toggle-button mobile-dropdown-toggle" aria-expanded="false">
+                    Laporan Insidental
+                    <svg class="tw-ml-2 tw-h-4 tw-w-4 tw-inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div class="tw-pl-8 tw-pr-4 tw-pb-2 tw-space-y-1 tw-hidden tw-bg-white">
+                    <a href="{{ url_for('form_laporan_gangguanit') }}" class="mobile-dropdown-item" role="menuitem">Laporan Gangguan IT</a>
+                </div>
+            </div>
+            <div class="tw-relative">
+                <button type="button" class="mobile-dropdown-toggle-button mobile-dropdown-toggle" aria-expanded="false">
                     Laporan Bulanan
                     <svg class="tw-ml-2 tw-h-4 tw-w-4 tw-inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
@@ -325,8 +346,8 @@
                 </button>
                 <div class="tw-pl-8 tw-pr-4 tw-pb-2 tw-space-y-1 tw-hidden tw-bg-white">
                     <a href="{{ url_for('form_laporan_keuangan_triwulan') }}" class="mobile-dropdown-item" role="menuitem">Laporan Keuangan Triwulan</a>
-                    <a href="{{ url_for('form_laporan_pppk') }}" class="mobile-dropdown-item" role="menuitem">Laporan Keluhan Nasabah dan Perlindungan Konsumen</a>
-                    <a href="{{ url_for('form_laporan_sksp_triwulan') }}" class="mobile-dropdown-item" role="menuitem">Laporan SKSP Triwulan</a>
+                    <!-- <a href="{{ url_for('form_laporan_pppk') }}" class="mobile-dropdown-item" role="menuitem">Laporan Keluhan Nasabah dan Perlindungan Konsumen</a>
+                    <a href="{{ url_for('form_laporan_sksp_triwulan') }}" class="mobile-dropdown-item" role="menuitem">Laporan SKSP Triwulan</a> -->
                 </div>
             </div>
 
@@ -338,12 +359,12 @@
                 <div class="tw-pl-8 tw-pr-4 tw-pb-2 tw-space-y-1 tw-hidden tw-bg-white">
                     <a href="{{ url_for('form_laporan_keuangan_tahunan') }}" class="mobile-dropdown-item" role="menuitem">Laporan Keuangan Tahunan</a>
                     <a href="{{ url_for('form_laporan_apuppt') }}" class="mobile-dropdown-item" role="menuitem">Laporan APU PPT</a>
-                    <a href="{{ url_for('form_laporan_rencana_edukasi_publik') }}" class="mobile-dropdown-item" role="menuitem">Laporan Rencana Edukasi Publik</a>
-                    <a href="{{ url_for('form_laporan_pelaksanaan_edukasi_publik') }}" class="mobile-dropdown-item" role="menuitem">Laporan Pelaksanaan Edukasi Publik</a>
+                    <!-- <a href="{{ url_for('form_laporan_rencana_edukasi_publik') }}" class="mobile-dropdown-item" role="menuitem">Laporan Rencana Edukasi Publik</a>
+                    <a href="{{ url_for('form_laporan_pelaksanaan_edukasi_publik') }}" class="mobile-dropdown-item" role="menuitem">Laporan Pelaksanaan Edukasi Publik</a> -->
                     <a href="{{ url_for('form_laporan_manajemen') }}" class="mobile-dropdown-item" role="menuitem">Laporan Manajemen & Hasil Pengawasan Dewan Komisaris</a>
                     <a href="{{ url_for('form_laporan_auditsi') }}" class="mobile-dropdown-item" role="menuitem">Laporan Audit Sistem Informasi</a>
                     <a href="{{ url_for('form_laporan_pelaksanaan_pengujian_keamanan') }}" class="mobile-dropdown-item" role="menuitem">Laporan Pengujian Keamanan (Penetration Test)</a>
-                    <a href="{{ url_for('form_laporan_sksp_tahunan') }}" class="mobile-dropdown-item" role="menuitem">Laporan SKSP Tahunan</a>
+                    <!-- <a href="{{ url_for('form_laporan_sksp_tahunan') }}" class="mobile-dropdown-item" role="menuitem">Laporan SKSP Tahunan</a> -->
                     <a href="{{ url_for('form_laporan_kpsp') }}" class="mobile-dropdown-item" role="menuitem">Laporan Perhitungan KPSP</a>
                     <a href="{{ url_for('form_laporan_tahunan_sp') }}" class="mobile-dropdown-item" role="menuitem">Laporan Tahunan Sistem Pembayaran</a>
                 </div>

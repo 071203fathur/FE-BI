@@ -5,6 +5,7 @@
 {% block extra_head %}
 <!-- Font Inter -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
     /* Global styles */
     body {
@@ -246,6 +247,7 @@
         background-color: #45a049;
     }
 </style>
+
 {% endblock %}
 
 {% block content %}
@@ -308,8 +310,8 @@
                     <div class="md:tw-col-span-2">
                         <label for="file" class="form-label">Dokumen Laporan Kerjasama (PDF) <span class="tw-text-red-500">*</span></label>
                         <div class="file-input-container">
-                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
-                                       id="file" name="file" accept=".pdf" required>
+                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer"
+                                        id="file" name="file" accept=".pdf" required>
                         </div>
                         <p class="tw-text-sm tw-text-gray-500 tw-mt-2">Format: PDF (Maks. 5MB)</p>
                     </div>
@@ -331,8 +333,8 @@
                 <div class="tw-mb-6">
                     <label for="excelFileInput" class="form-label">Impor Data Perusahaan dari Excel</label>
                     <div class="file-input-container">
-                        <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
-                                       id="excelFileInput" accept=".xlsx, .xls">
+                        <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer"
+                                        id="excelFileInput" accept=".xlsx, .xls">
                     </div>
                     <p class="tw-text-sm tw-text-gray-500 tw-mt-2">Unggah file Excel (.xlsx atau .xls) dengan format yang sesuai.</p>
                     
@@ -340,14 +342,14 @@
                         <button type="button" id="importExcelBtn" class="btn btn-primary">
                             <svg class="tw-w-5 tw-h-5 tw-mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg> 
+                            </svg>
                             Impor Excel
                         </button>
                         
                         <button type="button" id="downloadTemplateBtn" class="tw-inline-flex tw-items-center tw-px-4 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-text-gray-700 tw-bg-white hover:tw-bg-gray-50 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105">
                             <svg class="tw-w-5 tw-h-5 tw-mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                            </svg> 
+                            </svg>
                             Unduh Template CSV
                         </button>
                     </div>
@@ -409,7 +411,7 @@
                     <button type="button" id="addCompanyBtn" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-indigo-600 hover:tw-bg-indigo-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105">
                         <svg class="tw-w-6 tw-h-6 tw-mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg> 
+                        </svg>
                         Tambah Perusahaan
                     </button>
                 </div>
@@ -447,7 +449,6 @@
     <button id="messageBoxOkButton" class="ok-button d-none">Oke</button>
 </div>
 
-<!-- JavaScript remains the same as in the original file -->
 {% block extra_scripts %}
 {# SheetJS (xlsx) library - Tetap diperlukan untuk import Excel #}
 <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
@@ -458,12 +459,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.getElementById('submitButton');
     const submitText = submitButton.querySelector('.submit-text');
     const submitSpinner = submitButton.querySelector('.spinner-border');
-    const loadingOverlay = document.getElementById('loadingOverlay'); // Added
-    const messageBoxBackdrop = document.getElementById('messageBoxBackdrop'); // Added
-    const dynamicMessageBox = document.getElementById('dynamicMessageBox'); // Added
-    const messageBoxContent = document.getElementById('messageBoxContent'); // Added
-    const messageBoxIcon = document.getElementById('messageBoxIcon'); // Added
-    const messageBoxOkButton = document.getElementById('messageBoxOkButton'); // Added
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const messageBoxBackdrop = document.getElementById('messageBoxBackdrop');
+    const dynamicMessageBox = document.getElementById('dynamicMessageBox');
+    const messageBoxContent = document.getElementById('messageBoxContent');
+    const messageBoxIcon = document.getElementById('messageBoxIcon');
+    const messageBoxOkButton = document.getElementById('messageBoxOkButton');
+
+    // Tambahkan flag untuk mencegah pengiriman ganda
+    let isSubmitting = false; 
 
     // Event listener for the "Oke" button to close the message box
     messageBoxOkButton.addEventListener('click', () => {
@@ -471,25 +475,32 @@ document.addEventListener('DOMContentLoaded', function() {
         messageBoxBackdrop.classList.add('d-none');
     });
 
+    /**
+     * Displays a custom message box with a given message and type (success/error).
+     * @param {string} message - The message to display.
+     * @param {'success'|'error'} type - The type of message ('success' or 'error').
+     */
     function showMessageBox(message, type) {
         messageBoxContent.textContent = message;
-        dynamicMessageBox.classList.remove('success', 'error');
-        messageBoxIcon.innerHTML = '';
-        messageBoxOkButton.classList.add('d-none');
+        dynamicMessageBox.classList.remove('success', 'error'); // Remove previous type classes
+        messageBoxIcon.innerHTML = ''; // Clear previous icon
+        messageBoxOkButton.classList.add('d-none'); // Hide OK button by default
         messageBoxBackdrop.classList.remove('d-none'); // Show backdrop
 
         if (type === 'success') {
             dynamicMessageBox.classList.add('success');
             messageBoxIcon.innerHTML = '&#10003;'; // Checkmark icon
-            messageBoxOkButton.classList.remove('d-none');
+            messageBoxOkButton.classList.remove('d-none'); // Show OK button for success
         } else if (type === 'error') {
             dynamicMessageBox.classList.add('error');
             messageBoxIcon.innerHTML = '&#x2716;'; // Cross mark icon
-            messageBoxOkButton.classList.remove('d-none'); // Show OK button for errors too
+            messageBoxOkButton.classList.remove('d-none'); // Show OK button for errors (user dismisses manually)
             // For errors, it will auto-hide after 5 seconds if OK is not clicked
             setTimeout(() => {
-                dynamicMessageBox.classList.add('d-none');
-                messageBoxBackdrop.classList.add('d-none');
+                if (!dynamicMessageBox.classList.contains('d-none')) { // Only hide if not already hidden by manual click
+                    dynamicMessageBox.classList.add('d-none');
+                    messageBoxBackdrop.classList.add('d-none');
+                }
             }, 5000);
         }
         dynamicMessageBox.classList.remove('d-none'); // Show the message box
@@ -502,11 +513,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const downloadTemplateBtn = document.getElementById('downloadTemplateBtn');
 
     /**
-     * Mengubah visibilitas kolom input PJP kustom berdasarkan pilihan dropdown.
-     * @param {HTMLSelectElement} selectElement - Elemen select untuk peran PJP.
+     * Toggles the visibility of the custom PJP input field based on the selected dropdown value.
+     * @param {HTMLSelectElement} selectElement - The select element for PJP role.
      */
     function toggleCustomPjpInput(selectElement) {
-        const customInputContainer = selectElement.closest('.tw-space-y-1').querySelector('.peran-pjp-custom-input');
+        const customInputContainer = selectElement.closest('.tw-space-y-1') ? selectElement.closest('.tw-space-y-1').querySelector('.peran-pjp-custom-input') : null;
         if (customInputContainer) {
             const customInputField = customInputContainer.querySelector('input');
             if (selectElement.value === 'Lainnya') {
@@ -515,14 +526,14 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 customInputContainer.style.display = 'none';
                 customInputField.removeAttribute('required');
-                customInputField.value = ''; 
+                customInputField.value = '';
             }
         }
     }
 
     /**
-     * Memperbarui penomoran item perusahaan, mengelola tombol hapus, dan memperbarui ID/nama input.
-     * @param {boolean} updateJumlahPerusahaan - Apakah akan memperbarui input 'Jumlah Perusahaan'.
+     * Updates company item numbers, manages remove buttons visibility, and updates input IDs/names.
+     * @param {boolean} updateJumlahPerusahaan - Whether to update the 'Jumlah Perusahaan' input.
      */
     function updateCompanyNumbersAndRemoveButtons(updateJumlahPerusahaan = true) {
         const items = companyListContainer.querySelectorAll('.company-item');
@@ -548,19 +559,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     input.id = oldId.replace(/_\d+$/, '_' + newIdx);
                 } else if (oldId && oldId.startsWith('peran_pjp_custom_')) {
                     input.id = `peran_pjp_custom_${newIdx}`;
+                } else { // For initial elements that might not have a number
+                    input.id = `${input.id.split('_')[0]}_${newIdx}`; // Ensure base name is kept
                 }
 
-                // Update name (ensure no [] for dynamic collection)
+                // Update name
                 const oldName = input.name;
-                if (oldName && oldName.endsWith('[]')) { // This case should ideally not happen now with fixed names
-                    input.name = oldName.replace(/\[\]$/, `_${newIdx}`); 
-                } else if (oldName && oldName.match(/_\d+$/)) {
+                if (oldName && oldName.match(/_\d+$/)) {
                     input.name = oldName.replace(/_\d+$/, '_' + newIdx);
                 } else if (oldName && oldName.startsWith('peran_pjp_custom_')) {
                     input.name = `peran_pjp_custom_${newIdx}`;
-                } else if (oldName && !oldName.match(/_\d+$/) && !oldName.startsWith('peran_pjp_custom_')) {
-                    // For initial elements that might not have a number, e.g., 'nama_perusahaan_kerjasama' becomes 'nama_perusahaan_kerjasama_1'
-                    input.name = `${oldName}_${newIdx}`;
+                } else if (oldName && !oldName.match(/_\d+$/) && !oldName.endsWith('[]')) { // Ensure it's not already numbered or an array
+                    input.name = `${oldName.split('_')[0]}_${newIdx}`; // Ensure base name is kept
                 }
                 
                 const label = item.querySelector(`label[for="${oldId}"]`);
@@ -571,17 +581,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const peranPjpSelect = item.querySelector('.peran-pjp-select');
             if (peranPjpSelect) {
-                // Hapus listener lama untuk mencegah duplikasi
-                // (Ini penting jika updateCompanyNumbersAndRemoveButtons dipanggil berulang kali)
-                const oldListener = peranPjpSelect._changeListener; // Simpan referensi listener
+                // Remove old listener to prevent duplicates
+                const oldListener = peranPjpSelect._changeListener; // Stored listener reference
                 if (oldListener) {
                     peranPjpSelect.removeEventListener('change', oldListener);
                 }
                 const newListener = function() { toggleCustomPjpInput(this); };
                 peranPjpSelect.addEventListener('change', newListener);
-                peranPjpSelect._changeListener = newListener; // Simpan referensi listener baru
+                peranPjpSelect._changeListener = newListener; // Store new listener reference
                 
-                // Panggil sekali untuk memastikan status awal yang benar
+                // Call once to ensure correct initial state
                 toggleCustomPjpInput(peranPjpSelect);
             }
         });
@@ -592,18 +601,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     /**
-     * Membuat struktur HTML item perusahaan baru dan secara opsional mengisinya dengan data.
-     * @param {number} index - Indeks untuk item baru (berbasis 0).
-     * @param {object} [data={}] - Objek data opsional untuk mengisi bidang.
-     * @returns {HTMLDivElement} Elemen item perusahaan baru.
+     * Creates a new company item HTML structure and optionally populates it with data.
+     * @param {number} index - The 0-based index for the new item.
+     * @param {object} [data={}] - Optional data object to pre-fill fields.
+     * @returns {HTMLDivElement} The new company item element.
      */
     function createCompanyItem(index, data = {}) {
-        const newIdx = index + 1; 
+        const newIdx = index + 1;
         const newItem = document.createElement('div');
-        newItem.className = 'company-item tw-p-4 tw-border-2 tw-border-dashed tw-border-gray-200 tw-rounded-lg tw-bg-white tw-relative'; // Changed tw-p-6 to tw-p-4
+        newItem.className = 'company-item tw-p-4 tw-border-2 tw-border-dashed tw-border-gray-200 tw-rounded-lg tw-bg-white tw-relative';
         newItem.innerHTML = `
             <h4 class="tw-text-lg tw-font-bold tw-text-gray-800 tw-mb-4">Perusahaan Kerjasama #<span class="company-number">${newIdx}</span></h4>
-            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> <!-- Changed tw-gap-y-4 to tw-gap-y-2 -->
+            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2">
                 <div class="tw-space-y-1">
                     <label for="nama_perusahaan_kerjasama_${newIdx}" class="tw-block form-label">Nama Perusahaan Kerjasama <span class="tw-text-red-500">*</span></label>
                     <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="nama_perusahaan_kerjasama_${newIdx}" name="nama_perusahaan_kerjasama_${newIdx}" required value="${data['Nama Perusahaan'] || ''}">
@@ -652,15 +661,16 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleCustomPjpInput(this);
         });
         toggleCustomPjpInput(peranPjpSelect); // Initialize custom input visibility
-
         return newItem;
     }
 
+    // Event listener for "Tambah Perusahaan" button
     document.getElementById('addCompanyBtn').addEventListener('click', function() {
         companyListContainer.appendChild(createCompanyItem(companyListContainer.children.length));
         updateCompanyNumbersAndRemoveButtons();
     });
     
+    // Event listener for "Jumlah Perusahaan Kerjasama P2P" input change
     if (jumlahPerusahaanInput) {
         jumlahPerusahaanInput.addEventListener('change', function() {
             const targetCount = parseInt(this.value) || 0;
@@ -693,7 +703,8 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.onload = function(e) {
             try {
                 const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array', cellDates: true, raw: false }); 
+                // raw: false ensures that date cells are parsed into Date objects by SheetJS
+                const workbook = XLSX.read(data, { type: 'array', cellDates: true, raw: false });
                 
                 const firstSheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[firstSheetName];
@@ -741,26 +752,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 companyDataRows.forEach((row, index) => {
                     // Skip empty rows (rows where all cells are empty or just whitespace)
                     if (row.filter(cell => cell !== undefined && cell !== null && String(cell).trim() !== '').length === 0) {
-                        return; 
+                        return;
                     }
 
                     const companyRawData = {};
                     expectedExcelHeaders.forEach(expectedH => {
                         const actualColHeader = headerMap[expectedH];
-                        const colIndex = headers.indexOf(actualColHeader); 
+                        const colIndex = headers.indexOf(actualColHeader);
                         if (colIndex !== -1) {
                             companyRawData[expectedH] = row[colIndex];
                         }
                     });
 
                     // Basic validation for required fields
-                    if (!companyRawData['Nama Perusahaan'] || 
-                        !companyRawData['Peran PJP (Dropdown)'] || 
+                    if (!companyRawData['Nama Perusahaan'] ||
+                        !companyRawData['Peran PJP (Dropdown)'] ||
                         !companyRawData['Tanggal Mulai Kerjasama (YYYY-MM-DD)']) {
                         console.warn(`Baris ${index + 2} di Excel diabaikan karena data wajib tidak lengkap.`);
-                        return; 
+                        return;
                     }
 
+                    // Function to convert Excel date values to YYYY-MM-DD string
                     const convertExcelDate = (excelDate) => {
                         if (excelDate instanceof Date) { // If SheetJS already converted it to Date object
                             return excelDate.toISOString().split('T')[0];
@@ -768,8 +780,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (typeof excelDate === 'string' && excelDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
                             return excelDate; // Already in YYYY-MM-DD format
                         }
-                        // Handle numeric Excel dates
-                        if (typeof excelDate === 'number' && !isNaN(excelDate)) { 
+                        // Handle numeric Excel dates (days since 1899-12-30)
+                        if (typeof excelDate === 'number' && !isNaN(excelDate)) {
                             // Excel's epoch is 1899-12-30. JS epoch is 1970-01-01.
                             // 25569 is the number of days between the two epochs.
                             const date = new Date(Math.round((excelDate - 25569) * 86400 * 1000));
@@ -778,7 +790,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         }
                         console.warn(`Invalid or unparsable date format for cell data:`, excelDate);
-                        return ''; 
+                        return '';
                     };
 
                     const namaPerusahaan = String(companyRawData['Nama Perusahaan'] || '').trim();
@@ -802,7 +814,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 if (validImportedCompanies > 0) {
-                    jumlahPerusahaanInput.value = validImportedCompanies; 
+                    jumlahPerusahaanInput.value = validImportedCompanies;
                     updateCompanyNumbersAndRemoveButtons(false); // Don't update jumlahPerusahaanInput again
                     showMessageBox(`${validImportedCompanies} perusahaan berhasil diimpor dari Excel.`, 'success');
                 } else {
@@ -827,7 +839,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showMessageBox(`Gagal membaca file: ${errorEvent.target.error.message || 'Unknown error'}.`, 'error');
             excelFileInput.value = ''; // Clear the file input on error
         };
-        reader.readAsArrayBuffer(file); 
+        reader.readAsArrayBuffer(file);
     });
 
     // Download Excel Template Logic
@@ -840,11 +852,11 @@ document.addEventListener('DOMContentLoaded', function() {
             'Tanggal Akhir Kerjasama (YYYY-MM-DD)',
             'Keterangan Perusahaan'
         ];
-        const csvContent = csvHeaders.join(',') + "\n"; 
+        const csvContent = csvHeaders.join(',') + "\n";
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = "Template_Daftar_Perusahaan_P2P.csv"; 
+        link.download = "Template_Daftar_Perusahaan_P2P.csv";
         
         document.body.appendChild(link);
         link.click();
@@ -853,33 +865,44 @@ document.addEventListener('DOMContentLoaded', function() {
         showMessageBox('Template CSV telah diunduh. Harap diperhatikan bahwa file CSV tidak mendukung fitur dropdown atau date picker di dalamnya.', 'success');
     });
 
-    // Memastikan tombol hapus muncul jika ada lebih dari 1 perusahaan saat memuat halaman
-    updateCompanyNumbersAndRemoveButtons(); 
+    // Ensure remove buttons are visible if there's more than 1 company on page load
+    updateCompanyNumbersAndRemoveButtons();
 
+    // Set max date for 'tanggal_surat' to today
     const tanggalSuratInput = document.getElementById('tanggal_surat');
     if(tanggalSuratInput){
         const today = new Date().toISOString().split('T')[0];
         tanggalSuratInput.max = today;
     }
     
+    // Form submission handler
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
+        e.preventDefault(); // Prevent default form submission
+
+        // Periksa apakah formulir sedang dalam proses pengiriman
+        if (isSubmitting) {
+            console.log("Pengiriman formulir sudah berjalan. Mengabaikan.");
+            return;
+        }
+
         let formIsValid = true;
         
+        // Validate 'tahun_laporan'
         const tahun = document.getElementById('tahun_laporan').value;
         const currentYear = new Date().getFullYear();
-        // Validasi tahun laporan: tahun sekarang, tahun sebelumnya, atau tahun berikutnya.
         if (parseInt(tahun) > currentYear + 1 || parseInt(tahun) < currentYear - 1 ) {
             showMessageBox('Tahun laporan harus tahun sekarang, tahun sebelumnya, atau tahun berikutnya.', 'error');
             formIsValid = false;
         }
         
+        // Validate file size
         const fileInput = document.getElementById('file');
-        if (fileInput.files[0] && fileInput.files[0].size > 5 * 1024 * 1024) { // Changed from 10MB to 5MB
-            showMessageBox('Ukuran file lampiran melebihi 5MB.', 'error'); // Changed message
+        if (fileInput.files[0] && fileInput.files[0].size > 5 * 1024 * 1024) { // 5MB limit
+            showMessageBox('Ukuran file lampiran melebihi 5MB.', 'error');
             formIsValid = false;
         }
         
+        // Validate consistency between declared and actual company count
         const companyCountDeclared = parseInt(jumlahPerusahaanInput.value) || 0;
         const actualCompanyCount = companyListContainer.children.length;
 
@@ -896,7 +919,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const perusahaanDataArray = [];
 
         companyItems.forEach((item, index) => {
-            // Ambil input berdasarkan atribut 'name' yang sudah diperbarui dengan index
+            // Get inputs by their updated 'name' attributes
             const namaPerusahaanInput = item.querySelector(`input[name="nama_perusahaan_kerjasama_${index+1}"]`);
             const peranPjpSelect = item.querySelector(`select[name="peran_pjp_${index+1}"]`);
             const peranPjpCustomInput = item.querySelector(`input[name="peran_pjp_custom_${index+1}"]`);
@@ -904,7 +927,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const tanggalAkhirInput = item.querySelector(`input[name="tanggal_akhir_kerjasama_${index+1}"]`);
             const keteranganPerusahaanInput = item.querySelector(`input[name="keterangan_perusahaan_${index+1}"]`);
 
-            // Validasi di sisi klien
+            // Client-side validation for each company item
             if (!namaPerusahaanInput.value.trim()) {
                 showMessageBox(`Nama Perusahaan Kerjasama untuk perusahaan #${index + 1} tidak boleh kosong.`, 'error');
                 formIsValid = false;
@@ -930,9 +953,9 @@ document.addEventListener('DOMContentLoaded', function() {
             perusahaanDataArray.push({
                 "nama_perusahaan_kerjasama": namaPerusahaanInput.value.trim(),
                 "peran_pjp": peranPjpValue,
-                "tanggal_mulai_kerjasama": tanggalMulaiInput.value, // Format YYYY-MM-DD
-                "tanggal_akhir_kerjasama": tanggalAkhirInput.value || null, // Kirim null jika kosong
-                "keterangan": keteranganPerusahaanInput.value.trim() || null // Kirim null jika kosong
+                "tanggal_mulai_kerjasama": tanggalMulaiInput.value, // YYYY-MM-DD format
+                "tanggal_akhir_kerjasama": tanggalAkhirInput.value || null, // Send null if empty
+                "keterangan": keteranganPerusahaanInput.value.trim() || null // Send null if empty
             });
         });
         
@@ -946,6 +969,10 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Set flag to true when submission starts
+        isSubmitting = true; 
+
+        // Disable submit button, show loading text and spinner, and show global loading overlay
         submitButton.disabled = true;
         submitText.textContent = 'Mengirim...';
         submitSpinner.classList.remove('d-none');
@@ -967,9 +994,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add the stringified company data to the FormData object
         formDataToSend.append('perusahaan_data_json', JSON.stringify(perusahaanDataArray));
 
-        fetch(form.action, { // Submit all data to the single Flask endpoint
+        // Submit all data to the single Flask endpoint
+        fetch(form.action, {
             method: 'POST',
             body: formDataToSend,
+            headers: {
+                'Accept': 'application/json' // Expect JSON response
+            }
         })
         .then(response => {
             if (!response.ok) {
@@ -978,7 +1009,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }).catch(jsonError => {
                     console.error("Error parsing JSON from non-OK response:", jsonError);
                     return response.text().then(text => {
-                        throw new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
+                        throw new Error(`Gagal mengirim laporan. Server response: ${text.substring(0, 100)}...`);
                     });
                 });
             }
@@ -988,11 +1019,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 showMessageBox(data.message || 'Laporan Kerjasama P2P berhasil dikirim!', 'success');
                 form.reset();
-                // Reset daftar perusahaan kembali ke satu item default
-                companyListContainer.innerHTML = ''; 
-                companyListContainer.appendChild(createCompanyItem(0)); 
+                // Reset company list back to one default item
+                companyListContainer.innerHTML = '';
+                companyListContainer.appendChild(createCompanyItem(0));
                 updateCompanyNumbersAndRemoveButtons();
             } else {
+                // If backend indicates failure, show error message
                 throw new Error(data.message || 'Gagal mengirim laporan.');
             }
         })
@@ -1006,10 +1038,11 @@ document.addEventListener('DOMContentLoaded', function() {
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
             loadingOverlay.classList.add('d-none');
+            isSubmitting = false; // Reset flag when submission finishes
         });
     });
 
-    // Logika reset form: mengembalikan daftar perusahaan ke satu item default
+    // Form reset logic: reverts company list to one default item
     form.addEventListener('reset', function() {
         while (companyListContainer.children.length > 1) {
             companyListContainer.lastElementChild.remove();
@@ -1018,26 +1051,25 @@ document.addEventListener('DOMContentLoaded', function() {
         if (firstItem) {
             firstItem.querySelector('.peran-pjp-select').value = '';
             toggleCustomPjpInput(firstItem.querySelector('.peran-pjp-select'));
-            // Reset nilai input spesifik pada item pertama
-            firstItem.querySelector('input[name="nama_perusahaan_kerjasama_1"]').value = ''; 
-            firstItem.querySelector('input[name="tanggal_mulai_kerjasama_1"]').value = ''; 
-            firstItem.querySelector('input[name="tanggal_akhir_kerjasama_1"]').value = ''; 
-            firstItem.querySelector('input[name="keterangan_perusahaan_1"]').value = ''; 
+            // Reset specific input values on the first item
+            firstItem.querySelector('input[name="nama_perusahaan_kerjasama_1"]').value = '';
+            firstItem.querySelector('input[name="tanggal_mulai_kerjasama_1"]').value = '';
+            firstItem.querySelector('input[name="tanggal_akhir_kerjasama_1"]').value = '';
+            firstItem.querySelector('input[name="keterangan_perusahaan_1"]').value = '';
         }
         jumlahPerusahaanInput.value = 1;
         updateCompanyNumbersAndRemoveButtons();
     });
 
-    // Inisialisasi: Jika jumlah perusahaan lebih dari 1 saat pemuatan, tambahkan item yang sesuai
-    // Ini menangani kasus jika nilai default jumlah_perusahaan_kerjasama_p2p adalah > 1
+    // Initialization: If initial company count is > 1, add corresponding items
     if (parseInt(jumlahPerusahaanInput.value) > 1 && companyListContainer.children.length === 1) {
         const initialCount = parseInt(jumlahPerusahaanInput.value);
-        for (let i = 1; i < initialCount; i++) { 
+        for (let i = 1; i < initialCount; i++) {
             companyListContainer.appendChild(createCompanyItem(i));
         }
     }
-    // Pastikan penomoran dan tombol hapus diperbarui saat halaman dimuat
-    updateCompanyNumbersAndRemoveButtons(); 
+    // Ensure numbering and remove buttons are updated on page load
+    updateCompanyNumbersAndRemoveButtons();
 });
 </script>
 

@@ -6,11 +6,12 @@
     <!-- Font Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Mengatur font-family secara global untuk halaman ini */
+        /* Global styles */
         body {
             font-family: 'Inter', sans-serif;
         }
-        /* Kelas utilitas untuk spinner */
+
+        /* Spinner utility */
         .spinner-border {
             display: inline-block;
             width: 1.5rem;
@@ -21,12 +22,14 @@
             border-radius: 50%;
             animation: spinner-border .75s linear infinite;
         }
+
         @keyframes spinner-border {
             to { transform: rotate(360deg); }
         }
-        .d-none { display: none !important; } /* Utility untuk JS */
 
-        /* Custom styles to match consistent form aesthetics */
+        .d-none { display: none !important; }
+
+        /* Section styling */
         .section-group {
             background-color: #ffffff;
             border: 1px solid #e5e7eb;
@@ -38,79 +41,95 @@
         }
 
         .section-group .section-header {
-            font-size: 1.15rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: #1f2937;
             background-color: #eef2f6;
-            padding: 0.8rem 1.5rem;
-            margin-top: 0;
-            margin-left: -1px;
-            margin-right: -1px;
-            margin-bottom: 1rem;
+            padding: 1rem 1.5rem;
+            margin: 0 -1px 1rem -1px; /* Adjust margin to align with border */
             border-bottom: 1px solid #e0e7eb;
             border-top-left-radius: 11px;
             border-top-right-radius: 11px;
         }
+
         .section-group .section-content {
             padding: 1.5rem;
             padding-top: 0;
         }
 
-        /* Adjust font size for labels and inputs for precision */
+        /* Form elements */
         .form-label {
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             font-weight: 600;
             color: #374151;
-        }
-        .form-input {
-            width: 100%; /* Ensure full width */
-            padding: 0.7rem 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            color: #4b5563;
-            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            outline: none;
-            box-shadow: none;
-        }
-        .form-input:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-        textarea.form-input {
-            min-height: 80px;
-            resize: vertical;
+            margin-bottom: 0.5rem;
+            display: flex; /* Make label a flex container */
+            align-items: center; /* Align items vertically */
         }
 
-        /* Nested section for specific groupings */
+        .form-input {
+            font-size: 1rem;
+            padding: 1rem;
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            color: #4b5563;
+            transition: all 0.2s ease;
+            min-height: 50px;
+            box-sizing: border-box;
+        }
+
+        /* Date inputs */
+        input[type="date"].form-input {
+            font-size: 1rem;
+            padding: 1rem;
+            min-height: 50px;
+            appearance: none;
+            background-color: white;
+        }
+
+        /* Select dropdowns */
+        select.form-input {
+            font-size: 1rem;
+            padding: 1rem;
+            min-height: 50px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 16px 12px;
+            padding-right: 2.5rem;
+        }
+
+        /* Nested sections */
         .nested-section-group {
             border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+            border-radius: 10px;
+            padding: 1.5rem;
             margin-bottom: 1.5rem;
-            padding: 1rem;
-            background-color: #fcfdfe;
+            background-color: #f9fafb;
         }
+
         .nested-section-group h4 {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #1f2937;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
-            border-bottom: 1px dashed #e0e7eb;
+            border-bottom: 1px solid #e5e7eb;
         }
 
-        /* Table specific styles for consistency */
+        /* Table styles */
         .table-custom {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
             margin-top: 1rem;
             font-size: 0.9rem;
-            border: 1px solid #e5e7eb; /* Outer border for the table */
-            border-radius: 8px; /* Rounded corners for the table */
-            overflow: hidden; /* Ensures content respects border-radius */
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
         }
+
         .table-custom th, .table-custom td {
             border-bottom: 1px solid #e5e7eb;
             border-right: 1px solid #e5e7eb;
@@ -118,62 +137,36 @@
             text-align: left;
             vertical-align: middle;
         }
+
         .table-custom th {
             background-color: #f3f4f6;
             font-weight: 600;
             color: #374151;
         }
+
         .table-custom tbody tr:nth-child(odd) {
             background-color: #ffffff;
         }
+
         .table-custom tbody tr:nth-child(even) {
             background-color: #f9fafb;
         }
+
         .table-custom .text-center {
             text-align: center;
         }
-        .table-custom .form-check {
+
+        /* Money input group */
+        .money-input-group {
             display: flex;
-            justify-content: center;
             align-items: center;
-            height: 100%; /* Ensure vertical alignment in cell */
-        }
-        .table-custom .form-check-input {
-            margin: 0; /* Remove default margin */
         }
 
-        /* Specific styles for KPSP calculation results */
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px dashed #e0e7eb;
-            font-size: 0.95rem;
-        }
-        .result-item:last-child {
-            border-bottom: none;
-        }
-        .result-item strong {
-            font-weight: 600;
-        }
-        .bg-success-custom {
-            background-color: #d1fae5; /* green-100 */
-            color: #065f46; /* green-800 */
-            font-weight: 600;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-        }
-        .bg-danger-custom {
-            background-color: #fee2e2; /* red-100 */
-            color: #991b1b; /* red-800 */
-            font-weight: 600;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-        }
         .money-input-group .form-input {
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
         }
+
         .money-input-group .input-group-text {
             background-color: #e5e7eb;
             border: 1px solid #d1d5db;
@@ -185,11 +178,225 @@
             font-size: 0.9rem;
             color: #4b5563;
         }
+
+        /* Result items */
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #e0e7eb;
+            font-size: 0.95rem;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-item strong {
+            font-weight: 600;
+        }
+
+        /* Status indicators */
+        .bg-success-custom {
+            background-color: #d1fae5;
+            color: #065f46;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .bg-danger-custom {
+            background-color: #fee2e2;
+            color: #991b1b;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-input {
+                padding: 0.9rem;
+                min-height: 45px;
+            }
+            
+            .section-group .section-header {
+                font-size: 1.15rem;
+                padding: 0.9rem 1rem;
+            }
+            
+            .nested-section-group {
+                padding: 1rem;
+            }
+        }
+
+        /* Loading overlay */
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(3px);
+        }
+
+        #loadingOverlay .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.35em;
+            color: #ffffff;
+        }
+
+        /* Message box styles */
+        #messageBoxBackdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+        }
+
+        #dynamicMessageBox {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #dynamicMessageBox.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        #dynamicMessageBox.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        #dynamicMessageBox .icon-container {
+            font-size: 3rem;
+            line-height: 1;
+            animation: fade-in-scale 0.5s ease-out forwards;
+        }
+
+        @keyframes fade-in-scale {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        #dynamicMessageBox .ok-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: background-color 0.3s ease;
+        }
+
+        #dynamicMessageBox .ok-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Tooltip styles */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            margin-left: 0.5rem; /* Space between label and icon */
+        }
+
+        .tooltip-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #6366f1; /* Indigo color */
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .tooltip-icon:hover {
+            background-color: #4f46e5; /* Darker indigo on hover */
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 250px; /* Adjust width as needed */
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the icon */
+            left: 50%;
+            margin-left: -125px; /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
-<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6 tw-font-sans">
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6">
     <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">Form Perhitungan KPSP v.1.0</h2>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -206,18 +413,36 @@
         <div class="section-group">
             <h3 class="section-header">Informasi Umum</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
-                    <div class="tw-space-y-1">
-                        <label for="posisilaporan" class="tw-block form-label">Posisi Tanggal Laporan <span class="tw-text-red-500">*</span></label>
-                        <input type="date" class="tw-mt-1 tw-block tw-w-full form-input" id="posisilaporan" name="Posisi Tanggal Laporan" required>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                    <div>
+                        <label for="posisilaporan" class="form-label">
+                            Posisi Tanggal Laporan <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Tanggal posisi laporan KPSP.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="date" class="form-input" id="posisilaporan" name="Posisi Tanggal Laporan" required>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="nama_pelapor" class="tw-block form-label">Nama Pelapor <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="nama_pelapor" name="nama_pelapor" required>
+                    <div>
+                        <label for="nama_pelapor" class="form-label">
+                            Nama Pelapor <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nama individu atau entitas yang mengajukan laporan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input" id="nama_pelapor" name="nama_pelapor" required>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label for="nama_pjp" class="tw-block form-label">Nama PJP <span class="tw-text-red-500">*</span></label>
-                        <select class="tw-mt-1 tw-block tw-w-full form-input" id="nama_pjp" name="nama_pjp" required>
+                    <div class="md:tw-col-span-2">
+                        <label for="nama_pjp" class="form-label">
+                            Nama PJP <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nama Penyelenggara Jasa Pembayaran (PJP) atau Penyelenggara Infrastruktur Pembayaran (PIP).">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <select class="form-input" id="nama_pjp" name="nama_pjp" required>
                             <option value="">-- Pilih PJP --</option>
                             <!-- Options will be populated by JavaScript -->
                         </select>
@@ -233,27 +458,31 @@
         <div class="section-group">
             <h3 class="section-header">Pemenuhan Initial Capital</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label for="jumlahModalDisetor" class="tw-block form-label">Jumlah Modal Disetor <span class="tw-text-red-500">*</span> <span class="tw-text-xs tw-text-gray-500">(Diisi sesuai laporan keuangan audited)</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="jumlahModalDisetor" name="jumlahModalDisetor" value="0" required>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                    <div class="md:tw-col-span-2">
+                        <label for="jumlahModalDisetor" class="form-label">
+                            Jumlah Modal Disetor <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Diisi sesuai laporan keuangan audited.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="jumlahModalDisetor" name="jumlahModalDisetor" value="0" required>
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Initial Capital merujuk pada modal disetor yang tertera dalam akta perusahaan</p>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2 tw-text-right">
-                        <p class="tw-text-xs tw-text-gray-500">Initial Capital merujuk pada modal disetor yang tertera dalam akta perusahaan</p>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Jumlah Kewajiban Initial Capital</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="kewajibanInitCapital" readonly>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Jumlah Kewajiban Initial Capital</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="kewajibanInitCapital" readonly>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Status Pemenuhan Initial Capital</label>
+                        <input type="text" class="form-input tw-text-center tw-font-bold" id="statusPemenuhan_initialCapital" name="statusPemenuhanInitialCapitalDisplay" readonly>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Status Pemenuhan Initial Capital</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-text-center tw-font-bold" id="statusPemenuhan_initialCapital" name="statusPemenuhanInitialCapitalDisplay" readonly>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Total Kebutuhan Tambahan Initial Capital</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="tambahanInitCapital" readonly>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Total Kebutuhan Tambahan Initial Capital</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="tambahanInitCapital" readonly>
-                    </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
+                    <div class="md:tw-col-span-2">
                         <div class="tw-flex tw-items-start mt-2">
                             <input class="tw-form-checkbox tw-h-5 tw-w-5 tw-text-indigo-600 focus:tw-ring-indigo-500 tw-border-gray-300 tw-rounded" type="checkbox" id="flagGL_PIPasing" name="flagGL_PIPasing">
                             <label class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900" for="flagGL_PIPasing">
@@ -269,10 +498,16 @@
             <h3 class="section-header">Perhitungan Ongoing Capital</h3>
             <div class="section-content">
                 <h4 class="tw-font-semibold tw-text-gray-800 tw-mb-3">Penetapan Transaksi Tertimbang Menurut Risiko (TTMR) <span class="tw-text-xs tw-text-gray-500">(Transaksi yang diproses selama tahun buku laporan)</span></h4>
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
-                    <div class="tw-space-y-1">
-                        <label for="jumlahBulanTrx" class="tw-block form-label">Jumlah Bulan Transaksi <span class="tw-text-red-500">*</span></label>
-                        <input type="number" class="tw-mt-1 tw-block tw-w-full form-input" id="jumlahBulanTrx" name="jumlahBulanTrx" min="1" max="12" value="12" required>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                    <div>
+                        <label for="jumlahBulanTrx" class="form-label">
+                            Jumlah Bulan Transaksi <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah bulan transaksi yang dicakup dalam laporan (Range 1 s.d. 12).">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" class="form-input" id="jumlahBulanTrx" name="jumlahBulanTrx" min="1" max="12" value="12" required>
                         <p class="tw-text-xs tw-text-red-500">(Range 1 s.d. 12)</p>
                     </div>
                 </div>
@@ -351,33 +586,33 @@
                     ***) Nilai Transaksi PIAS - Fasilitator dihitung 10%
                 </p>
 
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Beban Transaksi</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="bebanTrx" name="bebanTrx" readonly>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 mt-6">
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Beban Transaksi</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="bebanTrx" name="bebanTrx" readonly>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label class="tw-block form-label">% Beban Transaksi Dana Float</label>
-                        <div class="tw-flex money-input-group">
+                    <div>
+                        <label class="form-label">% Beban Transaksi Dana Float</label>
+                        <div class="money-input-group">
                             <input type="text" class="form-input tw-text-center tw-bg-gray-100" id="percBebanTrxDanaFloat" name="percBebanTrxDanaFloat" readonly>
                             <span class="input-group-text">%</span>
                         </div>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label class="tw-block form-label">Beban Transaksi Dana Float</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="bebanTrxDanaFloat" name="bebanTrxDanaFloat" readonly>
+                    <div>
+                        <label class="form-label">Beban Transaksi Dana Float</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="bebanTrxDanaFloat" name="bebanTrxDanaFloat" readonly>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Total Beban (Beban Transaksi Progresif + Beban Dana Float)</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="totalBeban" name="totalBeban" readonly>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Total Beban (Beban Transaksi Progresif + Beban Dana Float)</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="totalBeban" name="totalBeban" readonly>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label class="tw-block form-label">Konstanta TTMR</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-text-center tw-bg-gray-100" id="konstantaTTMR" name="konstantaTTMR" readonly>
+                    <div>
+                        <label class="form-label">Konstanta TTMR</label>
+                        <input type="text" class="form-input tw-text-center tw-bg-gray-100" id="konstantaTTMR" name="konstantaTTMR" readonly>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label class="tw-block form-label">TTMR (Konstanta TTMR x Total Beban)</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="TTMR" name="TTMR" readonly>
+                    <div>
+                        <label class="form-label">TTMR (Konstanta TTMR x Total Beban)</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="TTMR" name="TTMR" readonly>
                     </div>
                 </div>
                 <p class="tw-text-xs tw-text-red-500 tw-mt-2">
@@ -392,216 +627,345 @@
                 <p class="tw-text-xs tw-text-red-500 tw-mb-4">
                     Modal disetor = modal saham (nilai nominal saham) + uang muka setoran modal + agio/disagio saham
                 </p>
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
-                    <div class="tw-space-y-1">
-                        <label for="modalSaham" class="tw-block form-label">Modal Saham</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="modalSaham" name="modalSaham" value="0">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                    <div>
+                        <label for="modalSaham" class="form-label">
+                            Modal Saham
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Modal saham perusahaan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="modalSaham" name="modalSaham" value="0">
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="uangMukaSetoranModal" class="tw-block form-label">Uang Muka Setoran Modal*) <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="uangMukaSetoranModal" name="uangMukaSetoranModal" value="0">
+                    <div>
+                        <label for="uangMukaSetoranModal" class="form-label">
+                            Uang Muka Setoran Modal*) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Uang muka setoran modal.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="uangMukaSetoranModal" name="uangMukaSetoranModal" value="0">
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="agioDisagioSaham" class="tw-block form-label">Agio Saham/Disagio Saham*) <span class="tw-text-red-500">*</span> <span class="tw-text-xs tw-text-gray-500">(diisi negatif jika disagio)</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="agioDisagioSaham" name="agioDisagioSaham" value="0">
+                    <div>
+                        <label for="agioDisagioSaham" class="form-label">
+                            Agio Saham/Disagio Saham*) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Diisi negatif jika disagio.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="agioDisagioSaham" name="agioDisagioSaham" value="0">
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="saldoLRberjalan" class="tw-block form-label">Saldo Laba/Rugi berjalan <span class="tw-text-red-500">*</span> <span class="tw-text-xs tw-text-gray-500">(diisi negatif jika rugi)</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="saldoLRberjalan" name="saldoLRberjalan" value="0">
+                    <div>
+                        <label for="saldoLRberjalan" class="form-label">
+                            Saldo Laba/Rugi berjalan <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Diisi negatif jika rugi.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="saldoLRberjalan" name="saldoLRberjalan" value="0">
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="saldoPenghasilanKompr" class="tw-block form-label">Saldo penghasilan komprehensif lain <span class="tw-text-red-500">*</span> <span class="tw-text-xs tw-text-gray-500">(diisi negatif jika rugi)</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="saldoPenghasilanKompr" name="saldoPenghasilanKompr" value="0">
+                    <div>
+                        <label for="saldoPenghasilanKompr" class="form-label">
+                            Saldo penghasilan komprehensif lain <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Diisi negatif jika rugi.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="saldoPenghasilanKompr" name="saldoPenghasilanKompr" value="0">
                     </div>
-                    <div class="tw-space-y-1">
-                        <label class="tw-block form-label">Modal Inti Utama</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalIntiUtama" name="modalIntiUtama" readonly>
+                    <div>
+                        <label class="form-label">Modal Inti Utama</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="modalIntiUtama" name="modalIntiUtama" readonly>
                     </div>
                 </div>
                 <p class="tw-text-xs tw-text-red-500 tw-mt-2">
                     *) Pada sebagian format laporan keuangan ditulis sebagai komponen tambahan modal disetor
                 </p>
 
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
-                    <div class="tw-space-y-1">
-                        <label for="asetPajakTangguhan" class="tw-block form-label">Aset pajak tangguhan (deferred tax asset)**) <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="asetPajakTangguhan" name="asetPajakTangguhan" value="0">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 mt-6">
+                    <div>
+                        <label for="asetPajakTangguhan" class="form-label">
+                            Aset pajak tangguhan (deferred tax asset)**) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Aset pajak tangguhan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="asetPajakTangguhan" name="asetPajakTangguhan" value="0">
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="goodWill" class="tw-block form-label">Goodwill**) <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="goodWill" name="goodWill" value="0">
+                    <div>
+                        <label for="goodWill" class="form-label">
+                            Goodwill**) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Goodwill.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="goodWill" name="goodWill" value="0">
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="asetTidakBerwujud" class="tw-block form-label">Asset tidak berwujud (intangible asset)**) <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="asetTidakBerwujud" name="asetTidakBerwujud" value="0">
+                    <div>
+                        <label for="asetTidakBerwujud" class="form-label">
+                            Asset tidak berwujud (intangible asset)**) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Aset tidak berwujud.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="asetTidakBerwujud" name="asetTidakBerwujud" value="0">
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="seluruhPenyertaan" class="tw-block form-label">Seluruh penyertaan dengan kepemilikan lebih dari 5% atau lebih**) <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="seluruhPenyertaan" name="seluruhPenyertaan" value="0">
+                    <div>
+                        <label for="seluruhPenyertaan" class="form-label">
+                            Seluruh penyertaan dengan kepemilikan lebih dari 5% atau lebih**) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Penyertaan dengan kepemilikan lebih dari 5%.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="seluruhPenyertaan" name="seluruhPenyertaan" value="0">
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="pembelianKembaliInstModal" class="tw-block form-label">Pembelian kembali instrumen modal yang telah diakui sebagai komponen permodalan PJP/PIP**) <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="pembelianKembaliInstModal" name="pembelianKembaliInstModal" value="0">
+                    <div>
+                        <label for="pembelianKembaliInstModal" class="form-label">
+                            Pembelian kembali instrumen modal yang telah diakui sebagai komponen permodalan PJP/PIP**) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Pembelian kembali instrumen modal.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="pembelianKembaliInstModal" name="pembelianKembaliInstModal" value="0">
                     </div>
-                    <div class="tw-space-y-1">
-                        <label for="penempatanDanaInstUtang" class="tw-block form-label">Penempatan dana pada instrumen utang pada entitas lainnya yang diakui sebagai komponen modal oleh entitas penerbit**) <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="penempatanDanaInstUtang" name="penempatanDanaInstUtang" value="0">
+                    <div>
+                        <label for="penempatanDanaInstUtang" class="form-label">
+                            Penempatan dana pada instrumen utang pada entitas lainnya yang diakui sebagai komponen modal oleh entitas penerbit**) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Penempatan dana pada instrumen utang.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="penempatanDanaInstUtang" name="penempatanDanaInstUtang" value="0">
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Faktor Pengurang Modal Inti Utama</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="faktorPengurangModalInti" name="faktorPengurangModalInti" readonly>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Faktor Pengurang Modal Inti Utama</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="faktorPengurangModalInti" name="faktorPengurangModalInti" readonly>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Modal Inti Utama (Setelah dikurangi Faktor Pengurang)</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalIntiUtama_setelahFPR" name="modalIntiUtama_setelahFPR" readonly>
-                    </div>
-                </div>
-                <p class="tw-text-xs tw-text-red-500 tw-mt-2">
-                    **) Faktor pengurang diisi dengan nilai positif
-                </p>
-
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
-                    <div class="tw-space-y-1">
-                        <label for="instrumenUtang" class="tw-block form-label">Instrumen utang, baik berupa surat utang (debt securities) dan pinjaman yang bersifat subordinasi, yang tidak memiliki jangka waktu, dan pembayaran imbal hasil tidak dapat diakumulasikan <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="instrumenUtang" name="instrumenUtang" value="0">
-                    </div>
-                    <div class="tw-space-y-1">
-                        <label for="instrumenHybrid" class="tw-block form-label">Instrumen hybrid yang tidak memiliki jangka waktu dan pembayaran imbal hasil tidak dapat diakumulasikan <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="instrumenHybrid" name="instrumenHybrid" value="0">
-                    </div>
-                    <div class="tw-space-y-1">
-                        <label for="sahamPreferenNonKumulatif" class="tw-block form-label">Saham preferen non kumulatif baik dengan atau tanpa fitur opsi beli <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="sahamPreferenNonKumulatif" name="sahamPreferenNonKumulatif" value="0">
-                    </div>
-                    <div class="tw-space-y-1">
-                        <label for="premiumDiskonto" class="tw-block form-label">Premium/diskonto yang berasal dari penerbitan instrumen yang tergolong sebagai modal inti tambahan <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="premiumDiskonto" name="premiumDiskonto" value="0">
-                    </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Modal Inti Tambahan</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalIntiTambahan" name="modalIntiTambahan" readonly>
-                    </div>
-                </div>
-
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
-                    <div class="tw-space-y-1">
-                        <label for="instrumenModalIntiTambahan" class="tw-block form-label">Instrumen Modal Inti Tambahan yang dimiliki sendiri (akibat kewajiban kontraktual)**) <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="instrumenModalIntiTambahan" name="instrumenModalIntiTambahan" value="0">
-                    </div>
-                    <div class="tw-space-y-1">
-                        <label for="kepemilikanModalIntiTambahan" class="tw-block form-label">Kepemilikan Modal Inti Tambahan oleh pihak lain yang terindikasi merupakan skema kepemilikan silang (crossholding)**) <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="kepemilikanModalIntiTambahan" name="kepemilikanModalIntiTambahan" value="0">
-                    </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Faktor Pengurang Modal Inti Tambahan</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="faktorPengurangModalIntiTambahan" name="faktorPengurangModalIntiTambahan" readonly>
-                    </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Modal Inti Tambahan (Setelah dikurangi Faktor Pengurang)</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalIntiTambahan_setelahFPR" name="modalIntiTambahan_setelahFPR" readonly>
-                    </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Modal Inti Tambahan yang dapat diperhitungkan sebagai Ongoing Capital <span class="tw-text-red-500 tw-font-bold">(max 1/3 modal inti utama)</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalIntiTambahan_ongoingCapital" name="modalIntiTambahan_ongoingCapital" readonly>
-                    </div>
-                </div>
-
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
-                    <div class="tw-space-y-1">
-                        <label for="instrumenUtangJangkaPjg" class="tw-block form-label">Instrumen utang jangka panjang, baik berupa surat utang (debt securities) dan pinjaman yang bersifat subordinasi dengan maturitas ≥ 5thn <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="instrumenUtangJangkaPjg" name="instrumenUtangJangkaPjg" value="0">
-                    </div>
-                    <div class="tw-space-y-1">
-                        <label for="premiumDiskontoModalPelengkap" class="tw-block form-label">Premium/diskonto yang berasal dari penerbitan instrumen yang tergolong sebagai modal pelengkap <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="premiumDiskontoModalPelengkap" name="premiumDiskontoModalPelengkap" value="0">
-                    </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Modal Pelengkap</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalPelengkap" name="modalPelengkap" readonly>
-                    </div>
-                </div>
-
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
-                    <div class="tw-space-y-1">
-                        <label for="instrumenModalPelengkap" class="tw-block form-label">Instrumen Modal Pelengkap yang dimiliki sendiri (akibat kewajiban kontraktual)**) <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="instrumenModalPelengkap" name="instrumenModalPelengkap" value="0">
-                    </div>
-                    <div class="tw-space-y-1">
-                        <label for="kepemilikanModalPelengkap" class="tw-block form-label">Kepemilikan Modal Pelengkap oleh pihak lain yang terindikasi merupakan skema kepemilikan silang (cross holding)**) <span class="tw-text-red-500">*</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money" id="kepemilikanModalPelengkap" name="kepemilikanModalPelengkap" value="0">
-                    </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Faktor Pengurang Modal Pelengkap</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="faktorPengurangModalPelengkap" name="faktorPengurangModalPelengkap" readonly>
-                    </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Modal Pelengkap (Setelah dikurangi Faktor Pengurang)</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalPelengkap_setelahFPR" name="modalPelengkap_setelahFPR" readonly>
-                    </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Modal Pelengkap yang dapat diperhitungkan sebagai Ongoing Capital <span class="tw-text-red-500 tw-font-bold">(max 1/3 Modal Inti Tambahan yang dapat diperhitungkan sebagai ongoing capital)</span></label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="modalPelengkap_ongoingCapital" name="modalPelengkap_ongoingCapital" readonly>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Modal Inti Utama (Setelah dikurangi Faktor Pengurang)</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="modalIntiUtama_setelahFPR" name="modalIntiUtama_setelahFPR" readonly>
                     </div>
                 </div>
                 <p class="tw-text-xs tw-text-red-500 tw-mt-2">
                     **) Faktor pengurang diisi dengan nilai positif
                 </p>
 
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4 mt-6">
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Total Ongoing Capital</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="totalOngoingCapital" name="totalOngoingCapital" readonly>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 mt-6">
+                    <div>
+                        <label for="instrumenUtang" class="form-label">
+                            Instrumen utang, baik berupa surat utang (debt securities) dan pinjaman yang bersifat subordinasi, yang tidak memiliki jangka waktu, dan pembayaran imbal hasil tidak dapat diakumulasikan <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Instrumen utang tanpa jangka waktu.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="instrumenUtang" name="instrumenUtang" value="0">
                     </div>
-                    <div class="tw-space-y-1">
-                        <label class="tw-block form-label">Rasio KPSP (Ongoing Capital/TTMR)</label>
-                        <div class="tw-flex money-input-group">
+                    <div>
+                        <label for="instrumenHybrid" class="form-label">
+                            Instrumen hybrid yang tidak memiliki jangka waktu dan pembayaran imbal hasil tidak dapat diakumulasikan <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Instrumen hybrid tanpa jangka waktu.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="instrumenHybrid" name="instrumenHybrid" value="0">
+                    </div>
+                    <div>
+                        <label for="sahamPreferenNonKumulatif" class="form-label">
+                            Saham preferen non kumulatif baik dengan atau tanpa fitur opsi beli <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Saham preferen non kumulatif.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="sahamPreferenNonKumulatif" name="sahamPreferenNonKumulatif" value="0">
+                    </div>
+                    <div>
+                        <label for="premiumDiskonto" class="form-label">
+                            Premium/diskonto yang berasal dari penerbitan instrumen yang tergolong sebagai modal inti tambahan <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Premium/diskonto dari penerbitan instrumen modal inti tambahan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="premiumDiskonto" name="premiumDiskonto" value="0">
+                    </div>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Modal Inti Tambahan</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="modalIntiTambahan" name="modalIntiTambahan" readonly>
+                    </div>
+                </div>
+
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 mt-6">
+                    <div>
+                        <label for="instrumenModalIntiTambahan" class="form-label">
+                            Instrumen Modal Inti Tambahan yang dimiliki sendiri (akibat kewajiban kontraktual)**) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Instrumen Modal Inti Tambahan yang dimiliki sendiri.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="instrumenModalIntiTambahan" name="instrumenModalIntiTambahan" value="0">
+                    </div>
+                    <div>
+                        <label for="kepemilikanModalIntiTambahan" class="form-label">
+                            Kepemilikan Modal Inti Tambahan oleh pihak lain yang terindikasi merupakan skema kepemilikan silang (crossholding)**) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Kepemilikan Modal Inti Tambahan oleh pihak lain.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="kepemilikanModalIntiTambahan" name="kepemilikanModalIntiTambahan" value="0">
+                    </div>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Faktor Pengurang Modal Inti Tambahan</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="faktorPengurangModalIntiTambahan" name="faktorPengurangModalIntiTambahan" readonly>
+                    </div>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Modal Inti Tambahan (Setelah dikurangi Faktor Pengurang)</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="modalIntiTambahan_setelahFPR" name="modalIntiTambahan_setelahFPR" readonly>
+                    </div>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Modal Inti Tambahan yang dapat diperhitungkan sebagai Ongoing Capital <span class="tw-text-red-500 tw-font-bold">(max 1/3 modal inti utama)</span></label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="modalIntiTambahan_ongoingCapital" name="modalIntiTambahan_ongoingCapital" readonly>
+                    </div>
+                </div>
+
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 mt-6">
+                    <div>
+                        <label for="instrumenUtangJangkaPjg" class="form-label">
+                            Instrumen utang jangka panjang, baik berupa surat utang (debt securities) dan pinjaman yang bersifat subordinasi dengan maturitas $\ge$ 5thn <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Instrumen utang jangka panjang.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="instrumenUtangJangkaPjg" name="instrumenUtangJangkaPjg" value="0">
+                    </div>
+                    <div>
+                        <label for="premiumDiskontoModalPelengkap" class="form-label">
+                            Premium/diskonto yang berasal dari penerbitan instrumen yang tergolong sebagai modal pelengkap <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Premium/diskonto dari penerbitan instrumen modal pelengkap.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="premiumDiskontoModalPelengkap" name="premiumDiskontoModalPelengkap" value="0">
+                    </div>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Modal Pelengkap</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="modalPelengkap" name="modalPelengkap" readonly>
+                    </div>
+                </div>
+
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 mt-6">
+                    <div>
+                        <label for="instrumenModalPelengkap" class="form-label">
+                            Instrumen Modal Pelengkap yang dimiliki sendiri (akibat kewajiban kontraktual)**) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Instrumen Modal Pelengkap yang dimiliki sendiri.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="instrumenModalPelengkap" name="instrumenModalPelengkap" value="0">
+                    </div>
+                    <div>
+                        <label for="kepemilikanModalPelengkap" class="form-label">
+                            Kepemilikan Modal Pelengkap oleh pihak lain yang terindikasi merupakan skema kepemilikan silang (cross holding)**) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Kepemilikan Modal Pelengkap oleh pihak lain.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input money" id="kepemilikanModalPelengkap" name="kepemilikanModalPelengkap" value="0">
+                    </div>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Faktor Pengurang Modal Pelengkap</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="faktorPengurangModalPelengkap" name="faktorPengurangModalPelengkap" readonly>
+                    </div>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Modal Pelengkap (Setelah dikurangi Faktor Pengurang)</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="modalPelengkap_setelahFPR" name="modalPelengkap_setelahFPR" readonly>
+                    </div>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Modal Pelengkap yang dapat diperhitungkan sebagai Ongoing Capital <span class="tw-text-red-500 tw-font-bold">(max 1/3 modal inti utama)</span></label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="modalPelengkap_ongoingCapital" name="modalPelengkap_ongoingCapital" readonly>
+                    </div>
+                </div>
+                <p class="tw-text-xs tw-text-red-500 tw-mt-2">
+                    **) Faktor pengurang diisi dengan nilai positif
+                </p>
+
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 mt-6">
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Total Ongoing Capital</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="totalOngoingCapital" name="totalOngoingCapital" readonly>
+                    </div>
+                    <div>
+                        <label class="form-label">Rasio KPSP (Ongoing Capital/TTMR)</label>
+                        <div class="money-input-group">
                             <input type="text" class="form-input tw-text-center tw-bg-gray-100" id="rasioKPSP" name="rasioKPSP" readonly>
                             <span class="input-group-text">%</span>
                         </div>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label class="tw-block form-label">KPSP Dasar</label>
-                        <div class="tw-flex money-input-group">
+                    <div>
+                        <label class="form-label">KPSP Dasar</label>
+                        <div class="money-input-group">
                             <input type="text" class="form-input tw-text-center tw-bg-gray-100" id="KPSPdasar" name="KPSPdasar" readonly>
                             <span class="input-group-text">%</span>
                         </div>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label class="tw-block form-label">Surcharge Berdasarkan Klasifikasi PJP/PIP</label>
-                        <div class="tw-flex money-input-group">
+                    <div>
+                        <label class="form-label">Surcharge Berdasarkan Klasifikasi PJP/PIP</label>
+                        <div class="money-input-group">
                             <input type="text" class="form-input tw-text-center tw-bg-gray-100" id="surcharge" name="surcharge" readonly>
                             <span class="input-group-text">%</span>
                         </div>
                     </div>
-                    <div class="tw-space-y-1">
-                        <label class="tw-block form-label">Total KPSP</label>
-                        <div class="tw-flex money-input-group">
+                    <div>
+                        <label class="form-label">Total KPSP</label>
+                        <div class="money-input-group">
                             <input type="text" class="form-input tw-text-center tw-bg-gray-100" id="totalKPSP" name="totalKPSP" readonly>
                             <span class="input-group-text">%</span>
                         </div>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Jumlah Kewajiban Ongoing Capital (KPSP x TTMR)</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="jumlahKewajibanOngoingCapital" name="jumlahKewajibanOngoingCapital" readonly>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Jumlah Kewajiban Ongoing Capital (KPSP x TTMR)</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="jumlahKewajibanOngoingCapital" name="jumlahKewajibanOngoingCapital" readonly>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Status Pemenuhan Ongoing Capital</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input tw-text-center tw-font-bold" id="statusPemenuhanOngoingCapital" name="statusPemenuhanOngoingCapitalDisplay" readonly>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Status Pemenuhan Ongoing Capital</label>
+                        <input type="text" class="form-input tw-text-center tw-font-bold" id="statusPemenuhanOngoingCapital" name="statusPemenuhanOngoingCapitalDisplay" readonly>
                     </div>
-                    <div class="tw-space-y-1 md:tw-col-span-2">
-                        <label class="tw-block form-label">Total Kebutuhan Tambahan Ongoing Capital</label>
-                        <input type="text" class="tw-mt-1 tw-block tw-w-full form-input money tw-bg-gray-100" id="totalKebutuhanTambahanOngoingCapital" name="totalKebutuhanTambahanOngoingCapital" readonly>
+                    <div class="md:tw-col-span-2">
+                        <label class="form-label">Total Kebutuhan Tambahan Ongoing Capital</label>
+                        <input type="text" class="form-input money tw-bg-gray-100" id="totalKebutuhanTambahanOngoingCapital" name="totalKebutuhanTambahanOngoingCapital" readonly>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
-            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
                 <span class="submit-text">Hitung KPSP</span>
                 <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
             </button>
-            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="form.reset(); updateAllCalculations();">Batal</button>
+            
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="form.reset(); updateAllCalculations();">
+                Batal
+            </button>
         </div>
     </form>
 
@@ -616,426 +980,603 @@
     </div>
 </div>
 
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="d-none">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<!-- Message Box Backdrop -->
+<div id="messageBoxBackdrop" class="d-none"></div>
+
+<!-- Dynamic Message Box (Pop-up) -->
+<div id="dynamicMessageBox" class="d-none">
+    <div id="messageBoxIcon" class="icon-container"></div>
+    <p id="messageBoxContent"></p>
+    <button id="messageBoxOkButton" class="ok-button d-none">Oke</button>
+</div>
+
+{% block extra_scripts %}
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery-ui@1.13.2/dist/jquery-ui.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-maskmoney@3.0.2/dist/jquery.maskMoney.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('laporanTahunanSPForm');
+    const form = document.getElementById('kpspForm');
     const submitButton = document.getElementById('submitButton');
     const submitText = submitButton.querySelector('.submit-text');
     const submitSpinner = submitButton.querySelector('.spinner-border');
-    
-    // --- Custom Modal/Message Box ---
-    const messageContainer = document.querySelector('.tw-max-w-4xl.tw-mx-auto'); 
-    
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const messageBoxBackdrop = document.getElementById('messageBoxBackdrop');
+    const dynamicMessageBox = document.getElementById('dynamicMessageBox');
+    const messageBoxContent = document.getElementById('messageBoxContent');
+    const messageBoxIcon = document.getElementById('messageBoxIcon');
+    const messageBoxOkButton = document.getElementById('messageBoxOkButton');
+    const kpspResultsCard = document.getElementById('kpsp_results_card');
+    const kpspResultsDiv = document.getElementById('kpsp_results');
+
+    // Tambahkan flag untuk mencegah pengiriman ganda
+    let isSubmitting = false;
+
+    // Event listener for the "Oke" button to close the message box
+    messageBoxOkButton.addEventListener('click', () => {
+        dynamicMessageBox.classList.add('d-none');
+        messageBoxBackdrop.classList.add('d-none');
+    });
+
+    /**
+     * Menampilkan kotak pesan kustom dengan pesan dan tipe (sukses/error) tertentu.
+     * @param {string} message - Pesan yang akan ditampilkan.
+     * @param {'success'|'error'} type - Tipe pesan ('success' atau 'error').
+     */
     function showMessageBox(message, type) {
-        let messageBox = document.getElementById('dynamicMessageBox');
-        if (!messageBox) {
-            messageBox = document.createElement('div');
-            messageBox.id = 'dynamicMessageBox';
-            messageBox.classList.add('tw-p-3', 'tw-rounded-lg', 'tw-mb-4', 'tw-text-center', 'tw-font-medium'); 
-            const firstChild = messageContainer.querySelector('h2');
-            if (firstChild) {
-                firstChild.parentNode.insertBefore(messageBox, firstChild.nextSibling);
+        messageBoxContent.textContent = message;
+        dynamicMessageBox.classList.remove('success', 'error'); // Hapus kelas tipe sebelumnya
+        messageBoxIcon.innerHTML = ''; // Hapus ikon sebelumnya
+        messageBoxOkButton.classList.add('d-none'); // Sembunyikan tombol OK secara default
+        messageBoxBackdrop.classList.remove('d-none'); // Tampilkan latar belakang
+
+        if (type === 'success') {
+            dynamicMessageBox.classList.add('success');
+            messageBoxIcon.innerHTML = '&#10003;'; // Ikon centang
+            messageBoxOkButton.classList.remove('d-none'); // Tampilkan tombol OK untuk sukses
+        } else if (type === 'error') {
+            dynamicMessageBox.classList.add('error');
+            messageBoxIcon.innerHTML = '&#x2716;'; // Ikon silang
+            messageBoxOkButton.classList.remove('d-none'); // Tampilkan tombol OK untuk error (pengguna menutup secara manual)
+            // Untuk error, akan otomatis sembunyi setelah 5 detik jika tombol OK tidak diklik
+            setTimeout(() => {
+                if (!dynamicMessageBox.classList.contains('d-none')) { // Hanya sembunyikan jika belum disembunyikan secara manual
+                    dynamicMessageBox.classList.add('d-none');
+                    messageBoxBackdrop.classList.add('d-none');
+                }
+            }, 5000);
+        }
+        dynamicMessageBox.classList.remove('d-none'); // Tampilkan kotak pesan
+    }
+
+    // Tooltip functionality
+    const tooltipContainers = document.querySelectorAll('.tooltip-container');
+    tooltipContainers.forEach(container => {
+        const tooltipIcon = container.querySelector('.tooltip-icon');
+        const tooltipText = container.querySelector('.tooltip-text');
+        const tooltipContent = tooltipIcon.getAttribute('data-tooltip');
+
+        if (tooltipContent) {
+            tooltipText.textContent = tooltipContent;
+        }
+    });
+
+    // Initialize maskMoney for all money inputs
+    $('.money').maskMoney({
+        prefix: 'Rp ',
+        thousands: '.',
+        decimal: ',',
+        allowZero: true,
+        affixesStay: true
+    });
+
+    // Function to parse money input to a number
+    function parseMoney(value) {
+        if (!value) return 0;
+        return parseFloat(value.replace(/[^0-9,-]+/g, "").replace(',', '.'));
+    }
+
+    // Function to format number to money
+    function formatMoney(number) {
+        return 'Rp ' + $.maskMoney.format(number, {
+            thousands: '.',
+            decimal: ',',
+            allowZero: true,
+            affixesStay: true
+        });
+    }
+
+    // PJP Data (example data, replace with actual data from backend if needed)
+    const pjpData = [
+        { name: 'PJP 1 (AIS)', kategori_izin: 'AIS', no_izin: '123/PJP1/SK/2023', tgl_izin: '2023-01-15', konstanta_ttmr: 0.05, kpsp_dasar: 100, surcharge: 0 },
+        { name: 'PJP 2 (Penyedia Jasa Pembayaran)', kategori_izin: 'Penyedia Jasa Pembayaran', no_izin: '456/PJP2/SK/2023', tgl_izin: '2023-03-20', konstanta_ttmr: 0.07, kpsp_dasar: 120, surcharge: 0 },
+        { name: 'PJP 3 (PIP Asing)', kategori_izin: 'PIP Asing', no_izin: '789/PJP3/SK/2023', tgl_izin: '2023-05-10', konstanta_ttmr: 0.06, kpsp_dasar: 110, surcharge: 10 },
+        { name: 'PJP 4 (Uang Elektronik)', kategori_izin: 'Uang Elektronik', no_izin: '101/PJP4/SK/2023', tgl_izin: '2023-07-01', konstanta_ttmr: 0.08, kpsp_dasar: 130, surcharge: 0 }
+    ];
+
+    const namaPjpSelect = document.getElementById('nama_pjp');
+    const kategoriIzinInput = document.getElementById('kategori_izin');
+    const noIzinInput = document.getElementById('no_izin');
+    const tglIzinInput = document.getElementById('tgl_izin');
+    const flagGLPIPasingCheckbox = document.getElementById('flagGL_PIPasing');
+    const konstantaTTMRInput = document.getElementById('konstantaTTMR');
+    const KPSPdasarInput = document.getElementById('KPSPdasar');
+    const surchargeInput = document.getElementById('surcharge');
+
+    // Populate PJP select options
+    pjpData.forEach(pjp => {
+        const option = document.createElement('option');
+        option.value = pjp.name;
+        option.textContent = pjp.name;
+        namaPjpSelect.appendChild(option);
+    });
+
+    // Event listener for PJP selection change
+    namaPjpSelect.addEventListener('change', function() {
+        const selectedPJPName = this.value;
+        const selectedPJP = pjpData.find(pjp => pjp.name === selectedPJPName);
+
+        if (selectedPJP) {
+            kategoriIzinInput.value = selectedPJP.kategori_izin;
+            noIzinInput.value = selectedPJP.no_izin;
+            tglIzinInput.value = selectedPJP.tgl_izin;
+            konstantaTTMRInput.value = selectedPJP.konstanta_ttmr;
+            KPSPdasarInput.value = selectedPJP.kpsp_dasar;
+            surchargeInput.value = selectedPJP.surcharge;
+
+            // Enable/disable flagGL_PIPasing based on kategori_izin
+            if (selectedPJP.kategori_izin === 'PIP Asing') {
+                flagGLPIPasingCheckbox.disabled = false;
             } else {
-                messageContainer.insertBefore(messageBox, messageContainer.firstChild);
+                flagGLPIPasingCheckbox.checked = false;
+                flagGLPIPasingCheckbox.disabled = true;
+            }
+        } else {
+            kategoriIzinInput.value = '';
+            noIzinInput.value = '';
+            tglIzinInput.value = '';
+            konstantaTTMRInput.value = '';
+            KPSPdasarInput.value = '';
+            surchargeInput.value = '';
+            flagGLPIPasingCheckbox.checked = false;
+            flagGLPIPasingCheckbox.disabled = true;
+        }
+        updateAllCalculations();
+    });
+
+    // Initial Capital Calculation
+    const jumlahModalDisetorInput = document.getElementById('jumlahModalDisetor');
+    const kewajibanInitCapitalInput = document.getElementById('kewajibanInitCapital');
+    const statusPemenuhanInitialCapitalInput = document.getElementById('statusPemenuhan_initialCapital');
+    const tambahanInitCapitalInput = document.getElementById('tambahanInitCapital');
+
+    function calculateInitialCapital() {
+        const modalDisetor = parseMoney(jumlahModalDisetorInput.value);
+        const selectedPJP = pjpData.find(pjp => pjp.name === namaPjpSelect.value);
+        let kewajibanInitialCapital = 0;
+
+        if (selectedPJP) {
+            if (selectedPJP.kategori_izin === 'AIS') {
+                kewajibanInitialCapital = 50000000000; // 50 M
+            } else if (selectedPJP.kategori_izin === 'Penyedia Jasa Pembayaran') {
+                kewajibanInitialCapital = 5000000000; // 5 M
+            } else if (selectedPJP.kategori_izin === 'PIP Asing') {
+                kewajibanInitialCapital = 100000000000; // 100 M
+            } else if (selectedPJP.kategori_izin === 'Uang Elektronik') {
+                kewajibanInitialCapital = 10000000000; // 10 M
             }
         }
 
-        messageBox.textContent = message;
-        messageBox.classList.remove('tw-bg-green-100', 'tw-text-green-800', 'tw-border-green-300', 'tw-bg-red-100', 'tw-text-red-800', 'tw-border-red-300'); 
-        
-        if (type === 'success') {
-            messageBox.classList.add('tw-bg-green-100', 'tw-text-green-800', 'tw-border', 'tw-border-green-300');
-        } else if (type === 'error') {
-            messageBox.classList.add('tw-bg-red-100', 'tw-text-red-800', 'tw-border', 'tw-border-red-300');
-        }
-        
-        messageBox.style.display = 'block'; 
-        setTimeout(() => {
-            messageBox.style.display = 'none'; 
-        }, 5000);
-    }
-    // --- End Custom Modal/Message Box ---
+        kewajibanInitCapitalInput.value = formatMoney(kewajibanInitialCapital);
 
-    const tahunLaporanSelect = document.getElementById('tahun_laporan');
-    const tahunLaporanTextElements = document.querySelectorAll('.tahun_laporan_text');
-    const tahunProyeksiTextElements = document.querySelectorAll('.tahun_proyeksi_text');
-
-    function updateTahunText() {
-        const selectedYear = tahunLaporanSelect.value;
-        if (selectedYear) {
-            tahunLaporanTextElements.forEach(el => el.textContent = selectedYear);
-            tahunProyeksiTextElements.forEach(el => el.textContent = parseInt(selectedYear) + 1);
+        if (modalDisetor >= kewajibanInitialCapital) {
+            statusPemenuhanInitialCapitalInput.value = 'Terpenuhi';
+            statusPemenuhanInitialCapitalInput.classList.remove('bg-danger-custom');
+            statusPemenuhanInitialCapitalInput.classList.add('bg-success-custom');
+            tambahanInitCapitalInput.value = formatMoney(0);
         } else {
-            tahunLaporanTextElements.forEach(el => el.textContent = '[Tahun Laporan]');
-            tahunProyeksiTextElements.forEach(el => el.textContent = '[Tahun Proyeksi]');
+            statusPemenuhanInitialCapitalInput.value = 'Tidak Terpenuhi';
+            statusPemenuhanInitialCapitalInput.classList.remove('bg-success-custom');
+            statusPemenuhanInitialCapitalInput.classList.add('bg-danger-custom');
+            tambahanInitCapitalInput.value = formatMoney(kewajibanInitialCapital - modalDisetor);
         }
     }
 
-    if (tahunLaporanSelect) {
-        tahunLaporanSelect.addEventListener('change', updateTahunText);
-        updateTahunText(); 
-    }
-    
-    const tanggalSuratPengantarInput = document.getElementById('tanggal_surat_pengantar');
-    if(tanggalSuratPengantarInput){
-        const today = new Date().toISOString().split('T')[0];
-        tanggalSuratPengantarInput.max = today;
+    jumlahModalDisetorInput.addEventListener('input', calculateInitialCapital);
+    namaPjpSelect.addEventListener('change', calculateInitialCapital); // Recalculate if PJP changes
+
+    // TTMR Calculation
+    const jumlahBulanTrxInput = document.getElementById('jumlahBulanTrx');
+    const trxInputs = [
+        document.getElementById('totalTrx_ATMDebet'),
+        document.getElementById('totalTrx_KK'),
+        document.getElementById('trxDompel'),
+        document.getElementById('trxTrfDanaLN_inc'),
+        document.getElementById('trxTrfDanaLN_out'),
+        document.getElementById('trxTrfDana_dom'),
+        document.getElementById('trxUE'),
+        document.getElementById('trxPIAS_fasil'),
+        document.getElementById('trxPIAS_merchAgg'),
+        document.getElementById('trxLainnya')
+    ];
+    const trxRataInputs = [
+        document.getElementById('totalTrx_ATMDebet_rata'),
+        document.getElementById('totalTrx_KK_rata'),
+        document.getElementById('trxDompel_rata'),
+        document.getElementById('trxTrfDanaLN_inc_rata'),
+        document.getElementById('trxTrfDanaLN_out_rata'),
+        document.getElementById('trxTrfDana_dom_rata'),
+        document.getElementById('trxUE_rata'),
+        document.getElementById('trxPIAS_fasil_rata'),
+        document.getElementById('trxPIAS_merchAgg_rata'),
+        document.getElementById('trxLainnya_rata')
+    ];
+    const totalNilaiTrxInput = document.getElementById('totalNilaiTrx');
+    const totalNilaiTrxRataInput = document.getElementById('totalNilaiTrx_rata');
+    const bebanTrxInput = document.getElementById('bebanTrx');
+    const percBebanTrxDanaFloatInput = document.getElementById('percBebanTrxDanaFloat');
+    const bebanTrxDanaFloatInput = document.getElementById('bebanTrxDanaFloat');
+    const totalBebanInput = document.getElementById('totalBeban');
+    const TTMRInput = document.getElementById('TTMR');
+
+    function calculateTTMR() {
+        const jumlahBulan = parseInt(jumlahBulanTrxInput.value) || 1;
+        let totalTrx = 0;
+
+        trxInputs.forEach((input, index) => {
+            let value = parseMoney(input.value);
+            // Specific rule for trxPIAS_fasil
+            if (input.id === 'trxPIAS_fasil') {
+                value = value * 0.10; // 10% for PIAS Fasilitator
+            }
+            totalTrx += value;
+            trxRataInputs[index].value = formatMoney(value / jumlahBulan);
+        });
+
+        totalNilaiTrxInput.value = formatMoney(totalTrx);
+        totalNilaiTrxRataInput.value = formatMoney(totalTrx / jumlahBulan);
+
+        // Calculate Beban Transaksi (progressive)
+        let bebanTransaksi = 0;
+        if (totalTrx <= 100000000000) { // 100 M
+            bebanTransaksi = totalTrx * 0.00005; // 0.005%
+        } else if (totalTrx <= 500000000000) { // 500 M
+            bebanTransaksi = (100000000000 * 0.00005) + ((totalTrx - 100000000000) * 0.00004); // 0.004%
+        } else if (totalTrx <= 1000000000000) { // 1 T
+            bebanTransaksi = (100000000000 * 0.00005) + (400000000000 * 0.00004) + ((totalTrx - 500000000000) * 0.00003); // 0.003%
+        } else {
+            bebanTransaksi = (100000000000 * 0.00005) + (400000000000 * 0.00004) + (500000000000 * 0.00003) + ((totalTrx - 1000000000000) * 0.00002); // 0.002%
+        }
+        bebanTrxInput.value = formatMoney(bebanTransaksi);
+
+        // Beban Transaksi Dana Float (only for Uang Elektronik)
+        const selectedPJP = pjpData.find(pjp => pjp.name === namaPjpSelect.value);
+        let bebanDanaFloat = 0;
+        if (selectedPJP && selectedPJP.kategori_izin === 'Uang Elektronik') {
+            const trxUE = parseMoney(document.getElementById('trxUE').value);
+            percBebanTrxDanaFloatInput.value = '0.005'; // Fixed 0.005%
+            bebanDanaFloat = trxUE * 0.00005; // 0.005%
+        } else {
+            percBebanTrxDanaFloatInput.value = '0';
+            bebanDanaFloat = 0;
+        }
+        bebanTrxDanaFloatInput.value = formatMoney(bebanDanaFloat);
+
+        const totalBeban = bebanTransaksi + bebanDanaFloat;
+        totalBebanInput.value = formatMoney(totalBeban);
+
+        const konstantaTTMR = parseFloat(konstantaTTMRInput.value) || 0;
+        const TTMR = konstantaTTMR * totalBeban;
+        TTMRInput.value = formatMoney(TTMR);
+
+        calculateOngoingCapital(); // Recalculate Ongoing Capital when TTMR changes
     }
 
-    // --- Dynamic Field Logic (Shareholder, MERSI, Management, Cooperation) ---
+    jumlahBulanTrxInput.addEventListener('input', calculateTTMR);
+    trxInputs.forEach(input => input.addEventListener('input', calculateTTMR));
+    namaPjpSelect.addEventListener('change', calculateTTMR); // Recalculate if PJP changes
 
-    // Helper to add repeatable item structure
-    function addRepeatableItem(containerId, itemClass, headerPrefix, contentHtml, removeBtnClass = 'remove-item-btn') {
-        const container = document.getElementById(containerId);
-        const currentCount = container.querySelectorAll(`.${itemClass}`).length;
-        const newItem = document.createElement('div');
-        newItem.classList.add('repeatable-item', itemClass, 'tw-space-y-2');
-        newItem.innerHTML = `
-            <h6 class="tw-font-semibold tw-text-gray-800">${headerPrefix} #${currentCount + 1}</h6>
-            <div class="tw-relative">
-                ${contentHtml}
-                <button type="button" class="${removeBtnClass} tw-absolute tw-top-0.5 tw-right-0.5 tw-bg-red-50 tw-text-red-500 tw-border tw-border-red-200 tw-rounded-full tw-p-1 tw-inline-flex tw-items-center tw-justify-center tw-w-8 tw-h-8 hover:tw-bg-red-100 hover:tw-text-red-600 tw-transition-colors tw-duration-150">
-                    <svg class="tw-w-4 tw-h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                </button>
+    // Ongoing Capital Components Calculation
+    const modalSahamInput = document.getElementById('modalSaham');
+    const uangMukaSetoranModalInput = document.getElementById('uangMukaSetoranModal');
+    const agioDisagioSahamInput = document.getElementById('agioDisagioSaham');
+    const saldoLRberjalanInput = document.getElementById('saldoLRberjalan');
+    const saldoPenghasilanKomprInput = document.getElementById('saldoPenghasilanKompr');
+    const modalIntiUtamaInput = document.getElementById('modalIntiUtama');
+
+    const asetPajakTangguhanInput = document.getElementById('asetPajakTangguhan');
+    const goodWillInput = document.getElementById('goodWill');
+    const asetTidakBerwujudInput = document.getElementById('asetTidakBerwujud');
+    const seluruhPenyertaanInput = document.getElementById('seluruhPenyertaan');
+    const pembelianKembaliInstModalInput = document.getElementById('pembelianKembaliInstModal');
+    const penempatanDanaInstUtangInput = document.getElementById('penempatanDanaInstUtang');
+    const faktorPengurangModalIntiInput = document.getElementById('faktorPengurangModalInti');
+    const modalIntiUtamaSetelahFPRInput = document.getElementById('modalIntiUtama_setelahFPR');
+
+    const instrumenUtangInput = document.getElementById('instrumenUtang');
+    const instrumenHybridInput = document.getElementById('instrumenHybrid');
+    const sahamPreferenNonKumulatifInput = document.getElementById('sahamPreferenNonKumulatif');
+    const premiumDiskontoInput = document.getElementById('premiumDiskonto');
+    const modalIntiTambahanInput = document.getElementById('modalIntiTambahan');
+
+    const instrumenModalIntiTambahanInput = document.getElementById('instrumenModalIntiTambahan');
+    const kepemilikanModalIntiTambahanInput = document.getElementById('kepemilikanModalIntiTambahan');
+    const faktorPengurangModalIntiTambahanInput = document.getElementById('faktorPengurangModalIntiTambahan');
+    const modalIntiTambahanSetelahFPRInput = document.getElementById('modalIntiTambahan_setelahFPR');
+    const modalIntiTambahanOngoingCapitalInput = document.getElementById('modalIntiTambahan_ongoingCapital');
+
+    const instrumenUtangJangkaPjgInput = document.getElementById('instrumenUtangJangkaPjg');
+    const premiumDiskontoModalPelengkapInput = document.getElementById('premiumDiskontoModalPelengkap');
+    const modalPelengkapInput = document.getElementById('modalPelengkap');
+
+    const instrumenModalPelengkapInput = document.getElementById('instrumenModalPelengkap');
+    const kepemilikanModalPelengkapInput = document.getElementById('kepemilikanModalPelengkap');
+    const faktorPengurangModalPelengkapInput = document.getElementById('faktorPengurangModalPelengkap');
+    const modalPelengkapSetelahFPRInput = document.getElementById('modalPelengkap_setelahFPR');
+    const modalPelengkapOngoingCapitalInput = document.getElementById('modalPelengkap_ongoingCapital');
+
+    const totalOngoingCapitalInput = document.getElementById('totalOngoingCapital');
+    const rasioKPSPInput = document.getElementById('rasioKPSP');
+    const totalKPSPInput = document.getElementById('totalKPSP');
+    const jumlahKewajibanOngoingCapitalInput = document.getElementById('jumlahKewajibanOngoingCapital');
+    const statusPemenuhanOngoingCapitalInput = document.getElementById('statusPemenuhanOngoingCapital');
+    const totalKebutuhanTambahanOngoingCapitalInput = document.getElementById('totalKebutuhanTambahanOngoingCapital');
+
+    function calculateOngoingCapital() {
+        // Modal Inti Utama
+        const modalSaham = parseMoney(modalSahamInput.value);
+        const uangMukaSetoranModal = parseMoney(uangMukaSetoranModalInput.value);
+        const agioDisagioSaham = parseMoney(agioDisagioSahamInput.value);
+        const saldoLRberjalan = parseMoney(saldoLRberjalanInput.value);
+        const saldoPenghasilanKompr = parseMoney(saldoPenghasilanKomprInput.value);
+        const modalIntiUtama = modalSaham + uangMukaSetoranModal + agioDisagioSaham + saldoLRberjalan + saldoPenghasilanKompr;
+        modalIntiUtamaInput.value = formatMoney(modalIntiUtama);
+
+        // Faktor Pengurang Modal Inti Utama
+        const asetPajakTangguhan = parseMoney(asetPajakTangguhanInput.value);
+        const goodWill = parseMoney(goodWillInput.value);
+        const asetTidakBerwujud = parseMoney(asetTidakBerBerwujudInput.value);
+        const seluruhPenyertaan = parseMoney(seluruhPenyertaanInput.value);
+        const pembelianKembaliInstModal = parseMoney(pembelianKembaliInstModalInput.value);
+        const penempatanDanaInstUtang = parseMoney(penempatanDanaInstUtangInput.value);
+        const faktorPengurangModalInti = asetPajakTangguhan + goodWill + asetTidakBerwujud + seluruhPenyertaan + pembelianKembaliInstModal + penempatanDanaInstUtang;
+        faktorPengurangModalIntiInput.value = formatMoney(faktorPengurangModalInti);
+
+        const modalIntiUtamaSetelahFPR = modalIntiUtama - faktorPengurangModalInti;
+        modalIntiUtamaSetelahFPRInput.value = formatMoney(modalIntiUtamaSetelahFPR);
+
+        // Modal Inti Tambahan
+        const instrumenUtang = parseMoney(instrumenUtangInput.value);
+        const instrumenHybrid = parseMoney(instrumenHybridInput.value);
+        const sahamPreferenNonKumulatif = parseMoney(sahamPreferenNonKumulatifInput.value);
+        const premiumDiskonto = parseMoney(premiumDiskontoInput.value);
+        const modalIntiTambahan = instrumenUtang + instrumenHybrid + sahamPreferenNonKumulatif + premiumDiskonto;
+        modalIntiTambahanInput.value = formatMoney(modalIntiTambahan);
+
+        // Faktor Pengurang Modal Inti Tambahan
+        const instrumenModalIntiTambahan = parseMoney(instrumenModalIntiTambahanInput.value);
+        const kepemilikanModalIntiTambahan = parseMoney(kepemilikanModalIntiTambahanInput.value);
+        const faktorPengurangModalIntiTambahan = instrumenModalIntiTambahan + kepemilikanModalIntiTambahan;
+        faktorPengurangModalIntiTambahanInput.value = formatMoney(faktorPengurangModalIntiTambahan);
+
+        const modalIntiTambahanSetelahFPR = modalIntiTambahan - faktorPengurangModalIntiTambahan;
+        modalIntiTambahanSetelahFPRInput.value = formatMoney(modalIntiTambahanSetelahFPR);
+
+        // Modal Inti Tambahan yang dapat diperhitungkan sebagai Ongoing Capital (max 1/3 modal inti utama)
+        const maxModalIntiTambahanOngoing = modalIntiUtamaSetelahFPR / 3;
+        const modalIntiTambahanOngoingCapital = Math.min(modalIntiTambahanSetelahFPR, maxModalIntiTambahanOngoing);
+        modalIntiTambahanOngoingCapitalInput.value = formatMoney(modalIntiTambahanOngoingCapital);
+
+        // Modal Pelengkap
+        const instrumenUtangJangkaPjg = parseMoney(instrumenUtangJangkaPjgInput.value);
+        const premiumDiskontoModalPelengkap = parseMoney(premiumDiskontoModalPelengkapInput.value);
+        const modalPelengkap = instrumenUtangJangkaPjg + premiumDiskontoModalPelengkap;
+        modalPelengkapInput.value = formatMoney(modalPelengkap);
+
+        // Faktor Pengurang Modal Pelengkap
+        const instrumenModalPelengkap = parseMoney(instrumenModalPelengkapInput.value);
+        const kepemilikanModalPelengkap = parseMoney(kepemilikanModalPelengkapInput.value);
+        const faktorPengurangModalPelengkap = instrumenModalPelengkap + kepemilikanModalPelengkap;
+        faktorPengurangModalPelengkapInput.value = formatMoney(faktorPengurangModalPelengkap);
+
+        const modalPelengkapSetelahFPR = modalPelengkap - faktorPengurangModalPelengkap;
+        modalPelengkapSetelahFPRInput.value = formatMoney(modalPelengkapSetelahFPR);
+
+        // Modal Pelengkap yang dapat diperhitungkan sebagai Ongoing Capital (max 1/3 Modal Inti Tambahan yang dapat diperhitungkan sebagai ongoing capital)
+        const maxModalPelengkapOngoing = modalIntiTambahanOngoingCapital / 3;
+        const modalPelengkapOngoingCapital = Math.min(modalPelengkapSetelahFPR, maxModalPelengkapOngoing);
+        modalPelengkapOngoingCapitalInput.value = formatMoney(modalPelengkapOngoingCapital);
+
+        // Total Ongoing Capital
+        const totalOngoingCapital = modalIntiUtamaSetelahFPR + modalIntiTambahanOngoingCapital + modalPelengkapOngoingCapital;
+        totalOngoingCapitalInput.value = formatMoney(totalOngoingCapital);
+
+        // Rasio KPSP
+        const TTMR = parseMoney(TTMRInput.value);
+        let rasioKPSP = 0;
+        if (TTMR > 0) {
+            rasioKPSP = (totalOngoingCapital / TTMR) * 100;
+        }
+        rasioKPSPInput.value = rasioKPSP.toFixed(2);
+
+        // Total KPSP
+        const KPSPdasar = parseFloat(KPSPdasarInput.value) || 0;
+        const surcharge = parseFloat(surchargeInput.value) || 0;
+        const totalKPSP = KPSPdasar + surcharge;
+        totalKPSPInput.value = totalKPSP.toFixed(2);
+
+        // Jumlah Kewajiban Ongoing Capital
+        const jumlahKewajibanOngoingCapital = (totalKPSP / 100) * TTMR;
+        jumlahKewajibanOngoingCapitalInput.value = formatMoney(jumlahKewajibanOngoingCapital);
+
+        // Status Pemenuhan Ongoing Capital
+        if (rasioKPSP >= totalKPSP) {
+            statusPemenuhanOngoingCapitalInput.value = 'Terpenuhi';
+            statusPemenuhanOngoingCapitalInput.classList.remove('bg-danger-custom');
+            statusPemenuhanOngoingCapitalInput.classList.add('bg-success-custom');
+            totalKebutuhanTambahanOngoingCapitalInput.value = formatMoney(0);
+        } else {
+            statusPemenuhanOngoingCapitalInput.value = 'Tidak Terpenuhi';
+            statusPemenuhanOngoingCapitalInput.classList.remove('bg-success-custom');
+            statusPemenuhanOngoingCapitalInput.classList.add('bg-danger-custom');
+            totalKebutuhanTambahanOngoingCapitalInput.value = formatMoney(jumlahKewajibanOngoingCapital - totalOngoingCapital);
+        }
+
+        displayKPSPResults(totalOngoingCapital, TTMR, rasioKPSP, totalKPSP, jumlahKewajibanOngoingCapital);
+    }
+
+    // Add event listeners for all relevant inputs to trigger calculation
+    const ongoingCapitalInputs = [
+        modalSahamInput, uangMukaSetoranModalInput, agioDisagioSahamInput,
+        saldoLRberjalanInput, saldoPenghasilanKomprInput,
+        asetPajakTangguhanInput, goodWillInput, asetTidakBerwujudInput,
+        seluruhPenyertaanInput, pembelianKembaliInstModalInput, penempatanDanaInstUtangInput,
+        instrumenUtangInput, instrumenHybridInput, sahamPreferenNonKumulatifInput,
+        premiumDiskontoInput, instrumenModalIntiTambahanInput, kepemilikanModalIntiTambahanInput,
+        instrumenUtangJangkaPjgInput, premiumDiskontoModalPelengkapInput,
+        instrumenModalPelengkapInput, kepemilikanModalPelengkapInput
+    ];
+
+    ongoingCapitalInputs.forEach(input => input.addEventListener('input', calculateOngoingCapital));
+    // TTMRInput also triggers ongoing capital calculation, handled in calculateTTMR
+
+    function updateAllCalculations() {
+        calculateInitialCapital();
+        calculateTTMR();
+        calculateOngoingCapital();
+    }
+
+    // Initial calculation on page load
+    updateAllCalculations();
+
+    // Function to display KPSP results in the summary card
+    function displayKPSPResults(totalOngoingCapital, TTMR, rasioKPSP, totalKPSP, jumlahKewajibanOngoingCapital) {
+        kpspResultsDiv.innerHTML = `
+            <div class="result-item">
+                <span>Total Ongoing Capital:</span>
+                <strong>${formatMoney(totalOngoingCapital)}</strong>
+            </div>
+            <div class="result-item">
+                <span>TTMR:</span>
+                <strong>${formatMoney(TTMR)}</strong>
+            </div>
+            <div class="result-item">
+                <span>Rasio KPSP (Ongoing Capital/TTMR):</span>
+                <strong>${rasioKPSP.toFixed(2)}%</strong>
+            </div>
+            <div class="result-item">
+                <span>KPSP Dasar:</span>
+                <strong>${KPSPdasarInput.value}%</strong>
+            </div>
+            <div class="result-item">
+                <span>Surcharge:</span>
+                <strong>${surchargeInput.value}%</strong>
+            </div>
+            <div class="result-item">
+                <span>Total KPSP:</span>
+                <strong>${totalKPSP.toFixed(2)}%</strong>
+            </div>
+            <div class="result-item">
+                <span>Jumlah Kewajiban Ongoing Capital:</span>
+                <strong>${formatMoney(jumlahKewajibanOngoingCapital)}</strong>
+            </div>
+            <div class="result-item">
+                <span>Status Pemenuhan Ongoing Capital:</span>
+                <strong class="${statusPemenuhanOngoingCapitalInput.classList.contains('bg-success-custom') ? 'bg-success-custom' : 'bg-danger-custom'}">
+                    ${statusPemenuhanOngoingCapitalInput.value}
+                </strong>
+            </div>
+            <div class="result-item">
+                <span>Total Kebutuhan Tambahan Ongoing Capital:</span>
+                <strong>${totalKebutuhanTambahanOngoingCapitalInput.value}</strong>
             </div>
         `;
-        container.appendChild(newItem);
-
-        newItem.querySelector(`.${removeBtnClass}`).addEventListener('click', function() {
-            newItem.remove();
-            updateRepeatableItemNumbers(containerId, itemClass, headerPrefix);
-        });
-        updateRepeatableItemNumbers(containerId, itemClass, headerPrefix);
-        return newItem;
+        kpspResultsCard.style.display = 'block';
     }
 
-    function updateRepeatableItemNumbers(containerId, itemClass, headerPrefix) {
-        const container = document.getElementById(containerId);
-        const items = container.querySelectorAll(`.${itemClass}`);
-        items.forEach((item, index) => {
-            const itemNumber = index + 1;
-            item.querySelector('h6').textContent = `${headerPrefix} #${itemNumber}`;
-            // Update name attributes to ensure correct indexing for form submission
-            item.querySelectorAll('input, select, textarea').forEach(input => {
-                const oldName = input.name;
-                // Regex to find _ followed by digits at the end of the name
-                const baseName = oldName.replace(/_\d+$/, ''); 
-                input.name = `${baseName}_${itemNumber}`;
-                input.id = `${baseName}_${itemNumber}`; // Also update ID for labels
-                const label = item.querySelector(`label[for^="${baseName}_"]`);
-                if (label) {
-                    label.setAttribute('for', input.id);
-                }
-            });
-        });
-    }
 
-    // MERSI
-    const mersiContainer = document.getElementById('mersi-container');
-    document.getElementById('add-mersi-btn').addEventListener('click', () => {
-        addRepeatableItem('mersi-container', 'mersi-item', 'Data MERSI', `
-            <div class="tw-space-y-1">
-                <label for="mersi_title_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" class="tw-block form-label">Judul/Topik Risiko SP <span class="tw-text-red-500">*</span></label>
-                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="mersi_title_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" name="mersi_title_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" required>
-            </div>
-            <div class="tw-space-y-1">
-                <label for="mersi_content_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" class="tw-block form-label">Uraian Risiko SP <span class="tw-text-red-500">*</span></label>
-                <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="mersi_content_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" name="mersi_content_${mersiContainer.querySelectorAll('.mersi-item').length + 1}" rows="3" required></textarea>
-            </div>
-        `);
-    });
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation(); // Hentikan penyebaran event lebih lanjut
 
-    // Shareholder
-    const shareholderContainer = document.getElementById('shareholder-container');
-    document.getElementById('add-shareholder-btn').addEventListener('click', () => {
-        const currentCount = shareholderContainer.querySelectorAll('.shareholder-item').length;
-        const newItem = addRepeatableItem('shareholder-container', 'shareholder-item', 'Pemegang Saham', `
-            <div class="tw-space-y-1">
-                <label for="shareholder_name_${currentCount + 1}" class="tw-block form-label">Nama Perorangan/PT <span class="tw-text-red-500">*</span></label>
-                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_name_${currentCount + 1}" name="shareholder_name_${currentCount + 1}" required>
-            </div>
-            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-x-6 tw-gap-y-4">
-                <div class="tw-space-y-1">
-                    <label for="shareholder_nominal_saham_${currentCount + 1}" class="tw-block form-label">Nominal Saham (Rp) <span class="tw-text-red-500">*</span></label>
-                    <input type="number" step="0.01" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_nominal_saham_${currentCount + 1}" name="shareholder_nominal_saham_${currentCount + 1}" required min="0">
-                </div>
-                <div class="tw-space-y-1">
-                    <label for="shareholder_lembar_saham_${currentCount + 1}" class="tw-block form-label">Jumlah Lembar Saham <span class="tw-text-red-500">*</span></label>
-                    <input type="number" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_lembar_saham_${currentCount + 1}" name="shareholder_lembar_saham_${currentCount + 1}" required min="0">
-                </div>
-                <div class="tw-space-y-1">
-                    <label for="shareholder_persentase_saham_${currentCount + 1}" class="tw-block form-label">Persentase Saham (%) <span class="tw-text-red-500">*</span></label>
-                    <input type="number" step="0.01" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_persentase_saham_${currentCount + 1}" name="shareholder_persentase_saham_${currentCount + 1}" required min="0" max="100">
-                </div>
-            </div>
-            <div class="tw-space-y-1">
-                <label class="tw-block form-label">Jenis Kepemilikan <span class="tw-text-red-500">*</span></label>
-                <div class="tw-flex tw-gap-4 mt-2">
-                    <div class="tw-flex tw-items-center">
-                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="shareholder_type_${currentCount + 1}" id="shareholder_type_asing_${currentCount + 1}" value="asing" required>
-                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="shareholder_type_asing_${currentCount + 1}">Asing</label>
-                    </div>
-                    <div class="tw-flex tw-items-center">
-                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="shareholder_type_${currentCount + 1}" id="shareholder_type_domestik_${currentCount + 1}" value="domestik" required>
-                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="shareholder_type_domestik_${currentCount + 1}">Domestik</label>
-                    </div>
-                </div>
-            </div>
-            <div class="tw-space-y-1">
-                <label for="shareholder_jenis_seri_saham_${currentCount + 1}" class="tw-block form-label">Jenis Seri Saham (Opsional)</label>
-                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="shareholder_jenis_seri_saham_${currentCount + 1}" name="shareholder_jenis_seri_saham_${currentCount + 1}">
-            </div>
-        `);
-    });
-
-    // Management
-    const managementContainer = document.getElementById('management-container');
-    document.getElementById('add-management-btn').addEventListener('click', () => {
-        const currentCount = managementContainer.querySelectorAll('.management-item').length;
-        addRepeatableItem('management-container', 'management-item', 'Pengurus', `
-            <div class="tw-space-y-1">
-                <label for="management_name_${currentCount + 1}" class="tw-block form-label">Nama <span class="tw-text-red-500">*</span></label>
-                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="management_name_${currentCount + 1}" name="management_name_${currentCount + 1}" required>
-            </div>
-            <div class="tw-space-y-1">
-                <label for="management_position_${currentCount + 1}" class="tw-block form-label">Jabatan <span class="tw-text-red-500">*</span></label>
-                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="management_position_${currentCount + 1}" name="management_position_${currentCount + 1}" required>
-            </div>
-            <div class="tw-space-y-1">
-                <label class="tw-block form-label">Kewarganegaraan <span class="tw-text-red-500">*</span></label>
-                <div class="tw-flex tw-gap-4 mt-2">
-                    <div class="tw-flex tw-items-center">
-                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="management_nationality_${currentCount + 1}" id="management_nationality_wna_${currentCount + 1}" value="WNA" required>
-                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="management_nationality_wna_${currentCount + 1}">WNA</label>
-                    </div>
-                    <div class="tw-flex tw-items-center">
-                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="management_nationality_${currentCount + 1}" id="management_nationality_domestik_${currentCount + 1}" value="Domestik" required>
-                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="management_nationality_domestik_${currentCount + 1}">Domestik</label>
-                    </div>
-                </div>
-            </div>
-        `);
-    });
-
-    // Cooperation
-    const cooperationContainer = document.getElementById('cooperation-container');
-    document.getElementById('add-cooperation-btn').addEventListener('click', () => {
-        const currentCount = cooperationContainer.querySelectorAll('.cooperation-item').length;
-        addRepeatableItem('cooperation-container', 'cooperation-item', 'Kerja Sama', `
-            <div class="tw-space-y-1">
-                <label for="cooperation_partner_name_${currentCount + 1}" class="tw-block form-label">Nama Mitra <span class="tw-text-red-500">*</span></label>
-                <input type="text" class="tw-mt-1 tw-block tw-w-full form-input" id="cooperation_partner_name_${currentCount + 1}" name="cooperation_partner_name_${currentCount + 1}" required>
-            </div>
-            <div class="tw-space-y-1">
-                <label for="cooperation_scope_${currentCount + 1}" class="tw-block form-label">Ruang Lingkup <span class="tw-text-red-500">*</span></label>
-                <textarea class="tw-mt-1 tw-block tw-w-full form-input" id="cooperation_scope_${currentCount + 1}" name="cooperation_scope_${currentCount + 1}" rows="2" required></textarea>
-            </div>
-            <div class="tw-space-y-1">
-                <label class="tw-block form-label">Tipe Mitra <span class="tw-text-red-500">*</span></label>
-                <div class="tw-flex tw-gap-4 mt-2">
-                    <div class="tw-flex tw-items-center">
-                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="cooperation_type_${currentCount + 1}" id="cooperation_type_penunjang_${currentCount + 1}" value="Penunjang" required>
-                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="cooperation_type_penunjang_${currentCount + 1}">Penyelenggara Penunjang</label>
-                    </div>
-                    <div class="tw-flex tw-items-center">
-                        <input class="tw-form-radio tw-h-4 tw-w-4 tw-text-indigo-600" type="radio" name="cooperation_type_${currentCount + 1}" id="cooperation_type_pjp_${currentCount + 1}" value="PJP" required>
-                        <label class="tw-ml-2 tw-text-sm tw-text-gray-700" for="cooperation_type_pjp_${currentCount + 1}">PJP</label>
-                    </div>
-                </div>
-            </div>
-        `);
-    });
-
-    // Financial Table Logic
-    const financialYear1Input = document.getElementById('financial_year_1');
-    const financialYear2Input = document.getElementById('financial_year_2');
-    const headerYear1 = document.getElementById('header-year-1');
-    const headerYear2 = document.getElementById('header-year-2');
-    const financialInputs = document.querySelectorAll('.financial-input');
-
-    function updateFinancialTableHeaders() {
-        const year1 = financialYear1Input.value;
-        const year2 = financialYear2Input.value;
-        headerYear1.textContent = year1 ? year1 : 'Tahun 1';
-        headerYear2.textContent = year2 ? year2 : 'Tahun 2';
-    }
-
-    function calculatePercentageDifference(val1, val2) {
-        val1 = parseFloat(val1);
-        val2 = parseFloat(val2);
-
-        if (isNaN(val1) || isNaN(val2)) {
-            return '';
+        // Periksa apakah formulir sedang dalam proses pengiriman
+        if (isSubmitting) {
+            console.log("Pengiriman formulir sudah berjalan. Mengabaikan.");
+            return;
         }
-        if (val1 === 0 && val2 === 0) {
-            return '0.00%';
-        }
-        if (val1 === 0) {
-            return val2 > 0 ? '+Inf%' : '-Inf%';
-        }
-        
-        const diff = val2 - val1;
-        const percentage = (diff / val1) * 100;
-        return percentage.toFixed(2) + '%';
-    }
 
-    function calculateAllPercentages() {
-        const rows = document.querySelectorAll('#financial-data-body tr');
-        rows.forEach(row => {
-            const year1Value = row.querySelector('.year-1').value;
-            const year2Value = row.querySelector('.year-2').value;
-            const percentageDiffField = row.querySelector('.percentage-diff');
-            percentageDiffField.value = calculatePercentageDifference(year1Value, year2Value);
-        });
-    }
-
-    financialYear1Input.addEventListener('input', updateFinancialTableHeaders);
-    financialYear2Input.addEventListener('input', updateFinancialTableHeaders);
-
-    financialInputs.forEach(input => {
-        input.addEventListener('input', function() {
-            const row = this.closest('tr');
-            const year1Value = row.querySelector('.year-1').value;
-            const year2Value = row.querySelector('.year-2').value;
-            const percentageDiffField = row.querySelector('.percentage-diff');
-            percentageDiffField.value = calculatePercentageDifference(year1Value, year2Value);
-        });
-    });
-
-    // Initial call to set headers and calculate percentages
-    updateFinancialTableHeaders();
-    calculateAllPercentages();
-
-    // Handle form submission via custom confirmation modal
-    form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission initially
-        
+        // Basic validation (you can add more specific validation here)
         let formIsValid = true;
-        
-        // File size validation
-        const fileInputs = form.querySelectorAll('input[type="file"]');
-        for (let i = 0; i < fileInputs.length; i++) {
-            const input = fileInputs[i];
-            if (input.files.length > 0) {
-                for (let j = 0; j < input.files.length; j++) {
-                    const file = input.files[j];
-                    if (file.size > 10 * 1024 * 1024) { // 10 MB
-                        showMessageBox('File "' + file.name + '" terlalu besar. Maksimum 10MB.', 'error');
-                        formIsValid = false;
-                        break;
-                    }
-                }
+        const requiredInputs = form.querySelectorAll('[required]');
+        requiredInputs.forEach(input => {
+            if (!input.value) {
+                formIsValid = false;
+                input.classList.add('tw-border-red-500'); // Highlight empty required fields
+            } else {
+                input.classList.remove('tw-border-red-500');
             }
-            if (!formIsValid) break;
+        });
+
+        if (!formIsValid) {
+            showMessageBox('Mohon lengkapi semua kolom yang wajib diisi (*).', 'error');
+            return;
         }
 
-        if (!formIsValid) return;
-
-        // Show custom confirmation modal instead of browser's confirm
-        confirmationModal.show();
-    });
-
-    // Handle click on the custom confirmation button
-    confirmSendButton.addEventListener('click', function() {
-        confirmationModal.hide(); // Hide confirmation modal
-        
+        // Show loading state
+        isSubmitting = true;
         submitButton.disabled = true;
-        submitText.textContent = 'Mengirim...';
+        submitText.textContent = 'Menghitung...';
         submitSpinner.classList.remove('d-none');
-        loadingModal.show();
-
-        const formData = new FormData(form);
-
-        // Dynamically collect repeatable fields
-        // Shareholders
-        document.querySelectorAll('.shareholder-item').forEach((item, index) => {
-            formData.append(`shareholders[${index}][name]`, item.querySelector(`[name="shareholder_name_${index + 1}"]`).value);
-            formData.append(`shareholders[${index}][nominal_saham]`, item.querySelector(`[name="shareholder_nominal_saham_${index + 1}"]`).value);
-            formData.append(`shareholders[${index}][lembar_saham]`, item.querySelector(`[name="shareholder_lembar_saham_${index + 1}"]`).value);
-            formData.append(`shareholders[${index}][persentase_saham]`, item.querySelector(`[name="shareholder_persentase_saham_${index + 1}"]`).value);
-            formData.append(`shareholders[${index}][type]`, item.querySelector(`input[name="shareholder_type_${index + 1}"]:checked`).value);
-            const jenisSeriSaham = item.querySelector(`[name="shareholder_jenis_seri_saham_${index + 1}"]`);
-            if (jenisSeriSaham) {
-                formData.append(`shareholders[${index}][jenis_seri_saham]`, jenisSeriSaham.value);
-            }
-        });
-
-        // MERSI
-        document.querySelectorAll('.mersi-item').forEach((item, index) => {
-            formData.append(`mersi[${index}][title]`, item.querySelector(`[name="mersi_title_${index + 1}"]`).value);
-            formData.append(`mersi[${index}][content]`, item.querySelector(`[name="mersi_content_${index + 1}"]`).value);
-        });
-
-        // Management
-        document.querySelectorAll('.management-item').forEach((item, index) => {
-            formData.append(`management[${index}][name]`, item.querySelector(`[name="management_name_${index + 1}"]`).value);
-            formData.append(`management[${index}][position]`, item.querySelector(`[name="management_position_${index + 1}"]`).value);
-            formData.append(`management[${index}][nationality]`, item.querySelector(`input[name="management_nationality_${index + 1}"]:checked`).value);
-        });
-
-        // Cooperation
-        document.querySelectorAll('.cooperation-item').forEach((item, index) => {
-            formData.append(`cooperation[${index}][partner_name]`, item.querySelector(`[name="cooperation_partner_name_${index + 1}"]`).value);
-            formData.append(`cooperation[${index}][scope]`, item.querySelector(`[name="cooperation_scope_${index + 1}"]`).value);
-            formData.append(`cooperation[${index}][type]`, item.querySelector(`input[name="cooperation_type_${index + 1}"]:checked`).value);
-        });
-
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
-        })
-        .then(response => {
-            loadingModal.hide();
+        loadingOverlay.classList.remove('d-none');
+        
+        // Simulate form submission and calculation
+        setTimeout(() => {
+            updateAllCalculations(); // Perform all calculations
+            loadingOverlay.classList.add('d-none');
             submitButton.disabled = false;
-            submitText.textContent = 'Kirim Laporan Tahunan SP';
+            submitText.textContent = 'Hitung KPSP';
             submitSpinner.classList.add('d-none');
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
-                form.reset();
-                updateTahunText(); // Reset dynamic year text
-                // Clear dynamic fields
-                document.getElementById('shareholder-container').innerHTML = '';
-                document.getElementById('mersi-container').innerHTML = '';
-                document.getElementById('management-container').innerHTML = '';
-                document.getElementById('cooperation-container').innerHTML = '';
-                updateFinancialTableHeaders(); // Reset financial table headers
-                calculateAllPercentages(); // Recalculate percentages
-            } else {
-                errorMessageElement.textContent = data.message || 'Gagal mengirim laporan.';
-                errorModal.show();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            loadingModal.hide();
-            submitButton.disabled = false;
-            submitText.textContent = 'Kirim Laporan Tahunan SP';
-            submitSpinner.classList.add('d-none');
-            errorMessageElement.textContent = 'Terjadi kesalahan jaringan atau server.';
-            errorModal.show();
-        });
+            showMessageBox('Perhitungan KPSP berhasil!', 'success');
+            // Show the results card after successful calculation
+            kpspResultsCard.style.display = 'block';
+            // Scroll to the results card
+            kpspResultsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            isSubmitting = false;
+        }, 1500); // Simulate network delay
     });
 
     // Reset form listener
     form.addEventListener('reset', function() {
-        updateTahunText(); // Reset dynamic year text
-        // Clear dynamic fields
-        document.getElementById('shareholder-container').innerHTML = '';
-        document.getElementById('mersi-container').innerHTML = '';
-        document.getElementById('management-container').innerHTML = '';
-        document.getElementById('cooperation-container').innerHTML = '';
-        updateFinancialTableHeaders(); // Reset financial table headers
-        calculateAllPercentages(); // Recalculate percentages
+        // Reset all money inputs to 0 and format them
+        $('.money').each(function() {
+            $(this).val(0);
+            $(this).maskMoney('mask');
+        });
+        // Reset PJP selection and related fields
+        namaPjpSelect.value = '';
+        kategoriIzinInput.value = '';
+        noIzinInput.value = '';
+        tglIzinInput.value = '';
+        flagGLPIPasingCheckbox.checked = false;
+        flagGLPIPasingCheckbox.disabled = true;
+        konstantaTTMRInput.value = '';
+        KPSPdasarInput.value = '';
+        surchargeInput.value = '';
+
+        // Hide results card
+        kpspResultsCard.style.display = 'none';
+
+        // Re-run all calculations to reset calculated fields
+        updateAllCalculations();
     });
 });
 </script>
+{% endblock %}
 {% endblock %}
