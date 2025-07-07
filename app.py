@@ -3,6 +3,9 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import requests
 from datetime import datetime, timedelta # Import timedelta untuk manajemen waktu sesi
 import json
+import os
+import flash
+from werkzeug.utils import secure_filename
 
 # Inisialisasi aplikasi Flask
 app = Flask(__name__)
@@ -17,6 +20,13 @@ app.permanent_session_lifetime = timedelta(minutes=30) # Sesuaikan waktu sesuai 
 
 # URL dasar untuk API backend Anda
 API_BASE_URL = "http://20.205.26.22:8000/api/"
+
+# Konfigurasi upload folder
+UPLOAD_FOLDER = 'uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Batas ukuran file 16MB
 
 # Data dummy bank (sesuaikan dengan kebutuhan produksi Anda jika diperlukan)
 # Data ini digunakan untuk mengisi dropdown "Nama PJP" di form KPSP
@@ -113,9 +123,9 @@ def login():
     """
     if request.method == "POST":
         # PERBAIKAN: Mengubah 'username' menjadi 'sandi_pjp' untuk mencocokkan nama field di HTML
-        sandi_pjp = request.form["sandi_pjp"]  
+        sandi_pjp = request.form["sandi_pjp"]
         password = request.form["password"]
-        
+
         login_data = {"sandi_pjp": sandi_pjp, "password": password}
         try:
             response = requests.post(f"{API_BASE_URL}auth/login/", json=login_data)
@@ -506,7 +516,7 @@ def submit_laporan_keuangan_tahunan():
     form_data = {
         "tahun_laporan": tahun_laporan, 
         "nomor_surat": request.form.get("nomor_surat"),
-        "tanggal_surat": formatted_tanggal_surat,
+        "tanggal_surat": formatted_tanggal_surat, # Dikirim sebagai YYYY-MM-DD
         "jenis_audit": request.form.get("jenis_audit"),  # Sesuai API doc
         "nama_kap": request.form.get("nama_kap"),  # Sesuai API doc
         "tanggal_opini": formatted_tanggal_opini,  # Sesuai API doc
@@ -1714,6 +1724,299 @@ def submit_laporan_tahunan_sp():
     success, message, status_code = send_report_to_backend("laporan/tahunan-sp/submit", form_data, file_laporan)
     return jsonify({"success": success, "message": message}), status_code
 
+# --- Rute Laporan RBA APU PPT (Baru Ditambahkan) ---
+@app.route('/user/forms/laporan_rba_apu_ppt')
+def laporan_rba_apu_ppt():
+    """Merender formulir untuk Laporan RBA APU PPT."""
+    if 'username' not in session or session['role'] != 'user':
+        flash('Anda tidak memiliki akses ke halaman ini.', 'danger')
+        return redirect(url_for('login'))
+    return render_template('user/forms/laporan_rba_apu_ppt.html')
+
+@app.route('/submit/laporan_rba_apu_ppt', methods=['POST'])
+def submit_laporan_rba_apu_ppt():
+    """Menangani pengiriman formulir Laporan RBA APU PPT."""
+    if 'username' not in session or session['role'] != 'user':
+        flash('Anda tidak memiliki izin untuk mengirim laporan.', 'danger')
+        return redirect(url_for('login'))
+
+    try:
+        # Informasi Umum Penginput
+        nama_penginput = request.form['nama_penginput']
+        email_penginput = request.form['email_penginput']
+        email_perusahaan = request.form['email_perusahaan']
+        nomor_hp_penginput = request.form['nomor_hp_penginput']
+
+        # Data Frekuensi Transaksi
+        frekuensi_incoming = int(request.form['frekuensi_incoming'])
+        frekuensi_outgoing = int(request.form['frekuensi_outgoing'])
+        frekuensi_domestik = int(request.form['frekuensi_domestik'])
+
+        # Data Nilai/Nominal Transaksi
+        nilai_incoming_cash_to_account = int(request.form['nilai_incoming_cash_to_account'])
+        nilai_incoming_account_to_cash = int(request.form['nilai_incoming_account_to_cash'])
+        nilai_incoming_account_to_account = int(request.form['nilai_incoming_account_to_account'])
+        nilai_incoming_cash_to_cash = int(request.form['nilai_incoming_cash_to_cash'])
+        nilai_outgoing_cash_to_account = int(request.form['nilai_outgoing_cash_to_account'])
+        nilai_outgoing_account_to_cash = int(request.form['nilai_outgoing_account_to_cash'])
+        nilai_outgoing_account_to_account = int(request.form['nilai_outgoing_account_to_account'])
+        nilai_outgoing_cash_to_cash = int(request.form['nilai_outgoing_cash_to_cash'])
+        nilai_domestik_cash_to_account = int(request.form['nilai_domestik_cash_to_account'])
+        nilai_domestik_account_to_cash = int(request.form['nilai_domestik_account_to_cash'])
+        nilai_domestik_account_to_account = int(request.form['nilai_domestik_account_to_account'])
+        nilai_domestik_cash_to_cash = int(request.form['nilai_domestik_cash_to_cash'])
+
+        # Data Nilai/Nominal Transaksi dari Negara High Risk Countries
+        high_risk_countries = [
+            "KOREA UTARA", "IRAN", "SURIAH", "MYANMAR", "AFGHANISTAN", "SUDAN", "KUBA",
+            "BRITISH VIRGIN ISLAND", "CAYMAN ISLAND", "NIGERIA", "MALAYSIA", "JEPANG",
+            "SINGAPURA", "THAILAND", "ARAB SAUDI", "UNI EMIRAT ARAB", "AMERIKA SERIKAT",
+            "FILIPINA", "AUSTRALIA"
+        ]
+        transaction_types = [
+            "incoming_cash_to_cash", "outgoing_cash_to_cash", "incoming_cash_to_account",
+            "outgoing_cash_to_account", "incoming_account_to_account", "outgoing_account_to_account"
+        ]
+        high_risk_data = {}
+        for t_type_slug in transaction_types:
+            for country in high_risk_countries:
+                field_name = f"{t_type_slug}_{country.replace(' ', '_').lower()}"
+                high_risk_data[field_name] = int(request.form[field_name])
+            other_countries_field = f"{t_type_slug}_negara_lain"
+            high_risk_data[other_countries_field] = int(request.form[other_countries_field])
+
+        # Data Nasabah Berdasarkan Profesi
+        professions = [
+            "Pegawai BUMN/Politik", "Pegawai Swasta", "Pengusaha/Wiraswasta",
+            "Ibu Rumah Tangga", "Profesional", "Konsultan", "Profil/Pekerjaan Lainnya"
+        ]
+        customer_prof_data = {}
+        for prof in professions:
+            field_name = f"nasabah_profesi_{prof.replace('/', '_').replace(' ', '_').lower()}"
+            customer_prof_data[field_name] = int(request.form[field_name])
+        customer_prof_data['nasabah_pep'] = int(request.form['nasabah_pep'])
+
+        # Data Nasabah Berdasarkan Status WNA/WNI
+        customer_nationality_data = {}
+        customer_nationality_data['nasabah_wni'] = int(request.form['nasabah_wni'])
+        wna_countries = [
+            "KOREA UTARA", "IRAN", "SURIAH", "MYANMAR", "AFGHANISTAN", "SUDAN", "KUBA",
+            "BRITISH VIRGIN ISLAND", "CAYMAN ISLAND", "NIGERIA", "MALAYSIA", "JEPANG",
+            "SINGAPURA", "THAILAND", "ARAB SAUDI", "UNI EMIRAT ARAB", "AMERIKA SERIKAT",
+            "FILIPINA", "AUSTRALIA"
+        ]
+        for country in wna_countries:
+            field_name = f"nasabah_wna_{country.replace(' ', '_').lower()}"
+            customer_nationality_data[field_name] = int(request.form[field_name])
+        customer_nationality_data['nasabah_wna_lainnya'] = int(request.form['nasabah_wna_lainnya'])
+
+        # Data Perusahaan
+        lokasi_kantor_pusat = request.form['lokasi_kantor_pusat']
+        jumlah_titik_layanan = request.form['jumlah_titik_layanan'] # String, contoh: "1000 titik-Jawa Barat"
+        jumlah_mitra_kerjasama = request.form['jumlah_mitra_kerjasama'] # String, contoh: "10 Mitra kerja sama Dalam Negeri"
+        memiliki_aplikasi_website_api = request.form['memiliki_aplikasi_website_api']
+        nama_brand_layanan = request.form.get('nama_brand_layanan', '')
+        jenis_sistem = request.form.getlist('jenis_sistem') # List of strings
+
+        # Persentase Pemegang Saham
+        shareholder_types = ["berbadan_hukum", "perseorangan", "domestik", "asing"]
+        shareholder_data = {}
+        for s_type_slug in shareholder_types:
+            shareholder_data[s_type_slug] = []
+            i = 1
+            while True:
+                name_field = f"pemegang_saham_{s_type_slug}_{i}_nama"
+                if name_field in request.form:
+                    shareholder_entry = {
+                        "nama": request.form[name_field],
+                        "nominal": request.form[f"pemegang_saham_{s_type_slug}_{i}_nominal"],
+                        "lbr_saham": request.form[f"pemegang_saham_{s_type_slug}_{i}_lbr_saham"],
+                        "persentase": request.form[f"pemegang_saham_{s_type_slug}_{i}_persentase"]
+                    }
+                    shareholder_data[s_type_slug].append(shareholder_entry)
+                    i += 1
+                else:
+                    break
+
+        # Data Keuangan Perusahaan
+        total_aset = int(request.form['total_aset'])
+        total_modal_dasar = int(request.form['total_modal_dasar'])
+        total_modal_disetor = int(request.form['total_modal_disetor'])
+        total_laba_bersih_setelah_pajak = int(request.form['total_laba_bersih_setelah_pajak'])
+        jenis_bisnis_lainnya = request.form['jenis_bisnis_lainnya']
+
+        # Self-Assessment Data
+        self_assessment_data = {}
+        assessment_fields = [
+            "dir_kom_kebijakan", "dir_kom_laporan_efektif", "dir_kom_pelaporan_ppatk", "dir_kom_pengawasan",
+            "kpt_cdd_edd", "kpt_data_info_dokumen", "kpt_pelaporan_transaksi", "kpt_efektivitas",
+            "kpt_laporan_efektivitas", "kpt_pengkinian_profil",
+            "manajemen_risiko_identifikasi", "manajemen_risiko_pengkinian", "manajemen_risiko_dokumentasi",
+            "manajemen_risiko_informasi_otoritas", "manajemen_risiko_peningkatan_pengendalian",
+            "manajemen_risiko_dokumentasi_dttot", "manajemen_risiko_pengecekan_dttot",
+            "sdm_kelakuan_baik", "sdm_peningkatan_pemahaman",
+            "spi_unit_kerja", "spi_pemisahan_wewenang", "spi_audit_internal"
+        ]
+        for field in assessment_fields:
+            self_assessment_data[field] = int(request.form[field])
+
+        # Pernyataan Persetujuan
+        pernyataan_setuju = 'pernyataan_setuju' in request.form
+
+        # Penanganan Upload File
+        uploaded_files_paths = {}
+        file_keys = {
+            'dokumen_form_risiko': 'file_form_risiko',
+            'dokumen_kertas_kerja_self_assesment': 'file_kertas_kerja_self_assesment',
+            'dokumen_surat_pernyataan_keabsahan': 'file_surat_pernyataan_keabsahan'
+        }
+        
+        # Siapkan dictionary untuk file yang akan diunggah
+        files_to_upload = {}
+        for form_key, api_key in file_keys.items():
+            if form_key in request.files:
+                file = request.files[form_key]
+                if file.filename != '':
+                    filename = secure_filename(file.filename)
+                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(file_path)
+                    uploaded_files_paths[api_key] = file_path
+                    # Tambahkan file ke dictionary files_to_upload untuk send_report_to_backend
+                    files_to_upload[api_key] = (filename, open(file_path, 'rb'), file.mimetype)
+                else:
+                    uploaded_files_paths[api_key] = None # Tandai jika tidak ada file diupload
+            else:
+                uploaded_files_paths[api_key] = None # Tandai jika field tidak ada di request
+
+        # Gabungkan semua data ke dalam satu payload untuk dikirim ke backend
+        # Perhatikan bahwa API Anda mungkin mengharapkan struktur yang berbeda
+        # Ini adalah contoh payload yang digabungkan
+        full_payload = {
+            "informasi_penginput": {
+                "nama_penginput": nama_penginput,
+                "email_penginput": email_penginput,
+                "email_perusahaan": email_perusahaan,
+                "nomor_hp_penginput": nomor_hp_penginput
+            },
+            "frekuensi_transaksi": {
+                "incoming": frekuensi_incoming,
+                "outgoing": frekuensi_outgoing,
+                "domestik": frekuensi_domestik
+            },
+            "nilai_nominal_transaksi": {
+                "incoming_cash_to_account": nilai_incoming_cash_to_account,
+                "incoming_account_to_cash": nilai_incoming_account_to_cash,
+                "incoming_account_to_account": nilai_incoming_account_to_account,
+                "incoming_cash_to_cash": nilai_incoming_cash_to_cash,
+                "outgoing_cash_to_account": nilai_outgoing_cash_to_account,
+                "outgoing_account_to_cash": nilai_outgoing_account_to_cash,
+                "outgoing_account_to_account": nilai_outgoing_account_to_account,
+                "outgoing_cash_to_cash": nilai_outgoing_cash_to_cash,
+                "domestik_cash_to_account": nilai_domestik_cash_to_account,
+                "domestik_account_to_cash": nilai_domestik_account_to_cash,
+                "domestik_account_to_account": nilai_domestik_account_to_account,
+                "domestik_cash_to_cash": nilai_domestik_cash_to_cash
+            },
+            "nilai_nominal_transaksi_high_risk": high_risk_data,
+            "nasabah_profesi": customer_prof_data,
+            "nasabah_kewarganegaraan": customer_nationality_data,
+            "data_perusahaan": {
+                "lokasi_kantor_pusat": lokasi_kantor_pusat,
+                "jumlah_titik_layanan": jumlah_titik_layanan,
+                "jumlah_mitra_kerjasama": jumlah_mitra_kerjasama,
+                "memiliki_aplikasi_website_api": memiliki_aplikasi_website_api,
+                "nama_brand_layanan": nama_brand_layanan,
+                "jenis_sistem": jenis_sistem
+            },
+            "pemegang_saham": shareholder_data,
+            "keuangan_perusahaan": {
+                "total_aset": total_aset,
+                "total_modal_dasar": total_modal_dasar,
+                "total_modal_disetor": total_modal_disetor,
+                "total_laba_bersih_setelah_pajak": total_laba_bersih_setelah_pajak,
+                "jenis_bisnis_lainnya": jenis_bisnis_lainnya
+            },
+            "self_assessment": self_assessment_data,
+            "pernyataan_setuju": pernyataan_setuju
+            # File paths can be sent separately or handled by the backend after upload
+            # "uploaded_files_paths": uploaded_files_paths # Mungkin tidak perlu dikirim langsung ke API jika API mengharapkan file terpisah
+        }
+
+        # Untuk API yang mengharapkan JSON payload dan file terpisah,
+        # Anda perlu memisahkan data JSON dari file.
+        # Jika API mengharapkan semua dalam multipart/form-data,
+        # Anda perlu meratakan full_payload ke form_data sederhana.
+
+        # Contoh pengiriman sebagai JSON payload (jika API mendukungnya)
+        # Jika API mengharapkan file terpisah, Anda bisa mengirim JSON payload,
+        # lalu mengirim file dalam permintaan terpisah atau sebagai bagian dari multipart data.
+        # Karena Anda menyebutkan file_laporan di send_report_to_backend, kita akan coba kirim sebagai multipart.
+
+        # Mengubah full_payload menjadi format yang cocok untuk form_data (flat dictionary)
+        # Ini akan menjadi kompleks karena ada nested dictionaries dan lists.
+        # Pendekatan yang lebih baik adalah mengirim JSON payload jika API memungkinkan,
+        # atau merancang ulang frontend untuk mengirim flat data.
+        # Untuk tujuan demonstrasi, saya akan membuat flat_form_data.
+        flat_form_data = {}
+        for key, value in full_payload.items():
+            if isinstance(value, dict):
+                for sub_key, sub_value in value.items():
+                    if isinstance(sub_value, list): # Handle lists like jenis_sistem, shareholder_data
+                        for i, item in enumerate(sub_value):
+                            if isinstance(item, dict):
+                                for item_key, item_value in item.items():
+                                    flat_form_data[f"{key}_{sub_key}_{i+1}_{item_key}"] = item_value
+                            else: # For simple lists like jenis_sistem
+                                flat_form_data[f"{key}_{sub_key}_{i+1}"] = item
+                    else:
+                        flat_form_data[f"{key}_{sub_key}"] = sub_value
+            elif isinstance(value, list):
+                for i, item in enumerate(value):
+                     flat_form_data[f"{key}_{i+1}"] = item
+            else:
+                flat_form_data[key] = value
+        
+        # Karena API Anda mengharapkan 'file' sebagai nama field untuk file,
+        # kita perlu memilih salah satu file untuk dikirim sebagai 'file' utama
+        # atau memodifikasi send_report_to_backend untuk menangani multiple files
+        # jika API mendukungnya. Untuk saat ini, saya akan memilih 'dokumen_form_risiko'
+        # sebagai 'file' utama jika ada, dan mengabaikan yang lain untuk kesederhanaan
+        # sesuai dengan fungsi send_report_to_backend yang ada.
+        
+        main_file_to_send = None
+        if 'dokumen_form_risiko' in request.files and request.files['dokumen_form_risiko'].filename != '':
+            main_file_to_send = request.files['dokumen_form_risiko']
+        elif 'dokumen_kertas_kerja_self_assesment' in request.files and request.files['dokumen_kertas_kerja_self_assesment'].filename != '':
+            main_file_to_send = request.files['dokumen_kertas_kerja_self_assesment']
+        elif 'dokumen_surat_pernyataan_keabsahan' in request.files and request.files['dokumen_surat_pernyataan_keabsahan'].filename != '':
+            main_file_to_send = request.files['dokumen_surat_pernyataan_keabsahan']
+
+        # Jika API Anda membutuhkan semua file, Anda perlu memodifikasi send_report_to_backend
+        # untuk menerima dictionary files, bukan hanya satu file_obj.
+        # Untuk saat ini, kita akan mengirimkan flat_form_data dan satu file utama.
+
+        success, message, status_code = send_report_to_backend(
+            "laporan/rba-apu-ppt/submit", # Ganti dengan endpoint API yang sesuai
+            form_data=flat_form_data,
+            file_obj=main_file_to_send
+        )
+
+        # Setelah berhasil mengirim data, hapus file yang diunggah dari server lokal
+        for key, path in uploaded_files_paths.items():
+            if path and os.path.exists(path):
+                os.remove(path)
+                print(f"DEBUG: File lokal dihapus: {path}")
+
+        flash(message, 'success' if success else 'danger')
+        return redirect(url_for('user_dashboard'))
+
+    except ValueError as e:
+        flash(f'Kesalahan validasi data: {str(e)}', 'danger')
+        return redirect(url_for('laporan_rba_apu_ppt'))
+    except Exception as e:
+        flash(f'Terjadi kesalahan saat mengirim laporan: {str(e)}', 'danger')
+        return redirect(url_for('laporan_rba_apu_ppt'))
+
 
 @app.route("/logout")
 def logout():
@@ -1726,3 +2029,4 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True)
+

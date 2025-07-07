@@ -1,0 +1,1260 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Laporan RBA APU PPT{% endblock %}
+
+{% block extra_head %}
+<!-- Font Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Global styles */
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Spinner utility */
+    .spinner-border {
+        display: inline-block;
+        width: 1.5rem;
+        height: 1.5rem;
+        vertical-align: middle;
+        border: 0.25em solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spinner-border .75s linear infinite;
+    }
+
+    @keyframes spinner-border {
+        to { transform: rotate(360deg); }
+    }
+
+    .d-none { display: none !important; }
+
+    /* Section styling */
+    .section-group {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 0;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+
+    .section-group .section-header {
+        font-size: 1.25rem; /* Increased font size */
+        font-weight: 700;
+        color: #1f2937;
+        background-color: #eef2f6;
+        padding: 1rem 1.5rem; /* Increased padding */
+        margin: 0 -1px 1rem -1px; /* Adjust margin to align with border */
+        border-bottom: 1px solid #e0e7eb;
+        border-top-left-radius: 11px;
+        border-top-right-radius: 11px;
+    }
+
+    .section-group .section-content {
+        padding: 1.5rem;
+        padding-top: 0;
+    }
+
+    /* Form elements */
+    .form-label {
+        font-size: 1.05rem; /* Increased font size */
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        display: flex; /* Make label a flex container */
+        align-items: center; /* Align items vertically */
+    }
+
+    .form-input {
+        font-size: 1rem; /* Increased font size */
+        padding: 1rem; /* Increased padding */
+        width: 100%;
+        border: 1px solid #d1d5db;
+        border-radius: 10px; /* More rounded corners */
+        color: #4b5563;
+        transition: all 0.2s ease;
+        min-height: 50px; /* Consistent height */
+        box-sizing: border-box;
+    }
+
+    /* Select dropdowns */
+    select.form-input {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px 12px;
+        padding-right: 2.5rem;
+        -webkit-appearance: none; /* Remove default arrow for Chrome/Safari */
+        -moz-appearance: none; /* Remove default arrow for Firefox */
+        appearance: none; /* Remove default arrow */
+    }
+
+    /* File input */
+    .file-input-container {
+        margin-top: 0.5rem;
+    }
+    
+    .file-input-container input[type="file"] {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    /* Nested sections for better organization */
+    .nested-section-group {
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background-color: #f9fafb;
+    }
+
+    .nested-section-group h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .form-input {
+            padding: 0.9rem;
+            min-height: 45px;
+        }
+        
+        .section-group .section-header {
+            font-size: 1.15rem;
+            padding: 0.9rem 1rem;
+        }
+        
+        .nested-section-group {
+            padding: 1rem;
+        }
+    }
+
+    /* Styles for the loading overlay */
+    #loadingOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Ensure it's on top of everything */
+        backdrop-filter: blur(3px); /* Optional: blur background */
+    }
+
+    #loadingOverlay .spinner-border {
+        width: 3rem; /* Larger spinner for the overlay */
+        height: 3rem;
+        border-width: 0.35em; /* Thicker border */
+        color: #ffffff; /* White spinner */
+    }
+
+    /* Styles for the message box backdrop */
+    #messageBoxBackdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6); /* Darker semi-transparent black */
+        backdrop-filter: blur(5px); /* Stronger blur for pop-up background */
+        z-index: 1000; /* Below the message box, above other content */
+        display: none; /* Hidden by default */
+    }
+
+    /* Styles for the message box pop-up */
+    #dynamicMessageBox {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 1001; /* Above the backdrop */
+        display: none; /* Hidden by default */
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-align: center;
+        max-width: 400px; /* Limit width */
+        width: 90%; /* Responsive width */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem; /* Space between elements */
+    }
+
+    #dynamicMessageBox.success {
+        background-color: #d4edda; /* Light green */
+        color: #155724; /* Dark green text */
+        border: 1px solid #c3e6cb;
+    }
+
+    #dynamicMessageBox.error {
+        background-color: #f8d7da; /* Light red */
+        color: #721c24; /* Dark red text */
+        border: 1px solid #f5c6cb;
+    }
+
+    #dynamicMessageBox .icon-container {
+        font-size: 3rem; /* Large icon size */
+        line-height: 1;
+        animation: fade-in-scale 0.5s ease-out forwards; /* Animation for icon */
+    }
+
+    @keyframes fade-in-scale {
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    #dynamicMessageBox .ok-button {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 700;
+        transition: background-color 0.3s ease;
+    }
+
+    #dynamicMessageBox .ok-button:hover {
+        background-color: #45a049;
+    }
+
+    /* Tooltip styles */
+    .tooltip-container {
+        position: relative;
+        display: inline-block;
+        margin-left: 0.5rem; /* Space between label and icon */
+    }
+
+    .tooltip-icon {
+        width: 16px; /* Reduced from 18px */
+        height: 16px; /* Reduced from 18px */
+        border-radius: 50%;
+        background-color: #6366f1; /* Indigo color */
+        color: white;
+        font-size: 0.7rem; /* Reduced from 0.8rem */
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .tooltip-icon:hover {
+        background-color: #4f46e5; /* Darker indigo on hover */
+    }
+
+    .tooltip-text {
+        visibility: hidden;
+        width: 250px; /* Adjust width as needed */
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 10px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%; /* Position above the icon */
+        left: 50%;
+        margin-left: -125px; /* Center the tooltip */
+        opacity: 0;
+        transition: opacity 0.3s, visibility 0.3s;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .tooltip-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #333 transparent transparent transparent;
+    }
+
+    .tooltip-container:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    /* Custom styles for radio buttons */
+    .radio-group-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem; /* Space between radio options */
+    }
+
+    .radio-option {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .radio-option:hover {
+        background-color: #f3f4f6;
+        border-color: #93c5fd; /* Light blue on hover */
+    }
+
+    .radio-option input[type="radio"] {
+        margin-right: 0.5rem;
+        accent-color: #2563eb; /* Blue color for checked radio */
+    }
+
+    .radio-option label {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+    }
+
+    .radio-option input[type="radio"]:checked + label {
+        font-weight: 600;
+        color: #1f2937;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6">
+    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">
+        Formulir Laporan RBA APU PPT
+    </h2>
+    <p class="tw-text-gray-600 tw-text-center tw-mb-8">Penyampaian Data RBA APU PPT Penyelenggara KUPVA BB dan PJP LR - Tahun 2025 (Periode Data Tahun 2024)</p>
+
+    <form id="rbaApuPptForm" action="{{ url_for('submit_laporan_rba_apu_ppt') }}" method="POST" enctype="multipart/form-data" class="tw-space-y-6">
+        <!-- Informasi Umum Penginput -->
+        <div class="section-group">
+            <h3 class="section-header">Informasi Penginput</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                    <div>
+                        <label for="nama_penginput" class="form-label">
+                            Nama Penginput Data dan Informasi <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nama lengkap pengisi formulir laporan ini.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" id="nama_penginput" name="nama_penginput" class="form-input" placeholder="Contoh: Budi Santoso" required>
+                    </div>
+                    <div>
+                        <label for="email_penginput" class="form-label">
+                            E-mail Penginput Data dan Informasi <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Alamat email pribadi pengisi formulir.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="email" id="email_penginput" name="email_penginput" class="form-input" placeholder="Contoh: budi.santoso@email.com" required>
+                    </div>
+                    <div>
+                        <label for="email_perusahaan" class="form-label">
+                            E-mail Perusahaan <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Alamat email resmi perusahaan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="email" id="email_perusahaan" name="email_perusahaan" class="form-input" placeholder="Contoh: info@namaperusahaan.com" required>
+                    </div>
+                    <div>
+                        <label for="nomor_hp_penginput" class="form-label">
+                            Nomor HP Penginput Data dan Informasi <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nomor telepon seluler pengisi formulir.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="tel" id="nomor_hp_penginput" name="nomor_hp_penginput" class="form-input" placeholder="Contoh: 081234567890" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Transaksi (Frekuensi) -->
+        <div class="section-group">
+            <h3 class="section-header">Data Frekuensi Transaksi (1 Januari - 31 Desember 2024)</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-4">
+                    <div>
+                        <label for="frekuensi_incoming" class="form-label">
+                            Frekuensi Transaksi Incoming <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah transaksi masuk yang diterima.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="frekuensi_incoming" name="frekuensi_incoming" class="form-input" placeholder="Contoh: 1500" min="0" required>
+                    </div>
+                    <div>
+                        <label for="frekuensi_outgoing" class="form-label">
+                            Frekuensi Transaksi Outgoing <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah transaksi keluar yang dikirim.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="frekuensi_outgoing" name="frekuensi_outgoing" class="form-input" placeholder="Contoh: 1200" min="0" required>
+                    </div>
+                    <div>
+                        <label for="frekuensi_domestik" class="form-label">
+                            Frekuensi Transaksi Domestik <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah transaksi yang terjadi di dalam negeri.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="frekuensi_domestik" name="frekuensi_domestik" class="form-input" placeholder="Contoh: 500" min="0" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Transaksi (Nilai/Nominal) -->
+        <div class="section-group">
+            <h3 class="section-header">Data Nilai/Nominal Transaksi (1 Januari - 31 Desember 2024)</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-4">
+                    <div>
+                        <label for="nilai_incoming_cash_to_account" class="form-label">
+                            Incoming Cash to Account <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nilai transaksi masuk dari uang tunai ke rekening.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nilai_incoming_cash_to_account" name="nilai_incoming_cash_to_account" class="form-input" placeholder="Contoh: 150000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="nilai_incoming_account_to_cash" class="form-label">
+                            Incoming Account to Cash <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nilai transaksi masuk dari rekening ke uang tunai.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nilai_incoming_account_to_cash" name="nilai_incoming_account_to_cash" class="form-input" placeholder="Contoh: 120000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="nilai_incoming_account_to_account" class="form-label">
+                            Incoming Account to Account <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nilai transaksi masuk dari rekening ke rekening.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nilai_incoming_account_to_account" name="nilai_incoming_account_to_account" class="form-input" placeholder="Contoh: 80000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="nilai_incoming_cash_to_cash" class="form-label">
+                            Incoming Cash to Cash <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nilai transaksi masuk dari uang tunai ke uang tunai.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nilai_incoming_cash_to_cash" name="nilai_incoming_cash_to_cash" class="form-input" placeholder="Contoh: 70000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="nilai_outgoing_cash_to_account" class="form-label">
+                            Outgoing Cash to Account <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nilai transaksi keluar dari uang tunai ke rekening.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nilai_outgoing_cash_to_account" name="nilai_outgoing_cash_to_account" class="form-input" placeholder="Contoh: 130000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="nilai_outgoing_account_to_cash" class="form-label">
+                            Outgoing Account to Cash <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nilai transaksi keluar dari rekening ke uang tunai.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nilai_outgoing_account_to_cash" name="nilai_outgoing_account_to_cash" class="form-input" placeholder="Contoh: 100000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="nilai_outgoing_account_to_account" class="form-label">
+                            Outgoing Account to Account <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nilai transaksi keluar dari rekening ke rekening.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nilai_outgoing_account_to_account" name="nilai_outgoing_account_to_account" class="form-input" placeholder="Contoh: 90000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="nilai_outgoing_cash_to_cash" class="form-label">
+                            Outgoing Cash to Cash <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nilai transaksi keluar dari uang tunai ke uang tunai.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nilai_outgoing_cash_to_cash" name="nilai_outgoing_cash_to_cash" class="form-input" placeholder="Contoh: 60000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="nilai_domestik_cash_to_account" class="form-label">
+                            Domestik Cash to Account <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nilai transaksi domestik dari uang tunai ke rekening.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nilai_domestik_cash_to_account" name="nilai_domestik_cash_to_account" class="form-input" placeholder="Contoh: 50000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="nilai_domestik_account_to_cash" class="form-label">
+                            Domestik Account to Cash <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nilai transaksi domestik dari rekening ke uang tunai.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nilai_domestik_account_to_cash" name="nilai_domestik_account_to_cash" class="form-input" placeholder="Contoh: 40000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="nilai_domestik_account_to_account" class="form-label">
+                            Domestik Account to Account <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nilai transaksi domestik dari rekening ke rekening.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nilai_domestik_account_to_account" name="nilai_domestik_account_to_account" class="form-input" placeholder="Contoh: 30000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="nilai_domestik_cash_to_cash" class="form-label">
+                            Domestik Cash to Cash <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nilai transaksi domestik dari uang tunai ke uang tunai.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nilai_domestik_cash_to_cash" name="nilai_domestik_cash_to_cash" class="form-input" placeholder="Contoh: 20000000" min="0" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Nilai/Nominal Transaksi dari Negara High Risk Countries -->
+        <div class="section-group">
+            <h3 class="section-header">
+                Nilai/Nominal Transaksi dari Negara High Risk Countries (1 Januari - 31 Desember 2024)
+                <span class="tooltip-container">
+                    <span class="tooltip-icon" data-tooltip="Masukkan nilai transaksi dari setiap negara berisiko tinggi yang terdaftar. Isi '0' jika tidak ada transaksi.">!</span>
+                    <span class="tooltip-text"></span>
+                </span>
+            </h3>
+            <div class="section-content">
+                <p class="tw-text-gray-600 tw-mb-4">Isi "0" jika tidak ada transaksi.</p>
+                {% set high_risk_countries = [
+                    "KOREA UTARA", "IRAN", "SURIAH", "MYANMAR", "AFGHANISTAN", "SUDAN", "KUBA",
+                    "BRITISH VIRGIN ISLAND", "CAYMAN ISLAND", "NIGERIA", "MALAYSIA", "JEPANG",
+                    "SINGAPURA", "THAILAND", "ARAB SAUDI", "UNI EMIRAT ARAB", "AMERIKA SERIKAT",
+                    "FILIPINA", "AUSTRALIA"
+                ] %}
+
+                {% for type in ["Incoming Cash to Cash", "Outgoing Cash to Cash", "Incoming Cash to Account", "Outgoing Cash to Account", "Incoming Account to Account", "Outgoing Account to Account"] %}
+                <div class="nested-section-group">
+                    <h4>{{ type }}</h4>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4">
+                        {% for country in high_risk_countries %}
+                        <div>
+                            <label for="{{ type.replace(' ', '_').lower() }}_{{ country.replace(' ', '_').lower() }}" class="form-label">
+                                {{ country }} <span class="tw-text-red-500">*</span>
+                            </label>
+                            <input type="number" id="{{ type.replace(' ', '_').lower() }}_{{ country.replace(' ', '_').lower() }}" name="{{ type.replace(' ', '_').lower() }}_{{ country.replace(' ', '_').lower() }}" class="form-input" value="0" min="0" placeholder="Contoh: 0" required>
+                        </div>
+                        {% endfor %}
+                        <div>
+                            <label for="{{ type.replace(' ', '_').lower() }}_negara_lain" class="form-label">
+                                Negara-Negara lain yang tidak disebutkan diatas <span class="tw-text-red-500">*</span>
+                            </label>
+                            <input type="number" id="{{ type.replace(' ', '_').lower() }}_negara_lain" name="{{ type.replace(' ', '_').lower() }}_negara_lain" class="form-input" value="0" min="0" placeholder="Contoh: 0" required>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Data Nasabah Berdasarkan Profesi -->
+        <div class="section-group">
+            <h3 class="section-header">Jumlah Nasabah Berdasarkan Profesi (1 Januari - 31 Desember 2024)</h3>
+            <div class="section-content">
+                <p class="tw-text-gray-600 tw-mb-4">Masukkan jumlah nasabah (tidak dihitung frekuensi datang).</p>
+                {% set professions = [
+                    "Pegawai BUMN/Politik", "Pegawai Swasta", "Pengusaha/Wiraswasta",
+                    "Ibu Rumah Tangga", "Profesional", "Konsultan", "Profil/Pekerjaan Lainnya"
+                ] %}
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                    {% for profession in professions %}
+                    <div>
+                        <label for="nasabah_profesi_{{ profession.replace('/', '_').replace(' ', '_').lower() }}" class="form-label">
+                            Jumlah Nasabah berprofesi {{ profession }}? <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah nasabah dengan profesi {{ profession }}.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nasabah_profesi_{{ profession.replace('/', '_').replace(' ', '_').lower() }}" name="nasabah_profesi_{{ profession.replace('/', '_').replace(' ', '_').lower() }}" class="form-input" min="0" placeholder="Contoh: 100" required>
+                    </div>
+                    {% endfor %}
+                    <div>
+                        <label for="nasabah_pep" class="form-label">
+                            Jumlah Nasabah yang merupakan Politically Exposed Person (PEP)? <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah nasabah yang tergolong Politically Exposed Person (PEP).">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nasabah_pep" name="nasabah_pep" class="form-input" min="0" placeholder="Contoh: 5" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Nasabah Berdasarkan Status WNA/WNI -->
+        <div class="section-group">
+            <h3 class="section-header">Jumlah Nasabah Berdasarkan Status WNA/WNI (per 31 Desember 2024)</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                    <div>
+                        <label for="nasabah_wni" class="form-label">
+                            Jumlah Nasabah berstatus WNI <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah nasabah dengan status Warga Negara Indonesia.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nasabah_wni" name="nasabah_wni" class="form-input" min="0" placeholder="Contoh: 1000" required>
+                    </div>
+                    {% set wna_countries = [
+                        "KOREA UTARA", "IRAN", "SURIAH", "MYANMAR", "AFGHANISTAN", "SUDAN", "KUBA",
+                        "BRITISH VIRGIN ISLAND", "CAYMAN ISLAND", "NIGERIA", "MALAYSIA", "JEPANG",
+                        "SINGAPURA", "THAILAND", "ARAB SAUDI", "UNI EMIRAT ARAB", "AMERIKA SERIKAT",
+                        "FILIPINA", "AUSTRALIA"
+                    ] %}
+                    {% for country in wna_countries %}
+                    <div>
+                        <label for="nasabah_wna_{{ country.replace(' ', '_').lower() }}" class="form-label">
+                            Jumlah Nasabah berstatus WNA - {{ country }} <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah nasabah Warga Negara Asing dari {{ country }}.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nasabah_wna_{{ country.replace(' ', '_').lower() }}" name="nasabah_wna_{{ country.replace(' ', '_').lower() }}" class="form-input" min="0" placeholder="Contoh: 0" required>
+                    </div>
+                    {% endfor %}
+                    <div>
+                        <label for="nasabah_wna_lainnya" class="form-label">
+                            Jumlah Nasabah berstatus WNA (Negara-Negara selain disebutkan diatas) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah nasabah Warga Negara Asing dari negara-negara lain yang tidak disebutkan dalam daftar.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="nasabah_wna_lainnya" name="nasabah_wna_lainnya" class="form-input" min="0" placeholder="Contoh: 50" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Perusahaan -->
+        <div class="section-group">
+            <h3 class="section-header">Data Perusahaan (per 31 Desember 2024)</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                    <div>
+                        <label for="lokasi_kantor_pusat" class="form-label">
+                            Lokasi Kotamadya Kantor Pusat <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Lokasi kota/kabupaten kantor pusat perusahaan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" id="lokasi_kantor_pusat" name="lokasi_kantor_pusat" class="form-input" placeholder="Contoh: Jakarta Pusat" required>
+                    </div>
+                    <div>
+                        <label for="jumlah_titik_layanan" class="form-label">
+                            Jumlah Titik Layanan <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Total jumlah lokasi atau cabang layanan perusahaan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" id="jumlah_titik_layanan" name="jumlah_titik_layanan" class="form-input" placeholder="Contoh: 1000 titik-Jawa Barat" required>
+                    </div>
+                    <div>
+                        <label for="jumlah_mitra_kerjasama" class="form-label">
+                            Jumlah Mitra Kerjasama <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Total jumlah mitra kerja sama yang dimiliki perusahaan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" id="jumlah_mitra_kerjasama" name="jumlah_mitra_kerjasama" class="form-input" placeholder="Contoh: 10 Mitra kerja sama Dalam Negeri" required>
+                    </div>
+                    <div>
+                        <label for="memiliki_aplikasi_website_api" class="form-label">
+                            Apakah memiliki aplikasi/website/API yang dapat digunakan oleh Pengguna Jasa? <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Pilih 'Ya' jika perusahaan memiliki sistem digital untuk pengguna jasa.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <select id="memiliki_aplikasi_website_api" name="memiliki_aplikasi_website_api" class="form-input" onchange="toggleSystemDetails()" required>
+                            <option value="">Pilih...</option>
+                            <option value="Ya">Ya</option>
+                            <option value="Tidak">Tidak</option>
+                        </select>
+                    </div>
+                    <div id="system_details_section" class="hidden tw-col-span-full">
+                        <label class="form-label">Jenis sistem yang dapat digunakan Pengguna Jasa</label>
+                        <div class="tw-flex tw-flex-wrap tw-gap-4 tw-mb-2">
+                            <div class="tw-flex tw-items-center">
+                                <input type="checkbox" id="jenis_aplikasi" name="jenis_sistem" value="Aplikasi" class="tw-h-4 tw-w-4 tw-text-blue-600 tw-border-gray-300 tw-rounded">
+                                <label for="jenis_aplikasi" class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900">Aplikasi</label>
+                            </div>
+                            <div class="tw-flex tw-items-center">
+                                <input type="checkbox" id="jenis_website" name="jenis_sistem" value="Website" class="tw-h-4 tw-w-4 tw-text-blue-600 tw-border-gray-300 tw-rounded">
+                                <label for="jenis_website" class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900">Website</label>
+                            </div>
+                            <div class="tw-flex tw-items-center">
+                                <input type="checkbox" id="jenis_api" name="jenis_sistem" value="API" class="tw-h-4 tw-w-4 tw-text-blue-600 tw-border-gray-300 tw-rounded">
+                                <label for="jenis_api" class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900">API</label>
+                            </div>
+                        </div>
+                        <label for="nama_brand_layanan" class="form-label">
+                            Jika Punya Sistem, sebutkan nama/brand layanan <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Nama atau merek layanan aplikasi/website/API perusahaan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="text" id="nama_brand_layanan" name="nama_brand_layanan" class="form-input" placeholder="Contoh: Aplikasi XYZ">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Persentase Pemegang Saham -->
+        <div class="section-group">
+            <h3 class="section-header">Persentase Pemegang Saham (per 31 Desember 2024)</h3>
+            <div class="section-content">
+                <p class="tw-text-gray-600 tw-mb-4">JANGAN GUNAKAN TITIK ATAUPUN KOMA PADA NAMA, NOMINAL, LBR SAHAM DAN PERSENTASE.</p>
+                {% set shareholder_types = ["Berbadan Hukum", "Perseorangan", "Domestik", "Asing"] %}
+                {% for type in shareholder_types %}
+                <div class="nested-section-group">
+                    <h4>Pemegang Saham {{ type }}</h4>
+                    <div id="shareholder_section_{{ type.replace(' ', '_').lower() }}">
+                        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-4 tw-mb-2 shareholder-entry">
+                            <div>
+                                <label for="nama_pemegang_saham_{{ type.replace(' ', '_').lower() }}_1" class="form-label">
+                                    Nama <span class="tw-text-red-500">*</span>
+                                    <span class="tooltip-container">
+                                        <span class="tooltip-icon" data-tooltip="Nama pemegang saham {{ type }}.">!</span>
+                                        <span class="tooltip-text"></span>
+                                    </span>
+                                </label>
+                                <input type="text" id="nama_pemegang_saham_{{ type.replace(' ', '_').lower() }}_1" name="pemegang_saham_{{ type.replace(' ', '_').lower() }}_1_nama" class="form-input" placeholder="Contoh: PT ANONIM" required>
+                            </div>
+                            <div>
+                                <label for="nominal_pemegang_saham_{{ type.replace(' ', '_').lower() }}_1" class="form-label">
+                                    Nominal <span class="tw-text-red-500">*</span>
+                                    <span class="tooltip-container">
+                                        <span class="tooltip-icon" data-tooltip="Nilai nominal saham yang dimiliki.">!</span>
+                                        <span class="tooltip-text"></span>
+                                    </span>
+                                </label>
+                                <input type="number" id="nominal_pemegang_saham_{{ type.replace(' ', '_').lower() }}_1" name="pemegang_saham_{{ type.replace(' ', '_').lower() }}_1_nominal" class="form-input" placeholder="Contoh: 20000000" required>
+                            </div>
+                            <div>
+                                <label for="lbr_saham_{{ type.replace(' ', '_').lower() }}_1" class="form-label">
+                                    Lbr Saham <span class="tw-text-red-500">*</span>
+                                    <span class="tooltip-container">
+                                        <span class="tooltip-icon" data-tooltip="Jumlah lembar saham yang dimiliki.">!</span>
+                                        <span class="tooltip-text"></span>
+                                    </span>
+                                </label>
+                                <input type="number" id="lbr_saham_{{ type.replace(' ', '_').lower() }}_1" name="pemegang_saham_{{ type.replace(' ', '_').lower() }}_1_lbr_saham" class="form-input" placeholder="Contoh: 50" required>
+                            </div>
+                            <div>
+                                <label for="persentase_pemegang_saham_{{ type.replace(' ', '_').lower() }}_1" class="form-label">
+                                    Persentase <span class="tw-text-red-500">*</span>
+                                    <span class="tooltip-container">
+                                        <span class="tooltip-icon" data-tooltip="Persentase kepemilikan saham.">!</span>
+                                        <span class="tooltip-text"></span>
+                                    </span>
+                                </label>
+                                <input type="number" id="persentase_pemegang_saham_{{ type.replace(' ', '_').lower() }}_1" name="pemegang_saham_{{ type.replace(' ', '_').lower() }}_1_persentase" class="form-input" placeholder="Contoh: 90" required>
+                            </div>
+                        </div>
+                        {% set type_id = type.replace(' ', '_').lower() %}
+                        <button type="button" onclick="addShareholderEntry('{{ type_id }}')" class="tw-mt-2 tw-px-4 tw-py-2 tw-bg-green-600 tw-text-white tw-rounded-md hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 focus:tw-ring-offset-2 tw-transition tw-duration-150 tw-ease-in-out">Tambah Data</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Data Keuangan Perusahaan -->
+        <div class="section-group">
+            <h3 class="section-header">Data Keuangan Perusahaan (per 31 Desember 2024)</h3>
+            <div class="section-content">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                    <div>
+                        <label for="total_aset" class="form-label">
+                            Total Aset <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah seluruh aset yang dimiliki perusahaan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="total_aset" name="total_aset" class="form-input" placeholder="Contoh: 5000000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="total_modal_dasar" class="form-label">
+                            Total Modal Dasar <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah modal dasar perusahaan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="total_modal_dasar" name="total_modal_dasar" class="form-input" placeholder="Contoh: 1000000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="total_modal_disetor" class="form-label">
+                            Total Modal Disetor <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah modal yang telah disetor oleh pemegang saham.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="total_modal_disetor" name="total_modal_disetor" class="form-input" placeholder="Contoh: 800000000" min="0" required>
+                    </div>
+                    <div>
+                        <label for="total_laba_bersih_setelah_pajak" class="form-label">
+                            Total Laba Bersih setelah Pajak <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Jumlah laba bersih perusahaan setelah dikurangi pajak.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="total_laba_bersih_setelah_pajak" name="total_laba_bersih_setelah_pajak" class="form-input" placeholder="Contoh: 250000000" required>
+                    </div>
+                </div>
+                <div class="tw-mt-4">
+                    <label for="jenis_bisnis_lainnya" class="form-label">
+                        Jenis Bisnis Lainnya (Menyelenggarakan lebih dari satu jenis kegiatan di bidang SP (selain Transfer Dana))
+                        <span class="tooltip-container">
+                            <span class="tooltip-icon" data-tooltip="Deskripsi jenis bisnis lain yang dijalankan perusahaan selain transfer dana.">!</span>
+                            <span class="tooltip-text"></span>
+                        </span>
+                    </label>
+                    <textarea id="jenis_bisnis_lainnya" name="jenis_bisnis_lainnya" rows="3" class="form-input" placeholder="Contoh: Nihil, atau 1. Pengiriman Barang&#10;2. Consumer Goods"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Self-Assessment Penerapan APU PPT -->
+        <div class="section-group">
+            <h3 class="section-header">Self-Assessment Penerapan APU PPT (Nilai 1-5)</h3>
+            <div class="section-content">
+                <p class="tw-text-gray-600 tw-mb-4">Penyelenggara wajib mengisi jawaban di Kolom Nilai (1-5).</p>
+                <div class="tw-mb-4">
+                    <p class="tw-font-medium tw-text-gray-700">Skala Penilaian:</p>
+                    <ul class="tw-list-disc tw-list-inside tw-text-sm tw-text-gray-600">
+                        <li><span class="tw-font-semibold">Skala 1:</span> Penyelenggara Sepenuhnya Melaksanakan Kegiatan tersebut sesuai ketentuan yang berlaku.</li>
+                        <li><span class="tw-font-semibold">Skala 2:</span> Penyelenggara melaksanakan sebagian besar kegiatan tersebut sesuai ketentuan yang berlaku.</li>
+                        <li><span class="tw-font-semibold">Skala 3:</span> Penyelenggara melaksanakan sebagian kegiatan tersebut sesuai ketentuan yang berlaku.</li>
+                        <li><span class="tw-font-semibold">Skala 4:</span> Penyelenggara melaksanakan sebagian kecil kegiatan tersebut sesuai ketentuan yang berlaku.</li>
+                        <li><span class="tw-font-semibold">Skala 5:</span> Penyelenggara Tidak Melaksanakan Kegiatan tersebut sesuai ketentuan yang berlaku.</li>
+                    </ul>
+                </div>
+
+                {% set sections = {
+                    "Tugas dan Tanggung Jawab Direksi dan Pengawasan Aktif Dewan Komisaris": [
+                        {"question": "Apakah Direksi telah menetapkan dan menyesuaikan Kebijakan dan Prosedur APU dan PPT dengan ketentuan dan perundang-undangan yang berlaku serta disetujui oleh Dewan Komisaris?", "name": "dir_kom_kebijakan"},
+                        {"question": "Apakah terdapat laporan yang disampaikan kepada Direksi yang digunakan untuk memastikan bahwa Kebijakan dan Prosedur APU dan PPT telah diterapkan secara efektif?", "name": "dir_kom_laporan_efektif"},
+                        {"question": "Apakah Direksi telah memastikan bahwa pelaporan LTKT, LTKM dan laporan lainnya ke PPATK telah dilaksanakan sesuai ketentuan?", "name": "dir_kom_pelaporan_ppatk"},
+                        {"question": "Apakah Dewan Komisaris telah mengawasi pelaksanaan tugas dan tanggung jawab Direksi terhadap penerapan APU dan PPT?", "name": "dir_kom_pengawasan"}
+                    ],
+                    "Kebijakan dan Prosedur Tertulis (KPT/SOP)": [
+                        {"question": "Terdapat kebijakan customer due diligence (CDD) dan Enhanced Due Diligence?", "name": "kpt_cdd_edd"},
+                        {"question": "Terdapat kebijakan pengelolaan data, informasi, dan dokumen?", "name": "kpt_data_info_dokumen"},
+                        {"question": "Terdapat kebijakan pelaporan transaksi mencurigakan dan laporan lainnya?", "name": "kpt_pelaporan_transaksi"},
+                        {"question": "KPT APU PPT telah dilaksanakan secara efektif?", "name": "kpt_efektivitas"},
+                        {"question": "Apakah terdapat laporan yang dapat digunakan oleh pihak yang bertanggung jawab untuk penerapan APU dan PPT untuk menilai efektivitas penerapan kebijakan dan prosedur tertulis APU dan PPT?", "name": "kpt_laporan_efektivitas"},
+                        {"question": "Apakah Penyelenggara telah melakukan pengkinian secara berkala terhadap profil nasabah dan profil transaksi?", "name": "kpt_pengkinian_profil"}
+                    ],
+                    "Proses Manajemen Risiko": [
+                        {"question": "Apakah Penyelenggara telah melakukan identifikasi dan penilaian risiko sesuai dengan pedoman RBA untuk Penyelenggara?", "name": "manajemen_risiko_identifikasi"},
+                        {"question": "Apakah Penyelenggara melakukan pengkinian terhadap hasil penerapan manajemen risiko secara berkala?", "name": "manajemen_risiko_pengkinian"},
+                        {"question": "Apakah Penyelenggara mendokumentasikan hasil penerapan manajemen risiko?", "name": "manajemen_risiko_dokumentasi"},
+                        {"question": "Apakah dapat menyediakan informasi hasil penerapan manajemen risiko kepada otoritas yang berwenang?", "name": "manajemen_risiko_informasi_otoritas"},
+                        {"question": "Apakah Penyelenggara melakukan peningkatan pengendalian dan mitigasi risiko apabila risiko terhadap kegiatannya semakin meningkat? Contoh peningkatan pengendalian dan mitigasi dapat berupa pembuatan atau perbaikan sistem, penguatan kebijakan dan/atau pengawasan internal.", "name": "manajemen_risiko_peningkatan_pengendalian"},
+                        {"question": "Apakah Penyelenggara telah mendokumentasikan DTTOT dan Daftar Pendanaan Proliferasi Senjata Pemusnah Massal yang diterima dari BI secara tertib?", "name": "manajemen_risiko_dokumentasi_dttot"},
+                        {"question": "Apakah Penyelenggara melakukan pengecekan kesamaan nama dan informasi lainnya dari calon Pengguna Jasa dan Pengguna Jasa dengan DTTOT dan Daftar Pendanaan Proliferasi Senjata Pemusnah Massal?", "name": "manajemen_risiko_pengecekan_dttot"}
+                    ],
+                    "Manajemen Sumber Daya Manusia": [
+                        {"question": "Apakah Penyelenggara telah meminta dokumen keterangan kelakukan baik dari calon pegawai pada saat proses penerimaan pegawai?", "name": "sdm_kelakuan_baik"},
+                        {"question": "Apakah Penyelenggara secara teratur dan berkesinambungan melakukan upaya untuk meningkatkan pemahaman pegawai terhadap program APU dan PPT, yang dapat dilakukan antara lain melalui diskusi, knowledge sharing, workshop, sosialisasi, seminar, e-learning melalui website PPATK, pelatihan mandiri?", "name": "sdm_peningkatan_pemahaman"}
+                    ],
+                    "Sistem Pengendalian Internal": [
+                        {"question": "Apakah Penyelenggara telah membentuk unit kerja, penetapan fungsi dan/atau menunjuk anggota Direksi/Pejabat Eksekutif yang bertanggung jawab khusus untuk penerapan APU dan PPT?", "name": "spi_unit_kerja"},
+                        {"question": "Apakah Penyelenggara telah melakukan pemisahan wewenang dan tanggung jawab antara pihak yang melaksanakan fungsi audit dengan unit bisnis/operasional?", "name": "spi_pemisahan_wewenang"},
+                        {"question": "Apakah telah dilakukan audit internal untuk menguji kepatuhan dan efektivitas penerapan APU dan PPT?", "name": "spi_audit_internal"}
+                    ]
+                } %}
+
+                {% for section_title, questions in sections.items() %}
+                <div class="nested-section-group">
+                    <h4>{{ section_title }}</h4>
+                    <div class="tw-space-y-4">
+                        {% for item in questions %}
+                        <div class="tw-border tw-border-gray-200 tw-p-3 tw-rounded-md">
+                            <p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mb-2">{{ loop.index }}. {{ item.question }}</p>
+                            <div class="radio-group-container">
+                                {% for i in range(1, 6) %}
+                                <label for="{{ item.name }}_skala_{{ i }}" class="radio-option">
+                                    <input type="radio" id="{{ item.name }}_skala_{{ i }}" name="{{ item.name }}" value="{{ i }}" class="tw-h-4 tw-w-4 tw-text-blue-600 tw-border-gray-300 tw-rounded" required>
+                                    <label for="{{ item.name }}_skala_{{ i }}" class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900">Skala {{ i }}</label>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Upload Dokumen -->
+        <div class="section-group">
+            <h3 class="section-header">Upload Dokumen</h3>
+            <div class="section-content">
+                <p class="tw-text-gray-600 tw-mb-4">Saudara diminta untuk upload dokumen berikut:</p>
+                <div class="tw-space-y-4">
+                    <div>
+                        <label for="dokumen_form_risiko" class="form-label">
+                            1. Dokumen Form Risiko (Format penamaan file: Nama PT Form Risiko) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Unggah dokumen formulir risiko dalam format PDF.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <div class="file-input-container">
+                            <input type="file" id="dokumen_form_risiko" name="dokumen_form_risiko" accept=".pdf" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="dokumen_kertas_kerja_self_assesment" class="form-label">
+                            2. Dokumen Kertas Kerja Self Assesment (Format penamaan file: Nama PT Kertas Kerja Self Assesment) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Unggah dokumen kertas kerja self-assessment dalam format PDF.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <div class="file-input-container">
+                            <input type="file" id="dokumen_kertas_kerja_self_assesment" name="dokumen_kertas_kerja_self_assesment" accept=".pdf" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="dokumen_surat_pernyataan_keabsahan" class="form-label">
+                            3. Surat Pernyataan Keabsahan Data (Format penamaan file: Nama PT Surat Pernyataan Keabsahan Data) <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Unggah surat pernyataan keabsahan data dalam format PDF.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <div class="file-input-container">
+                            <input type="file" id="dokumen_surat_pernyataan_keabsahan" name="dokumen_surat_pernyataan_keabsahan" accept=".pdf" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pernyataan Penyampaian Data dan Informasi -->
+        <div class="section-group">
+            <h3 class="section-header">Pernyataan Penyampaian Data dan Informasi</h3>
+            <div class="section-content">
+                <p class="tw-text-gray-800 tw-mb-4">Sehubungan dengan permintaan data dan informasi atau data Form Risiko APU PPT dan Kertas Kerja Self Assesment penerapan APU PPT, dengan ini saya mewakili Perusahaan menyatakan data dan informasi pada isian tersebut dengan lengkap dan benar. Dalam hal terdapat perubahan, maka saya, mewakili perusahaan akan melakukan update data dan informasi tersebut.</p>
+                <div class="tw-flex tw-items-center">
+                    <input type="checkbox" id="pernyataan_setuju" name="pernyataan_setuju" class="tw-h-4 tw-w-4 tw-text-blue-600 tw-border-gray-300 tw-rounded" required>
+                    <label for="pernyataan_setuju" class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900">Ya, pernyataan tersebut telah saya baca dan setujui.</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
+            <button type="button" onclick="window.history.back()" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105">
+                Batal
+            </button>
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+                <span class="submit-text">Kirim Laporan</span>
+                <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="d-none">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<!-- Message Box Backdrop -->
+<div id="messageBoxBackdrop" class="d-none"></div>
+
+<!-- Dynamic Message Box (Pop-up) -->
+<div id="dynamicMessageBox" class="d-none">
+    <div id="messageBoxIcon" class="icon-container"></div>
+    <p id="messageBoxContent"></p>
+    <button id="messageBoxOkButton" class="ok-button d-none">Oke</button>
+</div>
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('rbaApuPptForm');
+        const submitButton = document.getElementById('submitButton');
+        const submitText = submitButton.querySelector('.submit-text');
+        const submitSpinner = submitButton.querySelector('.spinner-border');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const messageBoxBackdrop = document.getElementById('messageBoxBackdrop');
+        const dynamicMessageBox = document.getElementById('dynamicMessageBox');
+        const messageBoxContent = document.getElementById('messageBoxContent');
+        const messageBoxIcon = document.getElementById('messageBoxIcon');
+        const messageBoxOkButton = document.getElementById('messageBoxOkButton');
+
+        // Tambahkan flag untuk mencegah pengiriman ganda
+        let isSubmitting = false;
+
+        // Event listener for the "Oke" button to close the message box
+        messageBoxOkButton.addEventListener('click', () => {
+            dynamicMessageBox.classList.add('d-none');
+            messageBoxBackdrop.classList.add('d-none');
+        });
+
+        /**
+         * Menampilkan kotak pesan kustom dengan pesan dan tipe (sukses/error) tertentu.
+         * @param {string} message - Pesan yang akan ditampilkan.
+         * @param {'success'|'error'} type - Tipe pesan ('success' atau 'error').
+         */
+        function showMessageBox(message, type) {
+            messageBoxContent.textContent = message;
+            dynamicMessageBox.classList.remove('success', 'error'); // Hapus kelas tipe sebelumnya
+            messageBoxIcon.innerHTML = ''; // Hapus ikon sebelumnya
+            messageBoxOkButton.classList.add('d-none'); // Sembunyikan tombol OK secara default
+            messageBoxBackdrop.classList.remove('d-none'); // Tampilkan latar belakang
+
+            if (type === 'success') {
+                dynamicMessageBox.classList.add('success');
+                messageBoxIcon.innerHTML = '&#10003;'; // Ikon centang
+                messageBoxOkButton.classList.remove('d-none'); // Tampilkan tombol OK untuk sukses
+            } else if (type === 'error') {
+                dynamicMessageBox.classList.add('error');
+                messageBoxIcon.innerHTML = '&#x2716;'; // Ikon silang
+                messageBoxOkButton.classList.remove('d-none'); // Tampilkan tombol OK untuk error (pengguna menutup secara manual)
+                // Untuk error, akan otomatis sembunyi setelah 5 detik jika tombol OK tidak diklik
+                setTimeout(() => {
+                    if (!dynamicMessageBox.classList.contains('d-none')) { // Hanya sembunyikan jika belum disembunyikan secara manual
+                        dynamicMessageBox.classList.add('d-none');
+                        messageBoxBackdrop.classList.add('d-none');
+                    }
+                }, 5000);
+            }
+            dynamicMessageBox.classList.remove('d-none'); // Tampilkan kotak pesan
+        }
+
+        // Function to toggle system details section visibility
+        window.toggleSystemDetails = function() {
+            const selectElement = document.getElementById('memiliki_aplikasi_website_api');
+            const systemDetailsSection = document.getElementById('system_details_section');
+            if (selectElement.value === 'Ya') {
+                systemDetailsSection.classList.remove('hidden');
+            } else {
+                systemDetailsSection.classList.add('hidden');
+                // Uncheck all checkboxes and clear text input when hidden
+                document.querySelectorAll('#system_details_section input[type="checkbox"]').forEach(cb => cb.checked = false);
+                document.getElementById('nama_brand_layanan').value = '';
+            }
+        }
+
+        // Function to add new shareholder entry
+        window.addShareholderEntry = function(type) {
+            const container = document.getElementById(`shareholder_section_${type}`);
+            const entryCount = container.querySelectorAll('.shareholder-entry').length + 1;
+            const newEntry = document.createElement('div');
+            newEntry.classList.add('tw-grid', 'tw-grid-cols-1', 'md:tw-grid-cols-2', 'lg:tw-grid-cols-4', 'tw-gap-4', 'tw-mb-2', 'shareholder-entry');
+            newEntry.innerHTML = `
+                <div>
+                    <label for="nama_pemegang_saham_${type}_${entryCount}" class="form-label">Nama <span class="tw-text-red-500">*</span></label>
+                    <input type="text" id="nama_pemegang_saham_${type}_${entryCount}" name="pemegang_saham_${type}_${entryCount}_nama" class="form-input" placeholder="Contoh: PT ANONIM" required>
+                </div>
+                <div>
+                    <label for="nominal_pemegang_saham_${type}_${entryCount}" class="form-label">Nominal <span class="tw-text-red-500">*</span></label>
+                    <input type="number" id="nominal_pemegang_saham_${type}_${entryCount}" name="pemegang_saham_${type}_${entryCount}_nominal" class="form-input" placeholder="Contoh: 20000000" required>
+                </div>
+                <div>
+                    <label for="lbr_saham_${type}_${entryCount}" class="form-label">Lbr Saham <span class="tw-text-red-500">*</span></label>
+                    <input type="number" id="lbr_saham_${type}_${entryCount}" name="pemegang_saham_${type}_${entryCount}_lbr_saham" class="form-input" placeholder="Contoh: 50" required>
+                </div>
+                <div>
+                    <label for="persentase_pemegang_saham_${type}_${entryCount}" class="form-label">Persentase <span class="tw-text-red-500">*</span></label>
+                    <input type="number" id="persentase_pemegang_saham_${type}_${entryCount}" name="pemegang_saham_${type}_${entryCount}_persentase" class="form-input" placeholder="Contoh: 90" required>
+                </div>
+            `;
+            container.insertBefore(newEntry, container.querySelector('button'));
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            if (isSubmitting) {
+                console.log("Form already submitting, preventing double click.");
+                return;
+            }
+            isSubmitting = true; // Set flag to true
+
+            let formIsValid = true;
+
+            // Client-side validation for required fields (basic check)
+            form.querySelectorAll('[required]').forEach(input => {
+                if (!input.value) {
+                    formIsValid = false;
+                    input.classList.add('border-red-500'); // Highlight invalid fields
+                } else {
+                    input.classList.remove('border-red-500');
+                }
+            });
+
+            // Specific validation for 'memiliki_aplikasi_website_api' and its dependent fields
+            const memilikiAplikasiSelect = document.getElementById('memiliki_aplikasi_website_api');
+            if (memilikiAplikasiSelect.value === 'Ya') {
+                const jenisSistemCheckboxes = document.querySelectorAll('#system_details_section input[name="jenis_sistem"]:checked');
+                const namaBrandLayananInput = document.getElementById('nama_brand_layanan');
+
+                if (jenisSistemCheckboxes.length === 0) {
+                    showMessageBox('Jika memiliki aplikasi/website/API, setidaknya satu jenis sistem harus dipilih.', 'error');
+                    formIsValid = false;
+                }
+                if (!namaBrandLayananInput.value) {
+                    namaBrandLayananInput.classList.add('border-red-500');
+                    showMessageBox('Jika memiliki sistem, nama/brand layanan harus diisi.', 'error');
+                    formIsValid = false;
+                } else {
+                    namaBrandLayananInput.classList.remove('border-red-500');
+                }
+            }
+
+            if (!formIsValid) {
+                showMessageBox('Harap lengkapi semua bidang yang wajib diisi.', 'error');
+                isSubmitting = false; // Reset flag if form is invalid
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitText.textContent = 'Mengirim...';
+            submitSpinner.classList.remove('d-none');
+            loadingOverlay.classList.remove('d-none');
+
+            const formData = new FormData(this);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                isSubmitting = false; // Reset flag after fetch completes
+                submitButton.disabled = false;
+                submitText.textContent = 'Kirim Laporan';
+                submitSpinner.classList.add('d-none');
+                loadingOverlay.classList.add('d-none');
+
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message || JSON.stringify(errorData) || 'Gagal mengirim laporan (status non-2xx)');
+                    }).catch(jsonError => {
+                        console.error("Error parsing JSON from non-OK response:", jsonError);
+                        return response.text().then(text => {
+                            throw new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
+                        });
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
+                    form.reset();
+                    // Re-hide system details section after form reset
+                    document.getElementById('system_details_section').classList.add('hidden');
+                } else {
+                    showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                isSubmitting = false; // Reset flag on error
+                submitButton.disabled = false;
+                submitText.textContent = 'Kirim Laporan';
+                loadingOverlay.classList.add('d-none');
+                showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server.', 'error');
+            });
+        });
+
+        // Tooltip functionality
+        const tooltipContainers = document.querySelectorAll('.tooltip-container');
+        tooltipContainers.forEach(container => {
+            const tooltipIcon = container.querySelector('.tooltip-icon');
+            const tooltipText = container.querySelector('.tooltip-text');
+            const tooltipContent = tooltipIcon.getAttribute('data-tooltip');
+
+            if (tooltipContent) {
+                tooltipText.textContent = tooltipContent;
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}
