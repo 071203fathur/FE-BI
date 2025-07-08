@@ -29,102 +29,102 @@
 
     .d-none { display: none !important; }
 
-    /* Section styling */
+    /* Section styling - compact */
     .section-group {
         background-color: #ffffff;
         border: 1px solid #e5e7eb;
         border-radius: 12px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         padding: 0;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem; /* Reduced margin */
         overflow: hidden;
     }
 
     .section-group .section-header {
-        font-size: 1.25rem;
+        font-size: 1.15rem; /* Smaller header */
         font-weight: 700;
         color: #1f2937;
         background-color: #eef2f6;
-        padding: 1rem 1.5rem;
-        margin: 0 -1px 1rem -1px;
+        padding: 0.8rem 1.5rem; /* Reduced padding */
+        margin: 0 -1px 0.8rem -1px; /* Reduced margin */
         border-bottom: 1px solid #e0e7eb;
         border-top-left-radius: 11px;
         border-top-right-radius: 11px;
     }
 
     .section-group .section-content {
-        padding: 1.5rem;
+        padding: 1.2rem; /* Reduced padding */
         padding-top: 0;
     }
 
-    /* Form elements */
+    /* Form elements - compact */
     .form-label {
-        font-size: 1.05rem;
+        font-size: 0.95rem; /* Smaller labels */
         font-weight: 600;
         color: #374151;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.3rem; /* Reduced margin */
         display: flex; /* Make label a flex container */
         align-items: center; /* Align items vertically */
     }
 
     .form-input {
-        font-size: 1rem;
-        padding: 1rem;
+        font-size: 0.9rem; /* Smaller font */
+        padding: 0.7rem 1rem; /* Reduced padding */
         width: 100%;
         border: 1px solid #d1d5db;
-        border-radius: 10px;
+        border-radius: 8px; /* Slightly rounder corners */
         color: #4b5563;
         transition: all 0.2s ease;
-        min-height: 50px;
+        min-height: 40px; /* Reduced minimum height */
         box-sizing: border-box;
     }
 
     /* Date inputs */
     input[type="date"].form-input {
-        font-size: 1rem;
-        padding: 1rem;
-        min-height: 50px;
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+        min-height: 40px;
         appearance: none;
         background-color: white;
     }
 
     /* Select dropdowns */
     select.form-input {
-        font-size: 1rem;
-        padding: 1rem;
-        min-height: 50px;
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+        min-height: 40px;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 16px 12px;
-        padding-right: 2.5rem;
+        background-position: right 0.8rem center; /* Adjusted position */
+        background-size: 14px 10px; /* Adjusted size */
+        padding-right: 2.2rem; /* Adjusted padding */
     }
 
     /* File input */
     .file-input-container {
-        margin-top: 0.5rem;
+        margin-top: 0.3rem; /* Reduced margin */
     }
     
     .file-input-container input[type="file"] {
-        font-size: 1rem;
-        padding: 1rem;
+        font-size: 0.9rem; /* Smaller font */
+        padding: 0.7rem 1rem; /* Reduced padding */
     }
 
-    /* Nested sections */
+    /* Nested sections - compact */
     .nested-section-group {
         border: 1px solid #e5e7eb;
         border-radius: 10px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
+        padding: 1rem; /* Reduced padding */
+        margin-bottom: 1rem; /* Reduced margin */
         background-color: #f9fafb;
     }
 
     .nested-section-group h4 {
-        font-size: 1.1rem;
+        font-size: 1rem; /* Smaller font size */
         font-weight: 600;
         color: #1f2937;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
+        margin-bottom: 0.8rem; /* Reduced margin */
+        padding-bottom: 0.4rem; /* Reduced padding */
         border-bottom: 1px solid #e5e7eb;
     }
 
@@ -145,7 +145,38 @@
         }
     }
 
-    /* Styles for the loading overlay */
+    /* Styles for buttons - compact */
+    .btn {
+        font-size: 0.95rem;
+        padding: 0.8rem 1.2rem; /* Reduced padding */
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background-color: #4f46e5;
+        color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #4338ca;
+        transform: translateY(-1px);
+    }
+
+    /* Adjust gap for grid layouts */
+    .tw-gap-4 {
+        gap: 0.75rem; /* Reduced gap */
+    }
+    .tw-gap-x-6 {
+        column-gap: 1.5rem; /* Reduced column gap */
+    }
+    .tw-gap-y-2 {
+        row-gap: 0.5rem; /* Reduced row gap */
+    }
+
+    /* Styles for the loading overlay (kept consistent) */
     #loadingOverlay {
         position: fixed;
         top: 0;
@@ -203,14 +234,14 @@
     }
 
     #dynamicMessageBox.success {
-        background-color: #d4edda; /* Light green */
-        color: #155724; /* Dark green text */
+        background-color: #d4edda;
+        color: #155724;
         border: 1px solid #c3e6cb;
     }
 
     #dynamicMessageBox.error {
-        background-color: #f8d7da; /* Light red */
-        color: #721c24; /* Dark red text */
+        background-color: #f8d7da;
+        color: #721c24;
         border: 1px solid #f5c6cb;
     }
 
@@ -247,20 +278,20 @@
         background-color: #45a049;
     }
 
-    /* Tooltip styles */
+    /* Tooltip styles - compact */
     .tooltip-container {
         position: relative;
         display: inline-block;
-        margin-left: 0.5rem; /* Space between label and icon */
+        margin-left: 0.3rem; /* Reduced space between label and icon */
     }
 
     .tooltip-icon {
-        width: 16px; /* Reduced from 18px */
-        height: 16px; /* Reduced from 18px */
+        width: 14px; /* Reduced size */
+        height: 14px; /* Reduced size */
         border-radius: 50%;
         background-color: #6366f1; /* Indigo color */
         color: white;
-        font-size: 0.7rem; /* Reduced from 0.8rem */
+        font-size: 0.65rem; /* Reduced font size */
         font-weight: bold;
         display: flex;
         justify-content: center;
@@ -275,22 +306,22 @@
 
     .tooltip-text {
         visibility: hidden;
-        width: 250px; /* Adjust width as needed */
+        width: 220px; /* Reduced width */
         background-color: #333;
         color: #fff;
         text-align: center;
         border-radius: 6px;
-        padding: 10px;
+        padding: 8px; /* Reduced padding */
         position: absolute;
         z-index: 1;
-        bottom: 125%; /* Position above the icon */
+        bottom: 120%; /* Position above the icon */
         left: 50%;
-        margin-left: -125px; /* Center the tooltip */
+        margin-left: -110px; /* Center the tooltip */
         opacity: 0;
         transition: opacity 0.3s, visibility 0.3s;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        font-size: 0.85rem; /* Reduced font size */
+        line-height: 1.3; /* Reduced line height */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* Reduced shadow */
     }
 
     .tooltip-text::after {
@@ -312,19 +343,19 @@
 {% endblock %}
 
 {% block content %}
-<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6">
-    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-4">
+    <h2 class="tw-text-2xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-3 tw-mb-4">
         Laporan Keuangan Tahunan
     </h2>
 
-    <form id="tahunanForm" action="{{ url_for('submit_laporan_keuangan_tahunan') }}" method="POST" enctype="multipart/form-data" class="tw-space-y-6">
+    <form id="tahunanForm" action="{{ url_for('submit_laporan_keuangan_tahunan') }}" method="POST" enctype="multipart/form-data" class="tw-space-y-4">
         
         <!-- Informasi Umum Laporan Section -->
         <div class="section-group">
             <h3 class="section-header">Informasi Umum Laporan</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                    <div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-space-y-1">
                         <label for="tahun_laporan" class="form-label">
                             Tahun Laporan <span class="tw-text-red-500">*</span>
                             <span class="tooltip-container">
@@ -340,8 +371,6 @@
                         </select>
                     </div>
                     
-                    <!-- Periode Laporan (Tahunan) - Dihapus sesuai permintaan -->
-                    
                     <div>
                         <label for="nomor_surat" class="form-label">
                             Nomor Surat <span class="tw-text-red-500">*</span>
@@ -353,7 +382,7 @@
                         <input type="text" class="form-input" id="nomor_surat" name="nomor_surat" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="tanggal_surat" class="form-label">
                             Tanggal Surat <span class="tw-text-red-500">*</span>
                             <span class="tooltip-container">
@@ -364,7 +393,7 @@
                         <input type="date" class="form-input" id="tanggal_surat" name="tanggal_surat" required>
                     </div>
                     
-                    <div class="md:tw-col-span-2">
+                    <div class="md:tw-col-span-2 tw-space-y-1">
                         <label for="file" class="form-label">
                             Upload Laporan Keuangan (PDF) <span class="tw-text-red-500">*</span>
                             <span class="tooltip-container">
@@ -373,10 +402,10 @@
                             </span>
                         </label>
                         <div class="file-input-container">
-                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
+                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-3 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
                                         id="file" name="file" accept=".pdf" required>
                         </div>
-                        <p class="tw-text-sm tw-text-gray-500 tw-mt-2">Format: PDF (Maks. 5MB)</p>
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF (Maks. 5MB)</p>
                     </div>
                 </div>
             </div>
@@ -386,9 +415,8 @@
         <div class="section-group">
             <h3 class="section-header">Informasi Auditor</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                    <!-- Modal Disetor dipindahkan ke sini -->
-                    <div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-space-y-1">
                         <label for="modal_disetor" class="form-label">
                             Modal Disetor (Rp) <span class="tw-text-red-500">*</span>
                             <span class="tooltip-container">
@@ -399,7 +427,7 @@
                         <input type="number" class="form-input" id="modal_disetor" name="modal_disetor" min="0" required>
                     </div>
 
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="jenis_audit" class="form-label">
                             Jenis Audit <span class="tw-text-red-500">*</span>
                             <span class="tooltip-container">
@@ -415,8 +443,8 @@
                     </div>
                     
                     <!-- Auditor fields, visibility controlled by JS -->
-                    <div id="auditorFields" class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 md:tw-col-span-2" style="display: none;">
-                        <div>
+                    <div id="auditorFields" class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2 md:tw-col-span-2" style="display: none;">
+                        <div class="tw-space-y-1">
                             <label for="nama_kap" class="form-label">
                                 Nama Kantor Akuntan Publik (KAP) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -426,7 +454,7 @@
                             </label>
                             <input type="text" class="form-input" id="nama_kap" name="nama_kap" required>
                         </div>
-                        <div>
+                        <div class="tw-space-y-1">
                             <label for="tanggal_opini" class="form-label">
                                 Tanggal Opini Auditor <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -436,7 +464,7 @@
                             </label>
                             <input type="date" class="form-input" id="tanggal_opini" name="tanggal_opini" required>
                         </div>
-                        <div class="md:tw-col-span-2">
+                        <div class="md:tw-col-span-2 tw-space-y-1">
                             <label for="opini_auditor" class="form-label">
                                 Opini Auditor <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -459,8 +487,8 @@
                 <!-- Aset -->
                 <div class="nested-section-group">
                     <h4>Aset</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                        <div>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                        <div class="tw-space-y-1">
                             <label for="aset_lancar" class="form-label">
                                 Aset Lancar (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -471,7 +499,7 @@
                             <input type="number" class="form-input" id="aset_lancar" name="aset_lancar" min="0" required>
                         </div>
                         
-                        <div>
+                        <div class="tw-space-y-1">
                             <label for="kas_dan_setara_kas" class="form-label">
                                 Kas dan Setara Kas (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -482,7 +510,7 @@
                             <input type="number" class="form-input" id="kas_dan_setara_kas" name="kas_dan_setara_kas" min="0" required>
                         </div>
                         
-                        <div class="md:tw-col-span-2">
+                        <div class="md:tw-col-span-2 tw-space-y-1">
                             <label for="aset_tetap" class="form-label">
                                 Aset Tetap (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -493,7 +521,7 @@
                             <input type="number" class="form-input" id="aset_tetap" name="aset_tetap" min="0" required>
                         </div>
                         
-                        <div class="md:tw-col-span-2">
+                        <div class="md:tw-col-span-2 tw-space-y-1">
                             <label for="total_aset" class="form-label">
                                 Total Aset (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -509,8 +537,8 @@
                 <!-- Hutang -->
                 <div class="nested-section-group">
                     <h4>Hutang</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                        <div>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                        <div class="tw-space-y-1">
                             <label for="hutang_jangka_pendek" class="form-label">
                                 Hutang Jangka Pendek (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -521,7 +549,7 @@
                             <input type="number" class="form-input" id="hutang_jangka_pendek" name="hutang_jangka_pendek" min="0" required>
                         </div>
                         
-                        <div>
+                        <div class="tw-space-y-1">
                             <label for="hutang_jangka_panjang" class="form-label">
                                 Hutang Jangka Panjang (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -532,7 +560,7 @@
                             <input type="number" class="form-input" id="hutang_jangka_panjang" name="hutang_jangka_panjang" min="0" required>
                         </div>
                         
-                        <div class="md:tw-col-span-2">
+                        <div class="md:tw-col-span-2 tw-space-y-1">
                             <label for="total_hutang" class="form-label">
                                 Total Hutang (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -548,8 +576,8 @@
                 <!-- Modal & Ekuitas -->
                 <div class="nested-section-group">
                     <h4>Modal & Ekuitas</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                        <div>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                        <div class="tw-space-y-1">
                             <label for="modal_dasar" class="form-label">
                                 Modal Dasar (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -560,9 +588,7 @@
                             <input type="number" class="form-input" id="modal_dasar" name="modal_dasar" min="0" required>
                         </div>
                         
-                        <!-- Modal Disetor dipindahkan ke bagian Informasi Auditor -->
-                        
-                        <div class="md:tw-col-span-2">
+                        <div class="md:tw-col-span-2 tw-space-y-1">
                             <label for="total_ekuitas" class="form-label">
                                 Total Ekuitas (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -578,8 +604,8 @@
                 <!-- Pendapatan & Beban -->
                 <div class="nested-section-group">
                     <h4>Pendapatan & Beban</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                        <div>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                        <div class="tw-space-y-1">
                             <label for="total_pendapatan" class="form-label">
                                 Total Pendapatan (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -590,7 +616,7 @@
                             <input type="number" class="form-input" id="total_pendapatan" name="total_pendapatan" min="0" required>
                         </div>
                         
-                        <div>
+                        <div class="tw-space-y-1">
                             <label for="pendapatan_fee" class="form-label">
                                 Pendapatan Fee (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -601,7 +627,7 @@
                             <input type="number" class="form-input" id="pendapatan_fee" name="pendapatan_fee" min="0" required>
                         </div>
                         
-                        <div>
+                        <div class="tw-space-y-1">
                             <label for="total_beban" class="form-label">
                                 Total Beban (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -612,7 +638,7 @@
                             <input type="number" class="form-input" id="total_beban" name="total_beban" min="0" required>
                         </div>
                         
-                        <div>
+                        <div class="tw-space-y-1">
                             <label for="beban_operasional" class="form-label">
                                 Beban Operasional (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -628,8 +654,8 @@
                 <!-- Laba/Rugi -->
                 <div class="nested-section-group">
                     <h4>Laba / Rugi Bersih</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                        <div>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                        <div class="tw-space-y-1">
                             <label for="laba" class="form-label">
                                 Laba (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -640,7 +666,7 @@
                             <input type="number" class="form-input" id="laba" name="laba" min="0" required>
                         </div>
                         
-                        <div>
+                        <div class="tw-space-y-1">
                             <label for="rugi" class="form-label">
                                 Rugi (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
@@ -656,13 +682,13 @@
         </div>
 
         <!-- Form Actions -->
-        <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
-            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+        <div class="tw-flex tw-justify-end tw-gap-3 tw-pt-4">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
                 <span class="submit-text">Kirim Laporan</span>
                 <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
             </button>
             
-            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">
                 Batal
             </button>
         </div>

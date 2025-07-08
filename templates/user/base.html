@@ -243,7 +243,6 @@
                         <div class="tw-py-1" role="none">
                             <a href="{{ url_for('form_laporan_fraud') }}" class="dropdown-menu-item" role="menuitem">Laporan Fraud</a>
                             <a href="{{ url_for('form_laporan_dana_bukan_bank') }}" class="dropdown-menu-item" role="menuitem">Laporan Transaksi Dana Bukan Bank (LTDBB)</a>
-                            <a href="{{ url_for('form_laporan_gangguanit') }}" class="dropdown-menu-item" role="menuitem">Laporan Gangguan IT</a>
                             <a href="{{ url_for('form_laporan_p2p') }}" class="dropdown-menu-item" role="menuitem">Laporan Kerjasama P2P</a>
                             <a href="{{ url_for('form_laporan_dttot') }}" class="dropdown-menu-item" role="menuitem">Laporan DTTOT</a>
                         </div>
@@ -275,16 +274,16 @@
                     <div class="tw-origin-top-right tw-absolute tw-left-0 tw-mt-2 tw-w-80 dropdown-menu-container tw-hidden" role="menu" aria-orientation="vertical" aria-labelledby="laporanTahunanDropdown">
                         <div class="tw-py-1" role="none">
                             <a href="{{ url_for('form_laporan_keuangan_tahunan') }}" class="dropdown-menu-item" role="menuitem">Laporan Keuangan Tahunan</a>
-                            <a href="{{ url_for('form_laporan_apuppt') }}" class="dropdown-menu-item" role="menuitem">Laporan APU PPT</a>
+                            <!-- <a href="{{ url_for('form_laporan_apuppt') }}" class="dropdown-menu-item" role="menuitem">Laporan APU PPT</a> -->
                             <!-- <a href="{{ url_for('form_laporan_rencana_edukasi_publik') }}" class="dropdown-menu-item" role="menuitem">Laporan Rencana Edukasi Publik</a>
                             <a href="{{ url_for('form_laporan_pelaksanaan_edukasi_publik') }}" class="dropdown-menu-item" role="menuitem">Laporan Pelaksanaan Edukasi Publik</a> -->
                             <a href="{{ url_for('form_laporan_manajemen') }}" class="dropdown-menu-item" role="menuitem">Laporan Manajemen & Hasil Pengawasan Dewan Komisaris</a>
                             <a href="{{ url_for('form_laporan_auditsi') }}" class="dropdown-menu-item" role="menuitem">Laporan Audit Sistem Informasi</a>
                             <a href="{{ url_for('form_laporan_pelaksanaan_pengujian_keamanan') }}" class="dropdown-menu-item" role="menuitem">Laporan Pengujian Keamanan (Penetration Test)</a>
                             <!-- <a href="{{ url_for('form_laporan_sksp_tahunan') }}" class="dropdown-menu-item" role="menuitem">Laporan SKSP Tahunan</a> -->
-                            <a href="{{ url_for('form_laporan_kpsp') }}" class="dropdown-menu-item" role="menuitem">Laporan Perhitungan KPSP</a>
-                            <a href="{{ url_for('form_laporan_tahunan_sp') }}" class="dropdown-menu-item" role="menuitem">Laporan Tahunan Sistem Pembayaran</a>
-                            <a href="{{ url_for('laporan_rba_apu_ppt') }}" class="dropdown-menu-item" role="menuitem">Laporan RBA APU PPT</a> {# New entry for RBA APU PPT #}
+                            <!-- <a href="{{ url_for('form_laporan_kpsp') }}" class="dropdown-menu-item" role="menuitem">Laporan Perhitungan KPSP</a> -->
+                            <!-- <a href="{{ url_for('form_laporan_tahunan_sp') }}" class="dropdown-menu-item" role="menuitem">Laporan Tahunan Sistem Pembayaran</a> -->
+                            <!-- <a href="{{ url_for('laporan_rba_apu_ppt') }}" class="dropdown-menu-item" role="menuitem">Laporan RBA APU PPT</a> {# New entry for RBA APU PPT #} -->
                         </div>
                     </div>
                 </div>
@@ -293,7 +292,7 @@
             {# Grup Kanan: Profil dan Logout #}
             <div class="tw-hidden md:tw-flex md:tw-items-center tw-space-x-6"> {# Tidak perlu tw-ml-auto di sini lagi #}
                 <!-- Tombol Profil -->
-                <a href="{{ url_for('user_profile') }}" class="tw-text-biBlueDark hover:tw-text-biBlueMedium tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-transition-colors tw-duration-200">Profil</a>
+                <a href="{{ url_for('user_profile') }}" class="dropdown-toggle-button" style="text-decoration: none;">Profil</a>
                 <button type="button" class="tw-bg-biRed hover:tw-bg-red-600 tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-transition-colors tw-duration-200 tw-shadow-md" id="logoutButton">Logout</button>
             </div>
 

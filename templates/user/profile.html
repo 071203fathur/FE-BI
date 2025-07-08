@@ -2,29 +2,300 @@
 
 {% block title %}Profil Pengguna{% endblock %}
 
+{% block extra_head %}
+<style>
+    /* Custom styles for the profile page to enhance UI */
+    .profile-card {
+        background-color: white;
+        border-radius: 1rem; /* More rounded corners */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Stronger, softer shadow */
+        padding: 2.5rem; /* Increased padding */
+        max-width: 800px; /* Max width for better readability */
+        margin: 2rem auto; /* Center the card with margin */
+        animation: fadeIn 0.5s ease-out forwards; /* Simple fade-in animation */
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-section-header {
+        border-bottom: 2px solid #E0F2F7; /* biBlueBg for a subtle separator */
+        padding-bottom: 0.75rem;
+        margin-bottom: 1.5rem;
+        color: #003366; /* biBlueDark */
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.75rem 1rem;
+        background-color: #F9FAFB; /* biBgLight */
+        border-left: 4px solid #0056b3; /* biBlueMedium accent */
+        border-radius: 0.5rem;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .info-item:hover {
+        transform: translateX(5px); /* Slight hover effect */
+    }
+
+    .info-label {
+        font-weight: 600; /* Semi-bold */
+        color: #4B5563; /* biGrayText */
+        width: 150px; /* Fixed width for labels for alignment */
+        flex-shrink: 0;
+    }
+
+    .info-value {
+        color: #1f2937; /* Darker text for values */
+        flex-grow: 1;
+        word-wrap: break-word; /* Ensure long text wraps */
+    }
+
+    /* Style for input fields in edit mode */
+    .info-value-input {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #D1D5DB; /* biBorderGray */
+        border-radius: 0.375rem;
+        font-size: 1rem;
+        color: #1f2937;
+        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .info-value-input:focus {
+        outline: none;
+        border-color: #0056b3; /* biBlueMedium */
+        box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
+    }
+
+    .edit-button {
+        display: inline-block;
+        padding: 0.9rem 2.2rem; /* Larger padding for button */
+        background-color: #0056b3; /* biBlueMedium */
+        color: white;
+        border-radius: 0.75rem; /* More rounded button */
+        font-weight: 600;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 5px 15px rgba(0, 86, 179, 0.2); /* Shadow for button */
+        text-decoration: none; /* Remove underline for link */
+        border: none; /* Remove default button border */
+        cursor: pointer; /* Indicate clickable */
+    }
+
+    .edit-button:hover {
+        background-color: #003366; /* biBlueDark on hover */
+        transform: translateY(-2px); /* Lift effect on hover */
+        box-shadow: 0 8px 20px rgba(0, 86, 179, 0.3);
+    }
+
+    .edit-button.cancel {
+        background-color: #6B7280; /* Gray for cancel button */
+        box-shadow: 0 5px 15px rgba(107, 114, 128, 0.2);
+    }
+
+    .edit-button.cancel:hover {
+        background-color: #4B5563; /* Darker gray on hover */
+        box-shadow: 0 8px 20px rgba(107, 114, 128, 0.3);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="tw-container tw-mx-auto tw-p-6 tw-bg-white tw-rounded-lg tw-shadow-md">
-    <h2 class="tw-text-2xl tw-font-bold tw-text-biBlueDark tw-mb-6">Profil Pengguna</h2>
+<div class="profile-card">
+    <h2 class="tw-text-3xl tw-font-extrabold tw-text-biBlueDark tw-mb-8 tw-text-center profile-section-header">
+        Profil Pengguna
+    </h2>
 
-    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
-        <div class="tw-bg-gray-50 tw-p-4 tw-rounded-md tw-border tw-border-gray-200">
-            <h3 class="tw-text-lg tw-font-semibold tw-text-gray-800 tw-mb-2">Informasi Dasar</h3>
-            <p class="tw-text-gray-700"><span class="tw-font-medium">Nama:</span> [Nama Pengguna]</p>
-            <p class="tw-text-gray-700"><span class="tw-font-medium">Email:</span> [Email Pengguna]</p>
-            <p class="tw-text-gray-700"><span class="tw-font-medium">Jabatan:</span> [Jabatan Pengguna]</p>
+    <form id="profileForm">
+        <div class="tw-space-y-6">
+            <div class="info-item">
+                <span class="info-label">Nama PJP:</span>
+                <span id="nama_pjp_display" class="info-value"></span>
+                <input type="text" id="nama_pjp_input" class="info-value-input tw-hidden" />
+            </div>
+            <div class="info-item">
+                <span class="info-label">Sandi PJP:</span>
+                <span id="sandi_pjp_display" class="info-value"></span>
+                <input type="text" id="sandi_pjp_input" class="info-value-input tw-hidden" />
+            </div>
+            <div class="info-item">
+                <span class="info-label">Nomor Keputusan:</span>
+                <span id="nomor_keputusan_display" class="info-value"></span>
+                <input type="text" id="nomor_keputusan_input" class="info-value-input tw-hidden" />
+            </div>
+            <div class="info-item">
+                <span class="info-label">Email PIC:</span>
+                <span id="email_pic_display" class="info-value"></span>
+                <input type="email" id="email_pic_input" class="info-value-input tw-hidden" />
+            </div>
+            <div class="info-item">
+                <span class="info-label">Alamat:</span>
+                <span id="alamat_display" class="info-value"></span>
+                <textarea id="alamat_input" class="info-value-input tw-hidden" rows="3"></textarea>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Website:</span>
+                <span id="website_display" class="info-value"></span>
+                <input type="url" id="website_input" class="info-value-input tw-hidden" />
+            </div>
         </div>
 
-        <div class="tw-bg-gray-50 tw-p-4 tw-rounded-md tw-border tw-border-gray-200">
-            <h3 class="tw-text-lg tw-font-semibold tw-text-gray-800 tw-mb-2">Detail Kontak</h3>
-            <p class="tw-text-gray-700"><span class="tw-font-medium">Telepon:</span> [Nomor Telepon]</p>
-            <p class="tw-text-gray-700"><span class="tw-font-medium">Alamat:</span> [Alamat Pengguna]</p>
+        <div class="tw-mt-10 tw-text-center">
+            <a href="#" id="editProfileBtn" class="edit-button">
+                Edit Profil
+            </a>
+            <button type="submit" id="saveChangesBtn" class="edit-button tw-hidden tw-ml-4">
+                Simpan Perubahan
+            </button>
+            <button type="button" id="cancelEditBtn" class="edit-button cancel tw-hidden tw-ml-4">
+                Batal
+            </button>
         </div>
-    </div>
-
-    <div class="tw-mt-8 tw-text-center">
-        <a href="#" class="tw-inline-block tw-px-6 tw-py-3 tw-bg-biBlueMedium tw-text-white tw-rounded-md hover:tw-bg-biBlueDark tw-transition-colors tw-duration-200 tw-shadow-md">
-            Edit Profil
-        </a>
-    </div>
+    </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Data profil yang akan ditampilkan
+        let profileData = { // Gunakan 'let' agar bisa diubah
+            "status": 200,
+            "message": "Profile retrieved",
+            "timestamp": "2025-07-08T09:24:19.288525+07:00",
+            "data": {
+                "nama_pjp": "PT Rafael Demo",
+                "sandi_pjp": "2206824666",
+                "nomor_keputusan": "29/02/DKSP/2004",
+                "email_pic": "rafael.demo@example.com",
+                "alamat": "Jl. Contoh No. 123, Jakarta Pusat, DKI Jakarta, 10110",
+                "website": "https://www.rafaeldemo.com"
+            }
+        };
+
+        // Dapatkan referensi elemen-elemen
+        const displayElements = {
+            nama_pjp: document.getElementById('nama_pjp_display'),
+            sandi_pjp: document.getElementById('sandi_pjp_display'),
+            nomor_keputusan: document.getElementById('nomor_keputusan_display'),
+            email_pic: document.getElementById('email_pic_display'),
+            alamat: document.getElementById('alamat_display'),
+            website: document.getElementById('website_display')
+        };
+
+        const inputElements = {
+            nama_pjp: document.getElementById('nama_pjp_input'),
+            sandi_pjp: document.getElementById('sandi_pjp_input'),
+            nomor_keputusan: document.getElementById('nomor_keputusan_input'),
+            email_pic: document.getElementById('email_pic_input'),
+            alamat: document.getElementById('alamat_input'),
+            website: document.getElementById('website_input')
+        };
+
+        const editProfileBtn = document.getElementById('editProfileBtn');
+        const saveChangesBtn = document.getElementById('saveChangesBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const profileForm = document.getElementById('profileForm');
+
+        let isEditing = false;
+
+        // Fungsi untuk mengisi data ke elemen HTML (baik display maupun input)
+        function populateProfile() {
+            const data = profileData.data;
+
+            for (const key in data) {
+                if (displayElements[key]) {
+                    if (key === 'website' && data[key]) {
+                        displayElements[key].innerHTML = `<a href="${data[key]}" target="_blank" class="tw-text-biBlueMedium hover:tw-underline">${data[key]}</a>`;
+                    } else {
+                        displayElements[key].textContent = data[key] || '-';
+                    }
+                }
+                if (inputElements[key]) {
+                    inputElements[key].value = data[key] || '';
+                }
+            }
+        }
+
+        // Fungsi untuk mengaktifkan/menonaktifkan mode edit
+        function toggleEditMode() {
+            isEditing = !isEditing;
+
+            for (const key in displayElements) {
+                if (displayElements[key]) {
+                    displayElements[key].classList.toggle('tw-hidden', isEditing);
+                }
+                if (inputElements[key]) {
+                    inputElements[key].classList.toggle('tw-hidden', !isEditing);
+                }
+            }
+
+            editProfileBtn.classList.toggle('tw-hidden', isEditing);
+            saveChangesBtn.classList.toggle('tw-hidden', !isEditing);
+            cancelEditBtn.classList.toggle('tw-hidden', !isEditing);
+        }
+
+        // Fungsi untuk menyimpan perubahan
+        function saveProfile(event) {
+            event.preventDefault(); // Mencegah pengiriman form default
+
+            // Update profileData dari nilai input
+            for (const key in inputElements) {
+                if (inputElements[key]) {
+                    profileData.data[key] = inputElements[key].value;
+                }
+            }
+
+            // Di sini Anda akan mengirim data ke server (misalnya dengan fetch API)
+            // Contoh:
+            /*
+            fetch('/api/update-profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(profileData.data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Tampilkan pesan sukses atau perbarui UI
+                populateProfile(); // Perbarui tampilan setelah data disimpan
+                toggleEditMode(); // Kembali ke mode tampilan
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Tampilkan pesan error
+            });
+            */
+
+            // Untuk demo, langsung perbarui tampilan dan kembali ke mode display
+            populateProfile();
+            toggleEditMode();
+            console.log('Profil berhasil disimpan (simulasi):', profileData.data);
+        }
+
+        // Fungsi untuk membatalkan edit
+        function cancelEdit() {
+            populateProfile(); // Mengisi ulang input dengan data asli
+            toggleEditMode(); // Kembali ke mode tampilan
+            console.log('Edit dibatalkan.');
+        }
+
+        // Event Listeners
+        editProfileBtn.addEventListener('click', function(event) {
+            event.preventDefault(); // Mencegah navigasi tautan
+            toggleEditMode();
+        });
+
+        profileForm.addEventListener('submit', saveProfile); // Gunakan submit event pada form
+
+        cancelEditBtn.addEventListener('click', cancelEdit);
+
+        // Panggil fungsi untuk mengisi data saat DOM selesai dimuat
+        populateProfile();
+    });
+</script>
 {% endblock %}

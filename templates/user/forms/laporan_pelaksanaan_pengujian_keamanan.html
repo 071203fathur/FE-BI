@@ -29,101 +29,114 @@
 
     .d-none { display: none !important; }
 
-    /* Section styling */
+    /* Section styling - compact */
     .section-group {
         background-color: #ffffff;
         border: 1px solid #e5e7eb;
         border-radius: 12px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         padding: 0;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem; /* Reduced margin */
         overflow: hidden;
     }
 
     .section-group .section-header {
-        font-size: 1.25rem;
+        font-size: 1.15rem; /* Smaller header */
         font-weight: 700;
         color: #1f2937;
         background-color: #eef2f6;
-        padding: 1rem 1.5rem;
-        margin: 0 -1px 1rem -1px;
+        padding: 0.8rem 1.5rem; /* Reduced padding */
+        margin: 0 -1px 0.8rem -1px; /* Reduced margin */
         border-bottom: 1px solid #e0e7eb;
         border-top-left-radius: 11px;
         border-top-right-radius: 11px;
     }
 
     .section-group .section-content {
-        padding: 1.5rem;
+        padding: 1.2rem; /* Reduced padding */
         padding-top: 0;
     }
 
-    /* Form elements */
+    /* Form elements - compact */
     .form-label {
-        font-size: 1.05rem;
+        font-size: 0.95rem; /* Smaller labels */
         font-weight: 600;
         color: #374151;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.3rem; /* Reduced margin */
     }
 
     .form-input {
-        font-size: 1rem;
-        padding: 1rem;
+        font-size: 0.9rem; /* Smaller font */
+        padding: 0.7rem 1rem; /* Reduced padding */
         width: 100%;
         border: 1px solid #d1d5db;
-        border-radius: 10px;
+        border-radius: 8px; /* Slightly rounder corners */
         color: #4b5563;
         transition: all 0.2s ease;
-        min-height: 50px;
+        min-height: 40px; /* Reduced minimum height */
         box-sizing: border-box;
     }
 
     /* Date inputs */
     input[type="date"].form-input {
-        font-size: 1rem;
-        padding: 1rem;
-        min-height: 50px;
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+        min-height: 40px;
         appearance: none;
         background-color: white;
     }
 
     /* Select dropdowns */
     select.form-input {
-        font-size: 1rem;
-        padding: 1rem;
-        min-height: 50px;
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+        min-height: 40px;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 16px 12px;
-        padding-right: 2.5rem;
+        background-position: right 0.8rem center;
+        background-size: 14px 10px;
+        padding-right: 2.2rem;
     }
 
     /* File input */
     .file-input-container {
-        margin-top: 0.5rem;
+        margin-top: 0.3rem;
     }
     
     .file-input-container input[type="file"] {
-        font-size: 1rem;
-        padding: 1rem;
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
     }
 
-    /* Nested sections */
+    /* Nested sections - compact */
     .nested-section-group {
         border: 1px solid #e5e7eb;
         border-radius: 10px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
+        padding: 1rem; /* Reduced padding */
+        margin-bottom: 1rem; /* Reduced margin */
         background-color: #f9fafb;
     }
 
     .nested-section-group h4 {
-        font-size: 1.1rem;
+        font-size: 1rem; /* Smaller font size */
         font-weight: 600;
         color: #1f2937;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
+        margin-bottom: 0.8rem; /* Reduced margin */
+        padding-bottom: 0.4rem; /* Reduced padding */
         border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* Textarea styling - compact */
+    textarea.form-input {
+        min-height: 80px; /* Shorter textareas */
+        resize: vertical;
+    }
+
+    /* Helper text - compact */
+    .form-text {
+        font-size: 0.7rem; /* Smaller font size */
+        color: #6b7280;
+        margin-top: 0.15rem; /* Reduced margin */
     }
 
     /* Responsive adjustments */
@@ -143,7 +156,38 @@
         }
     }
 
-    /* Styles for the loading overlay */
+    /* Styles for buttons - compact */
+    .btn {
+        font-size: 0.95rem;
+        padding: 0.8rem 1.2rem; /* Reduced padding */
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background-color: #4f46e5;
+        color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #4338ca;
+        transform: translateY(-1px);
+    }
+
+    /* Adjust gap for grid layouts */
+    .tw-gap-4 {
+        gap: 0.75rem; /* Reduced gap */
+    }
+    .tw-gap-x-6 {
+        column-gap: 1.5rem; /* Reduced column gap */
+    }
+    .tw-gap-y-2 {
+        row-gap: 0.5rem; /* Reduced row gap */
+    }
+
+    /* Styles for the loading overlay (kept consistent) */
     #loadingOverlay {
         position: fixed;
         top: 0;
@@ -248,29 +292,29 @@
 {% endblock %}
 
 {% block content %}
-<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6">
-    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-4">
+    <h2 class="tw-text-2xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-3 tw-mb-4">
         Laporan Pelaksanaan Pengujian Keamanan (Penetration Test)
     </h2>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div class="tw-p-4 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
+                <div class="tw-p-3 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
                     {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
 
-    <form method="POST" action="{{ url_for('submit_laporan_pelaksanaan_pengujian_keamanan') }}" enctype="multipart/form-data" id="penetrationTestForm" class="tw-space-y-6">
+    <form method="POST" action="{{ url_for('submit_laporan_pelaksanaan_pengujian_keamanan') }}" enctype="multipart/form-data" id="penetrationTestForm" class="tw-space-y-4">
         
         <!-- Informasi Umum Laporan Section -->
         <div class="section-group">
             <h3 class="section-header">Informasi Umum Laporan</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                    <div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-space-y-1">
                         <label for="tahun_laporan" class="form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
                         <select class="form-input" id="tahun_laporan" name="tahun_laporan" required>
                             <option value="">-- Pilih Tahun --</option>
@@ -280,23 +324,23 @@
                         </select>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="nomor_surat" class="form-label">Nomor Surat <span class="tw-text-red-500">*</span></label>
                         <input type="text" class="form-input" id="nomor_surat" name="nomor_surat" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="tw-text-red-500">*</span></label>
                         <input type="date" class="form-input" id="tanggal_surat" name="tanggal_surat" required>
                     </div>
                     
-                    <div class="md:tw-col-span-2">
+                    <div class="md:tw-col-span-2 tw-space-y-1">
                         <label for="file" class="form-label">Upload Laporan (PDF) <span class="tw-text-red-500">*</span></label>
                         <div class="file-input-container">
-                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
+                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-3 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
                                    id="file" name="file" accept=".pdf" required>
                         </div>
-                        <p class="tw-text-sm tw-text-gray-500 tw-mt-2">Format: PDF (Maks. 10MB)</p>
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF (Maks. 10MB)</p>
                     </div>
                 </div>
             </div>
@@ -306,13 +350,13 @@
         <div class="section-group">
             <h3 class="section-header">Informasi Pengujian</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                    <div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-space-y-1">
                         <label for="tanggal_selesai_audit" class="form-label">Tanggal Selesai Pengujian <span class="tw-text-red-500">*</span></label>
                         <input type="date" class="form-input" id="tanggal_selesai_audit" name="tanggal_selesai_audit" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="nama_auditor" class="form-label">Nama Penguji <span class="tw-text-red-500">*</span></label>
                         <input type="text" class="form-input" id="nama_auditor" name="nama_auditor" required>
                     </div>
@@ -328,13 +372,13 @@
                 <!-- Temuan Low -->
                 <div class="nested-section-group">
                     <h4>Temuan Low</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                        <div>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                        <div class="tw-space-y-1">
                             <label for="temuan_low" class="form-label">Jumlah Temuan <span class="tw-text-red-500">*</span></label>
                             <input type="number" class="form-input" id="temuan_low" name="temuan_low" min="0" required value="0"> {# Added default value #}
                         </div>
                         
-                        <div>
+                        <div class="tw-space-y-1">
                             <label for="keterangan_temuan_low" class="form-label">Keterangan <span class="tw-text-red-500">*</span></label>
                             <textarea class="form-input" id="keterangan_temuan_low" name="keterangan_temuan_low" rows="3" required></textarea>
                         </div>
@@ -344,13 +388,13 @@
                 <!-- Temuan Medium -->
                 <div class="nested-section-group">
                     <h4>Temuan Medium</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                        <div>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                        <div class="tw-space-y-1">
                             <label for="temuan_medium" class="form-label">Jumlah Temuan <span class="tw-text-red-500">*</span></label>
                             <input type="number" class="form-input" id="temuan_medium" name="temuan_medium" min="0" required value="0"> {# Added default value #}
                         </div>
                         
-                        <div>
+                        <div class="tw-space-y-1">
                             <label for="keterangan_temuan_medium" class="form-label">Keterangan <span class="tw-text-red-500">*</span></label>
                             <textarea class="form-input" id="keterangan_temuan_medium" name="keterangan_temuan_medium" rows="3" required></textarea>
                         </div>
@@ -360,13 +404,13 @@
                 <!-- Temuan High -->
                 <div class="nested-section-group">
                     <h4>Temuan High</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                        <div>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                        <div class="tw-space-y-1">
                             <label for="temuan_high" class="form-label">Jumlah Temuan <span class="tw-text-red-500">*</span></label>
                             <input type="number" class="form-input" id="temuan_high" name="temuan_high" min="0" required value="0"> {# Added default value #}
                         </div>
                         
-                        <div>
+                        <div class="tw-space-y-1">
                             <label for="keterangan_temuan_high" class="form-label">Keterangan <span class="tw-text-red-500">*</span></label>
                             <textarea class="form-input" id="keterangan_temuan_high" name="keterangan_temuan_high" rows="3" required></textarea>
                         </div>
@@ -376,13 +420,13 @@
                 <!-- Temuan Critical -->
                 <div class="nested-section-group">
                     <h4>Temuan Critical</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                        <div>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                        <div class="tw-space-y-1">
                             <label for="temuan_critical" class="form-label">Jumlah Temuan <span class="tw-text-red-500">*</span></label>
                             <input type="number" class="form-input" id="temuan_critical" name="temuan_critical" min="0" required value="0"> {# Added default value #}
                         </div>
                         
-                        <div>
+                        <div class="tw-space-y-1">
                             <label for="keterangan_temuan_critical" class="form-label">Keterangan <span class="tw-text-red-500">*</span></label>
                             <textarea class="form-input" id="keterangan_temuan_critical" name="keterangan_temuan_critical" rows="3" required></textarea>
                         </div>
@@ -395,28 +439,28 @@
         <div class="section-group">
             <h3 class="section-header">Status Temuan</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                    <div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-space-y-1">
                         <label for="jumlah_temuan" class="form-label">Total Jumlah Temuan <span class="tw-text-red-500">*</span></label>
                         <input type="number" class="form-input tw-bg-gray-100" id="jumlah_temuan" name="jumlah_temuan" min="0" required readonly value="0"> {# Added default value #}
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="jumlah_temuan_diselesaikan" class="form-label">Temuan Diselesaikan <span class="tw-text-red-500">*</span></label>
                         <input type="number" class="form-input" id="jumlah_temuan_diselesaikan" name="jumlah_temuan_diselesaikan" min="0" required value="0"> {# Added default value #}
                     </div>
                     
-                    <div class="md:tw-col-span-2">
+                    <div class="md:tw-col-span-2 tw-space-y-1">
                         <label for="keterangan_temuan_diselesaikan" class="form-label">Keterangan Temuan Diselesaikan</label>
                         <textarea class="form-input" id="keterangan_temuan_diselesaikan" name="keterangan_temuan_diselesaikan" rows="3"></textarea>
                     </div>
                     
-                    <div class="md:tw-col-span-2">
+                    <div class="md:tw-col-span-2 tw-space-y-1">
                         <label for="jumlah_temuan_belum_terselesaikan" class="form-label">Temuan Belum Diselesaikan <span class="tw-text-red-500">*</span></label>
                         <input type="number" class="form-input" id="jumlah_temuan_belum_terselesaikan" name="jumlah_temuan_belum_diselesaikan" min="0" required readonly value="0"> {# Changed name to match API, added default value #}
                     </div>
                     
-                    <div class="md:tw-col-span-2">
+                    <div class="md:tw-col-span-2 tw-space-y-1">
                         <label for="keterangan_temuan_belum_diselesaikan" class="form-label">Keterangan Temuan Belum Diselesaikan</label>
                         <textarea class="form-input" id="keterangan_temuan_belum_diselesaikan" name="keterangan_temuan_belum_diselesaikan" rows="4"></textarea>
                     </div>
@@ -428,22 +472,22 @@
         <div class="section-group">
             <h3 class="section-header">Kesimpulan</h3>
             <div class="section-content">
-                <div>
+                <div class="tw-space-y-1">
                     <label for="kesimpulan_auditor" class="form-label">Kesimpulan/Opini Penguji <span class="tw-text-red-500">*</span></label>
-                    <textarea class="form-input" id="kesimpulan_auditor" name="kesimpulan_auditor" rows="5" required></textarea>
-                    <p class="tw-text-sm tw-text-gray-500 tw-mt-2">Ringkasan hasil pengujian dan opini penguji</p>
+                    <textarea class="form-input" id="kesimpulan_auditor" name="kesimpulan_auditor" rows="4" required></textarea>
+                    <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Ringkasan hasil pengujian dan opini penguji</p>
                 </div>
             </div>
         </div>
 
         <!-- Form Actions -->
-        <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
-            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+        <div class="tw-flex tw-justify-end tw-gap-3 tw-pt-4">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
                 <span class="submit-text">Kirim Laporan</span>
                 <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
             </button>
             
-            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">
                 Batal
             </button>
         </div>

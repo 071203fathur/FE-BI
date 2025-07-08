@@ -29,83 +29,83 @@
 
         .d-none { display: none !important; }
 
-        /* Section styling */
+        /* Section styling - compact */
         .section-group {
             background-color: #ffffff;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             padding: 0;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem; /* Reduced margin */
             overflow: hidden;
         }
 
         .section-group .section-header {
-            font-size: 1.25rem;
+            font-size: 1.15rem; /* Smaller header */
             font-weight: 700;
             color: #1f2937;
             background-color: #eef2f6;
-            padding: 1rem 1.5rem;
-            margin: 0 -1px 1rem -1px;
+            padding: 0.8rem 1.5rem; /* Reduced padding */
+            margin: 0 -1px 0.8rem -1px; /* Reduced margin */
             border-bottom: 1px solid #e0e7eb;
             border-top-left-radius: 11px;
             border-top-right-radius: 11px;
         }
 
         .section-group .section-content {
-            padding: 1.5rem;
+            padding: 1.2rem; /* Reduced padding */
             padding-top: 0;
         }
 
-        /* Form elements */
+        /* Form elements - compact */
         .form-label {
-            font-size: 1.05rem;
+            font-size: 0.95rem; /* Smaller labels */
             font-weight: 600;
             color: #374151;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem; /* Reduced margin */
         }
 
         .form-input {
-            font-size: 1rem;
-            padding: 1rem;
+            font-size: 0.9rem; /* Smaller font */
+            padding: 0.7rem 1rem; /* Reduced padding */
             width: 100%;
             border: 1px solid #d1d5db;
-            border-radius: 10px;
+            border-radius: 8px; /* Slightly rounder corners */
             color: #4b5563;
             transition: all 0.2s ease;
-            min-height: 50px;
+            min-height: 40px; /* Reduced minimum height */
             box-sizing: border-box;
         }
 
         /* Date inputs */
         input[type="date"].form-input {
-            font-size: 1rem;
-            padding: 1rem;
-            min-height: 50px;
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
+            min-height: 40px;
             appearance: none;
             background-color: white;
         }
 
         /* Select dropdowns */
         select.form-input {
-            font-size: 1rem;
-            padding: 1rem;
-            min-height: 50px;
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
+            min-height: 40px;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 16px 12px;
-            padding-right: 2.5rem;
+            background-position: right 0.8rem center;
+            background-size: 14px 10px;
+            padding-right: 2.2rem;
         }
 
         /* File input */
         .file-input-container {
-            margin-top: 0.5rem;
+            margin-top: 0.3rem;
         }
         
         .file-input-container input[type="file"] {
-            font-size: 1rem;
-            padding: 1rem;
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
         }
 
         /* Nested sections */
@@ -117,20 +117,21 @@
             background-color: #f9fafb;
         }
 
-        /* Table styles for radio buttons */
+        /* Table styles for radio buttons - compact */
         .form-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin-top: 1rem;
+            margin-top: 0.8rem; /* Reduced margin */
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             overflow: hidden;
+            font-size: 0.9rem; /* Smaller font for table text */
         }
         .form-table th, .form-table td {
             border-bottom: 1px solid #e5e7eb;
             border-right: 1px solid #e5e7eb;
-            padding: 0.75rem;
+            padding: 0.6rem; /* Reduced padding */
             text-align: center;
             vertical-align: middle;
         }
@@ -162,8 +163,8 @@
             appearance: none;
             -webkit-appearance: none;
             -moz-appearance: none;
-            width: 1.25rem;
-            height: 1.25rem;
+            width: 1.1rem; /* Slightly smaller radio buttons */
+            height: 1.1rem; /* Slightly smaller radio buttons */
             border: 2px solid #9ca3af;
             border-radius: 50%;
             outline: none;
@@ -178,8 +179,8 @@
         .form-check-input:checked::before {
             content: '';
             display: block;
-            width: 0.5rem;
-            height: 0.5rem;
+            width: 0.4rem; /* Smaller inner dot */
+            height: 0.4rem; /* Smaller inner dot */
             background-color: #ffffff;
             border-radius: 50%;
             position: absolute;
@@ -194,9 +195,9 @@
             border-color: #6366f1;
         }
 
-        /* Textarea styling */
+        /* Textarea styling - compact */
         textarea.form-input {
-            min-height: 120px;
+            min-height: 100px; /* Shorter textareas */
             resize: vertical;
         }
 
@@ -217,7 +218,27 @@
             }
         }
 
-        /* Styles for the loading overlay */
+        /* Styles for buttons - compact */
+        .btn {
+            font-size: 0.95rem;
+            padding: 0.8rem 1.2rem; /* Reduced padding */
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        /* Adjust gap for grid layouts */
+        .tw-gap-4 {
+            gap: 0.75rem; /* Reduced gap */
+        }
+        .tw-gap-x-6 {
+            column-gap: 1.5rem; /* Reduced column gap */
+        }
+        .tw-gap-y-2 {
+            row-gap: 0.5rem; /* Reduced row gap */
+        }
+
+        /* Styles for the loading overlay (kept consistent) */
         #loadingOverlay {
             position: fixed;
             top: 0;
@@ -239,7 +260,7 @@
             color: #ffffff;
         }
 
-        /* Styles for the message box */
+        /* Styles for the message box backdrop */
         #messageBoxBackdrop {
             position: fixed;
             top: 0;
@@ -252,6 +273,7 @@
             display: none;
         }
 
+        /* Styles for the message box pop-up */
         #dynamicMessageBox {
             position: fixed;
             top: 50%;
@@ -321,29 +343,29 @@
 {% endblock %}
 
 {% block content %}
-<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6">
-    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-4">
+    <h2 class="tw-text-2xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-3 tw-mb-4">
         Laporan APU PPT (Anti Pencucian Uang dan Pencegahan Pendanaan Terorisme)
     </h2>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div class="tw-p-4 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
+                <div class="tw-p-3 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
                     {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
 
-    <form method="POST" action="{{ url_for('submit_laporan_apuppt') }}" enctype="multipart/form-data" id="apuPptReportForm" class="tw-space-y-6">
+    <form method="POST" action="{{ url_for('submit_laporan_apuppt') }}" enctype="multipart/form-data" id="apuPptReportForm" class="tw-space-y-4">
         
         <!-- Informasi Umum Laporan Section -->
         <div class="section-group">
             <h3 class="section-header">Informasi Umum Laporan</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                    <div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-space-y-1">
                         <label for="tahun_laporan" class="form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
                         <select class="form-input" id="tahun_laporan" name="tahun_laporan" required>
                             <option value="">-- Pilih Tahun --</option>
@@ -353,23 +375,23 @@
                         </select>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="nomor_surat" class="form-label">Nomor Surat <span class="tw-text-red-500">*</span></label>
                         <input type="text" class="form-input" id="nomor_surat" name="nomor_surat" required>
                     </div>
                     
-                    <div class="md:tw-col-span-2">
+                    <div class="md:tw-col-span-2 tw-space-y-1">
                         <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="tw-text-red-500">*</span></label>
                         <input type="date" class="form-input" id="tanggal_surat" name="tanggal_surat" required>
                     </div>
                     
-                    <div class="md:tw-col-span-2">
+                    <div class="md:tw-col-span-2 tw-space-y-1">
                         <label for="file" class="form-label">Dokumen Laporan Tahunan APU, PPT, dan PPSPM yang telah ditandatangani (PDF/DOC/DOCX) <span class="tw-text-red-500">*</span></label>
                         <div class="file-input-container">
-                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
+                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-3 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
                                    id="file" name="file" accept=".pdf,.doc,.docx" required>
                         </div>
-                        <p class="tw-text-sm tw-text-gray-500 tw-mt-2">Format: PDF, DOC, DOCX (Maks. 10MB)</p>
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF, DOC, DOCX (Maks. 10MB)</p>
                     </div>
                 </div>
             </div>
@@ -379,33 +401,33 @@
         <div class="section-group">
             <h3 class="section-header">Informasi Petugas & Identitas Pengguna Sistem</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                    <div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-space-y-1">
                         <label for="nama_petugas" class="form-label">Nama Petugas <span class="tw-text-red-500">*</span></label>
                         <input type="text" class="form-input" id="nama_petugas" name="nama_petugas" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="sk_penunjukan" class="form-label">SK Penunjukan <span class="tw-text-red-500">*</span></label>
                         <input type="text" class="form-input" id="sk_penunjukan" name="sk_penunjukan" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="user_id_goaml" class="form-label">User ID GoAML <span class="tw-text-red-500">*</span></label>
                         <input type="text" class="form-input" id="user_id_goaml" name="user_id_goaml" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="user_id_sipesat" class="form-label">User ID SIPESAT <span class="tw-text-red-500">*</span></label>
                         <input type="text" class="form-input" id="user_id_sipesat" name="user_id_sipesat" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="user_id_pep" class="form-label">User ID PEP <span class="tw-text-red-500">*</span></label>
                         <input type="text" class="form-input" id="user_id_pep" name="user_id_pep" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="user_id_sipendar" class="form-label">User ID SIPENDAR <span class="tw-text-red-500">*</span></label>
                         <input type="text" class="form-input" id="user_id_sipendar" name="user_id_sipendar" required>
                     </div>
@@ -417,18 +439,18 @@
         <div class="section-group">
             <h3 class="section-header">Statistik Laporan ke PPATK</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-4">
-                    <div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-space-y-1">
                         <label for="jumlah_ltkt" class="form-label">Jumlah LTKT <span class="tw-text-red-500">*</span></label>
                         <input type="number" class="form-input" id="jumlah_ltkt" name="jumlah_ltkt" min="0" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="jumlah_ltkm" class="form-label">Jumlah LTKM <span class="tw-text-red-500">*</span></label>
                         <input type="number" class="form-input" id="jumlah_ltkm" name="jumlah_ltkm" min="0" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="jumlah_ltkl" class="form-label">Jumlah LTKL <span class="tw-text-red-500">*</span></label>
                         <input type="number" class="form-input" id="jumlah_ltkl" name="jumlah_ltkl" min="0" required>
                     </div>
@@ -440,12 +462,12 @@
         <div class="section-group">
             <h3 class="section-header">Laporan SIPESAT Triwulanan</h3>
             <div class="section-content">
-                <div class="tw-space-y-1 mb-4">
+                <div class="tw-space-y-1 tw-mb-3"> <!-- Reduced margin -->
                     <label for="sipesat_uploaded_count" class="form-label">Laporan SIPESAT Triwulanan sudah di upload berapa saja? <span class="tw-text-red-500">*</span></label>
                     <input type="number" class="form-input" id="sipesat_uploaded_count" name="sipesat_uploaded_count" min="0" required>
                 </div>
 
-                <p class="tw-font-semibold tw-text-gray-700 tw-mt-4 tw-mb-3">Telah melakukan Laporan SIPESAT ke PPATK secara Triwulanan? <span class="tw-text-red-500">*</span></p>
+                <p class="tw-font-semibold tw-text-gray-700 tw-mt-3 tw-mb-2">Telah melakukan Laporan SIPESAT ke PPATK secara Triwulanan? <span class="tw-text-red-500">*</span></p> <!-- Reduced margin -->
                 <div class="tw-overflow-x-auto">
                     <table class="form-table">
                         <thead>
@@ -526,8 +548,8 @@
         <div class="section-group">
             <h3 class="section-header">Laporan Pemblokiran/Penghapusan</h3>
             <div class="section-content">
-                <p class="tw-font-semibold tw-text-gray-700 tw-mb-3">Lapor Pemblokiran DTTOT <span class="tw-text-red-500">*</span></p>
-                <div class="tw-overflow-x-auto tw-mb-4">
+                <p class="tw-font-semibold tw-text-gray-700 tw-mb-2">Lapor Pemblokiran DTTOT <span class="tw-text-red-500">*</span></p> <!-- Reduced margin -->
+                <div class="tw-overflow-x-auto tw-mb-3"> <!-- Reduced margin -->
                     <table class="form-table" id="dttotTable">
                         <thead>
                             <tr>
@@ -603,7 +625,7 @@
                     <input type="hidden" id="lapor_pemblokiran_dttot" name="lapor_pemblokiran_dttot" value="false">
                 </div>
 
-                <p class="tw-font-semibold tw-text-gray-700 tw-mb-3">Lapor Pemblokiran DPPSPM <span class="tw-text-red-500">*</span></p>
+                <p class="tw-font-semibold tw-text-gray-700 tw-mb-2">Lapor Pemblokiran DPPSPM <span class="tw-text-red-500">*</span></p> <!-- Reduced margin -->
                 <div class="tw-overflow-x-auto">
                     <table class="form-table" id="dppspmTable">
                         <thead>
@@ -656,35 +678,35 @@
         <div class="section-group">
             <h3 class="section-header">Kebijakan dan Prosedur</h3>
             <div class="section-content">
-                <div class="tw-space-y-4">
-                    <div>
+                <div class="tw-space-y-3"> <!-- Reduced space-y -->
+                    <div class="tw-space-y-1">
                         <label for="tanggung_jawab_direksi" class="form-label">Tanggung Jawab Direksi dan Pengawasan Aktif Dewan Komisaris <span class="tw-text-red-500">*</span></label>
-                        <textarea class="form-input" id="tanggung_jawab_direksi" name="tanggung_jawab_direksi" rows="5" required placeholder="Contoh: &#10;- Penetapan Komitmen Direksi dan Dewan Komisaris terhadap penerapan APU PPT dan PPSPM.&#10;- Pernyataan representasi atas penerapan APU PPT dan PPSPM.&#10;- Penetapan KPA PPT.&#10;- Penetapan Direksi atau pejabat setingkat Direksi yang membidangi fungsi kepatuhan sebagai PIC APU PPT dan PPSPM.&#10;- Kewajiban pelaporan dan pemantauan oleh Direksi dan Dewan Komisaris."></textarea>
+                        <textarea class="form-input" id="tanggung_jawab_direksi" name="tanggung_jawab_direksi" rows="4" required placeholder="Contoh: &#10;- Penetapan Komitmen Direksi dan Dewan Komisaris terhadap penerapan APU PPT dan PPSPM.&#10;- Pernyataan representasi atas penerapan APU PPT dan PPSPM.&#10;- Penetapan KPA PPT.&#10;- Penetapan Direksi atau pejabat setingkat Direksi yang membidangi fungsi kepatuhan sebagai PIC APU PPT dan PPSPM.&#10;- Kewajiban pelaporan dan pemantauan oleh Direksi dan Dewan Komisaris."></textarea>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="kebijakan_prosedur" class="form-label">Kebijakan dan Prosedur Tertulis <span class="tw-text-red-500">*</span></label>
-                        <textarea class="form-input" id="kebijakan_prosedur" name="kebijakan_prosedur" rows="5" required placeholder="Contoh:&#10;- Kebijakan dan prosedur PMPJ, pemantauan dan pengkinian profil nasabah, pelaporan LTKT dan LTKM.&#10;- Kebijakan dan prosedur terkait sanksi internal.&#10;- Prosedur identifikasi nasabah dan/atau transaksi mencurigakan.&#10;- Prosedur pelaporan dan pemantauan transaksi.&#10;- Kebijakan dan prosedur audit internal."></textarea>
+                        <textarea class="form-input" id="kebijakan_prosedur" name="kebijakan_prosedur" rows="4" required placeholder="Contoh:&#10;- Kebijakan dan prosedur PMPJ, pemantauan dan pengkinian profil nasabah, pelaporan LTKT dan LTKM.&#10;- Kebijakan dan prosedur terkait sanksi internal.&#10;- Prosedur identifikasi nasabah dan/atau transaksi mencurigakan.&#10;- Prosedur pelaporan dan pemantauan transaksi.&#10;- Kebijakan dan prosedur audit internal."></textarea>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="metode_pmpj" class="form-label">Metode Pelaksanaan Prinsip Mengenali Pengguna Jasa (PMPJ) <span class="tw-text-red-500">*</span></label>
-                        <textarea class="form-input" id="metode_pmpj" name="metode_pmpj" rows="5" required placeholder="Contoh:&#10;- Identifikasi dan verifikasi nasabah individu/korporasi.&#10;- Verifikasi dan identifikasi beneficial ownership.&#10;- Pemantauan transaksi dan profil nasabah.&#10;- Penyimpanan data PMPJ yang akurat dan terkini."></textarea>
+                        <textarea class="form-input" id="metode_pmpj" name="metode_pmpj" rows="4" required placeholder="Contoh:&#10;- Identifikasi dan verifikasi nasabah individu/korporasi.&#10;- Verifikasi dan identifikasi beneficial ownership.&#10;- Pemantauan transaksi dan profil nasabah.&#10;- Penyimpanan data PMPJ yang akurat dan terkini."></textarea>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="manajemen_risiko" class="form-label">Proses Manajemen Risiko <span class="tw-text-red-500">*</span></label>
-                        <textarea class="form-input" id="manajemen_risiko" name="manajemen_risiko" rows="5" required placeholder="Contoh:&#10;- Telah melakukan identifikasi, penilaian risiko pencucian uang dan pendanaan terorisme.&#10;- Telah melakukan mitigasi risiko yang teridentifikasi.&#10;- Penilaian risiko APU PPT secara berkala."></textarea>
+                        <textarea class="form-input" id="manajemen_risiko" name="manajemen_risiko" rows="4" required placeholder="Contoh:&#10;- Telah melakukan identifikasi, penilaian risiko pencucian uang dan pendanaan terorisme.&#10;- Telah melakukan mitigasi risiko yang teridentifikasi.&#10;- Penilaian risiko APU PPT secara berkala."></textarea>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="manajemen_sdm" class="form-label">Manajemen Sumber Daya Manusia <span class="tw-text-red-500">*</span></label>
-                        <textarea class="form-input" id="manajemen_sdm" name="manajemen_sdm" rows="5" required placeholder="Contoh:&#10;- Pelatihan APU PPT bagi seluruh karyawan.&#10;- Uji kompetensi atau sertifikasi bagi petugas APU PPT.&#10;- Penempatan pegawai yang memiliki pengetahuan dan pengalaman di bidang APU PPT."></textarea>
+                        <textarea class="form-input" id="manajemen_sdm" name="manajemen_sdm" rows="4" required placeholder="Contoh:&#10;- Pelatihan APU PPT bagi seluruh karyawan.&#10;- Uji kompetensi atau sertifikasi bagi petugas APU PPT.&#10;- Penempatan pegawai yang memiliki pengetahuan dan pengalaman di bidang APU PPT."></textarea>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="sistem_pengendalian" class="form-label">Sistem Pengendalian Intern <span class="tw-text-red-500">*</span></label>
-                        <textarea class="form-input" id="sistem_pengendalian" name="sistem_pengendalian" rows="5" required placeholder="Contoh:&#10;- Sistem IT yang mendukung pelaksanaan APU PPT.&#10;- Sistem audit internal yang efektif untuk APU PPT.&#10;- Prosedur pelaporan transaksi mencurigakan."></textarea>
+                        <textarea class="form-input" id="sistem_pengendalian" name="sistem_pengendalian" rows="4" required placeholder="Contoh:&#10;- Sistem IT yang mendukung pelaksanaan APU PPT.&#10;- Sistem audit internal yang efektif untuk APU PPT.&#10;- Prosedur pelaporan transaksi mencurigakan."></textarea>
                     </div>
                 </div>
             </div>
@@ -694,23 +716,23 @@
         <div class="section-group">
             <h3 class="section-header">Informasi Penginput Data</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                    <div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-space-y-1">
                         <label for="nama_penginput" class="form-label">Nama Penginput <span class="tw-text-red-500">*</span></label>
                         <input type="text" class="form-input" id="nama_penginput" name="nama_penginput" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="email_penginput" class="form-label">Email Penginput <span class="tw-text-red-500">*</span></label>
                         <input type="email" class="form-input" id="email_penginput" name="email_penginput" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="email_perusahaan" class="form-label">Email Perusahaan <span class="tw-text-red-500">*</span></label>
                         <input type="email" class="form-input" id="email_perusahaan" name="email_perusahaan" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="nomor_hp" class="form-label">Nomor HP <span class="tw-text-red-500">*</span></label>
                         <input type="tel" class="form-input" id="nomor_hp" name="nomor_hp" required>
                     </div>
@@ -723,7 +745,7 @@
             <h3 class="section-header">Pernyataan</h3>
             <div class="section-content">
                 <div class="tw-flex tw-items-start">
-                    <input class="tw-form-checkbox tw-h-5 tw-w-5 tw-text-indigo-600 focus:tw-ring-indigo-500 tw-border-gray-300 tw-rounded" type="checkbox" id="declaration" name="declaration" required>
+                    <input class="tw-form-checkbox tw-h-4 tw-w-4 tw-text-indigo-600 focus:tw-ring-indigo-500 tw-border-gray-300 tw-rounded" type="checkbox" id="declaration" name="declaration" required> <!-- Reduced size -->
                     <label class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900" for="declaration">
                         Sehubungan dengan penyampaian Laporan Tahunan APU, PPT, dan PPSPM Tahunan yang telah disampaikan, dengan ini saya mewakili Perusahaan menyatakan data dan informasi pada isian tersebut dengan lengkap dan benar.  
                         Apabila data/informasi yang diisi tidak lengkap dan tidak akurat, maka laporan yang disampaikan akan dianggap salah dan tidak disampaikan. 
@@ -734,13 +756,13 @@
         </div>
 
         <!-- Form Actions -->
-        <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
-            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+        <div class="tw-flex tw-justify-end tw-gap-3 tw-pt-4">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
                 <span class="submit-text">Kirim Laporan</span>
                 <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
             </button>
             
-            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">
                 Batal
             </button>
         </div>

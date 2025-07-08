@@ -29,108 +29,108 @@
 
         .d-none { display: none !important; }
 
-        /* Section styling */
+        /* Section styling - compact */
         .section-group {
             background-color: #ffffff;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             padding: 0;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem; /* Reduced margin */
             overflow: hidden;
         }
 
         .section-group .section-header {
-            font-size: 1.25rem;
+            font-size: 1.15rem; /* Smaller header */
             font-weight: 700;
             color: #1f2937;
             background-color: #eef2f6;
-            padding: 1rem 1.5rem;
-            margin: 0 -1px 1rem -1px;
+            padding: 0.8rem 1.5rem; /* Reduced padding */
+            margin: 0 -1px 0.8rem -1px; /* Reduced margin */
             border-bottom: 1px solid #e0e7eb;
             border-top-left-radius: 11px;
             border-top-right-radius: 11px;
         }
 
         .section-group .section-content {
-            padding: 1.5rem;
+            padding: 1.2rem; /* Reduced padding */
             padding-top: 0;
         }
 
-        /* Form elements */
+        /* Form elements - compact */
         .form-label {
-            font-size: 1.05rem;
+            font-size: 0.95rem; /* Smaller labels */
             font-weight: 600;
             color: #374151;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem; /* Reduced margin */
         }
 
         .form-input {
-            font-size: 1rem;
-            padding: 1rem;
+            font-size: 0.9rem; /* Smaller font */
+            padding: 0.7rem 1rem; /* Reduced padding */
             width: 100%;
             border: 1px solid #d1d5db;
-            border-radius: 10px;
+            border-radius: 8px; /* Slightly rounder corners */
             color: #4b5563;
             transition: all 0.2s ease;
-            min-height: 50px;
+            min-height: 40px; /* Reduced minimum height */
             box-sizing: border-box;
         }
 
         /* Date inputs */
         input[type="date"].form-input {
-            font-size: 1rem;
-            padding: 1rem;
-            min-height: 50px;
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
+            min-height: 40px;
             appearance: none;
             background-color: white;
         }
 
         /* Select dropdowns */
         select.form-input {
-            font-size: 1rem;
-            padding: 1rem;
-            min-height: 50px;
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
+            min-height: 40px;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 16px 12px;
-            padding-right: 2.5rem;
+            background-position: right 0.8rem center;
+            background-size: 14px 10px;
+            padding-right: 2.2rem;
         }
 
         /* File input */
         .file-input-container {
-            margin-top: 0.5rem;
+            margin-top: 0.3rem;
         }
         
         .file-input-container input[type="file"] {
-            font-size: 1rem;
-            padding: 1rem;
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
         }
 
-        /* Styles for dynamic members (Komisaris/Direksi) */
+        /* Styles for dynamic members (Komisaris/Direksi) - compact */
         .management-member-item {
             border: 1px solid #e0e7eb;
             border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
+            padding: 0.8rem; /* Reduced padding */
+            margin-bottom: 0.8rem; /* Reduced margin */
             background-color: #fcfdfe;
             position: relative;
         }
         .management-member-item .remove-item-btn {
             position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
+            top: 0.3rem; /* Adjusted position */
+            right: 0.3rem; /* Adjusted position */
             background-color: #fef2f2;
             color: #ef4444;
             border: 1px solid #fecaca;
             border-radius: 9999px;
-            padding: 0.25rem;
+            padding: 0.2rem; /* Reduced padding */
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 2rem;
-            height: 2rem;
+            width: 1.8rem; /* Reduced size */
+            height: 1.8rem; /* Reduced size */
             transition: all 0.2s ease-in-out;
         }
         .management-member-item .remove-item-btn:hover {
@@ -138,24 +138,25 @@
             color: #dc2626;
         }
         .management-member-item .remove-item-btn svg {
-            width: 1rem;
-            height: 1rem;
+            width: 0.9rem; /* Reduced icon size */
+            height: 0.9rem; /* Reduced icon size */
         }
 
-        /* Table styles for Executive Summary */
+        /* Table styles for Executive Summary - compact */
         .form-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin-top: 1rem;
+            margin-top: 0.8rem; /* Reduced margin */
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             overflow: hidden;
+            font-size: 0.9rem; /* Smaller font for table text */
         }
         .form-table th, .form-table td {
             border-bottom: 1px solid #e5e7eb;
             border-right: 1px solid #e5e7eb;
-            padding: 0.75rem;
+            padding: 0.6rem; /* Reduced padding */
             vertical-align: top;
         }
         .form-table th {
@@ -182,35 +183,36 @@
             border-bottom: none;
         }
         .executive-summary-text {
-            min-height: 80px;
+            min-height: 60px; /* Shorter textarea */
             resize: vertical;
             width: 100%;
+            font-size: 0.85rem; /* Smaller font for textarea */
         }
         .word-count-info {
-            font-size: 0.75rem;
+            font-size: 0.7rem; /* Smaller font size */
             color: #6b7280;
-            margin-top: 0.25rem;
+            margin-top: 0.15rem; /* Reduced margin */
         }
         .word-count-error {
             color: #ef4444;
             font-weight: 500;
         }
 
-        /* Custom checkbox styling */
+        /* Custom checkbox styling - compact */
         .custom-checkbox {
             appearance: none;
             -webkit-appearance: none;
             -moz-appearance: none;
-            width: 1.25rem;
-            height: 1.25rem;
+            width: 1.1rem; /* Reduced size */
+            height: 1.1rem; /* Reduced size */
             border: 2px solid #9ca3af;
-            border-radius: 0.25rem;
+            border-radius: 0.2rem; /* Slightly smaller radius */
             cursor: pointer;
             transition: all 0.2s ease-in-out;
             position: relative;
             display: inline-block;
             vertical-align: middle;
-            margin-top: -0.125rem;
+            margin-top: -0.1rem; /* Adjusted position */
         }
         .custom-checkbox:checked {
             background-color: #4f46e5;
@@ -219,8 +221,8 @@
         .custom-checkbox:checked::after {
             content: '';
             display: block;
-            width: 0.5rem;
-            height: 0.8rem;
+            width: 0.4rem; /* Smaller checkmark */
+            height: 0.7rem; /* Smaller checkmark */
             border: solid white;
             border-width: 0 2px 2px 0;
             transform: rotate(45deg) translate(-50%, -50%);
@@ -256,7 +258,7 @@
             }
         }
 
-        /* Styles for the loading overlay */
+        /* Styles for the loading overlay (kept consistent) */
         #loadingOverlay {
             position: fixed;
             top: 0;
@@ -278,7 +280,7 @@
             color: #ffffff;
         }
 
-        /* Styles for the message box */
+        /* Styles for the message box backdrop */
         #messageBoxBackdrop {
             position: fixed;
             top: 0;
@@ -291,6 +293,7 @@
             display: none;
         }
 
+        /* Styles for the message box pop-up */
         #dynamicMessageBox {
             position: fixed;
             top: 50%;
@@ -360,29 +363,29 @@
 {% endblock %}
 
 {% block content %}
-<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6">
-    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">
+<div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-4">
+    <h2 class="tw-text-2xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-3 tw-mb-4">
         Laporan Manajemen & Hasil Pengawasan Dewan Komisaris
     </h2>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div class="tw-p-4 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
+                <div class="tw-p-3 tw-rounded-lg tw-text-sm tw-font-semibold tw-text-center {% if category == 'success' %}tw-bg-green-100 tw-text-green-800 tw-border tw-border-green-300{% else %}tw-bg-red-100 tw-text-red-800 tw-border tw-border-red-300{% endif %}">
                     {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
 
-    <form method="POST" action="{{ url_for('submit_laporan_manajemen') }}" enctype="multipart/form-data" id="managementForm" class="tw-space-y-6">
+    <form method="POST" action="{{ url_for('submit_laporan_manajemen') }}" enctype="multipart/form-data" id="managementForm" class="tw-space-y-4">
         
         <!-- Informasi Umum Laporan Section -->
         <div class="section-group">
             <h3 class="section-header">Informasi Umum Laporan</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                    <div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-space-y-1">
                         <label for="tahun" class="form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
                         <select class="form-input" id="tahun" name="tahun" required>
                             <option value="">-- Pilih Tahun --</option>
@@ -392,23 +395,23 @@
                         </select>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="nomor_surat" class="form-label">Nomor Surat <span class="tw-text-red-500">*</span></label>
                         <input type="text" class="form-input" id="nomor_surat" name="nomor_surat" required>
                     </div>
                     
-                    <div class="md:tw-col-span-2">
+                    <div class="md:tw-col-span-2 tw-space-y-1">
                         <label for="tanggal_surat" class="form-label">Tanggal Surat <span class="tw-text-red-500">*</span></label>
                         <input type="date" class="form-input" id="tanggal_surat" name="tanggal_surat" required>
                     </div>
                     
-                    <div class="md:tw-col-span-2">
+                    <div class="md:tw-col-span-2 tw-space-y-1">
                         <label for="file_laporan" class="form-label">Upload File Laporan (PDF/DOC/DOCX) <span class="tw-text-red-500">*</span></label>
                         <div class="file-input-container">
-                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-3 file:tw-px-4 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
+                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-3 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
                                    id="file_laporan" name="file_laporan" accept=".pdf,.doc,.docx" required>
                         </div>
-                        <p class="tw-text-sm tw-text-gray-500 tw-mt-2">Format: PDF, DOC, DOCX (Maks. 10MB)</p>
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF, DOC, DOCX (Maks. 10MB)</p>
                     </div>
                 </div>
             </div>
@@ -418,14 +421,14 @@
         <div class="section-group">
             <h3 class="section-header">Pejabat yang Bertandatangan</h3>
             <div class="section-content">
-                <p class="tw-text-sm tw-text-gray-700 tw-mb-4">
+                <p class="tw-text-sm tw-text-gray-700 tw-mb-3">
                     Silakan masukkan nama, jabatan, dan klasifikasi (Komisaris atau Direksi) dari setiap anggota manajemen yang menandatangani laporan ini.
                 </p>
-                <div id="management-members-container" class="tw-space-y-4">
+                <div id="management-members-container" class="tw-space-y-3">
                     <!-- Dynamic fields will be added here -->
                 </div>
-                <button type="button" class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-md tw-shadow-sm tw-text-indigo-700 tw-bg-indigo-100 hover:tw-bg-indigo-200 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-150 tw-ease-in-out mt-4" id="add-management-member">
-                    <svg class="tw-w-5 tw-h-5 tw-mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Tambah Anggota Manajemen
+                <button type="button" class="tw-inline-flex tw-items-center tw-px-3 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-md tw-shadow-sm tw-text-indigo-700 tw-bg-indigo-100 hover:tw-bg-indigo-200 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-150 tw-ease-in-out mt-3" id="add-management-member">
+                    <svg class="tw-w-4 tw-h-4 tw-mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Tambah Anggota Manajemen
                 </button>
             </div>
         </div>
@@ -434,7 +437,7 @@
         <div class="section-group">
             <h3 class="section-header">Ringkasan Laporan Manajemen</h3>
             <div class="section-content">
-                <div id="executive-summary-section" class="tw-space-y-4">
+                <div id="executive-summary-section" class="tw-space-y-3">
                     <div class="tw-overflow-x-auto">
                         <table class="form-table">
                             <thead>
@@ -458,33 +461,33 @@
         <div class="section-group">
             <h3 class="section-header">Informasi Kepemilikan & Tambahan</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                    <div>
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-space-y-1">
                         <label for="kepemilikan_domestik" class="form-label">Persentase Kepemilikan Domestik (%) <span class="tw-text-red-500">*</span></label>
                         <input type="number" class="form-input" id="kepemilikan_domestik" name="persentase_kepemilikan_domestik" min="0" max="100" step="0.01" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="pengendalian_domestik" class="form-label">Pengendalian Domestik (Jumlah) <span class="tw-text-red-500">*</span></label>
                         <input type="number" class="form-input" id="pengendalian_domestik" name="pengendalian_domestik" min="0" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="kepemilikan_asing" class="form-label">Persentase Kepemilikan Asing (%) <span class="tw-text-red-500">*</span></label>
                         <input type="number" class="form-input" id="kepemilikan_asing" name="persentase_kepemilikan_asing" min="0" max="100" step="0.01" required>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="pengendalian_asing" class="form-label">Pengendalian Asing (Jumlah) <span class="tw-text-red-500">*</span></label>
                         <input type="number" class="form-input" id="pengendalian_asing" name="pengendalian_asing" min="0" required>
                     </div>
                     
-                    <div class="md:tw-col-span-2">
+                    <div class="md:tw-col-span-2 tw-space-y-1">
                         <label for="pihak_pengendali_ubo" class="form-label">Pihak Pengendali UBO <span class="tw-text-red-500">*</span></label>
                         <input type="text" class="form-input" id="pihak_pengendali_ubo" name="pihak_pengendali_ubo" required>
                     </div>
                     
-                    <div class="md:tw-col-span-2">
+                    <div class="md:tw-col-span-2 tw-space-y-1">
                         <label for="keterangan" class="form-label">Keterangan Tambahan</label>
                         <textarea class="form-input" id="keterangan" name="keterangan" rows="3"></textarea>
                     </div>
@@ -493,13 +496,13 @@
         </div>
         
         <!-- Form Actions -->
-        <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
-            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+        <div class="tw-flex tw-justify-end tw-gap-3 tw-pt-4">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
                 <span class="submit-text">Kirim Laporan</span>
                 <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
             </button>
             
-            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-4 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">
                 Batal
             </button>
         </div>
@@ -589,18 +592,18 @@ document.addEventListener('DOMContentLoaded', function() {
     function addManagementMember(name = '', position = '', classification = '') {
         memberCounter++;
         const newItem = document.createElement('div');
-        newItem.className = 'management-member-item tw-space-y-2';
+        newItem.className = 'management-member-item tw-space-y-1'; /* Reduced space-y */
         newItem.innerHTML = `
-            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-4">
-                <div>
+            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-4 tw-gap-y-2"> /* Reduced gap */
+                <div class="tw-space-y-1">
                     <label class="form-label">Nama <span class="tw-text-red-500">*</span></label>
                     <input type="text" class="form-input" name="member_name_${memberCounter}" value="${name}" required>
                 </div>
-                <div>
+                <div class="tw-space-y-1">
                     <label class="form-label">Jabatan <span class="tw-text-red-500">*</span></label>
                     <input type="text" class="form-input" name="member_position_${memberCounter}" value="${position}" required>
                 </div>
-                <div>
+                <div class="tw-space-y-1">
                     <label class="form-label">Klasifikasi <span class="tw-text-red-500">*</span></label>
                     <select class="form-input" name="member_classification_${memberCounter}" required>
                         <option value="">-- Pilih Klasifikasi --</option>
