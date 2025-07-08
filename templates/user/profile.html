@@ -101,6 +101,27 @@
         background-color: #4B5563; /* Darker gray on hover */
         box-shadow: 0 8px 20px rgba(107, 114, 128, 0.3);
     }
+
+    /* Styling for messages (success/error) */
+    .message-box {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .message-box.success {
+        background-color: #D4EDDA; /* Light green */
+        color: #155724; /* Dark green */
+        border: 1px solid #C3E6CB;
+    }
+
+    .message-box.error {
+        background-color: #F8D7DA; /* Light red */
+        color: #721C24; /* Dark red */
+        border: 1px solid #F5C6CB;
+    }
 </style>
 {% endblock %}
 
@@ -110,22 +131,24 @@
         Profil Pengguna
     </h2>
 
+    <div id="messageContainer" class="tw-hidden message-box"></div>
+
     <form id="profileForm">
         <div class="tw-space-y-6">
             <div class="info-item">
                 <span class="info-label">Nama PJP:</span>
                 <span id="nama_pjp_display" class="info-value"></span>
-                <input type="text" id="nama_pjp_input" class="info-value-input tw-hidden" />
+                <!-- Nama PJP tidak dapat diubah, jadi tidak ada input field -->
             </div>
             <div class="info-item">
                 <span class="info-label">Sandi PJP:</span>
                 <span id="sandi_pjp_display" class="info-value"></span>
-                <input type="text" id="sandi_pjp_input" class="info-value-input tw-hidden" />
+                <!-- Sandi PJP tidak dapat diubah, jadi tidak ada input field -->
             </div>
             <div class="info-item">
                 <span class="info-label">Nomor Keputusan:</span>
                 <span id="nomor_keputusan_display" class="info-value"></span>
-                <input type="text" id="nomor_keputusan_input" class="info-value-input tw-hidden" />
+                <!-- Nomor Keputusan tidak dapat diubah, jadi tidak ada input field -->
             </div>
             <div class="info-item">
                 <span class="info-label">Email PIC:</span>
@@ -160,22 +183,22 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Data profil yang akan ditampilkan
-        let profileData = { // Gunakan 'let' agar bisa diubah
-            "status": 200,
-            "message": "Profile retrieved",
-            "timestamp": "2025-07-08T09:24:19.288525+07:00",
-            "data": {
-                "nama_pjp": "PT Rafael Demo",
-                "sandi_pjp": "2206824666",
-                "nomor_keputusan": "29/02/DKSP/2004",
-                "email_pic": "rafael.demo@example.com",
-                "alamat": "Jl. Contoh No. 123, Jakarta Pusat, DKI Jakarta, 10110",
-                "website": "https://www.rafaeldemo.com"
+        // Base URL for your API
+        const API_BASE_URL = "http://20.205.26.22:8000/api/"; // Sesuaikan dengan URL API Anda
+
+        // Initial profile data (will be fetched from backend)
+        let profileData = {
+            data: {
+                nama_pjp: '',
+                sandi_pjp: '',
+                nomor_keputusan: '',
+                email_pic: '',
+                alamat: '',
+                website: ''
             }
         };
 
-        // Dapatkan referensi elemen-elemen
+        // Get references to display elements
         const displayElements = {
             nama_pjp: document.getElementById('nama_pjp_display'),
             sandi_pjp: document.getElementById('sandi_pjp_display'),
@@ -185,27 +208,38 @@
             website: document.getElementById('website_display')
         };
 
+        // Get references to input elements (only for editable fields)
         const inputElements = {
-            nama_pjp: document.getElementById('nama_pjp_input'),
-            sandi_pjp: document.getElementById('sandi_pjp_input'),
-            nomor_keputusan: document.getElementById('nomor_keputusan_input'),
             email_pic: document.getElementById('email_pic_input'),
             alamat: document.getElementById('alamat_input'),
             website: document.getElementById('website_input')
         };
 
+        // Get references to buttons and form
         const editProfileBtn = document.getElementById('editProfileBtn');
         const saveChangesBtn = document.getElementById('saveChangesBtn');
         const cancelEditBtn = document.getElementById('cancelEditBtn');
         const profileForm = document.getElementById('profileForm');
+        const messageContainer = document.getElementById('messageContainer');
 
         let isEditing = false;
 
-        // Fungsi untuk mengisi data ke elemen HTML (baik display maupun input)
+        // Function to display messages (success/error)
+        function showMessage(message, type) {
+            messageContainer.textContent = message;
+            messageContainer.className = `message-box ${type}`;
+            messageContainer.classList.remove('tw-hidden');
+            setTimeout(() => {
+                messageContainer.classList.add('tw-hidden');
+            }, 5000); // Hide after 5 seconds
+        }
+
+        // Function to populate data into HTML elements (both display and input)
         function populateProfile() {
             const data = profileData.data;
 
-            for (const key in data) {
+            // Populate display elements (all fields)
+            for (const key in displayElements) {
                 if (displayElements[key]) {
                     if (key === 'website' && data[key]) {
                         displayElements[key].innerHTML = `<a href="${data[key]}" target="_blank" class="tw-text-biBlueMedium hover:tw-underline">${data[key]}</a>`;
@@ -213,89 +247,119 @@
                         displayElements[key].textContent = data[key] || '-';
                     }
                 }
+            }
+
+            // Populate input elements (only editable fields)
+            for (const key in inputElements) {
                 if (inputElements[key]) {
                     inputElements[key].value = data[key] || '';
                 }
             }
         }
 
-        // Fungsi untuk mengaktifkan/menonaktifkan mode edit
+        // Function to toggle edit mode
         function toggleEditMode() {
             isEditing = !isEditing;
 
-            for (const key in displayElements) {
-                if (displayElements[key]) {
+            // Toggle visibility for editable fields
+            for (const key in inputElements) {
+                if (displayElements[key]) { // Ensure display element exists
                     displayElements[key].classList.toggle('tw-hidden', isEditing);
                 }
-                if (inputElements[key]) {
+                if (inputElements[key]) { // Ensure input element exists
                     inputElements[key].classList.toggle('tw-hidden', !isEditing);
                 }
             }
 
+            // Toggle button visibility
             editProfileBtn.classList.toggle('tw-hidden', isEditing);
             saveChangesBtn.classList.toggle('tw-hidden', !isEditing);
             cancelEditBtn.classList.toggle('tw-hidden', !isEditing);
         }
 
-        // Fungsi untuk menyimpan perubahan
-        function saveProfile(event) {
-            event.preventDefault(); // Mencegah pengiriman form default
+        // Function to fetch profile data from the backend
+        async function fetchProfile() {
+            try {
+                const response = await fetch(`${API_BASE_URL}auth/profile/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer {{ session.get('access_token') }}`, // Assuming Flask session manages token
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-            // Update profileData dari nilai input
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to fetch profile data');
+                }
+
+                const data = await response.json();
+                profileData = data; // Update the global profileData
+                populateProfile(); // Populate the fetched data
+                showMessage('Data profil berhasil dimuat.', 'success');
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                showMessage(`Gagal memuat data profil: ${error.message}`, 'error');
+            }
+        }
+
+        // Function to save changes to the backend
+        async function saveProfile(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const updatedData = {};
+            // Collect only editable fields for the request body
             for (const key in inputElements) {
                 if (inputElements[key]) {
-                    profileData.data[key] = inputElements[key].value;
+                    updatedData[key] = inputElements[key].value;
                 }
             }
 
-            // Di sini Anda akan mengirim data ke server (misalnya dengan fetch API)
-            // Contoh:
-            /*
-            fetch('/api/update-profile', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(profileData.data),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                // Tampilkan pesan sukses atau perbarui UI
-                populateProfile(); // Perbarui tampilan setelah data disimpan
-                toggleEditMode(); // Kembali ke mode tampilan
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                // Tampilkan pesan error
-            });
-            */
+            try {
+                const response = await fetch(`${API_BASE_URL}auth/profile/update/`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer {{ session.get('access_token') }}`, // Assuming Flask session manages token
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+                });
 
-            // Untuk demo, langsung perbarui tampilan dan kembali ke mode display
-            populateProfile();
-            toggleEditMode();
-            console.log('Profil berhasil disimpan (simulasi):', profileData.data);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to update profile data');
+                }
+
+                const data = await response.json();
+                profileData.data = { ...profileData.data, ...updatedData }; // Update local data with saved changes
+                populateProfile(); // Repopulate display with updated data
+                toggleEditMode(); // Switch back to display mode
+                showMessage(data.message || 'Profil berhasil diperbarui!', 'success');
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                showMessage(`Gagal menyimpan profil: ${error.message}`, 'error');
+            }
         }
 
-        // Fungsi untuk membatalkan edit
+        // Function to cancel edit
         function cancelEdit() {
-            populateProfile(); // Mengisi ulang input dengan data asli
-            toggleEditMode(); // Kembali ke mode tampilan
-            console.log('Edit dibatalkan.');
+            populateProfile(); // Revert input fields to original data
+            toggleEditMode(); // Switch back to display mode
+            showMessage('Edit dibatalkan.', 'info'); // 'info' is a custom type, you might want to style it
         }
 
         // Event Listeners
         editProfileBtn.addEventListener('click', function(event) {
-            event.preventDefault(); // Mencegah navigasi tautan
+            event.preventDefault(); // Prevent link navigation
             toggleEditMode();
         });
 
-        profileForm.addEventListener('submit', saveProfile); // Gunakan submit event pada form
+        profileForm.addEventListener('submit', saveProfile); // Use submit event on the form
 
         cancelEditBtn.addEventListener('click', cancelEdit);
 
-        // Panggil fungsi untuk mengisi data saat DOM selesai dimuat
-        populateProfile();
+        // Fetch profile data when the page loads
+        fetchProfile();
     });
 </script>
 {% endblock %}

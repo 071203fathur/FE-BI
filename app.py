@@ -6,9 +6,11 @@ import json
 import os
 import flash
 from werkzeug.utils import secure_filename
+from flask_cors import CORS # Import CORS dari flask_cors
 
 # Inisialisasi aplikasi Flask
 app = Flask(__name__)
+CORS(app) # Mengaktifkan CORS untuk semua rute di aplikasi Flask
 
 # Konfigurasi kunci rahasia untuk sesi. Ini sangat penting untuk keamanan sesi.
 # Ganti ini dengan string acak yang kuat di produksi.
@@ -133,6 +135,7 @@ def login():
             if response.status_code == 200 and response_data.get("data") and response_data["data"].get("access"):
                 session["username"] = sandi_pjp
                 session["access_token"] = response_data["data"]["access"]
+                session["refresh_token"] = response_data["data"].get("refresh") # Simpan refresh token jika ada
                 session.permanent = True # Set sesi menjadi permanen setelah login berhasil
                 # Menentukan peran berdasarkan username (mengasumsikan 'admin' untuk admin, lainnya untuk user)
                 if sandi_pjp == "admin":
@@ -179,15 +182,131 @@ def profile_admin():
     if session.get("role") != "admin":
         return redirect(url_for("login"))
     return render_template("admin/profile.html")
+
 @app.route('/user/profile')
 def user_profile():
     """Merender halaman profil pengguna, memerlukan login pengguna."""
-    # Anda bisa menambahkan logika untuk mengambil data profil pengguna dari database di sini
-    # Misalnya: user_data = get_user_data_from_db()
-    # before_request akan menangani pengalihan jika sesi tidak valid
     if "username" not in session:
         return redirect(url_for("login"))
-    return render_template("user/profile.html") #, user=user_data)
+    return render_template("user/profile.html")
+
+# --- Fungsi baru untuk mengambil data profil dari backend ---
+def fetch_profile_from_backend(is_retry=False):
+    """
+    Mengambil data profil pengguna dari backend API.
+    Args:
+        is_retry (bool): Menunjukkan apakah ini percobaan ulang setelah refresh token.
+    Returns:
+        tuple: Sebuah tuple yang berisi (boolean_sukses, data_profil, kode_status).
+    """
+    if "username" not in session:
+        print("DEBUG: Sesi tidak valid, tidak ada username dalam sesi.")
+        return False, "Sesi tidak valid, silakan login kembali.", 401
+
+    access_token = session.get('access_token')
+
+    if not access_token:
+        print("DEBUG: Tidak ada access_token dalam sesi. Pengguna mungkin tidak login atau tidak diotorisasi API.")
+        return False, "Autentikasi gagal, silakan login kembali atau hubungi admin.", 401
+
+    headers = {"Authorization": f"Bearer {access_token}"}
+    full_api_url = f"{API_BASE_URL}auth/profile/"
+    
+    print(f"\n--- DEBUG: Mengambil profil dari API Backend ---")
+    print(f"URL: {full_api_url}")
+    print(f"Method: GET")
+    print(f"Percobaan Ulang: {is_retry}")
+
+    try:
+        response = requests.get(full_api_url, headers=headers, timeout=30)
+        
+        print(f"--- DEBUG: Respons dari API Backend ---")
+        print(f"Status Code: {response.status_code}")
+        
+        try:
+            response_data = response.json()
+            print(f"Response JSON: {json.dumps(response_data, indent=2)}")
+        except json.JSONDecodeError:
+            response_data = {"message": response.text}
+            print(f"Response Text (bukan JSON): {response.text}")
+        
+        if response.status_code == 401 and not is_retry:
+            print("DEBUG: Menerima 401. Mencoba refresh token dan mengulang permintaan profil.")
+            if refresh_access_token():
+                return fetch_profile_from_backend(is_retry=True)
+            else:
+                print("DEBUG: Gagal refresh token. Memaksa logout.")
+                session.clear()
+                return False, "Sesi kedaluwarsa atau tidak valid. Silakan login kembali.", 401
+        
+        if 200 <= response.status_code < 300:
+            return True, response_data, response.status_code
+        else:
+            error_message = response_data.get("message", "Gagal mengambil data profil.")
+            if isinstance(response_data, dict):
+                for key, value in response_data.items():
+                    if key != "message":
+                        if isinstance(value, list):
+                            error_message += f"\n{key}: {', '.join(value)}"
+                        else:
+                            error_message += f"\n{key}: {value}"
+            return False, error_message, response.status_code
+    except requests.exceptions.ConnectionError as e:
+        print(f"DEBUG: Kesalahan Koneksi saat mengambil profil: {e}")
+        return False, f"Gagal terhubung ke server API (koneksi ditolak atau server tidak tersedia): {e}", 500
+    except requests.exceptions.Timeout as e:
+        print(f"DEBUG: Permintaan profil ke API Backend timeout: {e}")
+        return False, f"Permintaan profil ke server API melebihi batas waktu: {e}", 504
+    except requests.exceptions.RequestException as e:
+        print(f"DEBUG: Terjadi kesalahan saat mengirim permintaan profil ke server API: {e}")
+        return False, f"Terjadi kesalahan saat mengirim permintaan profil ke server API: {e}", 500
+    except json.JSONDecodeError:
+        print(f"DEBUG: Respon API profil bukan JSON yang valid atau kosong.")
+        return False, "Respon API profil bukan JSON yang valid atau kosong.", 500
+
+
+# --- Rute API untuk Profil Pengguna ---
+@app.route('/api/user/profile', methods=['GET'])
+def get_user_profile_api():
+    """
+    Mengambil data profil pengguna dari backend API.
+    """
+    if "username" not in session:
+        return jsonify({"success": False, "message": "Sesi tidak valid, silakan login kembali."}), 401
+
+    # Memanggil fungsi baru yang terpisah untuk GET profil
+    success, message, status_code = fetch_profile_from_backend()
+    
+    if success:
+        return jsonify(message), status_code
+    else:
+        return jsonify({"success": False, "message": message}), status_code
+
+@app.route('/api/user/profile/update', methods=['PUT'])
+def update_user_profile_api():
+    """
+    Memperbarui data profil pengguna di backend API.
+    Menerima payload JSON dari frontend.
+    """
+    if "username" not in session:
+        return jsonify({"success": False, "message": "Sesi tidak valid, silakan login kembali."}), 401
+
+    # Ambil data JSON dari request body
+    data_to_update = request.get_json()
+    if not data_to_update:
+        return jsonify({"success": False, "message": "Tidak ada data yang diberikan untuk pembaruan."}), 400
+
+    success, message, status_code = send_report_to_backend(
+        endpoint_path="auth/profile/update/",
+        method="PUT",
+        json_payload=data_to_update
+    )
+
+    if success:
+        return jsonify(message), status_code # message di sini adalah respons JSON dari BE
+    else:
+        return jsonify({"success": False, "message": message}), status_code
+
 
 @app.route("/admin/add_bank", methods=["POST"])
 def add_bank():
@@ -270,12 +389,13 @@ def refresh_access_token():
         print(f"DEBUG: Kesalahan saat memperbarui token: {e}")
         return False
 
-def send_report_to_backend(endpoint_path, form_data=None, file_obj=None, is_retry=False, json_payload=None):
+def send_report_to_backend(endpoint_path, method="POST", form_data=None, file_obj=None, is_retry=False, json_payload=None):
     """
     Fungsi generik untuk mengirim data laporan dan file ke API backend.
     Mencakup logika percobaan ulang dengan refresh token.
     Args:
         endpoint_path (str): Jalur endpoint API tertentu (misalnya, "laporan/fraud/submit").
+        method (str): Metode HTTP (GET, POST, PUT, dll.). Default: "POST".
         form_data (dict, optional): Kamus bidang formulir dan nilainya (untuk multipart/form-data). Defaults to None.
         file_obj (werkzeug.datastructures.FileStorage, optional): Objek file yang diunggah. Defaults to None.
         is_retry (bool): Menunjukkan apakah ini percobaan ulang setelah refresh token.
@@ -298,20 +418,18 @@ def send_report_to_backend(endpoint_path, form_data=None, file_obj=None, is_retr
     full_api_url = f"{API_BASE_URL}{endpoint_path}"
     print(f"\n--- DEBUG: Mengirim permintaan ke API Backend ---")
     print(f"URL: {full_api_url}")
+    print(f"Method: {method}")
     print(f"Headers (tanpa token): {json.dumps({k: v for k, v in headers.items() if k != 'Authorization'}, indent=2)}")
 
     request_kwargs = {}
-    # Menambahkan timeout untuk permintaan
     request_kwargs["timeout"] = 30 # Timeout 30 detik
 
-    if json_payload is not None: # Use 'is not None' for explicit check
-        # Jika ada json_payload, kirim sebagai application/json
+    if json_payload is not None:
         headers["Content-Type"] = "application/json"
         body = json.dumps(json_payload)
         print(f"Request Body (JSON): {body}")
         request_kwargs["json"] = json_payload
-    elif form_data is not None: # Gunakan elif dan cek form_data is not None
-        # Jika tidak ada json_payload, kirim sebagai multipart/form-data
+    elif form_data is not None:
         data_to_send = {}
         for key, value in form_data.items():
             data_to_send[key] = str(value) if value is not None else ''
@@ -335,13 +453,14 @@ def send_report_to_backend(endpoint_path, form_data=None, file_obj=None, is_retr
         print(f"Files: {files.keys() if files else 'No files'}")
         request_kwargs["data"] = data_to_send
         request_kwargs["files"] = files
-    else: # Jika tidak ada form_data dan tidak ada json_payload, ini mungkin GET request atau POST tanpa body
-        print("DEBUG: Tidak ada form_data atau json_payload yang disediakan.")
+    else:
+        print("DEBUG: Tidak ada form_data, json_payload, atau file yang disediakan.")
 
     print(f"Percobaan Ulang: {is_retry}")
 
     try:
-        response = requests.post(full_api_url, headers=headers, **request_kwargs)
+        # Menggunakan requests.request untuk mendukung berbagai metode HTTP
+        response = requests.request(method, full_api_url, headers=headers, **request_kwargs)
         
         print(f"--- DEBUG: Respons dari API Backend ---")
         print(f"Status Code: {response.status_code}")
@@ -357,19 +476,20 @@ def send_report_to_backend(endpoint_path, form_data=None, file_obj=None, is_retr
         if response.status_code == 401 and not is_retry:
             print("DEBUG: Menerima 401. Mencoba refresh token dan mengulang permintaan.")
             if refresh_access_token():
-                return send_report_to_backend(endpoint_path, form_data, file_obj, is_retry=True, json_payload=json_payload)
+                # Ulangi permintaan dengan token baru
+                return send_report_to_backend(endpoint_path, method, form_data, file_obj, is_retry=True, json_payload=json_payload)
             else:
                 print("DEBUG: Gagal refresh token. Memaksa logout.")
                 session.clear()
                 return False, "Sesi kedaluwarsa atau tidak valid. Silakan login kembali.", 401
         
-        if response.status_code == 201: # 201 Created for successful submissions
-            return True, response_data.get("message", "Laporan berhasil dikirim!"), 201
+        # Periksa status code untuk sukses
+        if 200 <= response.status_code < 300: # 2xx codes indicate success
+            return True, response_data, response.status_code # Mengembalikan response_data penuh
         else:
             error_message = response_data.get("message", "Gagal mengirim laporan.")
             if isinstance(response_data, dict):
                 for key, value in response_data.items():
-                    # Concatenate error messages from backend, especially for validation errors
                     if key != "message":
                         if isinstance(value, list):
                             error_message += f"\n{key}: {', '.join(value)}"
@@ -379,9 +499,9 @@ def send_report_to_backend(endpoint_path, form_data=None, file_obj=None, is_retr
     except requests.exceptions.ConnectionError as e:
         print(f"DEBUG: Kesalahan Koneksi: {e}")
         return False, f"Gagal terhubung ke server API (koneksi ditolak atau server tidak tersedia): {e}", 500
-    except requests.exceptions.Timeout as e: # Menangani Timeout secara eksplisit
+    except requests.exceptions.Timeout as e:
         print(f"DEBUG: Permintaan ke API Backend timeout: {e}")
-        return False, f"Permintaan ke server API melebihi batas waktu: {e}", 504 # 504 Gateway Timeout
+        return False, f"Permintaan ke server API melebihi batas waktu: {e}", 504
     except requests.exceptions.RequestException as e:
         print(f"DEBUG: Terjadi kesalahan saat mengirim permintaan ke server API: {e}")
         return False, f"Terjadi kesalahan saat mengirim permintaan ke server API: {e}", 500
@@ -414,7 +534,7 @@ def submit_laporan_fraud():
     # Mengambil file menggunakan nama 'file' sesuai API
     file_laporan = request.files.get("file")  
 
-    success, message, status_code = send_report_to_backend("laporan/fraud/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/fraud/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 @app.route("/form/laporan-fraud")
@@ -449,7 +569,7 @@ def submit_laporan_dttot():
     }
     file_laporan = request.files.get("file") # Nama field di form sekarang adalah 'file' sesuai API
 
-    success, message, status_code = send_report_to_backend("laporan/dttot/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/dttot/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 @app.route("/form/laporan-dttot")
@@ -476,14 +596,14 @@ def submit_laporan_keuangan_tahunan():
     Menangani pengiriman Laporan Keuangan Tahunan Audited.
     """
     try:
-        # Tanggal surat dan tanggal opini harus dalam format YYYY-MM-DD
-        # Input HTML type="date" sudah mengirimkan dalam format YYYY-MM-DD
+        # Tanggal surat dan tanggal opini harus dalam formatYYYY-MM-DD
+        # Input HTML type="date" sudah mengirimkan dalam formatYYYY-MM-DD
         formatted_tanggal_surat = request.form.get("tanggal_surat")
         
         tanggal_opini = request.form.get("tanggal_opini")
         formatted_tanggal_opini = ''
         if tanggal_opini:
-            formatted_tanggal_opini = tanggal_opini # Sudah dalam YYYY-MM-DD dari input type="date"
+            formatted_tanggal_opini = tanggal_opini # Sudah dalamYYYY-MM-DD dari input type="date"
 
     except ValueError:
         # Ini seharusnya tidak terjadi jika input type="date" digunakan dengan benar
@@ -505,7 +625,7 @@ def submit_laporan_keuangan_tahunan():
         total_ekuitas = int(request.form.get("total_ekuitas"))  
         total_pendapatan = int(request.form.get("total_pendapatan"))
         pendapatan_fee = int(request.form.get("pendapatan_fee")) # Sesuai API doc
-        total_beban = int(request.form.get("total_beban"))
+        total_beban = int(request.form.get("total_beban")) # Sesuai API doc
         beban_operasional = int(request.form.get("beban_operasional")) # Sesuai API doc
         laba = int(request.form.get("laba"))
         rugi = int(request.form.get("rugi"))
@@ -516,7 +636,7 @@ def submit_laporan_keuangan_tahunan():
     form_data = {
         "tahun_laporan": tahun_laporan, 
         "nomor_surat": request.form.get("nomor_surat"),
-        "tanggal_surat": formatted_tanggal_surat, # Dikirim sebagai YYYY-MM-DD
+        "tanggal_surat": formatted_tanggal_surat, # Dikirim sebagaiYYYY-MM-DD
         "jenis_audit": request.form.get("jenis_audit"),  # Sesuai API doc
         "nama_kap": request.form.get("nama_kap"),  # Sesuai API doc
         "tanggal_opini": formatted_tanggal_opini,  # Sesuai API doc
@@ -540,7 +660,7 @@ def submit_laporan_keuangan_tahunan():
     }
     file_laporan = request.files.get("file") # Sesuai API doc
 
-    success, message, status_code = send_report_to_backend("laporan/keuangan-tahunan/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/keuangan-tahunan/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 @app.route("/form/laporan-keuangan-triwulan")
@@ -610,7 +730,7 @@ def submit_laporan_keuangan_triwulan():
     }
     file_laporan = request.files.get("file") # Sesuai tabel
 
-    success, message, status_code = send_report_to_backend("laporan/keuangan-triwulanan/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/keuangan-triwulanan/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Gangguan IT ---
@@ -668,7 +788,7 @@ def submit_laporan_gangguanit():
 
     file_laporan = request.files.get("file") # Nama field di form sekarang adalah 'file' sesuai API
 
-    success, message, status_code = send_report_to_backend("laporan/gangguan-it/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/gangguan-it/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Keamanan Siber --- (Not in detailed spec, inferring based on existing app.py code)
@@ -696,7 +816,7 @@ def submit_laporan_keamanan_siber():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/keamanan-siber/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/keamanan-siber/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Kepatuhan IT --- (Not in detailed spec, inferring based on existing app.py code)
@@ -724,7 +844,7 @@ def submit_laporan_kepatuhan_it():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/kepatuhan-it/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/kepatuhan-it/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Manajemen Risiko IT --- (Not in detailed spec, inferring based on existing app.py code)
@@ -752,7 +872,7 @@ def submit_laporan_manajemen_risiko_it():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/manajemen-risiko-it/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/manajemen-risiko-it/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Insiden Siber --- (Not in detailed spec, inferring based on existing app.py code)
@@ -781,7 +901,7 @@ def submit_laporan_insiden_siber():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/insiden-siber/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/insiden-siber/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Risiko IT (Kuartal) --- (Not in detailed spec, inferring based on existing app.py code)
@@ -811,7 +931,7 @@ def submit_laporan_risiko_it():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/risiko-it/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/risiko-it/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Tata Kelola IT (Semester) --- (Not in detailed spec, inferring based on existing app.py code)
@@ -839,7 +959,7 @@ def submit_laporan_tata_kelola_it():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/tata-kelola-it/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/tata-kelola-it/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Rencana Strategis IT (Tahunan) --- (Not in detailed spec, inferring based on existing app.py code)
@@ -867,7 +987,7 @@ def submit_laporan_rencana_strategis_it():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/rencana-strategis-it/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/rencana-strategis-it/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Pengelolaan Data Pribadi (Tahunan) --- (Not in detailed spec, inferring based on existing app.py code)
@@ -895,7 +1015,7 @@ def submit_laporan_pengelolaan_data_pribadi():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/pengelolaan-data-pribadi/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/pengelolaan-data-pribadi/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Implementasi Kebijakan IT (Tahunan) --- (Not in detailed spec, inferring based on existing app.py code)
@@ -924,7 +1044,7 @@ def submit_laporan_implementasi_kebijakan_it():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/implementasi-kebijakan-it/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/implementasi-kebijakan-it/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Ketersediaan Layanan IT (Tahunan) --- (Not in detailed spec, inferring based on existing app.py code)
@@ -954,7 +1074,7 @@ def submit_laporan_ketersediaan_layanan_it():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/ketersediaan-layanan-it/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/ketersediaan-layanan-it/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Laporan Keamanan Informasi (Tahunan) --- (Not in detailed spec, inferring based on existing app.py code)
@@ -982,7 +1102,7 @@ def submit_laporan_keamanan_informasi():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/keamanan-informasi/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/keamanan-informasi/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 
@@ -1043,7 +1163,7 @@ def submit_laporan_apuppt():
     }
     file_laporan = request.files.get("file") # Sesuai HTML
 
-    success, message, status_code = send_report_to_backend("laporan/apuppt/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/apuppt/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 
@@ -1059,19 +1179,19 @@ def submit_laporan_auditsi():
     Menangani pengiriman Laporan Audit Sistem Informasi.
     """
     try:
-        # Tanggal harus dalam format YYYY-MM-DD untuk API
-        # HTML input type="date" sudah mengirimkan dalam format YYYY-MM-DD
+        # Tanggal harus dalam formatYYYY-MM-DD untuk API
+        # HTML input type="date" sudah mengirimkan dalam formatYYYY-MM-DD
         formatted_tanggal_surat = request.form.get("tanggal_surat")
         formatted_tanggal_selesai_audit = request.form.get("tanggal_selesai_audit")
     except ValueError:
         # Ini seharusnya tidak terjadi jika input type="date" digunakan dengan benar
-        return jsonify({"success": False, "message": "Format tanggal tidak valid. Harap gunakan YYYY-MM-DD."}), 400
+        return jsonify({"success": False, "message": "Format tanggal tidak valid. Harap gunakanYYYY-MM-DD."}), 400
 
     form_data = {
         "tahun_laporan": int(request.form.get("tahun_laporan")), # Sesuai API doc
         "nomor_surat": request.form.get("nomor_surat"),
-        "tanggal_surat": formatted_tanggal_surat, # Dikirim sebagai YYYY-MM-DD
-        "tanggal_selesai_audit": formatted_tanggal_selesai_audit, # Dikirim sebagai YYYY-MM-DD
+        "tanggal_surat": formatted_tanggal_surat, # Dikirim sebagaiYYYY-MM-DD
+        "tanggal_selesai_audit": formatted_tanggal_selesai_audit, # Dikirim sebagaiYYYY-MM-DD
         "nama_auditor": request.form.get("nama_auditor"),
         "confidentiality": int(request.form.get("confidentiality")),
         "keterangan_confidentiality": request.form.get("keterangan_confidentiality"),
@@ -1092,7 +1212,7 @@ def submit_laporan_auditsi():
     }
     file_laporan = request.files.get("file") # Nama field di form sekarang adalah 'file' sesuai API
 
-    success, message, status_code = send_report_to_backend("laporan/audit-sistem-informasi/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/audit-sistem-informasi/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 
@@ -1136,7 +1256,7 @@ def submit_laporan_dana_bukan_bank():
     
     file_laporan = request.files.get("file")
 
-    success, message, status_code = send_report_to_backend("laporan/ltdbb/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/ltdbb/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Rute KPSP Baru (menggunakan perhitungan frontend) ---
@@ -1198,7 +1318,7 @@ def submit_laporan_kpsp():
     file_laporan = request.files.get("file_laporan")
 
     # Menggunakan fungsi send_report_to_backend
-    success, message, status_code = send_report_to_backend("laporan/kpsp/submit", payload, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/kpsp/submit", json_payload=payload, file_obj=file_laporan, method="POST")
 
     return jsonify({"success": success, "message": message}), status_code
 
@@ -1266,7 +1386,7 @@ def submit_laporan_manajemen():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/manajemen-dan-pengawasan/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/manajemen-dan-pengawasan/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 
@@ -1310,8 +1430,9 @@ def submit_laporan_p2p():
     # Panggil send_report_to_backend untuk Header Laporan
     success_header, message_header, status_code_header = send_report_to_backend(
         "laporan/kerjasama-p2p/submit",
-        header_form_data,
-        file_laporan
+        form_data=header_form_data,
+        file_obj=file_laporan,
+        method="POST"
     )
 
     if not success_header:
@@ -1352,9 +1473,8 @@ def submit_laporan_p2p():
     # Panggil send_report_to_backend untuk Detail Perusahaan (menggunakan json_payload)
     success_detail, message_detail, status_code_detail = send_report_to_backend(
         "laporan/kerjasama-p2p/perusahaan/submit",
-        form_data=None, # form_data kosong karena ini adalah JSON payload
-        file_obj=None, # Tidak ada file untuk pengiriman detail perusahaan
-        json_payload=detail_payload
+        json_payload=detail_payload,
+        method="POST"
     )
 
     if not success_detail:
@@ -1395,7 +1515,7 @@ def submit_laporan_pelaksanaan_edukasi_publik():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/pelaksanaan-edukasi-publik/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/pelaksanaan-edukasi-publik/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 @app.route("/form/laporan-pelaksanaan-pengujian-keamanan")
@@ -1411,7 +1531,7 @@ def submit_laporan_pelaksanaan_pengujian_keamanan():
     Menangani pengiriman Laporan Pelaksanaan Pengujian Keamanan (Penetration Test).
     """
     try:
-        # Menggunakan nilai langsung dari request.form.get() karena sudah dalam format YYYY-MM-DD
+        # Menggunakan nilai langsung dari request.form.get() karena sudah dalam formatYYYY-MM-DD
         formatted_tanggal_surat = request.form.get("tanggal_surat")
         formatted_tanggal_selesai_audit = request.form.get("tanggal_selesai_audit")
         
@@ -1425,13 +1545,13 @@ def submit_laporan_pelaksanaan_pengujian_keamanan():
         datetime.strptime(formatted_tanggal_selesai_audit, '%Y-%m-%d')
 
     except ValueError as e:
-        return jsonify({"success": False, "message": f"Format tanggal tidak valid: {e}. Harap gunakan format YYYY-MM-DD."}), 400
+        return jsonify({"success": False, "message": f"Format tanggal tidak valid: {e}. Harap gunakan formatYYYY-MM-DD."}), 400
 
     form_data = {
         "tahun_laporan": int(request.form.get("tahun_laporan")), # Menggunakan "tahun_laporan" sesuai HTML
         "nomor_surat": request.form.get("nomor_surat"),
-        "tanggal_surat": formatted_tanggal_surat, # Dikirim dalam format YYYY-MM-DD
-        "tanggal_selesai_audit": formatted_tanggal_selesai_audit, # Dikirim dalam format YYYY-MM-DD
+        "tanggal_surat": formatted_tanggal_surat, # Dikirim dalam formatYYYY-MM-DD
+        "tanggal_selesai_audit": formatted_tanggal_selesai_audit, # Dikirim dalam formatYYYY-MM-DD
         "nama_auditor": request.form.get("nama_auditor"), # Menambahkan nama_auditor
         "temuan_low": int(request.form.get("temuan_low") or 0), # Added or 0 to handle None
         "keterangan_temuan_low": request.form.get("keterangan_temuan_low"), # Menambahkan keterangan
@@ -1451,7 +1571,7 @@ def submit_laporan_pelaksanaan_pengujian_keamanan():
     }
     file_laporan = request.files.get("file") # Menggunakan "file" sesuai HTML dan API
 
-    success, message, status_code = send_report_to_backend("laporan/pelaksanaan-pengujian-keamanan/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/pelaksanaan-pengujian-keamanan/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 @app.route("/form/laporan-pppk")
@@ -1488,7 +1608,7 @@ def submit_laporan_pppk():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/penanganan-pengaduan-konsumen/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/penanganan-pengaduan-konsumen/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 
@@ -1533,7 +1653,7 @@ def submit_laporan_rencana_edukasi_publik():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/rencana-edukasi-publik/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/rencana-edukasi-publik/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 @app.route("/form/laporan-sksp-tahunan")
@@ -1614,7 +1734,7 @@ def submit_laporan_sksp_tahunan():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/standar-kompetensi-sp/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/standar-kompetensi-sp/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 @app.route("/form/laporan-sksp-triwulan")
@@ -1685,7 +1805,7 @@ def submit_laporan_sksp_triwulan():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/standar-kompetensi-sp/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/standar-kompetensi-sp/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 
@@ -1721,7 +1841,7 @@ def submit_laporan_tahunan_sp():
     }
     file_laporan = request.files.get("file_laporan")
 
-    success, message, status_code = send_report_to_backend("laporan/tahunan-sp/submit", form_data, file_laporan)
+    success, message, status_code = send_report_to_backend("laporan/tahunan-sp/submit", form_data=form_data, file_obj=file_laporan, method="POST")
     return jsonify({"success": success, "message": message}), status_code
 
 # --- Rute Laporan RBA APU PPT (Baru Ditambahkan) ---
@@ -1998,7 +2118,8 @@ def submit_laporan_rba_apu_ppt():
         success, message, status_code = send_report_to_backend(
             "laporan/rba-apu-ppt/submit", # Ganti dengan endpoint API yang sesuai
             form_data=flat_form_data,
-            file_obj=main_file_to_send
+            file_obj=main_file_to_send,
+            method="POST"
         )
 
         # Setelah berhasil mengirim data, hapus file yang diunggah dari server lokal
@@ -2029,4 +2150,3 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
