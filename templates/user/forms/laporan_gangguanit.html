@@ -485,46 +485,63 @@
                 body: formData,
                 headers: { 'Accept': 'application/json' }
             })
-            .then(response => {
+            .then(async response => { // Menggunakan async/await untuk penanganan respons yang lebih baik
+                // Sembunyikan spinner dan overlay setelah respons diterima
                 submitButton.disabled = false;
                 submitText.textContent = 'Kirim Laporan';
                 submitSpinner.classList.add('d-none');
                 loadingOverlay.classList.add('d-none');
 
-                if (!response.ok) {
-                    return response.json().then(errorData => {
-                        // Check if errorData is a string (e.g., from Django REST Framework validation errors)
-                        if (typeof errorData === 'string' && errorData.startsWith("{'")) {
-                            try {
-                                const parsedError = JSON.parse(errorData.replace(/'/g, '"')); // Replace single quotes for valid JSON
-                                throw new Error(parsedError.message || JSON.stringify(parsedError));
-                            } catch (e) {
-                                // Fallback if parsing fails
-                                throw new Error(errorData || 'Gagal mengirim laporan (respons tidak valid dari server).');
-                            }
-                        }
-                        throw new Error(errorData.message || JSON.stringify(errorData) || 'Gagal mengirim laporan (status non-2xx)');
-                    }).catch(jsonError => {
-                        console.error("Error parsing JSON from non-OK response:", jsonError);
-                        return response.text().then(text => {
-                            throw new new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
-                        });
-                    });
+                let responseData;
+                let errorMessage = 'Terjadi kesalahan tidak dikenal.';
+
+                try {
+                    // Coba parse respons sebagai JSON terlebih dahulu
+                    responseData = await response.json();
+                } catch (jsonError) {
+                    // Jika parsing JSON gagal, coba dapatkan teks mentah
+                    try {
+                        errorMessage = await response.text();
+                        // Potong pesan jika terlalu panjang
+                        errorMessage = errorMessage.substring(0, 200) + (errorMessage.length > 200 ? '...' : '');
+                    } catch (textError) {
+                        errorMessage = 'Gagal membaca respons server.';
+                    }
+                    // Lempar Error baru agar ditangkap oleh blok .catch() di luar
+                    throw new Error(errorMessage);
                 }
-                return response.json();
+
+                // Jika respons tidak OK (misalnya, status 4xx atau 5xx)
+                if (!response.ok) {
+                    // Gunakan pesan dari data JSON yang sudah di-parse, atau pesan generik
+                    errorMessage = responseData.message || JSON.stringify(responseData) || 'Gagal mengirim laporan (status non-2xx).';
+                    // Jika backend membungkus pesan dalam kunci 'message' bersarang (seperti data.message.message)
+                    if (responseData.message && typeof responseData.message === 'object' && responseData.message.message) {
+                        errorMessage = responseData.message.message;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                // Jika respons OK (status 2xx)
+                return responseData;
             })
             .then(data => {
-                // Access data.message.message if the backend wraps the message in a 'message' key
+                // Blok ini hanya tercapai jika response.ok adalah true dan JSON berhasil di-parse
+                // Akses data.message.message jika backend membungkus pesan dalam kunci 'message'
                 if (data.success) {
                     showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
                     form.reset();
-                    // Re-initialize toggle for waktu_penyelesaian after form reset
+                    // Inisialisasi ulang toggle untuk waktu_penyelesaian setelah reset formulir
                     toggleWaktuPenyelesaian(); 
                 } else {
-                    showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
+                    // Kasus ini seharusnya ditangani oleh blok !response.ok,
+                    // tetapi sebagai fallback, jika success: false ada dalam respons 200 OK.
+                    // data.message di sini adalah string dari send_report_to_backend's error_message
+                    showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
                 }
             })
             .catch(error => {
+                // Ini menangkap semua kesalahan dari rantai, termasuk kesalahan jaringan dan Error yang dilempar secara kustom
                 console.error('Error:', error);
                 submitButton.disabled = false;
                 submitText.textContent = 'Kirim Laporan';

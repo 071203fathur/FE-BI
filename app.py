@@ -261,10 +261,10 @@ def fetch_profile_from_backend(is_retry=False):
             return False, error_message, response.status_code
     except requests.exceptions.ConnectionError as e:
         print(f"DEBUG: Kesalahan Koneksi saat mengambil profil: {e}")
-        return False, f"Gagal terhubung ke server API (koneksi ditolak atau server tidak tersedia): {e}", 500
+        return False, f"Gagal terhubung ke server API (koneksi ditolak atau server tidak tersedia)", 500
     except requests.exceptions.Timeout as e:
         print(f"DEBUG: Permintaan profil ke API Backend timeout: {e}")
-        return False, f"Permintaan ke server API melebihi batas waktu: {e}", 504
+        return False, f"Permintaan ke server API melebihi batas waktu (Time Out)", 504
     except requests.exceptions.RequestException as e:
         print(f"DEBUG: Terjadi kesalahan saat mengirim permintaan profil ke server API: {e}")
         return False, f"Terjadi kesalahan saat mengirim permintaan profil ke server API: {e}", 500
@@ -506,13 +506,13 @@ def send_report_to_backend(endpoint_path, method="POST", form_data=None, file_ob
             return False, error_message, response.status_code
     except requests.exceptions.ConnectionError as e:
         print(f"DEBUG: Kesalahan Koneksi: {e}")
-        return False, f"Gagal terhubung ke server API (koneksi ditolak atau server tidak tersedia): {e}", 500
+        return False, f"Gagal terhubung ke server API (koneksi ditolak atau server tidak tersedia)", 500
     except requests.exceptions.Timeout as e:
         print(f"DEBUG: Permintaan ke API Backend timeout: {e}")
-        return False, f"Permintaan ke server API melebihi batas waktu: {e}", 504
+        return False, f"Permintaan ke server API melebihi batas waktu", 504
     except requests.exceptions.RequestException as e:
         print(f"DEBUG: Terjadi kesalahan saat mengirim permintaan ke server API: {e}")
-        return False, f"Terjadi kesalahan saat mengirim permintaan ke server API: {e}", 500
+        return False, f"Terjadi kesalahan saat mengirim permintaan ke server API", 500
     except json.JSONDecodeError:
         print(f"DEBUG: Respon API bukan JSON yang valid atau kosong.")
         return False, "Respon API bukan JSON yang valid atau kosong.", 500
