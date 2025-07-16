@@ -855,26 +855,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Download Excel Template Logic
     downloadTemplateBtn.addEventListener('click', function() {
-        const csvHeaders = [
-            'Nama Perusahaan',
-            'Peran PJP (Dropdown)',
-            'Peran PJP Kustom (Jika Lainnya)',
-            'Tanggal Mulai Kerjasama (YYYY-MM-DD)',
-            'Tanggal Akhir Kerjasama (YYYY-MM-DD)',
-            'Keterangan Perusahaan'
-        ];
-        const csvContent = csvHeaders.join(',') + "\n";
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = "Template_Daftar_Perusahaan_P2P.csv";
+        const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/1XUiduyavOkhMaDr_Keuh8NJXsWoJzZzKSPQH95baH48/edit?usp=sharing";
         
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // Open the Google Sheet URL in a new tab
+        window.open(spreadsheetUrl, '_blank');
 
-        showMessageBox('Template CSV telah diunduh. Harap diperhatikan bahwa file CSV tidak mendukung fitur dropdown atau date picker di dalamnya.', 'success');
+        // Show a message to the user
+        showMessageBox('Template Google Sheets telah dibuka di tab baru. Silakan salin data dari sana untuk digunakan.', 'success');
     });
+
 
     // Ensure remove buttons are visible if there's more than 1 company on page load
     updateCompanyNumbersAndRemoveButtons();
@@ -1020,15 +1009,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 }).catch(jsonError => {
                     console.error("Error parsing JSON from non-OK response:", jsonError);
                     return response.text().then(text => {
-                        throw new Error(`Gagal mengirim laporan. Server response: ${text.substring(0, 100)}...`);
+                        throw new new Error(`Gagal mengirim laporan. Server response: ${text.substring(0, 100)}...`);
                     });
                 });
             }
             return response.json();
         })
         .then(data => {
+            // Access data.message.message if the backend wraps the message in a 'message' key
             if (data.success) {
-                showMessageBox(data.message || 'Laporan Kerjasama P2P berhasil dikirim!', 'success');
+                showMessageBox(data.message.message || 'Laporan Kerjasama P2P berhasil dikirim!', 'success');
                 form.reset();
                 // Reset company list back to one default item
                 companyListContainer.innerHTML = '';
@@ -1036,7 +1026,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateCompanyNumbersAndRemoveButtons();
             } else {
                 // If backend indicates failure, show error message
-                throw new Error(data.message || 'Gagal mengirim laporan.');
+                throw new Error(data.message.message || 'Gagal mengirim laporan.');
             }
         })
         .catch(error => {

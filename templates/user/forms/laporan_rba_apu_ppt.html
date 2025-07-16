@@ -37,7 +37,8 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         padding: 0;
         margin-bottom: 1rem; /* Reduced margin */
-        overflow: hidden;
+        /* Perubahan: Mengomentari properti overflow: hidden; */
+        /* overflow: hidden; */
     }
 
     .section-group .section-header {
@@ -243,6 +244,7 @@
         position: relative;
         display: inline-block;
         margin-left: 0.3rem; /* Reduced space between label and icon */
+        z-index: 10; /* Perubahan: Menambahkan z-index */
     }
 
     .tooltip-icon {
@@ -266,7 +268,10 @@
 
     .tooltip-text {
         visibility: hidden;
-        width: 220px; /* Reduced width */
+        /* Perubahan: Mengubah width menjadi max-content */
+        width: max-content;
+        /* Perubahan: Menambahkan max-width */
+        max-width: 300px;
         background-color: #333;
         color: #fff;
         text-align: center;
@@ -276,12 +281,16 @@
         z-index: 1;
         bottom: 120%; /* Position above the icon */
         left: 50%;
-        margin-left: -110px; /* Center the tooltip */
+        /* Perubahan: Mengubah margin-left menjadi 0 dan menambahkan transform */
+        margin-left: 0;
+        transform: translateX(-50%);
         opacity: 0;
         transition: opacity 0.3s, visibility 0.3s;
         font-size: 0.85rem; /* Reduced font size */
         line-height: 1.3; /* Reduced line height */
         box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* Reduced shadow */
+        /* Perubahan: Menambahkan white-space: normal; */
+        white-space: normal;
     }
 
     .tooltip-text::after {
@@ -354,7 +363,7 @@
     <h2 class="tw-text-2xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-3 tw-mb-4">
         Formulir Laporan RBA APU PPT
     </h2>
-    <p class="tw-text-gray-600 tw-text-center tw-mb-4 tw-text-sm">Penyampaian Data RBA APU PPT Penyelenggara KUPVA BB dan PJP LR - Tahun 2025 (Periode Data Tahun 2024)</p>
+    <p class="tw-text-gray-600 tw-text-center tw-mb-4 tw-text-sm">Penyampaian Data RBA APU PPT Penyelenggara KUPVA BB dan PJP LR</p>
 
     <form id="rbaApuPptForm" action="{{ url_for('submit_laporan_rba_apu_ppt') }}" method="POST" enctype="multipart/form-data" class="tw-space-y-4">
         <!-- Informasi Umum Penginput -->
@@ -362,6 +371,16 @@
             <h3 class="section-header">Informasi Penginput</h3>
             <div class="section-content">
                 <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-space-y-1">
+                        <label for="tahun_laporan" class="form-label">
+                            Tahun Laporan <span class="tw-text-red-500">*</span>
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" data-tooltip="Tahun periode laporan yang disampaikan.">!</span>
+                                <span class="tooltip-text"></span>
+                            </span>
+                        </label>
+                        <input type="number" id="tahun_laporan" name="tahun_laporan" class="form-input" placeholder="Contoh: 2025" min="2000" max="2100" required>
+                    </div>
                     <div class="tw-space-y-1">
                         <label for="nama_penginput" class="form-label">
                             Nama Penginput Data dan Informasi <span class="tw-text-red-500">*</span>
@@ -408,7 +427,7 @@
 
         <!-- Data Transaksi (Frekuensi) -->
         <div class="section-group">
-            <h3 class="section-header">Data Frekuensi Transaksi (1 Januari - 31 Desember 2024)</h3>
+            <h3 class="section-header">Data Frekuensi Transaksi (Periode Laporan)</h3>
             <div class="section-content">
                 <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-4 tw-gap-y-2">
                     <div class="tw-space-y-1">
@@ -447,7 +466,7 @@
 
         <!-- Data Transaksi (Nilai/Nominal) -->
         <div class="section-group">
-            <h3 class="section-header">Data Nilai/Nominal Transaksi (1 Januari - 31 Desember 2024)</h3>
+            <h3 class="section-header">Data Nilai/Nominal Transaksi (Periode Laporan)</h3>
             <div class="section-content">
                 <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-4 tw-gap-y-2">
                     <div class="tw-space-y-1">
@@ -577,7 +596,7 @@
         <!-- Data Nilai/Nominal Transaksi dari Negara High Risk Countries -->
         <div class="section-group">
             <h3 class="section-header">
-                Nilai/Nominal Transaksi dari Negara High Risk Countries (1 Januari - 31 Desember 2024)
+                Nilai/Nominal Transaksi dari Negara High Risk Countries (Periode Laporan)
                 <span class="tooltip-container">
                     <span class="tooltip-icon" data-tooltip="Masukkan nilai transaksi dari setiap negara berisiko tinggi yang terdaftar. Isi '0' jika tidak ada transaksi.">!</span>
                     <span class="tooltip-text"></span>
@@ -608,7 +627,7 @@
                             <label for="{{ type.replace(' ', '_').lower() }}_negara_lain" class="form-label">
                                 Negara-Negara lain yang tidak disebutkan diatas <span class="tw-text-red-500">*</span>
                             </label>
-                            <input type="number" id="{{ type.replace(' ', '_').lower() }}_negara_lain" name="{{ type.replace(' ', '_').lower() }}_negara_lain" class="form-input" value="0" min="0" placeholder="Contoh: 0" required>
+                            <input type="number" id="{{ type.replace(' ', '_').lower() }}_negara_lain" name="nilai_nominal_transaksi_high_risk_{{ type.replace(' ', '_').lower() }}_negara_lain" class="form-input" value="0" min="0" placeholder="Contoh: 0" required>
                         </div>
                     </div>
                 </div>
@@ -618,7 +637,7 @@
 
         <!-- Data Nasabah Berdasarkan Profesi -->
         <div class="section-group">
-            <h3 class="section-header">Jumlah Nasabah Berdasarkan Profesi (1 Januari - 31 Desember 2024)</h3>
+            <h3 class="section-header">Jumlah Nasabah Berdasarkan Profesi (Periode Laporan)</h3>
             <div class="section-content">
                 <p class="tw-text-gray-600 tw-mb-3 tw-text-sm">Masukkan jumlah nasabah (tidak dihitung frekuensi datang).</p>
                 {% set professions = [
@@ -654,7 +673,7 @@
 
         <!-- Data Nasabah Berdasarkan Status WNA/WNI -->
         <div class="section-group">
-            <h3 class="section-header">Jumlah Nasabah Berdasarkan Status WNA/WNI (per 31 Desember 2024)</h3>
+            <h3 class="section-header">Jumlah Nasabah Berdasarkan Status WNA/WNI (per 31 Desember Tahun Laporan)</h3>
             <div class="section-content">
                 <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
                     <div class="tw-space-y-1">
@@ -701,7 +720,7 @@
 
         <!-- Data Perusahaan -->
         <div class="section-group">
-            <h3 class="section-header">Data Perusahaan (per 31 Desember 2024)</h3>
+            <h3 class="section-header">Data Perusahaan (per 31 Desember Tahun Laporan)</h3>
             <div class="section-content">
                 <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
                     <div class="tw-space-y-1">
@@ -714,26 +733,126 @@
                         </label>
                         <input type="text" id="lokasi_kantor_pusat" name="lokasi_kantor_pusat" class="form-input" placeholder="Contoh: Jakarta Pusat" required>
                     </div>
+                    <!-- New fields for Jumlah Kantor Cabang -->
                     <div class="tw-space-y-1">
-                        <label for="jumlah_titik_layanan" class="form-label">
-                            Jumlah Titik Layanan <span class="tw-text-red-500">*</span>
-                            <span class="tooltip-container">
-                                <span class="tooltip-icon" data-tooltip="Total jumlah lokasi atau cabang layanan perusahaan.">!</span>
-                                <span class="tooltip-text"></span>
-                            </span>
+                        <label for="jumlah_kantor_cabang_dki_jakarta" class="form-label">
+                            Jumlah Kantor Cabang - DKI Jakarta <span class="tw-text-red-500">*</span>
                         </label>
-                        <input type="text" id="jumlah_titik_layanan" name="jumlah_titik_layanan" class="form-input" placeholder="Contoh: 1000 titik-Jawa Barat" required>
+                        <input type="number" id="jumlah_kantor_cabang_dki_jakarta" name="jumlah_kantor_cabang_dki_jakarta" class="form-input" placeholder="Contoh: 5" min="0" required>
                     </div>
                     <div class="tw-space-y-1">
-                        <label for="jumlah_mitra_kerjasama" class="form-label">
-                            Jumlah Mitra Kerjasama <span class="tw-text-red-500">*</span>
-                            <span class="tooltip-container">
-                                <span class="tooltip-icon" data-tooltip="Total jumlah mitra kerja sama yang dimiliki perusahaan.">!</span>
-                                <span class="tooltip-text"></span>
-                            </span>
+                        <label for="jumlah_kantor_cabang_jawa_barat" class="form-label">
+                            Jumlah Kantor Cabang - Jawa Barat <span class="tw-text-red-500">*</span>
                         </label>
-                        <input type="text" id="jumlah_mitra_kerjasama" name="jumlah_mitra_kerjasama" class="form-input" placeholder="Contoh: 10 Mitra kerja sama Dalam Negeri" required>
+                        <input type="number" id="jumlah_kantor_cabang_jawa_barat" name="jumlah_kantor_cabang_jawa_barat" class="form-input" placeholder="Contoh: 10" min="0" required>
                     </div>
+                    <div class="tw-space-y-1">
+                        <label for="jumlah_kantor_cabang_jawa_tengah" class="form-label">
+                            Jumlah Kantor Cabang - Jawa Tengah <span class="tw-text-red-500">*</span>
+                        </label>
+                        <input type="number" id="jumlah_kantor_cabang_jawa_tengah" name="jumlah_kantor_cabang_jawa_tengah" class="form-input" placeholder="Contoh: 8" min="0" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="jumlah_kantor_cabang_jawa_timur" class="form-label">
+                            Jumlah Kantor Cabang - Jawa Timur <span class="tw-text-red-500">*</span>
+                        </label>
+                        <input type="number" id="jumlah_kantor_cabang_jawa_timur" name="jumlah_kantor_cabang_jawa_timur" class="form-input" placeholder="Contoh: 12" min="0" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="jumlah_kantor_cabang_kepulauan_riau" class="form-label">
+                            Jumlah Kantor Cabang - Kepulauan Riau <span class="tw-text-red-500">*</span>
+                        </label>
+                        <input type="number" id="jumlah_kantor_cabang_kepulauan_riau" name="jumlah_kantor_cabang_kepulauan_riau" class="form-input" placeholder="Contoh: 3" min="0" required>
+                    </div>
+                    <div class="tw-space-y-1">
+                        <label for="jumlah_kantor_cabang_lainnya" class="form-label">
+                            Jumlah Kantor Cabang - Lainnya (Provinsi selain yang disebutkan sebelumnya) <span class="tw-text-red-500">*</span>
+                        </label>
+                        <input type="number" id="jumlah_kantor_cabang_lainnya" name="jumlah_kantor_cabang_lainnya" class="form-input" placeholder="Contoh: 7" min="0" required>
+                    </div>
+
+                    <!-- Jumlah Titik Layanan (One-to-Many) -->
+                    <div class="tw-col-span-full nested-section-group">
+                        <h4>Jumlah Titik Layanan</h4>
+                        <div id="titik_layanan_container">
+                            <!-- Initial entry for Titik Layanan -->
+                            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2 tw-mb-2 titik-layanan-entry">
+                                <div class="tw-space-y-1">
+                                    <label for="jumlah_titik_layanan_1" class="form-label">Jumlah Titik <span class="tw-text-red-500">*</span></label>
+                                    <input type="number" id="jumlah_titik_layanan_1" name="titik_layanan_1_jumlah" class="form-input" placeholder="Contoh: 100" min="0" required>
+                                </div>
+                                <div class="tw-space-y-1">
+                                    <label for="daerah_titik_layanan_1" class="form-label">Daerah (Provinsi) <span class="tw-text-red-500">*</span></label>
+                                    <select id="daerah_titik_layanan_1" name="titik_layanan_1_daerah" class="form-input" required>
+                                        <option value="">Pilih Provinsi...</option>
+                                        <option value="Aceh">Aceh</option>
+                                        <option value="Bali">Bali</option>
+                                        <option value="Bangka Belitung">Bangka Belitung</option>
+                                        <option value="Banten">Banten</option>
+                                        <option value="Bengkulu">Bengkulu</option>
+                                        <option value="Gorontalo">Gorontalo</option>
+                                        <option value="DKI Jakarta">DKI Jakarta</option>
+                                        <option value="Jambi">Jambi</option>
+                                        <option value="Jawa Barat">Jawa Barat</option>
+                                        <option value="Jawa Tengah">Jawa Tengah</option>
+                                        <option value="Jawa Timur">Jawa Timur</option>
+                                        <option value="Kalimantan Barat">Kalimantan Barat</option>
+                                        <option value="Kalimantan Selatan">Kalimantan Selatan</option>
+                                        <option value="Kalimantan Tengah">Kalimantan Tengah</option>
+                                        <option value="Kalimantan Timur">Kalimantan Timur</option>
+                                        <option value="Kalimantan Utara">Kalimantan Utara</option>
+                                        <option value="Kepulauan Riau">Kepulauan Riau</option>
+                                        <option value="Lampung">Lampung</option>
+                                        <option value="Maluku">Maluku</option>
+                                        <option value="Maluku Utara">Maluku Utara</option>
+                                        <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option>
+                                        <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option>
+                                        <option value="Papua">Papua</option>
+                                        <option value="Papua Barat">Papua Barat</option>
+                                        <option value="Riau">Riau</option>
+                                        <option value="Sulawesi Barat">Sulawesi Barat</option>
+                                        <option value="Sulawesi Selatan">Sulawesi Selatan</option>
+                                        <option value="Sulawesi Tengah">Sulawesi Tengah</option>
+                                        <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
+                                        <option value="Sulawesi Utara">Sulawesi Utara</option>
+                                        <option value="Sumatera Barat">Sumatera Barat</option>
+                                        <option value="Sumatera Selatan">Sumatera Selatan</option>
+                                        <option value="Sumatera Utara">Sumatera Utara</option>
+                                        <option value="Daerah Istimewa Yogyakarta">Daerah Istimewa Yogyakarta</option>
+                                        <option value="Papua Selatan">Papua Selatan</option>
+                                        <option value="Papua Tengah">Papua Tengah</option>
+                                        <option value="Papua Pegunungan">Papua Pegunungan</option>
+                                        <option value="Kalimantan Utara">Kalimantan Utara</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addTitikLayananEntry()" class="tw-mt-2 tw-px-3 tw-py-2 tw-bg-green-600 tw-text-white tw-rounded-md hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 focus:tw-ring-offset-2 tw-transition tw-duration-150 tw-ease-in-out tw-text-sm">Tambah Titik Layanan</button>
+                    </div>
+
+                    <!-- Jumlah Mitra Kerjasama (One-to-Many) -->
+                    <div class="tw-col-span-full nested-section-group">
+                        <h4>Jumlah Mitra Kerjasama</h4>
+                        <div id="mitra_kerjasama_container">
+                            <!-- Initial entry for Mitra Kerjasama -->
+                            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2 tw-mb-2 mitra-kerjasama-entry">
+                                <div class="tw-space-y-1">
+                                    <label for="jumlah_mitra_kerjasama_1" class="form-label">Jumlah Mitra <span class="tw-text-red-500">*</span></label>
+                                    <input type="number" id="jumlah_mitra_kerjasama_1" name="mitra_kerjasama_1_jumlah" class="form-input" placeholder="Contoh: 10" min="0" required>
+                                </div>
+                                <div class="tw-space-y-1">
+                                    <label for="jenis_mitra_kerjasama_1" class="form-label">Jenis Mitra <span class="tw-text-red-500">*</span></label>
+                                    <select id="jenis_mitra_kerjasama_1" name="mitra_kerjasama_1_jenis" class="form-input" required>
+                                        <option value="">Pilih Jenis...</option>
+                                        <option value="Dalam Negeri">Dalam Negeri</option>
+                                        <option value="Luar Negeri">Luar Negeri</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addMitraKerjasamaEntry()" class="tw-mt-2 tw-px-3 tw-py-2 tw-bg-green-600 tw-text-white tw-rounded-md hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 focus:tw-ring-offset-2 tw-transition tw-duration-150 tw-ease-in-out tw-text-sm">Tambah Mitra Kerjasama</button>
+                    </div>
+
                     <div class="tw-space-y-1">
                         <label for="memiliki_aplikasi_website_api" class="form-label">
                             Apakah memiliki aplikasi/website/API yang dapat digunakan oleh Pengguna Jasa? <span class="tw-text-red-500">*</span>
@@ -779,7 +898,7 @@
 
         <!-- Persentase Pemegang Saham -->
         <div class="section-group">
-            <h3 class="section-header">Persentase Pemegang Saham (per 31 Desember 2024)</h3>
+            <h3 class="section-header">Persentase Pemegang Saham (per 31 Desember Tahun Laporan)</h3>
             <div class="section-content">
                 <p class="tw-text-gray-600 tw-mb-3 tw-text-sm">JANGAN GUNAKAN TITIK ATAUPUN KOMA PADA NAMA, NOMINAL, LBR SAHAM DAN PERSENTASE.</p>
                 {% set shareholder_types = ["Berbadan Hukum", "Perseorangan", "Domestik", "Asing"] %}
@@ -839,7 +958,7 @@
 
         <!-- Data Keuangan Perusahaan -->
         <div class="section-group">
-            <h3 class="section-header">Data Keuangan Perusahaan (per 31 Desember 2024)</h3>
+            <h3 class="section-header">Data Keuangan Perusahaan (per 31 Desember Tahun Laporan)</h3>
             <div class="section-content">
                 <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
                     <div class="tw-space-y-1">
@@ -1152,6 +1271,88 @@
             container.insertBefore(newEntry, container.querySelector('button'));
         }
 
+        // Function to add new Titik Layanan entry
+        window.addTitikLayananEntry = function() {
+            const container = document.getElementById('titik_layanan_container');
+            const entryCount = container.querySelectorAll('.titik-layanan-entry').length + 1;
+            const newEntry = document.createElement('div');
+            newEntry.classList.add('tw-grid', 'tw-grid-cols-1', 'md:tw-grid-cols-2', 'tw-gap-4', 'tw-gap-y-2', 'tw-mb-2', 'titik-layanan-entry');
+            newEntry.innerHTML = `
+                <div class="tw-space-y-1">
+                    <label for="jumlah_titik_layanan_${entryCount}" class="form-label">Jumlah Titik <span class="tw-text-red-500">*</span></label>
+                    <input type="number" id="jumlah_titik_layanan_${entryCount}" name="titik_layanan_${entryCount}_jumlah" class="form-input" placeholder="Contoh: 100" min="0" required>
+                </div>
+                <div class="tw-space-y-1">
+                    <label for="daerah_titik_layanan_${entryCount}" class="form-label">Daerah (Provinsi) <span class="tw-text-red-500">*</span></label>
+                    <select id="daerah_titik_layanan_${entryCount}" name="titik_layanan_${entryCount}_daerah" class="form-input" required>
+                        <option value="">Pilih Provinsi...</option>
+                        <option value="Aceh">Aceh</option>
+                        <option value="Bali">Bali</option>
+                        <option value="Bangka Belitung">Bangka Belitung</option>
+                        <option value="Banten">Banten</option>
+                        <option value="Bengkulu">Bengkulu</option>
+                        <option value="Gorontalo">Gorontalo</option>
+                        <option value="DKI Jakarta">DKI Jakarta</option>
+                        <option value="Jambi">Jambi</option>
+                        <option value="Jawa Barat">Jawa Barat</option>
+                        <option value="Jawa Tengah">Jawa Tengah</option>
+                        <option value="Jawa Timur">Jawa Timur</option>
+                        <option value="Kalimantan Barat">Kalimantan Barat</option>
+                        <option value="Kalimantan Selatan">Kalimantan Selatan</option>
+                        <option value="Kalimantan Tengah">Kalimantan Tengah</option>
+                        <option value="Kalimantan Timur">Kalimantan Timur</option>
+                        <option value="Kalimantan Utara">Kalimantan Utara</option>
+                        <option value="Kepulauan Riau">Kepulauan Riau</option>
+                        <option value="Lampung">Lampung</option>
+                        <option value="Maluku">Maluku</option>
+                        <option value="Maluku Utara">Maluku Utara</option>
+                        <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option>
+                        <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option>
+                        <option value="Papua">Papua</option>
+                        <option value="Papua Barat">Papua Barat</option>
+                        <option value="Riau">Riau</option>
+                        <option value="Sulawesi Barat">Sulawesi Barat</option>
+                        <option value="Sulawesi Selatan">Sulawesi Selatan</option>
+                        <option value="Sulawesi Tengah">Sulawesi Tengah</option>
+                        <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
+                        <option value="Sulawesi Utara">Sulawesi Utara</option>
+                        <option value="Sumatera Barat">Sumatera Barat</option>
+                        <option value="Sumatera Selatan">Sumatera Selatan</option>
+                        <option value="Sumatera Utara">Sumatera Utara</option>
+                        <option value="Daerah Istimewa Yogyakarta">Daerah Istimewa Yogyakarta</option>
+                        <option value="Papua Selatan">Papua Selatan</option>
+                        <option value="Papua Tengah">Papua Tengah</option>
+                        <option value="Papua Pegunungan">Papua Pegunungan</option>
+                        <option value="Kalimantan Utara">Kalimantan Utara</option>
+                    </select>
+                </div>
+            `;
+            container.appendChild(newEntry);
+        }
+
+        // Function to add new Mitra Kerjasama entry
+        window.addMitraKerjasamaEntry = function() {
+            const container = document.getElementById('mitra_kerjasama_container');
+            const entryCount = container.querySelectorAll('.mitra-kerjasama-entry').length + 1;
+            const newEntry = document.createElement('div');
+            newEntry.classList.add('tw-grid', 'tw-grid-cols-1', 'md:tw-grid-cols-2', 'tw-gap-4', 'tw-gap-y-2', 'tw-mb-2', 'mitra-kerjasama-entry');
+            newEntry.innerHTML = `
+                <div class="tw-space-y-1">
+                    <label for="jumlah_mitra_kerjasama_${entryCount}" class="form-label">Jumlah Mitra <span class="tw-text-red-500">*</span></label>
+                    <input type="number" id="jumlah_mitra_kerjasama_${entryCount}" name="mitra_kerjasama_${entryCount}_jumlah" class="form-input" placeholder="Contoh: 10" min="0" required>
+                </div>
+                <div class="tw-space-y-1">
+                    <label for="jenis_mitra_kerjasama_${entryCount}" class="form-label">Jenis Mitra <span class="tw-text-red-500">*</span></label>
+                    <select id="jenis_mitra_kerjasama_${entryCount}" name="mitra_kerjasama_${entryCount}_jenis" class="form-input" required>
+                        <option value="">Pilih Jenis...</option>
+                        <option value="Dalam Negeri">Dalam Negeri</option>
+                        <option value="Luar Negeri">Luar Negeri</option>
+                    </select>
+                </div>
+            `;
+            container.appendChild(newEntry);
+        }
+
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             
@@ -1225,20 +1426,21 @@
                     }).catch(jsonError => {
                         console.error("Error parsing JSON from non-OK response:", jsonError);
                         return response.text().then(text => {
-                            throw new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
+                            throw new new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
                         });
                     });
                 }
                 return response.json();
             })
             .then(data => {
+                // Access data.message.message if the backend wraps the message in a 'message' key
                 if (data.success) {
-                    showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
+                    showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
                     form.reset();
                     // Re-hide system details section after form reset
                     document.getElementById('system_details_section').classList.add('hidden');
                 } else {
-                    showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
+                    showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
                 }
             })
             .catch(error => {

@@ -442,8 +442,7 @@
                                 <span class="tooltip-text"></span>
                             </span>
                         </label>
-                        <select class="form-input" id="nama_pjp" name="nama_pjp" required>
-                            <option value="">-- Pilih PJP --</option>
+                        <select class="form-input" id="nama_pjp" name="nama_pjp" required disabled>
                             <!-- Options will be populated by JavaScript -->
                         </select>
                         <!-- Hidden fields to store dynamic data from selected PJP -->
@@ -1018,7 +1017,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const kpspResultsCard = document.getElementById('kpsp_results_card');
     const kpspResultsDiv = document.getElementById('kpsp_results');
 
-    // Tambahkan flag untuk mencegah pengiriman ganda
+    // Add flag to prevent double submission
     let isSubmitting = false;
 
     // Event listener for the "Oke" button to close the message box
@@ -1028,34 +1027,34 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     /**
-     * Menampilkan kotak pesan kustom dengan pesan dan tipe (sukses/error) tertentu.
-     * @param {string} message - Pesan yang akan ditampilkan.
-     * @param {'success'|'error'} type - Tipe pesan ('success' atau 'error').
+     * Display a custom message box with a specific message and type (success/error).
+     * @param {string} message - The message to display.
+     * @param {'success'|'error'} type - The type of message ('success' or 'error').
      */
     function showMessageBox(message, type) {
         messageBoxContent.textContent = message;
-        dynamicMessageBox.classList.remove('success', 'error'); // Hapus kelas tipe sebelumnya
-        messageBoxIcon.innerHTML = ''; // Hapus ikon sebelumnya
-        messageBoxOkButton.classList.add('d-none'); // Sembunyikan tombol OK secara default
-        messageBoxBackdrop.classList.remove('d-none'); // Tampilkan latar belakang
+        dynamicMessageBox.classList.remove('success', 'error'); // Remove previous type classes
+        messageBoxIcon.innerHTML = ''; // Remove previous icon
+        messageBoxOkButton.classList.add('d-none'); // Hide OK button by default
+        messageBoxBackdrop.classList.remove('d-none'); // Show backdrop
 
         if (type === 'success') {
             dynamicMessageBox.classList.add('success');
-            messageBoxIcon.innerHTML = '&#10003;'; // Ikon centang
-            messageBoxOkButton.classList.remove('d-none'); // Tampilkan tombol OK untuk sukses
+            messageBoxIcon.innerHTML = '&#10003;'; // Checkmark icon
+            messageBoxOkButton.classList.remove('d-none'); // Show OK button for success
         } else if (type === 'error') {
             dynamicMessageBox.classList.add('error');
-            messageBoxIcon.innerHTML = '&#x2716;'; // Ikon silang
-            messageBoxOkButton.classList.remove('d-none'); // Tampilkan tombol OK untuk error (pengguna menutup secara manual)
-            // Untuk error, akan otomatis sembunyi setelah 5 detik jika tombol OK tidak diklik
+            messageBoxIcon.innerHTML = '&#x2716;'; // Cross icon
+            messageBoxOkButton.classList.remove('d-none'); // Show OK button for error (user closes manually)
+            // For errors, automatically hide after 5 seconds if OK button is not clicked
             setTimeout(() => {
-                if (!dynamicMessageBox.classList.contains('d-none')) { // Hanya sembunyikan jika belum disembunyikan secara manual
+                if (!dynamicMessageBox.classList.contains('d-none')) { // Only hide if not manually hidden yet
                     dynamicMessageBox.classList.add('d-none');
                     messageBoxBackdrop.classList.add('d-none');
                 }
             }, 5000);
         }
-        dynamicMessageBox.classList.remove('d-none'); // Tampilkan kotak pesan
+        dynamicMessageBox.classList.remove('d-none'); // Show message box
     }
 
     // Tooltip functionality
@@ -1100,7 +1099,9 @@ document.addEventListener('DOMContentLoaded', function() {
         { name: 'PJP 1 (AIS)', kategori_izin: 'AIS', no_izin: '123/PJP1/SK/2023', tgl_izin: '2023-01-15', konstanta_ttmr: 0.05, kpsp_dasar: 100, surcharge: 0 },
         { name: 'PJP 2 (Penyedia Jasa Pembayaran)', kategori_izin: 'Penyedia Jasa Pembayaran', no_izin: '456/PJP2/SK/2023', tgl_izin: '2023-03-20', konstanta_ttmr: 0.07, kpsp_dasar: 120, surcharge: 0 },
         { name: 'PJP 3 (PIP Asing)', kategori_izin: 'PIP Asing', no_izin: '789/PJP3/SK/2023', tgl_izin: '2023-05-10', konstanta_ttmr: 0.06, kpsp_dasar: 110, surcharge: 10 },
-        { name: 'PJP 4 (Uang Elektronik)', kategori_izin: 'Uang Elektronik', no_izin: '101/PJP4/SK/2023', tgl_izin: '2023-07-01', konstanta_ttmr: 0.08, kpsp_dasar: 130, surcharge: 0 }
+        { name: 'PJP 4 (Uang Elektronik)', kategori_izin: 'Uang Elektronik', no_izin: '101/PJP4/SK/2023', tgl_izin: '2023-07-01', konstanta_ttmr: 0.08, kpsp_dasar: 130, surcharge: 0 },
+        // Adding PJP with 'KI 3' license category
+        { name: 'PJP 5 (KI 3)', kategori_izin: 'KI 3', no_izin: '321/PJP5/SK/2024', tgl_izin: '2024-01-01', konstanta_ttmr: 0.075, kpsp_dasar: 125, surcharge: 5 }
     ];
 
     const namaPjpSelect = document.getElementById('nama_pjp');
@@ -1111,6 +1112,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const konstantaTTMRInput = document.getElementById('konstantaTTMR');
     const KPSPdasarInput = document.getElementById('KPSPdasar');
     const surchargeInput = document.getElementById('surcharge');
+    const namaPelaporInput = document.getElementById('nama_pelapor'); // Get nama_pelapor element
 
     // Populate PJP select options
     pjpData.forEach(pjp => {
@@ -1134,6 +1136,8 @@ document.addEventListener('DOMContentLoaded', function() {
             surchargeInput.value = selectedPJP.surcharge;
 
             // Enable/disable flagGL_PIPasing based on kategori_izin
+            // This logic is now mostly redundant as namaPjpSelect is disabled,
+            // but kept for completeness if the disabled state were to be removed.
             if (selectedPJP.kategori_izin === 'PIP Asing') {
                 flagGLPIPasingCheckbox.disabled = false;
             } else {
@@ -1152,6 +1156,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         updateAllCalculations();
     });
+
+    // Automatically fill nama_pelapor and set kategori_izin on page load
+    // Set nama_pelapor
+    namaPelaporInput.value = 'Nama Pelapor Otomatis'; 
+
+    // Set kategori_izin to 'KI 3' and select the corresponding PJP
+    const pjpKI3 = pjpData.find(pjp => pjp.kategori_izin === 'KI 3');
+    if (pjpKI3) {
+        namaPjpSelect.value = pjpKI3.name;
+        // Trigger change event to update related fields
+        namaPjpSelect.dispatchEvent(new Event('change'));
+    }
+
 
     // Initial Capital Calculation
     const jumlahModalDisetorInput = document.getElementById('jumlahModalDisetor');
@@ -1173,6 +1190,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 kewajibanInitialCapital = 100000000000; // 100 M
             } else if (selectedPJP.kategori_izin === 'Uang Elektronik') {
                 kewajibanInitialCapital = 10000000000; // 10 M
+            } else if (selectedPJP.kategori_izin === 'KI 3') { // Logic for KI 3
+                kewajibanInitialCapital = 7500000000; // Example value for KI 3 (7.5 M)
             }
         }
 
@@ -1283,7 +1302,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     jumlahBulanTrxInput.addEventListener('input', calculateTTMR);
     trxInputs.forEach(input => input.addEventListener('input', calculateTTMR));
-    namaPjpSelect.addEventListener('change', calculateTTMR); // Recalculate if PJP changes
+    // namaPjpSelect.addEventListener('change', calculateTTMR); // This is now handled by the initial load and namaPjpSelect being disabled
 
     // Ongoing Capital Components Calculation
     const modalSahamInput = document.getElementById('modalSaham');
@@ -1332,7 +1351,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalKebutuhanTambahanOngoingCapitalInput = document.getElementById('totalKebutuhanTambahanOngoingCapital');
 
     function calculateOngoingCapital() {
-        // Modal Inti Utama
+        // Core Capital (Modal Inti Utama)
         const modalSaham = parseMoney(modalSahamInput.value);
         const uangMukaSetoranModal = parseMoney(uangMukaSetoranModalInput.value);
         const agioDisagioSaham = parseMoney(agioDisagioSahamInput.value);
@@ -1341,7 +1360,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const modalIntiUtama = modalSaham + uangMukaSetoranModal + agioDisagioSaham + saldoLRberjalan + saldoPenghasilanKompr;
         modalIntiUtamaInput.value = formatMoney(modalIntiUtama);
 
-        // Faktor Pengurang Modal Inti Utama
+        // Deductions from Core Capital (Faktor Pengurang Modal Inti Utama)
         const asetPajakTangguhan = parseMoney(asetPajakTangguhanInput.value);
         const goodWill = parseMoney(goodWillInput.value);
         const asetTidakBerwujud = parseMoney(asetTidakBerwujudInput.value);
@@ -1354,7 +1373,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const modalIntiUtamaSetelahFPR = modalIntiUtama - faktorPengurangModalInti;
         modalIntiUtamaSetelahFPRInput.value = formatMoney(modalIntiUtamaSetelahFPR);
 
-        // Modal Inti Tambahan
+        // Additional Core Capital (Modal Inti Tambahan)
         const instrumenUtang = parseMoney(instrumenUtangInput.value);
         const instrumenHybrid = parseMoney(instrumenHybridInput.value);
         const sahamPreferenNonKumulatif = parseMoney(sahamPreferenNonKumulatifInput.value);
@@ -1362,7 +1381,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const modalIntiTambahan = instrumenUtang + instrumenHybrid + sahamPreferenNonKumulatif + premiumDiskonto;
         modalIntiTambahanInput.value = formatMoney(modalIntiTambahan);
 
-        // Faktor Pengurang Modal Inti Tambahan
+        // Deductions from Additional Core Capital (Faktor Pengurang Modal Inti Tambahan)
         const instrumenModalIntiTambahan = parseMoney(instrumenModalIntiTambahanInput.value);
         const kepemilikanModalIntiTambahan = parseMoney(kepemilikanModalIntiTambahanInput.value);
         const faktorPengurangModalIntiTambahan = instrumenModalIntiTambahan + kepemilikanModalIntiTambahan;
@@ -1371,18 +1390,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const modalIntiTambahanSetelahFPR = modalIntiTambahan - faktorPengurangModalIntiTambahan;
         modalIntiTambahanSetelahFPRInput.value = formatMoney(modalIntiTambahanSetelahFPR);
 
-        // Modal Inti Tambahan yang dapat diperhitungkan sebagai Ongoing Capital (max 1/3 modal inti utama)
+        // Additional Core Capital that can be counted as Ongoing Capital (max 1/3 core capital)
         const maxModalIntiTambahanOngoing = modalIntiUtamaSetelahFPR / 3;
         const modalIntiTambahanOngoingCapital = Math.min(modalIntiTambahanSetelahFPR, maxModalIntiTambahanOngoing);
         modalIntiTambahanOngoingCapitalInput.value = formatMoney(modalIntiTambahanOngoingCapital);
 
-        // Modal Pelengkap
+        // Supplementary Capital (Modal Pelengkap)
         const instrumenUtangJangkaPjg = parseMoney(instrumenUtangJangkaPjgInput.value);
         const premiumDiskontoModalPelengkap = parseMoney(premiumDiskontoModalPelengkapInput.value);
         const modalPelengkap = instrumenUtangJangkaPjg + premiumDiskontoModalPelengkap;
         modalPelengkapInput.value = formatMoney(modalPelengkap);
 
-        // Faktor Pengurang Modal Pelengkap
+        // Deductions from Supplementary Capital (Faktor Pengurang Modal Pelengkap)
         const instrumenModalPelengkap = parseMoney(instrumenModalPelengkapInput.value);
         const kepemilikanModalPelengkap = parseMoney(kepemilikanModalPelengkapInput.value);
         const faktorPengurangModalPelengkap = instrumenModalPelengkap + kepemilikanModalPelengkap;
@@ -1391,7 +1410,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const modalPelengkapSetelahFPR = modalPelengkap - faktorPengurangModalPelengkap;
         modalPelengkapSetelahFPRInput.value = formatMoney(modalPelengkapSetelahFPR);
 
-        // Modal Pelengkap yang dapat diperhitungkan sebagai Ongoing Capital (max 1/3 Modal Inti Tambahan yang dapat diperhitungkan sebagai ongoing capital)
+        // Supplementary Capital that can be counted as Ongoing Capital (max 1/3 of Additional Core Capital that can be counted as ongoing capital)
         const maxModalPelengkapOngoing = modalIntiTambahanOngoingCapital / 3;
         const modalPelengkapOngoingCapital = Math.min(modalPelengkapSetelahFPR, maxModalPelengkapOngoing);
         modalPelengkapOngoingCapitalInput.value = formatMoney(modalPelengkapOngoingCapital);
@@ -1400,7 +1419,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalOngoingCapital = modalIntiUtamaSetelahFPR + modalIntiTambahanOngoingCapital + modalPelengkapOngoingCapital;
         totalOngoingCapitalInput.value = formatMoney(totalOngoingCapital);
 
-        // Rasio KPSP
+        // KPSP Ratio
         const TTMR = parseMoney(TTMRInput.value);
         let rasioKPSP = 0;
         if (TTMR > 0) {
@@ -1414,11 +1433,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalKPSP = KPSPdasar + surcharge;
         totalKPSPInput.value = totalKPSP.toFixed(2);
 
-        // Jumlah Kewajiban Ongoing Capital
+        // Amount of Ongoing Capital Obligation
         const jumlahKewajibanOngoingCapital = (totalKPSP / 100) * TTMR;
         jumlahKewajibanOngoingCapitalInput.value = formatMoney(jumlahKewajibanOngoingCapital);
 
-        // Status Pemenuhan Ongoing Capital
+        // Ongoing Capital Fulfillment Status
         if (rasioKPSP >= totalKPSP) {
             statusPemenuhanOngoingCapitalInput.value = 'Terpenuhi';
             statusPemenuhanOngoingCapitalInput.classList.remove('bg-danger-custom');
@@ -1507,11 +1526,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form submission
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        e.stopImmediatePropagation(); // Hentikan penyebaran event lebih lanjut
+        e.stopImmediatePropagation(); // Stop further event propagation
 
-        // Periksa apakah formulir sedang dalam proses pengiriman
+        // Check if the form is already submitting
         if (isSubmitting) {
-            console.log("Pengiriman formulir sudah berjalan. Mengabaikan.");
+            console.log("Form submission is already in progress. Ignoring.");
             return;
         }
 
@@ -1563,15 +1582,17 @@ document.addEventListener('DOMContentLoaded', function() {
             $(this).maskMoney('mask');
         });
         // Reset PJP selection and related fields
-        namaPjpSelect.value = '';
-        kategoriIzinInput.value = '';
-        noIzinInput.value = '';
-        tglIzinInput.value = '';
+        // Re-set nama_pelapor and nama_pjp for KI 3
+        namaPelaporInput.value = 'Nama Pelapor Otomatis'; 
+        const pjpKI3 = pjpData.find(pjp => pjp.kategori_izin === 'KI 3');
+        if (pjpKI3) {
+            namaPjpSelect.value = pjpKI3.name;
+            namaPjpSelect.dispatchEvent(new Event('change'));
+        }
+        
         flagGLPIPasingCheckbox.checked = false;
         flagGLPIPasingCheckbox.disabled = true;
-        konstantaTTMRInput.value = '';
-        KPSPdasarInput.value = '';
-        surchargeInput.value = '';
+        // The values for konstantaTTMRInput, KPSPdasarInput, surchargeInput will be set by the change event of namaPjpSelect
 
         // Hide results card
         kpspResultsCard.style.display = 'none';

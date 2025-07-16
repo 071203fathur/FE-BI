@@ -172,19 +172,19 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(3px);
+            z-index: 1000; /* Ensure it's on top of everything */
+            backdrop-filter: blur(3px); /* Optional: blur background */
         }
 
         #loadingOverlay .spinner-border {
-            width: 3rem;
+            width: 3rem; /* Larger spinner for the overlay */
             height: 3rem;
-            border-width: 0.35em;
-            color: #ffffff;
+            border-width: 0.35em; /* Thicker border */
+            color: #ffffff; /* White spinner */
         }
 
         /* Styles for the message box backdrop */
@@ -194,10 +194,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            display: none;
+            background-color: rgba(0, 0, 0, 0.6); /* Darker semi-transparent black */
+            backdrop-filter: blur(5px); /* Stronger blur for pop-up background */
+            z-index: 1000; /* Below the message box, above other content */
+            display: none; /* Hidden by default */
         }
 
         /* Styles for the message box pop-up */
@@ -209,35 +209,35 @@
             padding: 1.5rem 2rem;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-            display: none;
+            z-index: 1001; /* Above the backdrop */
+            display: none; /* Hidden by default */
             font-size: 1.1rem;
             font-weight: 600;
             text-align: center;
-            max-width: 400px;
-            width: 90%;
+            max-width: 400px; /* Limit width */
+            width: 90%; /* Responsive width */
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem;
+            gap: 1rem; /* Space between elements */
         }
 
         #dynamicMessageBox.success {
-            background-color: #d4edda;
-            color: #155724;
+            background-color: #d4edda; /* Light green */
+            color: #155724; /* Dark green text */
             border: 1px solid #c3e6cb;
         }
 
         #dynamicMessageBox.error {
-            background-color: #f8d7da;
-            color: #721c24;
+            background-color: #f8d7da; /* Light red */
+            color: #721c24; /* Dark red text */
             border: 1px solid #f5c6cb;
         }
 
         #dynamicMessageBox .icon-container {
-            font-size: 3rem;
+            font-size: 3rem; /* Large icon size */
             line-height: 1;
-            animation: fade-in-scale 0.5s ease-out forwards;
+            animation: fade-in-scale 0.5s ease-out forwards; /* Animation for icon */
         }
 
         @keyframes fade-in-scale {
@@ -252,7 +252,7 @@
         }
 
         #dynamicMessageBox .ok-button {
-            background-color: #4CAF50;
+            background-color: #4CAF50; /* Green */
             color: white;
             padding: 0.75rem 1.5rem;
             border: none;
@@ -517,20 +517,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (type === 'success') {
             dynamicMessageBox.classList.add('success');
-            messageBoxIcon.innerHTML = '&#10003;';
+            messageBoxIcon.innerHTML = '&#10003;'; // Checkmark icon
             messageBoxOkButton.classList.remove('d-none');
+            // No auto-hide for success, user must click OK
         } else if (type === 'error') {
             dynamicMessageBox.classList.add('error');
-            messageBoxIcon.innerHTML = '&#x2716;';
-            messageBoxOkButton.classList.remove('d-none');
+            messageBoxIcon.innerHTML = '&#x2716;'; // Cross mark icon
+            // For errors, it will auto-hide after 5 seconds
             setTimeout(() => {
-                if (!dynamicMessageBox.classList.contains('d-none')) {
+                if (!dynamicMessageBox.classList.contains('d-none')) { // Only hide if not already hidden manually
                     dynamicMessageBox.classList.add('d-none');
                     messageBoxBackdrop.classList.add('d-none');
                 }
             }, 5000);
         }
-        dynamicMessageBox.classList.remove('d-none');
+        dynamicMessageBox.classList.remove('d-none'); // Show the message box
     }
 
     // Date validation
@@ -616,7 +617,15 @@ document.addEventListener('DOMContentLoaded', function() {
             formIsValid = false;
         }
         
-        if (!formIsValid) return;
+        if (!formIsValid) {
+            // Reset loading state if client-side validation fails
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            loadingOverlay.classList.add('d-none');
+            isSubmitting = false;
+            return;
+        }
 
         // Show loading state
         isSubmitting = true;
@@ -646,11 +655,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
+            // Access data.message.message if the backend wraps the message in a 'message' key
             if (data.success) {
-                showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
+                showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
                 form.reset(); // Reset all form fields
             } else {
-                showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
+                showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
             }
         })
         .catch(error => {
@@ -676,5 +686,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
 {% endblock %}

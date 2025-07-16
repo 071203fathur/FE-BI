@@ -6,7 +6,7 @@
     <title>{% block title %}Dashboard User{% endblock %}</title>
 
     {# Favicon #}
-    <link rel="icon" href="{{ url_for('static', filename='BI.png') }}" type="image/png">
+    <link rel="icon" href="https://images.seeklogo.com/logo-png/62/2/bank-indonesia-logo-png_seeklogo-622136.png" type="image/png">
 
     {# Tailwind CSS CDN #}
     <script src="https://cdn.tailwindcss.com"></script>
@@ -216,7 +216,7 @@
             {# Grup Kiri: Logo Bank Indonesia #}
             <div class="tw-flex tw-items-center">
                 <a class="tw-flex-shrink-0 tw-flex tw-items-center" href="{{ url_for('user_dashboard') }}">
-                    <img class="tw-h-12 sm:tw-h-14 tw-w-auto" src="{{ url_for('static', filename='BI_Logo.png') }}" alt="Logo Bank Indonesia">
+                    <img class="tw-h-12 sm:tw-h-14 tw-w-auto" src="https://upload.wikimedia.org/wikipedia/commons/3/39/BI_Logo.png" alt="Logo Bank Indonesia">
                 </a>
             </div>
 
@@ -259,8 +259,8 @@
                     <div class="tw-origin-top-right tw-absolute tw-left-0 tw-mt-2 tw-w-64 dropdown-menu-container tw-hidden" role="menu" aria-orientation="vertical" aria-labelledby="laporanTriwulanDropdown">
                         <div class="tw-py-1" role="none">
                             <a href="{{ url_for('form_laporan_keuangan_triwulan') }}" class="dropdown-menu-item" role="menuitem">Laporan Keuangan Triwulan</a>
-                            <!-- <a href="{{ url_for('form_laporan_pppk') }}" class="dropdown-menu-item" role="menuitem">Laporan Keluhan Nasabah dan Perlindungan Konsumen</a>
-                            <a href="{{ url_for('form_laporan_sksp_triwulan') }}" class="dropdown-menu-item" role="menuitem">Laporan SKSP Triwulan</a> -->
+                            <!-- <a href="{{ url_for('form_laporan_pppk') }}" class="dropdown-menu-item" role="menuitem">Laporan Keluhan Nasabah dan Perlindungan Konsumen</a> -->
+                            <!-- <a href="{{ url_for('form_laporan_sksp_triwulan') }}" class="dropdown-menu-item" role="menuitem">Laporan SKSP Triwulan</a> -->
                         </div>
                     </div>
                 </div>
@@ -274,16 +274,16 @@
                     <div class="tw-origin-top-right tw-absolute tw-left-0 tw-mt-2 tw-w-80 dropdown-menu-container tw-hidden" role="menu" aria-orientation="vertical" aria-labelledby="laporanTahunanDropdown">
                         <div class="tw-py-1" role="none">
                             <a href="{{ url_for('form_laporan_keuangan_tahunan') }}" class="dropdown-menu-item" role="menuitem">Laporan Keuangan Tahunan</a>
-                            <!-- <a href="{{ url_for('form_laporan_apuppt') }}" class="dropdown-menu-item" role="menuitem">Laporan APU PPT</a> -->
+                            <a href="{{ url_for('form_laporan_apuppt') }}" class="dropdown-menu-item" role="menuitem">Laporan APU PPT</a>
                             <!-- <a href="{{ url_for('form_laporan_rencana_edukasi_publik') }}" class="dropdown-menu-item" role="menuitem">Laporan Rencana Edukasi Publik</a>
                             <a href="{{ url_for('form_laporan_pelaksanaan_edukasi_publik') }}" class="dropdown-menu-item" role="menuitem">Laporan Pelaksanaan Edukasi Publik</a> -->
                             <a href="{{ url_for('form_laporan_manajemen') }}" class="dropdown-menu-item" role="menuitem">Laporan Manajemen & Hasil Pengawasan Dewan Komisaris</a>
                             <a href="{{ url_for('form_laporan_auditsi') }}" class="dropdown-menu-item" role="menuitem">Laporan Audit Sistem Informasi</a>
                             <a href="{{ url_for('form_laporan_pelaksanaan_pengujian_keamanan') }}" class="dropdown-menu-item" role="menuitem">Laporan Pengujian Keamanan (Penetration Test)</a>
                             <!-- <a href="{{ url_for('form_laporan_sksp_tahunan') }}" class="dropdown-menu-item" role="menuitem">Laporan SKSP Tahunan</a> -->
-                            <!-- <a href="{{ url_for('form_laporan_kpsp') }}" class="dropdown-menu-item" role="menuitem">Laporan Perhitungan KPSP</a> -->
-                            <!-- <a href="{{ url_for('form_laporan_tahunan_sp') }}" class="dropdown-menu-item" role="menuitem">Laporan Tahunan Sistem Pembayaran</a> -->
-                            <!-- <a href="{{ url_for('laporan_rba_apu_ppt') }}" class="dropdown-menu-item" role="menuitem">Laporan RBA APU PPT</a> {# New entry for RBA APU PPT #} -->
+                            <a href="{{ url_for('form_laporan_kpsp') }}" class="dropdown-menu-item" role="menuitem">Laporan Perhitungan KPSP</a>
+                            <a href="{{ url_for('form_laporan_tahunan_sp') }}" class="dropdown-menu-item" role="menuitem">Laporan Tahunan Sistem Pembayaran</a>
+                            <a href="{{ url_for('laporan_rba_apu_ppt') }}" class="dropdown-menu-item" role="menuitem">Laporan RBA APU PPT</a> {# New entry for RBA APU PPT #}
                         </div>
                     </div>
                 </div>
@@ -291,7 +291,7 @@
 
             {# Grup Kanan: Profil dan Logout #}
             <div class="tw-hidden md:tw-flex md:tw-items-center tw-space-x-6"> {# Tidak perlu tw-ml-auto di sini lagi #}
-                <!-- <a href="{{ url_for('user_profile') }}" class="dropdown-toggle-button" style="text-decoration: none;">Profil</a> -->
+                <a href="{{ url_for('user_profile') }}" class="dropdown-toggle-button" style="text-decoration: none;">Profil</a>
                 <button type="button" class="tw-bg-biRed hover:tw-bg-red-600 tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-transition-colors tw-duration-200 tw-shadow-md" id="logoutButton">Logout</button>
             </div>
 

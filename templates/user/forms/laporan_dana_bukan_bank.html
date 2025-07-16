@@ -379,20 +379,14 @@ document.addEventListener('DOMContentLoaded', function() {
             messageBoxIcon.innerHTML = '&#x2716;'; // Cross mark icon
             // For errors, it will auto-hide after 5 seconds
             setTimeout(() => {
-                dynamicMessageBox.classList.add('d-none');
-                messageBoxBackdrop.classList.add('d-none');
+                if (!dynamicMessageBox.classList.contains('d-none')) {
+                    dynamicMessageBox.classList.add('d-none');
+                    messageBoxBackdrop.classList.add('d-none');
+                }
             }, 5000);
         }
         dynamicMessageBox.classList.remove('d-none'); // Show the message box
     }
-
-    // Set max date for tanggal_surat to today
-    // Removed as tanggal_surat is no longer part of the form submission for LTDBB
-    // const tanggalSuratInput = document.getElementById('tanggal_surat');
-    // if (tanggalSuratInput) {
-    //     const today = new Date().toISOString().split('T')[0];
-    //     tanggalSuratInput.max = today;
-    // }
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -462,11 +456,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
+            // Access data.message.message if the backend wraps the message in a 'message' key
             if (data.success) {
-                showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
+                showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
                 form.reset();
             } else {
-                showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
+                showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
             }
         })
         .catch(error => {

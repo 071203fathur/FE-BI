@@ -594,7 +594,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const newItem = document.createElement('div');
         newItem.className = 'management-member-item tw-space-y-1'; /* Reduced space-y */
         newItem.innerHTML = `
-            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-4 tw-gap-y-2"> /* Reduced gap */
+            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-4 tw-gap-y-2"> 
                 <div class="tw-space-y-1">
                     <label class="form-label">Nama <span class="tw-text-red-500">*</span></label>
                     <input type="text" class="form-input" name="member_name_${memberCounter}" value="${name}" required>
@@ -811,6 +811,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!formIsValid) {
             console.log("Form tidak valid, pengiriman dibatalkan.");
+            // Reset loading state if client-side validation fails
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            loadingOverlay.classList.add('d-none');
+            isSubmitting = false;
             return;
         }
 
@@ -871,15 +877,16 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
+            // Access data.message.message if the backend wraps the message in a 'message' key
             if (data.success) {
-                showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
+                showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
                 form.reset();
                 // Reset dynamic fields after successful submission
                 managementMembersContainer.innerHTML = ''; // Clear all dynamic members
                 memberCounter = 0; // Reset counter
                 populateExecutiveSummaryTable(); // Re-populate table to initial state
             } else {
-                showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
+                showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
             }
         })
         .catch(error => {

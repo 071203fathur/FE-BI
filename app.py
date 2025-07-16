@@ -4,12 +4,17 @@ import requests
 from datetime import datetime, timedelta # Import timedelta untuk manajemen waktu sesi
 import json
 import os
-import flash
+# import flash # Removed as flash is not imported or used elsewhere directly
 from werkzeug.utils import secure_filename
 from flask_cors import CORS # Import CORS dari flask_cors
 
 # Inisialisasi aplikasi Flask
-app = Flask(__name__)
+# Konfigurasi static_folder dan static_url_path untuk melayani aset dari templates/user/forms/assets
+app = Flask(
+    __name__,
+    static_folder=os.path.join('templates', 'user', 'forms', 'assets'),
+    static_url_path='/form/assets'
+)
 CORS(app) # Mengaktifkan CORS untuk semua rute di aplikasi Flask
 
 # Konfigurasi kunci rahasia untuk sesi. Ini sangat penting untuk keamanan sesi.
@@ -101,7 +106,10 @@ def before_request():
     """
     # Izinkan akses ke halaman login dan rute statis tanpa autentikasi
     # Ini penting untuk mencegah loop pengalihan tak terbatas
-    if request.endpoint == 'login' or request.path.startswith('/static/'):
+    # Memperbarui agar juga mengizinkan akses ke static_url_path yang baru
+    if request.endpoint == 'login' or \
+       request.path.startswith('/static/') or \
+       request.path.startswith('/form/assets/'): # Tambahkan ini untuk aset
         session.permanent = True # Pastikan sesi login juga diperbarui
         return
 
@@ -256,7 +264,7 @@ def fetch_profile_from_backend(is_retry=False):
         return False, f"Gagal terhubung ke server API (koneksi ditolak atau server tidak tersedia): {e}", 500
     except requests.exceptions.Timeout as e:
         print(f"DEBUG: Permintaan profil ke API Backend timeout: {e}")
-        return False, f"Permintaan profil ke server API melebihi batas waktu: {e}", 504
+        return False, f"Permintaan ke server API melebihi batas waktu: {e}", 504
     except requests.exceptions.RequestException as e:
         print(f"DEBUG: Terjadi kesalahan saat mengirim permintaan profil ke server API: {e}")
         return False, f"Terjadi kesalahan saat mengirim permintaan profil ke server API: {e}", 500
@@ -1147,8 +1155,12 @@ def submit_laporan_apuppt():
         "lapor_sipesat_tw4": request.form.get("lapor_sipesat_tw_4") == 'True',  
         
         # Mengambil nilai lapor_pemblokiran_dttot dan lapor_pemblokiran_dppspm dari hidden input
-        "lapor_pemblokiran_dttot": request.form.get("lapor_pemblokiran_dttot") == 'true',
-        "lapor_pemblokiran_dppspm": request.form.get("lapor_pemblokiran_dppspm") == 'true',
+        "jumlah_lapor_pemblokiran_dttot": int(request.form.get("jumlah_lapor_pemblokiran_dttot")),
+        "expected_lapor_pemblokiran_dttot": int(request.form.get("expected_lapor_pemblokiran_dttot")),
+        "keterangan_lapor_pemblokiran_dttot": request.form.get("keterangan_lapor_pemblokiran_dttot"),
+        "jumlah_lapor_pemblokiran_dppspm": int(request.form.get("jumlah_lapor_pemblokiran_dppspm")),
+        "expected_lapor_pemblokiran_dppspm": int(request.form.get("expected_lapor_pemblokiran_dppspm")),
+        "keterangan_lapor_pemblokiran_dppspm": request.form.get("keterangan_lapor_pemblokiran_dppspm"),
 
         "tanggung_jawab_direksi": request.form.get("tanggung_jawab_direksi"),
         "kebijakan_prosedur": request.form.get("kebijakan_prosedur"),
@@ -1269,8 +1281,9 @@ def form_laporan_kpsp():
     """
     if "username" not in session or session.get("role") != "user":
         return redirect(url_for("login"))
+    current_year = datetime.now().year # Mendapatkan tahun saat ini
     # Melewatkan data banks ke template
-    return render_template("user/forms/laporan_kpsp.html", banks=banks)
+    return render_template("user/forms/main.html", banks=banks, current_year=current_year)
 
 @app.route("/submit/laporan-kpsp", methods=["POST"])
 def submit_laporan_kpsp():
@@ -1282,7 +1295,10 @@ def submit_laporan_kpsp():
         return jsonify({"success": False, "message": "Anda tidak memiliki otorisasi untuk mengakses fungsi ini."}), 401
 
     try:
-        formatted_tanggal_surat = datetime.strptime(request.form.get("tanggal_surat"), '%Y-%m-%d').strftime('%d/%m/%Y')
+        # Tanggal surat dari frontend sudah dalam format YYYY-MM-DD
+        tanggal_surat_raw = request.form.get("tanggal_surat")
+        # Konversi ke DD/MM/YYYY untuk API jika diperlukan, atau biarkan YYYY-MM-DD jika API mendukung
+        formatted_tanggal_surat = datetime.strptime(tanggal_surat_raw, '%Y-%m-%d').strftime('%d/%m/%Y')
     except ValueError:
         return jsonify({"success": False, "message": "Format tanggal surat tidak valid"}), 400
 
@@ -1291,33 +1307,103 @@ def submit_laporan_kpsp():
 
     # Bangun payload sesuai definisi dengan snake_case
     payload = {
-        to_snake_case("Tahun Laporan"): int(form_data_raw.get("tahun_laporan")),
-        to_snake_case("Periode Laporan"): form_data_raw.get("periode_laporan"),
-        to_snake_case("Nomor Surat"): form_data_raw.get("nomor_surat"),
-        to_snake_case("Tanggal Surat"): formatted_tanggal_surat,
-        to_snake_case("Nama PJP"): form_data_raw.get("nama_pjp_display"), # Asumsi nama PJP dari dropdown/display
+        "tahun_laporan": int(form_data_raw.get("klp_periode").split('-')[0]), # Ambil tahun dari klp_periode (YYYY-MM-DD)
+        "periode_laporan": form_data_raw.get("klp_periode"), # Menggunakan tanggal penuh sebagai periode laporan
+        "nomor_surat": "AUTO-GENERATED", # Asumsi nomor surat dibuat di backend
+        "tanggal_surat": formatted_tanggal_surat, # Dikirim sebagai DD/MM/YYYY
+        "nama_pjp": form_data_raw.get("klp_namaPelapor"), # Nama PJP dari dropdown
+        "kategori_izin": form_data_raw.get("klp_kategoriIzin"),
+        "klasifikasi_pjp_pip": form_data_raw.get("klp_klasifikasiPJPPIP"),
+        "aktivitas_pjp_pip": form_data_raw.get("klp_aktivitas").split(','), # Mengubah string koma-separated menjadi list
         
-        # KPSP Specific Fields - Map from frontend names
-        to_snake_case("Modal Disetor"): int(form_data_raw.get("modal_disetor").replace('.', '')),
-        to_snake_case("Modal Inti"): int(form_data_raw.get("modal_inti").replace('.', '')),
-        to_snake_case("Modal Pelengkap"): int(form_data_raw.get("modal_pelengkap").replace('.', '')),
-        to_snake_case("Modal Lainnya"): int(form_data_raw.get("modal_lainnya").replace('.', '')),
-        to_snake_case("Total Modal"): int(form_data_raw.get("total_modal_display").replace('Rp ', '').replace('.', '')),
-        to_snake_case("Kualitas Aset Produktif"): int(form_data_raw.get("kualitas_aset_produktif_display").replace('Rp ', '').replace('.', '')),
-        to_snake_case("Cadangan Kerugian Penurunan Nilai"): int(form_data_raw.get("cadangan_kerugian_penurunan_nilai_display").replace('Rp ', '').replace('.', '')),
-        to_snake_case("Rugi Tahun Berjalan"): int(form_data_raw.get("rugi_tahun_berjalan_display").replace('Rp ', '').replace('.', '')),
-        to_snake_case("Aset Tertimbang Menurut Risiko"): int(form_data_raw.get("aset_tertimbang_menurut_risiko_display").replace('Rp ', '').replace('.', '')),
-        to_snake_case("Rasio KPSP"): float(form_data_raw.get("rasio_kpsp_display").replace(',', '.').replace('%', '')),
-        to_snake_case("Status Pemenuhan Initial Capital"): form_data_raw.get("status_pemenuhan_initial_capital_display"),
-        to_snake_case("Status Pemenuhan Ongoing Capital"): form_data_raw.get("status_pemenuhan_ongoing_capital_display"),
+        # Pemenuhan Initial Capital
+        "jumlah_modal_disetor": int(float(form_data_raw.get("1_jumlahModalDisetor"))),
+        "kewajiban_initial_capital": int(float(form_data_raw.get("1_kewajibanInitCapital"))),
+        "status_pemenuhan_initial_capital": form_data_raw.get("1_statusPemenuhan_initialCapital"),
+        "total_kebutuhan_tambahan_initial_capital": int(float(form_data_raw.get("1_tambahanInitCapital"))),
+        "flag_gl_pip_asing": form_data_raw.get("flagGL_PIPasing") == 'true', # Konversi string 'true'/'false' ke boolean
+
+        # Perhitungan Ongoing Capital - TTMR
+        "jumlah_bulan_trx": int(form_data_raw.get("2_jumlahBulanTrx")),
+        "total_trx_atm_debet": int(float(form_data_raw.get("2_totalTrx_ATMDebet"))),
+        "total_trx_atm_debet_rata": int(float(form_data_raw.get("2_totalTrx_ATMDebet_rata"))),
+        "total_trx_kk": int(float(form_data_raw.get("2_totalTrx_KK"))),
+        "total_trx_kk_rata": int(float(form_data_raw.get("2_totalTrx_KK_rata"))),
+        "trx_dompel": int(float(form_data_raw.get("2_trxDompel"))),
+        "trx_dompel_rata": int(float(form_data_raw.get("2_trxDompel_rata"))),
+        "trx_trf_dana_ln_inc": int(float(form_data_raw.get("2_trxTrfDanaLN_inc"))),
+        "trx_trf_dana_ln_inc_rata": int(float(form_data_raw.get("2_trxTrfDanaLN_inc_rata"))),
+        "trx_trf_dana_ln_out": int(float(form_data_raw.get("2_trxTrfDanaLN_out"))),
+        "trx_trf_dana_ln_out_rata": int(float(form_data_raw.get("2_trxTrfDanaLN_out_rata"))),
+        "trx_trf_dana_dom": int(float(form_data_raw.get("2_trxTrfDana_dom"))),
+        "trx_trf_dana_dom_rata": int(float(form_data_raw.get("2_trxTrfDana_dom_rata"))),
+        "trx_ue": int(float(form_data_raw.get("2_trxUE"))),
+        "trx_ue_rata": int(float(form_data_raw.get("2_trxUE_rata"))),
+        "trx_pias_fasil": int(float(form_data_raw.get("2_trxPIAS_fasil"))),
+        "trx_pias_fasil_rata": int(float(form_data_raw.get("2_trxPIAS_fasil_rata"))),
+        "trx_pias_merch_agg": int(float(form_data_raw.get("2_trxPIAS_merchAgg"))),
+        "trx_pias_merch_agg_rata": int(float(form_data_raw.get("2_trxPIAS_merchAgg_rata"))),
+        "trx_lainnya": int(float(form_data_raw.get("2_trxLainnya"))),
+        "trx_lainnya_rata": int(float(form_data_raw.get("2_trxLainnya_rata"))),
+        "total_nilai_trx": int(float(form_data_raw.get("2_totalNilaiTrx"))),
+        "total_nilai_trx_rata": int(float(form_data_raw.get("2_totalNilaiTrx_rata"))),
+        "beban_trx": int(float(form_data_raw.get("2_bebanTrx"))),
+        "dana_float": int(float(form_data_raw.get("2_danaFloat"))),
+        "dana_float_rata": int(float(form_data_raw.get("2_danaFloat_rata"))),
+        "perc_beban_trx_dana_float": float(form_data_raw.get("2_percBebanTrxDanaFloat")),
+        "beban_trx_dana_float": int(float(form_data_raw.get("2_bebanTrxDanaFloat"))),
+        "total_beban": int(float(form_data_raw.get("2_totalBeban"))),
+        "konstanta_ttmr": float(form_data_raw.get("2_konstantaTTMR")),
+        "ttmr": int(float(form_data_raw.get("2_TTMR"))),
+
+        # Komponen Perhitungan Ongoing Capital
+        "modal_saham": int(float(form_data_raw.get("3_modalSaham"))),
+        "uang_muka_setoran_modal": int(float(form_data_raw.get("3_uangMukaSetoranModal"))),
+        "agio_disagio_saham": int(float(form_data_raw.get("3_agioDisagioSaham"))),
+        "saldo_lr_berjalan": int(float(form_data_raw.get("3_saldoLRberjalan"))),
+        "saldo_penghasilan_kompr": int(float(form_data_raw.get("3_saldoPenghasilanKompr"))),
+        "modal_inti_utama": int(float(form_data_raw.get("3_modalIntiUtama"))),
+        "aset_pajak_tangguhan": int(float(form_data_raw.get("3_asetPajakTangguhan"))),
+        "goodwill": int(float(form_data_raw.get("3_goodWill"))),
+        "aset_tidak_berwujud": int(float(form_data_raw.get("3_asetTidakBerwujud"))),
+        "seluruh_penyertaan": int(float(form_data_raw.get("3_seluruhPenyertaan"))),
+        "pembelian_kembali_inst_modal": int(float(form_data_raw.get("3_pembelianKembaliInstModal"))),
+        "penempatan_dana_inst_utang": int(float(form_data_raw.get("3_penempatanDanaInstUtang"))),
+        "faktor_pengurang_modal_inti": int(float(form_data_raw.get("3_faktorPengurangModalInti"))),
+        "modal_inti_utama_setelah_fpr": int(float(form_data_raw.get("3_modalIntiUtama_setelahFPR"))),
+        "instrumen_utang": int(float(form_data_raw.get("3_instrumenUtang"))),
+        "instrumen_hybrid": int(float(form_data_raw.get("3_instrumenHybrid"))),
+        "saham_preferen_non_kumulatif": int(float(form_data_raw.get("3_sahamPreferenNonKumulatif"))),
+        "premium_diskonto": int(float(form_data_raw.get("3_premiumDiskonto"))),
+        "modal_inti_tambahan": int(float(form_data_raw.get("3_modalIntiTambahan"))),
+        "instrumen_modal_inti_tambahan": int(float(form_data_raw.get("3_instrumenModalIntiTambahan"))),
+        "kepemilikan_modal_inti_tambahan": int(float(form_data_raw.get("3_kepemilikanModalIntiTambahan"))),
+        "faktor_pengurang_modal_inti_tambahan": int(float(form_data_raw.get("3_faktorPengurangModalIntiTambahan"))),
+        "modal_inti_tambahan_setelah_fpr": int(float(form_data_raw.get("3_modalIntiTambahan_setelahFPR"))),
+        "modal_inti_tambahan_ongoing_capital": int(float(form_data_raw.get("3_modalIntiTambahan_ongoingCapital"))),
+        "instrumen_utang_jangka_pjg": int(float(form_data_raw.get("3_instrumenUtangJangkaPjg"))),
+        "premium_diskonto_modal_pelengkap": int(float(form_data_raw.get("3_premiumDiskontoModalPelengkap"))),
+        "modal_pelengkap": int(float(form_data_raw.get("3_modalPelengkap"))),
+        "instrumen_modal_pelengkap": int(float(form_data_raw.get("3_instrumenModalPelengkap"))),
+        "kepemilikan_modal_pelengkap": int(float(form_data_raw.get("3_kepemilikanModalPelengkap"))),
+        "faktor_pengurang_modal_pelengkap": int(float(form_data_raw.get("3_faktorPengurangModalPelengkap"))),
+        "modal_pelengkap_setelah_fpr": int(float(form_data_raw.get("3_modalPelengkap_setelahFPR"))),
+        "modal_pelengkap_ongoing_capital": int(float(form_data_raw.get("3_modalPelengkap_ongoingCapital"))),
+        "total_ongoing_capital": int(float(form_data_raw.get("3_totalOngoingCapital"))),
+        "rasio_kpsp": float(form_data_raw.get("3_rasioKPSP")),
+
+        # Kewajiban Ongoing Capital
+        "kpsp_dasar": float(form_data_raw.get("4_KPSPdasar")),
+        "surcharge": float(form_data_raw.get("4_surcharge")),
+        "total_kpsp": float(form_data_raw.get("4_totalKPSP")),
+        "jumlah_kewajiban_ongoing_capital": int(float(form_data_raw.get("4_jumlahKewajibanOngoingCapital"))),
+        "status_pemenuhan_ongoing_capital": form_data_raw.get("4_statusPemenuhanOngoingCapital"),
+        "total_kebutuhan_tambahan_ongoing_capital": int(float(form_data_raw.get("4_totalKebutuhanTambahanOngoingCapital"))),
     }
 
-    # Menambahkan sandi_pjp ke payload dari sesi (akan diisi di send_report_to_backend)
-    # payload[to_snake_case("Sandi PJP")] = session.get("username")
+    file_laporan = request.files.get("file_laporan") # Asumsi ada input file dengan name="file_laporan"
 
-    file_laporan = request.files.get("file_laporan")
-
-    # Menggunakan fungsi send_report_to_backend
+    # Menggunakan fungsi send_report_to_backend dengan json_payload
     success, message, status_code = send_report_to_backend("laporan/kpsp/submit", json_payload=payload, file_obj=file_laporan, method="POST")
 
     return jsonify({"success": success, "message": message}), status_code
@@ -1849,7 +1935,7 @@ def submit_laporan_tahunan_sp():
 def laporan_rba_apu_ppt():
     """Merender formulir untuk Laporan RBA APU PPT."""
     if 'username' not in session or session['role'] != 'user':
-        flash('Anda tidak memiliki akses ke halaman ini.', 'danger')
+        # Removed flash import, so replacing flash with direct return
         return redirect(url_for('login'))
     return render_template('user/forms/laporan_rba_apu_ppt.html')
 
@@ -1857,7 +1943,7 @@ def laporan_rba_apu_ppt():
 def submit_laporan_rba_apu_ppt():
     """Menangani pengiriman formulir Laporan RBA APU PPT."""
     if 'username' not in session or session['role'] != 'user':
-        flash('Anda tidak memiliki izin untuk mengirim laporan.', 'danger')
+        # Removed flash import, so replacing flash with direct return
         return redirect(url_for('login'))
 
     try:
@@ -2002,7 +2088,9 @@ def submit_laporan_rba_apu_ppt():
                     file.save(file_path)
                     uploaded_files_paths[api_key] = file_path
                     # Tambahkan file ke dictionary files_to_upload untuk send_report_to_backend
-                    files_to_upload[api_key] = (filename, open(file_path, 'rb'), file.mimetype)
+                    # Note: send_report_to_backend currently only takes one file_obj.
+                    # If API expects multiple, this needs modification.
+                    # For now, we'll pick one 'main_file_to_send' below.
                 else:
                     uploaded_files_paths[api_key] = None # Tandai jika tidak ada file diupload
             else:
@@ -2082,17 +2170,16 @@ def submit_laporan_rba_apu_ppt():
             if isinstance(value, dict):
                 for sub_key, sub_value in value.items():
                     if isinstance(sub_value, list): # Handle lists like jenis_sistem, shareholder_data
-                        for i, item in enumerate(sub_value):
-                            if isinstance(item, dict):
-                                for item_key, item_value in item.items():
-                                    flat_form_data[f"{key}_{sub_key}_{i+1}_{item_key}"] = item_value
-                            else: # For simple lists like jenis_sistem
-                                flat_form_data[f"{key}_{sub_key}_{i+1}"] = item
+                        # Convert list of items to comma-separated string if the backend expects it flat
+                        # Or, if the backend expects arrays, you might need to adjust send_report_to_backend
+                        # to handle lists in form_data more gracefully (e.g., by sending multiple key-value pairs
+                        # with the same key, like 'jenis_sistem[]').
+                        # For now, converting to JSON string for complex nested lists/dicts.
+                        flat_form_data[f"{key}_{sub_key}"] = json.dumps(sub_value)
                     else:
                         flat_form_data[f"{key}_{sub_key}"] = sub_value
             elif isinstance(value, list):
-                for i, item in enumerate(value):
-                     flat_form_data[f"{key}_{i+1}"] = item
+                flat_form_data[f"{key}"] = json.dumps(value) # For top-level lists
             else:
                 flat_form_data[key] = value
         
@@ -2117,7 +2204,7 @@ def submit_laporan_rba_apu_ppt():
 
         success, message, status_code = send_report_to_backend(
             "laporan/rba-apu-ppt/submit", # Ganti dengan endpoint API yang sesuai
-            form_data=flat_form_data,
+            form_data=flat_form_data, # Menggunakan form_data untuk multipart
             file_obj=main_file_to_send,
             method="POST"
         )
@@ -2128,15 +2215,16 @@ def submit_laporan_rba_apu_ppt():
                 os.remove(path)
                 print(f"DEBUG: File lokal dihapus: {path}")
 
-        flash(message, 'success' if success else 'danger')
-        return redirect(url_for('user_dashboard'))
+        # Replaced flash with jsonify for API-like response or direct redirect for user experience
+        if success:
+            return jsonify({"success": True, "message": message}), status_code
+        else:
+            return jsonify({"success": False, "message": message}), status_code
 
     except ValueError as e:
-        flash(f'Kesalahan validasi data: {str(e)}', 'danger')
-        return redirect(url_for('laporan_rba_apu_ppt'))
+        return jsonify({"success": False, "message": f'Kesalahan validasi data: {str(e)}'}), 400
     except Exception as e:
-        flash(f'Terjadi kesalahan saat mengirim laporan: {str(e)}', 'danger')
-        return redirect(url_for('laporan_rba_apu_ppt'))
+        return jsonify({"success": False, "message": f'Terjadi kesalahan saat mengirim laporan: {str(e)}'}), 500
 
 
 @app.route("/logout")

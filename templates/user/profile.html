@@ -99,6 +99,7 @@
 
     .edit-button.cancel:hover {
         background-color: #4B5563; /* Darker gray on hover */
+        transform: translateY(-2px); /* Lift effect on hover */
         box-shadow: 0 8px 20px rgba(107, 114, 128, 0.3);
     }
 
@@ -121,6 +122,34 @@
         background-color: #F8D7DA; /* Light red */
         color: #721C24; /* Dark red */
         border: 1px solid #F5C6CB;
+    }
+
+    /* Spinner styles */
+    #loadingSpinner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; /* Ensure it's on top of everything */
+    }
+
+    .spinner {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid #fff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 </style>
 {% endblock %}
@@ -181,6 +210,11 @@
     </form>
 </div>
 
+<!-- Loading Spinner -->
+<div id="loadingSpinner" class="tw-hidden">
+    <div class="spinner"></div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Base URL for your API
@@ -221,6 +255,7 @@
         const cancelEditBtn = document.getElementById('cancelEditBtn');
         const profileForm = document.getElementById('profileForm');
         const messageContainer = document.getElementById('messageContainer');
+        const loadingSpinner = document.getElementById('loadingSpinner'); // Get reference to spinner
 
         let isEditing = false;
 
@@ -232,6 +267,20 @@
             setTimeout(() => {
                 messageContainer.classList.add('tw-hidden');
             }, 5000); // Hide after 5 seconds
+        }
+
+        // Function to show loading spinner
+        function showSpinner() {
+            loadingSpinner.classList.remove('tw-hidden');
+            loadingSpinner.style.display = 'flex'; // Ensure it's displayed
+            console.log('Showing spinner'); // Added for debugging
+        }
+
+        // Function to hide loading spinner
+        function hideSpinner() {
+            loadingSpinner.classList.add('tw-hidden');
+            loadingSpinner.style.display = 'none'; // Ensure it's hidden
+            console.log('Hiding spinner'); // Added for debugging
         }
 
         // Function to populate data into HTML elements (both display and input)
@@ -279,6 +328,7 @@
 
         // Function to fetch profile data from the backend
         async function fetchProfile() {
+            showSpinner(); // Show spinner before fetching
             try {
                 const response = await fetch(`${API_BASE_URL}auth/profile/`, {
                     method: 'GET',
@@ -299,13 +349,17 @@
                 showMessage('Data profil berhasil dimuat.', 'success');
             } catch (error) {
                 console.error('Error fetching profile:', error);
-                showMessage(`Gagal memuat data profil: ${error.message}`, 'error');
+                // Updated error message for more insight
+                showMessage(`Gagal memuat data profil: ${error.message}. Silakan coba refresh halaman kembali.`, 'error');
+            } finally {
+                hideSpinner(); // Hide spinner after fetch completes (success or error)
             }
         }
 
         // Function to save changes to the backend
         async function saveProfile(event) {
             event.preventDefault(); // Prevent default form submission
+            showSpinner(); // Show spinner before saving
 
             const updatedData = {};
             // Collect only editable fields for the request body
@@ -338,6 +392,8 @@
             } catch (error) {
                 console.error('Error saving profile:', error);
                 showMessage(`Gagal menyimpan profil: ${error.message}`, 'error');
+            } finally {
+                hideSpinner(); // Hide spinner after saving completes (success or error)
             }
         }
 

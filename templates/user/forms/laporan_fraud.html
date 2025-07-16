@@ -464,11 +464,12 @@
                 return response.json();
             })
             .then(data => {
+                // Access data.message.message if the backend wraps the message in a 'message' key
                 if (data.success) {
-                    showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
+                    showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
                     form.reset();
                 } else {
-                    showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
+                    showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
                 }
             })
             .catch(error => {

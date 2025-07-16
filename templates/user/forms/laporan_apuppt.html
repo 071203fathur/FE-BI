@@ -91,7 +91,7 @@
             font-size: 0.9rem;
             padding: 0.7rem 1rem;
             min-height: 40px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 0.8rem center;
             background-size: 14px 10px;
@@ -621,8 +621,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <!-- Hidden input to store the aggregated DTTOT status -->
-                    <input type="hidden" id="lapor_pemblokiran_dttot" name="lapor_pemblokiran_dttot" value="false">
+                    <!-- Hidden inputs to store the aggregated DTTOT data -->
+                    <input type="hidden" id="jumlah_lapor_pemblokiran_dttot" name="jumlah_lapor_pemblokiran_dttot" value="0">
+                    <input type="hidden" id="expected_lapor_pemblokiran_dttot" name="expected_lapor_pemblokiran_dttot" value="0">
+                    <!-- New textarea for keterangan_lapor_pemblokiran_dttot -->
+                    <div class="tw-space-y-1 tw-mt-3">
+                        <label for="keterangan_lapor_pemblokiran_dttot" class="form-label">Keterangan Lapor Pemblokiran DTTOT</label>
+                        <textarea class="form-input" id="keterangan_lapor_pemblokiran_dttot" name="keterangan_lapor_pemblokiran_dttot" rows="2"></textarea>
+                    </div>
                 </div>
 
                 <p class="tw-font-semibold tw-text-gray-700 tw-mb-2">Lapor Pemblokiran DPPSPM <span class="tw-text-red-500">*</span></p> <!-- Reduced margin -->
@@ -668,8 +674,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <!-- Hidden input to store the aggregated DPPSPM status -->
-                    <input type="hidden" id="lapor_pemblokiran_dppspm" name="lapor_pemblokiran_dppspm" value="false">
+                    <!-- Hidden inputs to store the aggregated DPPSPM data -->
+                    <input type="hidden" id="jumlah_lapor_pemblokiran_dppspm" name="jumlah_lapor_pemblokiran_dppspm" value="0">
+                    <input type="hidden" id="expected_lapor_pemblokiran_dppspm" name="expected_lapor_pemblokiran_dppspm" value="0">
+                    <!-- New textarea for keterangan_lapor_pemblokiran_dppspm -->
+                    <div class="tw-space-y-1 tw-mt-3">
+                        <label for="keterangan_lapor_pemblokiran_dppspm" class="form-label">Keterangan Lapor Pemblokiran DPPSPM</label>
+                        <textarea class="form-input" id="keterangan_lapor_pemblokiran_dppspm" name="keterangan_lapor_pemblokiran_dppspm" rows="2"></textarea>
+                    </div>
                 </div>
             </div>
         </div>
@@ -845,37 +857,39 @@ document.addEventListener('DOMContentLoaded', function() {
         tanggalSuratInput.max = today;
     }
 
-    // Function to update the aggregated boolean status for DTTOT and DPPSPM
+    // Function to update the aggregated data for DTTOT and DPPSPM
     function updatePemblokiranStatus() {
         const dttotRadios = document.querySelectorAll('.dttot-status');
         const dppspmRadios = document.querySelectorAll('.dppspm-status');
 
-        let allDttotReported = true;
-        let dttotGroups = new Set();
-        dttotRadios.forEach(radio => {
-            const groupName = radio.name;
-            dttotGroups.add(groupName);
-            // Check if the 'Sudah Dilaporkan' option for this group is checked
-            const sudahChecked = document.getElementById(`${groupName}_sudah`).checked;
-            if (!sudahChecked) {
-                allDttotReported = false;
-            }
-        });
-        // Ensure all groups have at least one radio selected (this is handled by 'required' attribute)
-        // If all 'Sudah Dilaporkan' are checked, then true, otherwise false.
-        document.getElementById('lapor_pemblokiran_dttot').value = allDttotReported ? 'true' : 'false';
+        let jumlahLaporPemblokiranDttot = 0;
+        const expectedLaporPemblokiranDttot = document.querySelectorAll('#dttotTable tbody tr').length;
+        // Keterangan untuk DTTOT sekarang akan diisi langsung oleh pengguna di textarea.
+        // Jadi, kita hanya memperbarui hidden input untuk jumlah dan expected.
 
-        let allDppspmReported = true;
-        let dppspmGroups = new Set();
-        dppspmRadios.forEach(radio => {
-            const groupName = radio.name;
-            dppspmGroups.add(groupName);
-            const sudahChecked = document.getElementById(`${groupName}_sudah`).checked;
-            if (!sudahChecked) {
-                allDppspmReported = false;
+        dttotRadios.forEach(radio => {
+            if (radio.checked && radio.value === 'True') {
+                jumlahLaporPemblokiranDttot++;
             }
         });
-        document.getElementById('lapor_pemblokiran_dppspm').value = allDppspmReported ? 'true' : 'false';
+
+        document.getElementById('jumlah_lapor_pemblokiran_dttot').value = jumlahLaporPemblokiranDttot;
+        document.getElementById('expected_lapor_pemblokiran_dttot').value = expectedLaporPemblokiranDttot;
+
+
+        let jumlahLaporPemblokiranDppspm = 0;
+        const expectedLaporPemblokiranDppspm = document.querySelectorAll('#dppspmTable tbody tr').length;
+        // Keterangan untuk DPPSPM sekarang akan diisi langsung oleh pengguna di textarea.
+        // Jadi, kita hanya memperbarui hidden input untuk jumlah dan expected.
+
+        dppspmRadios.forEach(radio => {
+            if (radio.checked && radio.value === 'True') {
+                jumlahLaporPemblokiranDppspm++;
+            }
+        });
+
+        document.getElementById('jumlah_lapor_pemblokiran_dppspm').value = jumlahLaporPemblokiranDppspm;
+        document.getElementById('expected_lapor_pemblokiran_dppspm').value = expectedLaporPemblokiranDppspm;
     }
 
     // Add event listeners to DTTOT and DPPSPM radio buttons
@@ -993,13 +1007,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
+            // Access data.message.message because the backend wraps the message in a 'message' key
             if (data.success) {
-                showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
+                showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
                 form.reset();
                 // Re-run updatePemblokiranStatus after form reset to clear hidden inputs
                 updatePemblokiranStatus();
             } else {
-                showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
+                showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
             }
         })
         .catch(error => {

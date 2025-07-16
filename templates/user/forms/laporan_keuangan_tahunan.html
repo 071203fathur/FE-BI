@@ -36,8 +36,8 @@
         border-radius: 12px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         padding: 0;
-        margin-bottom: 1rem; /* Reduced margin */
-        overflow: hidden;
+        /* Perubahan: Mengomentari properti overflow: hidden; */
+        /* overflow: hidden; */
     }
 
     .section-group .section-header {
@@ -107,7 +107,7 @@
     
     .file-input-container input[type="file"] {
         font-size: 0.9rem; /* Smaller font */
-        padding: 0.7rem 1rem; /* Reduced padding */
+        padding: 0.7rem 1rem;
     }
 
     /* Nested sections - compact */
@@ -283,6 +283,7 @@
         position: relative;
         display: inline-block;
         margin-left: 0.3rem; /* Reduced space between label and icon */
+        z-index: 10; /* Perubahan: Menambahkan z-index */
     }
 
     .tooltip-icon {
@@ -306,7 +307,10 @@
 
     .tooltip-text {
         visibility: hidden;
-        width: 220px; /* Reduced width */
+        /* Perubahan: Mengubah width menjadi max-content */
+        width: max-content;
+        /* Perubahan: Menambahkan max-width */
+        max-width: 300px;
         background-color: #333;
         color: #fff;
         text-align: center;
@@ -316,12 +320,16 @@
         z-index: 1;
         bottom: 120%; /* Position above the icon */
         left: 50%;
-        margin-left: -110px; /* Center the tooltip */
+        /* Perubahan: Mengubah margin-left menjadi 0 dan menambahkan transform */
+        margin-left: 0;
+        transform: translateX(-50%);
         opacity: 0;
         transition: opacity 0.3s, visibility 0.3s;
         font-size: 0.85rem; /* Reduced font size */
         line-height: 1.3; /* Reduced line height */
         box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* Reduced shadow */
+        /* Perubahan: Menambahkan white-space: normal; */
+        white-space: normal;
     }
 
     .tooltip-text::after {
@@ -514,7 +522,7 @@
                             <label for="aset_tetap" class="form-label">
                                 Aset Tetap (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
-                                    <span class="tooltip-icon" data-tooltip="Aset berwujud yang digunakan dalam operasi bisnis dan memiliki masa manfaat lebih dari satu tahun, seperti properti, pabrik, dan peralatan.">!</span>
+                                    <span class="tooltip-icon" data-tooltip="Aset berwujud yang digunakan dalam operasi bisnis dan memiliki masa manfaat lebih dari one year, seperti properti, pabrik, dan peralatan.">!</span>
                                     <span class="tooltip-text"></span>
                                 </span>
                             </label>
@@ -542,7 +550,7 @@
                             <label for="hutang_jangka_pendek" class="form-label">
                                 Hutang Jangka Pendek (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
-                                    <span class="tooltip-icon" data-tooltip="Kewajiban keuangan yang jatuh tempo dalam satu tahun atau siklus operasi normal perusahaan.">!</span>
+                                    <span class="tooltip-icon" data-tooltip="Kewajiban keuangan yang jatuh tempo dalam one year atau siklus operasi normal perusahaan.">!</span>
                                     <span class="tooltip-text"></span>
                                 </span>
                             </label>
@@ -553,7 +561,7 @@
                             <label for="hutang_jangka_panjang" class="form-label">
                                 Hutang Jangka Panjang (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
-                                    <span class="tooltip-icon" data-tooltip="Kewajiban keuangan yang jatuh tempo lebih dari satu tahun dari tanggal laporan.">!</span>
+                                    <span class="tooltip-icon" data-tooltip="Kewajiban keuangan yang jatuh tempo lebih dari one year dari tanggal laporan.">!</span>
                                     <span class="tooltip-text"></span>
                                 </span>
                             </label>
@@ -609,7 +617,7 @@
                             <label for="total_pendapatan" class="form-label">
                                 Total Pendapatan (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
-                                    <span class="tooltip-icon" data-tooltip="Total penerimaan yang diperoleh perusahaan dari aktivitas operasional utamanya selama satu tahun fiskal.">!</span>
+                                    <span class="tooltip-icon" data-tooltip="Total penerimaan yang diperoleh perusahaan dari aktivitas operasional utamanya selama one year fiskal.">!</span>
                                     <span class="tooltip-text"></span>
                                 </span>
                             </label>
@@ -631,7 +639,7 @@
                             <label for="total_beban" class="form-label">
                                 Total Beban (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
-                                    <span class="tooltip-icon" data-tooltip="Seluruh biaya yang dikeluarkan perusahaan untuk menghasilkan pendapatan selama satu tahun fiskal.">!</span>
+                                    <span class="tooltip-icon" data-tooltip="Seluruh biaya yang dikeluarkan perusahaan untuk menghasilkan pendapatan selama one year fiskal.">!</span>
                                     <span class="tooltip-text"></span>
                                 </span>
                             </label>
@@ -659,7 +667,7 @@
                             <label for="laba" class="form-label">
                                 Laba (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
-                                    <span class="tooltip-icon" data-tooltip="Keuntungan bersih yang diperoleh perusahaan setelah semua pendapatan dikurangi semua beban selama satu tahun fiskal.">!</span>
+                                    <span class="tooltip-icon" data-tooltip="Keuntungan bersih yang diperoleh perusahaan setelah semua pendapatan dikurangi semua beban selama one year fiskal.">!</span>
                                     <span class="tooltip-text"></span>
                                 </span>
                             </label>
@@ -670,7 +678,7 @@
                             <label for="rugi" class="form-label">
                                 Rugi (Rp) <span class="tw-text-red-500">*</span>
                                 <span class="tooltip-container">
-                                    <span class="tooltip-icon" data-tooltip="Kerugian bersih yang dialami perusahaan ketika total beban melebihi total pendapatan selama satu tahun fiskal.">!</span>
+                                    <span class="tooltip-icon" data-tooltip="Kerugian bersih yang dialami perusahaan ketika total beban melebihi total pendapatan selama one year fiskal.">!</span>
                                     <span class="tooltip-text"></span>
                                 </span>
                             </label>
@@ -931,20 +939,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 }).catch(jsonError => {
                     console.error("Error parsing JSON from non-OK response:", jsonError);
                     return response.text().then(text => {
-                        throw new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
+                        throw new new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
                     });
                 });
             }
             return response.json();
         })
         .then(data => {
+            // Access data.message.message if the backend wraps the message in a 'message' key
             if (data.success) {
-                showMessageBox(data.message || 'Laporan berhasil dikirim!', 'success');
+                showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
                 form.reset();
                 // Reset visibilitas field auditor setelah form direset
                 toggleAuditorFields();
             } else {
-                showMessageBox(data.message || 'Gagal mengirim laporan.', 'error');
+                showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
             }
         })
         .catch(error => {

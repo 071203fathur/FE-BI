@@ -1,0 +1,1640 @@
+{% extends "user/base.html" %}
+
+{% block title %}Form Perhitungan KPSP v.1.0{% endblock %}
+
+{% block extra_head %}
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"> -->
+    <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/dist/css/offcanvas-navbar.css" rel="stylesheet">
+    <link href="assets/css/select2.min.css" rel="stylesheet">
+    <link href="assets/css/select2-bootstrap-5-theme.min.css" rel="stylesheet">
+    <link href="assets/css/jquery-ui.min.css" rel="stylesheet">
+    <link href="assets/css/sweetalert2.min.css" rel="stylesheet">
+    <link href="assets/dist/css/custom.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <main class="container">
+      <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
+        <img class="me-3" src="assets/brand/fund.png" alt="capital" height="64">
+        <div class="lh-1">
+          <h1 class="h4 mb-0 text-white lh-1">Form Perhitungan Kecukupan Permodalan Penyelenggara Sistem Pembayaran</h1>
+        </div>
+      </div>
+        <div class="my-3 p-3 rounded shadow-sm d-flex justify-content-around flex-wrap gap-3" style="background-color: #000000;">
+            <button type="button" id="btn_previewData" class="btn btn-light" onclick="exportData('preview')">Preview</button>
+            <button type="button" id="btn_exportData" class="btn btn-warning" onclick="exportData('export')">Export</button>
+            <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#sumberDataModal" >Daftar PJP/PIP</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#panduanModal">Juknis</button>
+        </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-3 text-end">
+                    Posisi
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control" id="klp_periode" onchange="refreshAktivitas()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-3 text-end">
+                    Kategori Izin
+                </div>
+                <div class="col-9">
+                    <select class="form-select" aria-label="Pilih Kategori Izin" id="klp_kategoriIzin" onchange="refreshKategoriIzin()" disabled>
+                            <option selected> - Pilih Kategori Izin - </option>
+                            <option value="PIP">PIP</option>
+                            <option value="KI1">KI1</option>
+                            <option value="KI2">KI2</option>
+                            <option value="KI3">KI3</option>
+                        </select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-3 text-end">
+                    Nama Pelapor
+                </div>
+                <div class="col-9">
+                    <select class="form-select select2" aria-label="Pilih Nama Pelapor" id="klp_namaPelapor" onchange="refreshNamaPelapor()">
+                            <option selected value="N/A"> - Pilih kategori izin terlebih dahulu - </option>
+                        </select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-3 text-end">
+                    Aktivitas PJP/PIP
+                </div>
+                <div class="col-9">
+                    <div class="container">
+                        <div class="row pb-3">
+                            <div class="col-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="PIP" id="klp_aktivitasPIP" onchange="refreshAktivitas()">
+                                            <label class="form-check-label" for="klp_aktivitasPIP">
+                                                PIP
+                                            </label>
+                                        </div>
+                            </div>
+                            <div class="col-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="AIS" id="klp_aktivitasAIS" onchange="refreshAktivitas()">
+                                            <label class="form-check-label" for="klp_aktivitasAIS">
+                                                AIS
+                                            </label>
+                                        </div>
+                            </div>
+                            <div class="col-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="PIAS" id="klp_aktivitasPIAS" onchange="refreshAktivitas()">
+                                            <label class="form-check-label" for="klp_aktivitasPIAS">
+                                                PIAS
+                                            </label>
+                                        </div>
+                            </div>
+                            <div class="col-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="REM1" id="klp_aktivitasREM1" onchange="refreshAktivitas()" name="klp_aktivitasEach">
+                                            <label class="form-check-label" for="klp_aktivitasREM1">
+                                                REM1
+                                            </label>
+                                        </div>
+                            </div>
+                            <div class="col-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="REM2" id="klp_aktivitasREM2" onchange="refreshAktivitas()" name="klp_aktivitasEach">
+                                            <label class="form-check-label" for="klp_aktivitasREM2">
+                                                REM2
+                                            </label>
+                                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3 text-end">
+                    Klasifikasi PJP/PIP
+                </div>
+                <div class="col-9">
+                    <select class="form-select" aria-label="Klasifikasi PJP/PIP" id="klp_klasifikasiPJPPIP" onchange="refreshAktivitas()">
+                            <option selected> - Pilih Klasifikasi PJP/PIP - </option>
+                            <option value="PSPS">PSPS</option>
+                            <option value="PSPK">PSPK</option>
+                            <option value="PSPU">PSPU</option>
+                        </select>                    
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center p-3 my-3 text-white bg-black rounded shadow-sm">
+        <img class="me-3" src="assets/brand/capital.png" alt="capital" height="24">
+        <div class="lh-1">
+          <h1 class="h6 mb-0 text-white lh-1">Pemenuhan Initial Capital</h1>
+        </div>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-3 mb-3">Kewajiban Initial Capital <span class="badge bg-primary">Diisi sesuai laporan keuangan audited</span></h6>
+        <div class="container">
+            <div class="row">
+                <div class="col-8 text-end">
+                    Jumlah Modal Disetor
+                </div>
+                <div class="col-4">
+                            <input type="text" class="form-control maskMoney" id="1_jumlahModalDisetor" aria-describedby="1_kewajibanModalDisetor" onchange="refreshStatusPemenuhanInitialCapital()">
+                            <!-- <div class="input-group mb-3">
+                                <button class="btn btn-outline-primary hidden" type="button" id="button-addon2" data-bs-toggle="modal" data-bs-target="#AsumsiPerhitunganModal" >Info</button>
+                            </div> -->
+                </div>
+            </div>
+        </div>
+        <small class="d-block text-end mb-3">
+          <a href="#">Initial Capital merujuk pada modal disetor yang tertera dalam akta perusahaan</a>
+        </small>
+
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    Jumlah Kewajiban <i>Initial Capital</i>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="1_kewajibanInitCapital" aria-describedby="1_kewajibanInitCapital">
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    Status Pemenuhan <i>Initial Capital</i>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="bg-danger form-control text-bg-danger text-center fw-bold" disabled id="1_statusPemenuhan_initialCapital" aria-describedby="1_statusPemenuhan_initialCapital" value="Tidak Memenuhi">
+                </div>
+            </div>
+        </div>
+
+        <div class="container border-bottom mb-3">
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    Total Kebutuhan Tambahan <i>Initial Capital</i>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="1_tambahanInitCapital" aria-describedby="1_tambahanInitCapital">
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="flagGL_PIPasing" disabled onchange="refreshStatusPemenuhanInitialCapital()">
+                              <label class="form-check-label" for="flagGL_PIPasing">
+                                Memiliki guarantee letter dari parent company (khusus PIP Asing)
+                              </label>
+                            </div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center p-3 my-3 text-white bg-black rounded shadow-sm">
+        <img class="me-3" src="assets/brand/capital.png" alt="capital" height="24">
+        <div class="lh-1">
+          <h1 class="h6 mb-0 text-white lh-1">Perhitungan <i>Ongoing Capital</i></h1>
+        </div>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-3 mb-3">Penetapan Transaksi Tertimbang Menurut Risiko (TTMR) <span class="badge bg-primary">Transaksi yang diproses selama tahun buku laporan</span></h6>
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-3">
+                </div>
+                <div class="col-3 text-end">
+                    Jumlah Bulan Transaksi
+                </div>
+                <div class="col-2">
+                    <input type="number" class="form-control" id="2_jumlahBulanTrx" aria-describedby="2_jumlahBulanTrx" onchange="refreshPerhitunganOngoingCapital()" min="1" max="12" value="12">
+                </div>
+                <div class="col-4 text-danger">
+                    (Range 1 s.d. 12)
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    <span class="badge bg-primary">Transaksi diisi sesuai dengan aktivitas yang dilakukan</span>
+                </div>
+                <div class="col-4 text-center">
+                    Transaksi selama tahun buku laporan
+                </div>
+                <div class="col-4 text-center">
+                    Rata-rata Transaksi/Bulan
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    Total Transaksi menggunakan Kartu ATM/Debet*)
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" id="2_totalTrx_ATMDebet" aria-describedby="2_totalTrx_ATMDebet" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" disabled id="2_totalTrx_ATMDebet_rata" aria-describedby="2_totalTrx_ATMDebet_rata">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    Total Transaksi menggunakan Transaksi Kartu Kredit*)
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" id="2_totalTrx_KK" aria-describedby="2_totalTrx_KK" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" disabled id="2_totalTrx_KK_rata" aria-describedby="2_totalTrx_KK_rata">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    Transaksi Dompet Elektronik
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" id="2_trxDompel" aria-describedby="2_trxDompel" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" disabled id="2_trxDompel_rata" aria-describedby="2_trxDompel_rata">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    Transaksi Transfer Dana LN - Incoming
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" id="2_trxTrfDanaLN_inc" aria-describedby="2_trxTrfDanaLN_inc" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" disabled id="2_trxTrfDanaLN_inc_rata" aria-describedby="2_trxTrfDanaLN_inc_rata">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    Transaksi Transfer Dana LN - Outgoing
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" id="2_trxTrfDanaLN_out" aria-describedby="2_trxTrfDanaLN_out" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" disabled id="2_trxTrfDanaLN_out_rata" aria-describedby="2_trxTrfDanaLN_out_rata">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    Transaksi Transfer Dana - Domestik
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" id="2_trxTrfDana_dom" aria-describedby="2_trxTrfDana_dom" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" disabled id="2_trxTrfDana_dom_rata" aria-describedby="2_trxTrfDana_dom_rata">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    Transaksi Uang Elektronik**)
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" id="2_trxUE" aria-describedby="2_trxUE" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" disabled id="2_trxUE_rata" aria-describedby="2_trxUE_rata">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    Transaksi PIAS - Fasilitator***)
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" id="2_trxPIAS_fasil" aria-describedby="2_trxPIAS_fasil" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" disabled id="2_trxPIAS_fasil_rata" aria-describedby="2_trxPIAS_fasil_rata">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    Transaksi PIAS - Merchant Agregator
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" id="2_trxPIAS_merchAgg" aria-describedby="2_trxPIAS_merchAgg" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" disabled id="2_trxPIAS_merchAgg_rata" aria-describedby="2_trxPIAS_merchAgg_rata">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    Transaksi lainnya (a.l. Biller Aggregator)
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" id="2_trxLainnya" aria-describedby="2_trxLainnya" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" disabled id="2_trxLainnya_rata" aria-describedby="2_trxLainnya_rata">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4 text-end">
+                    <b>Total Nilai Transaksi</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="2_totalNilaiTrx" aria-describedby="2_totalNilaiTrx">
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="2_totalNilaiTrx_rata" aria-describedby="2_totalNilaiTrx_rata">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                </div>
+                <div class="col-4 text-end">
+                    <b>Beban Transaksi</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="2_bebanTrx" aria-describedby="2_bebanTrx">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12 text-danger">
+                    *) Untuk PIP hanya memperhitungkan transaksi off us<br>
+                    **) meliputi transaksi outgoing berupa transaksi belanja, transfer & reedeem<br>
+                    ***) Nilai Transaksi PIAS - Fasilitator dihitung 10%
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-4">
+                </div>
+                <div class="col-4 text-center">
+                    Transaksi selama tahun buku laporan
+                </div>
+                <div class="col-4 text-center">
+                    Rata-rata Transaksi/Bulan
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    Dana Float****)
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" id="2_danaFloat" aria-describedby="2_danaFloat" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" disabled id="2_danaFloat_rata" aria-describedby="2_danaFloat_rata">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12 text-danger">
+                    ****) khusus AIS yang menyelenggarakan Uang Elektronik
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-4">
+                </div>
+                <div class="col-4 text-end">
+                    <b>% Beban Transaksi Dana <i>Float</i></b>
+                </div>
+                <div class="col-4">
+                            <div class="input-group" style="width: 160px;">
+                            <input type="text" class="form-control text-center" disabled id="2_percBebanTrxDanaFloat" aria-describedby="2_percBebanTrxDanaFloat">
+                              <span class="input-group-text" id="basic-addon2">%</span>
+                            </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                </div>
+                <div class="col-4 text-end">
+                    <b>Beban Transaksi Dana <i>Float</i></b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="2_bebanTrxDanaFloat" aria-describedby="2_bebanTrxDanaFloat">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Total Beban (Beban Transaksi Progresif + Beban Dana <i>Float</i>)</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="2_totalBeban" aria-describedby="2_totalBeban">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Konstanta TTMR</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control text-center" style="width: 160px;" disabled id="2_konstantaTTMR" aria-describedby="2_konstantaTTMR">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>TTMR (Konstanta TTMR x Total Beban)</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="2_TTMR" aria-describedby="2_TTMR">
+                </div>
+            </div>
+
+        </div>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-3 mb-3">Komponen Perhitungan <i>Ongoing Capital</i></h6>
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-12 text-center text-danger" style="font-family: consolas;">
+                    Modal disetor = modal saham (nilai nominal saham) + uang muka setoran modal + agio/disagio saham 
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                </div>
+                <div class="col-4 text-center">
+                    Nominal
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Modal Saham
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_modalSaham" aria-describedby="3_modalSaham" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Uang Muka Setoran Modal*)
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_uangMukaSetoranModal" aria-describedby="3_uangMukaSetoranModal" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Agio Saham/Disagio Saham*) - <i class="text-danger">diisi negatif jika disagio</i>
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_agioDisagioSaham" aria-describedby="3_agioDisagioSaham" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Saldo Laba/Rugi berjalan, termasuk akumulasi laba/rugi tahun sebelumnya - <i class="text-danger">diisi negatif jika rugi</i>
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_saldoLRberjalan" aria-describedby="3_saldoLRberjalan" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Saldo penghasilan komprehensif lain - <i class="text-danger">diisi negatif jika rugi</i>
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_saldoPenghasilanKompr" aria-describedby="3_saldoPenghasilanKompr" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Modal Inti Utama</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="3_modalIntiUtama" aria-describedby="3_modalIntiUtama">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12 text-danger">
+                    *) Pada sebagian format laporan keuangan ditulis sebagai komponen tambahan modal disetor
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-8">
+                    Aset pajak tangguhan (<i>deferred tax asset</i>)**)
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_asetPajakTangguhan" aria-describedby="3_asetPajakTangguhan" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    <i>Goodwill</i>**)
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_goodWill" aria-describedby="3_goodWill" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Asset tidak berwujud (<i>intangible asset</i>)**)
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_asetTidakBerwujud" aria-describedby="3_asetTidakBerwujud" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Seluruh penyertaan dengan kepemilikan lebih dari 5% atau lebih**)
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_seluruhPenyertaan" aria-describedby="3_seluruhPenyertaan" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Pembelian kembali instrumen modal yang telah diakui sebagai komponen permodalan PJP/PIP**)
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_pembelianKembaliInstModal" aria-describedby="3_pembelianKembaliInstModal" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Penempatan dana pada instrumen utang pada entitas lainnya yang diakui sebagai komponen modal oleh entitas penerbit **)
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_penempatanDanaInstUtang" aria-describedby="3_penempatanDanaInstUtang" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Faktor Pengurang Modal Inti Utama</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="3_faktorPengurangModalInti" aria-describedby="3_faktorPengurangModalInti">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Modal Inti Utama (Setelah dikurangi Faktor Pengurang)</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="3_modalIntiUtama_setelahFPR" aria-describedby="3_modalIntiUtama_setelahFPR">
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-8">
+                    Instrumen utang, baik berupa surat utang (debt securities) dan pinjaman yang bersifat subordinasi, yang tidak memiliki  jangka waktu, dan pembayaran imbal hasil tidak dapat diakumulasikan
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_instrumenUtang" aria-describedby="3_instrumenUtang" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Instrumen hybrid yang tidak memiliki jangka waktu dan pembayaran imbal hasil tidak dapat diakumulasikan
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_instrumenHybrid" aria-describedby="3_instrumenHybrid" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Saham preferen non kumulatif baik dengan atau tanpa fitur opsi beli
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_sahamPreferenNonKumulatif" aria-describedby="3_sahamPreferenNonKumulatif" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Premium/diskonto yang berasal dari penerbitan instrumen yang tergolong sebagai modal inti tambahan
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_premiumDiskonto" aria-describedby="3_premiumDiskonto" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Modal Inti Tambahan</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="3_modalIntiTambahan" aria-describedby="3_modalIntiTambahan">
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-8">
+                    Instrumen Modal Inti Tambahan yang dimiliki sendiri (akibat kewajiban kontraktual)**)
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_instrumenModalIntiTambahan" aria-describedby="3_instrumenModalIntiTambahan" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Kepemilikan Modal Inti Tambahan oleh pihak lain yang terindikasi merupakan skema kepemilikan silang (crossholding)**)
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_kepemilikanModalIntiTambahan" aria-describedby="3_kepemilikanModalIntiTambahan" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Faktor Pengurang Modal Inti Tambahan</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="3_faktorPengurangModalIntiTambahan" aria-describedby="3_faktorPengurangModalIntiTambahan">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12 text-danger">
+                    **) Faktor pengurang diisi dengan nilai positif
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Modal Inti Tambahan (Setelah dikurangi Faktor Pengurang)</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="3_modalIntiTambahan_setelahFPR" aria-describedby="3_modalIntiTambahan_setelahFPR">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Modal Inti Tambahan yang dapat diperhitungkan sebagai <i>ongoing capital</i></b><br><b class="text-danger">(max 1/3 modal inti utama)</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="3_modalIntiTambahan_ongoingCapital" aria-describedby="3_modalIntiTambahan_ongoingCapital">
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-8">
+                    Instrumen utang jangka panjang, baik berupa surat utang (debt securities) dan pinjaman yang bersifat subordinasi dengan maturitas ≥ 5thn
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_instrumenUtangJangkaPjg" aria-describedby="3_instrumenUtangJangkaPjg" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Premium/diskonto yang berasal dari penerbitan instrumen yang tergolong sebagai modal pelengkap
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_premiumDiskontoModalPelengkap" aria-describedby="3_premiumDiskontoModalPelengkap" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Modal Pelengkap</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="3_modalPelengkap" aria-describedby="3_modalPelengkap">
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-8">
+                    Instrumen Modal Pelengkap yang dimiliki sendiri (akibat kewajiban kontraktual)**)
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_instrumenModalPelengkap" aria-describedby="3_instrumenModalPelengkap" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8">
+                    Kepemilikan Modal Pelengkap oleh pihak lain yang terindikasi merupakan skema kepemilikan silang (cross holding)**)
+                </div>
+                <div class="col-4">
+                <input type="text" class="form-control maskMoney" id="3_kepemilikanModalPelengkap" aria-describedby="3_kepemilikanModalPelengkap" onchange="refreshPerhitunganOngoingCapital()">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Faktor Pengurang Modal Pelengkap</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="3_faktorPengurangModalPelengkap" aria-describedby="3_faktorPengurangModalPelengkap">
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Modal Pelengkap (Setelah dikurangi Faktor Pengurang)</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="3_modalPelengkap_setelahFPR" aria-describedby="3_modalPelengkap_setelahFPR">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Modal Pelengkap yang dapat diperhitungkan sebagai <i>Ongoing Capital</i></b><br><b class="text-danger">(max 1/3 Modal Inti Tambahan yang dapat diperhitungkan sebagai <i>ongoing capital</i>)</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="3_modalPelengkap_ongoingCapital" aria-describedby="3_modalPelengkap_ongoingCapital">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Total <i>Ongoing Capital</i></b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="3_totalOngoingCapital" aria-describedby="3_totalOngoingCapital">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                </div>
+                <div class="col-4 text-end">
+                    <b>Rasio KPSP (<i>Ongoing Capital</i>/TTMR)</b>
+                </div>
+                <div class="col-4">
+                            <div class="input-group" style="width: 160px;">
+                            <input type="text" class="form-control text-center" disabled id="3_rasioKPSP" aria-describedby="3_rasioKPSP">
+                              <span class="input-group-text" id="basic-addon2">%</span>
+                            </div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-3 mb-3">Kewajiban <i>Ongoing Capital</i></h6>
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>KPSP Dasar</b>
+                </div>
+                <div class="col-4">
+                            <div class="input-group" style="width: 160px;">
+                            <input type="text" class="form-control text-center" disabled id="4_KPSPdasar" aria-describedby="4_KPSPdasar">
+                              <span class="input-group-text" id="basic-addon2">%</span>
+                            </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b><i>Surcharge</i> Berdasarkan Klasifikasi PJP/PIP</b>
+                </div>
+                <div class="col-4">
+                            <div class="input-group" style="width: 160px;">
+                            <input type="text" class="form-control text-center" disabled id="4_surcharge" aria-describedby="4_surcharge">
+                              <span class="input-group-text" id="basic-addon2">%</span>
+                            </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Total KPSP</b>
+                </div>
+                <div class="col-4">
+                            <div class="input-group" style="width: 160px;">
+                            <input type="text" class="form-control text-center" disabled id="4_totalKPSP" aria-describedby="4_totalKPSP">
+                              <span class="input-group-text" id="basic-addon2">%</span>
+                            </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Jumlah Kewajiban <i>Ongoing Capital</i> (KPSP x TTMR)</b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="4_jumlahKewajibanOngoingCapital" aria-describedby="4_jumlahKewajibanOngoingCapital">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Status Pemenuhan <i>Ongoing Capital</i></b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="bg-danger form-control text-bg-danger text-center fw-bold" disabled id="4_statusPemenuhanOngoingCapital" aria-describedby="4_statusPemenuhanOngoingCapital" value="Tidak Memenuhi">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-8 text-end">
+                    <b>Total Kebutuhan Tambahan <i>Ongoing Capital</i></b>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control maskMoney" disabled id="4_totalKebutuhanTambahanOngoingCapital" aria-describedby="4_totalKebutuhanTambahanOngoingCapital">
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- Tombol Submit Baru -->
+      <div class="my-3 p-3 rounded shadow-sm d-flex justify-content-center">
+          <button type="button" id="btn_submitData" class="btn btn-success btn-lg">Submit Laporan</button>
+      </div>
+
+      <div class="bg-black my-3 p-3 rounded shadow-sm text-center text-white small">
+            Departemen Surveilans Sistem Keuangan &middot; &copy; 2023
+      </div>
+    </main>
+
+    <div class="modal fade" id="sumberDataModal" tabindex="-1" aria-labelledby="" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Daftar PJP/PIP</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="container">
+                Apabila PJP/PIP belum tersedia pada opsi pilihan, dapat menambahkan secara mandiri dengan format:<br>
+                [Sandi LKPBU],[Nama PJP],[KI],TRUE/FALSE --> TRUE apabila PIP Asing, selain itu FALSE.<br>
+                Setelah ditambahkan, agar klik tombol "Refresh Daftar PJP/PIP"<br>
+                <div class="col-12">
+                            <!-- <label for="exampleFormControlTextarea1" class="form-label">RAW</label> -->
+                            <textarea class="form-control" id="csvDaftarPJPPIP" style="height: 200px">Sandi_LKPBU,Nama_PJSP,Kategori_Izin,Flag_PIP_Asing
+777249082,Witami Tunai Mandiri,KI1,FALSE
+777249340,Buana Media Teknologi,KI1,FALSE
+777250340,Honest Financial Technology,KI1,FALSE
+777250350,Aeon Credit Service Indonesia,KI1,FALSE
+777252909,Home Credit Indonesia,KI1,FALSE
+777291051,Shinhan Indo Finance,KI1,FALSE
+777930007,SKYE SAB INDONESIA,KI1,FALSE
+777930008,FINNET,KI1,FALSE
+777930014,NUSA SATU INTI ARTHA,KI1,FALSE
+777930017,Visionet Internasional,KI1,FALSE
+777930071,Fasa Centra Artajaya,KI1,FALSE
+777951212,XL Axiata,KI1,FALSE
+777952197,Telekomunikasi Indonesia,KI1,FALSE
+777952280,Indosat,KI1,FALSE
+777952690,Telekomunikasi Selular,KI1,FALSE
+777955874,Smartfren Telecom,KI1,FALSE
+777958156,Harsya Remitindo,KI1,FALSE
+777959022,Dompet Anak Bangsa,KI1,FALSE
+777959457,Sari Coffee Indonesia,KI1,FALSE
+777960164,Bimasakti Multi Sinergi,KI1,FALSE
+777960203,Indivara Sejahtera Sukses Makmur,KI1,FALSE
+777960639,Espay Debit Indonesia Koe,KI1,FALSE
+777960953,Inti Dunia Sukses,KI1,FALSE
+777961801,Veritra Sentosa Internasional,KI1,FALSE
+777961813,Solusi Pasti Indonesia,KI1,FALSE
+777961839,Ezeelink Indonesia,KI1,FALSE
+777961840,BluePay Digital International,KI1,FALSE
+777961856,E2Pay Global Utama,KI1,FALSE
+777961897,Cakra Ultima Sejahtera,KI1,FALSE
+777961911,Airpay Internasional Indonesia,KI1,FALSE
+777961943,Fintek Karya Nusantara,KI1,FALSE
+777961945,Transaksi Artha Gemilang,KI1,FALSE
+777962004,Max Interactives Technologies,KI1,FALSE
+777962101,Sarana Pactindo,KI1,FALSE
+777962147,Datacell Infomedia,KI1,FALSE
+777962181,Kereta Commuter Indonesia,KI1,FALSE
+777962186,Mass Rapid Transit Jakarta,KI1,FALSE
+777962247,MNC Teknologi Nusantara,KI1,FALSE
+777962248,Astra Digital Arta,KI1,FALSE
+777962249,Netzme Kreasi Indonesia,KI1,FALSE
+777962250,Rpay Finansial Digital Indonesia,KI1,FALSE
+777962251,Visi Jaya Indonesia,KI1,FALSE
+777962252,Paprika Multi Media,KI1,FALSE
+777962253,Yukk Kreasi Indonesia,KI1,FALSE
+777962254,Mitra Pembayaran Elektronik,KI1,FALSE
+777962255,Jatelindo Perkasa Abadi,KI1,FALSE
+777962398,Ayopop Teknologi Indonesia,KI1,FALSE
+777962404,Duta Teknologi Kreatif,KI1,FALSE
+777962491,Mareco Prima Mandiri,KI1,FALSE
+777962540,PAKAI DONK NUSANTARA,KI1,FALSE
+777962572,Midazpay Digital Indonesia,KI1,FALSE
+777962573,AKASANET BUMI NUSANTARA,KI1,FALSE
+777962603,Capital Net Indonesia,KI1,FALSE
+777962604,GPay Digital Asia,KI1,FALSE
+777962671,Indo Sukses Mandiri,KI1,FALSE
+777962678,GDC Multi Sarana,KI1,FALSE
+777962741,Cashfazz Teknologi Nusantara,KI1,FALSE
+777962802,Inacash Lentera Teknologi,KI1,FALSE
+777962803,Nusapay Solusi Indonesia,KI1,FALSE
+777962896,Reformasi Uang Pembayaran Indonesia,KI1,FALSE
+777962897,ANADANA KODE NONTUNAI,KI1,FALSE
+777962990,QOIN DIGITAL INDONESIA,KI1,FALSE
+777930003,Indopay Merchant Services,KI2,FALSE
+777930004,MULTI ADI PRAKASA MANUNGGAL,KI2,FALSE
+777930038,KHARISMA CATUR MANDALA,KI2,FALSE
+777930045,MEDIA INDONUSA,KI2,FALSE
+777930099,Digital Solusi Pratama,KI2,FALSE
+777954682,JASAMARGA TOLL ROAD OPERATOR,KI2,FALSE
+777959782,Prima Vista Solusi,KI2,FALSE
+777962104,MCP INDO UTAMA,KI2,FALSE
+777962497,IONPAY NETWORK,KI2,FALSE
+777962947,HANSEL DAVEST INDONESIA,KI2,FALSE
+X77000003,MIDTRANS,KI2,FALSE
+X77000005,AINO INDONESIA,KI2,FALSE
+X77000006,PENYELESAIAN TRANSAKSI ELEKTRONIK NASIONAL,KI2,FALSE
+X77000009,PEMBAYARAN LINTAS USAHA SUKSES,KI2,FALSE
+X77000010,MODULE INTRACS YASATAMA,KI2,FALSE
+X77000012,Integrasi Sinaptiq,KI2,FALSE
+X77000013,Delemeta Bilano,KI2,FALSE
+X77000014,Cashlez Worldwide Indonesia,KI2,FALSE
+X77000015,Sprint Asia Technlogy,KI2,FALSE
+X77000017,Dinamik Mobile,KI2,FALSE
+X77000019,Sinar Digital Terdepan,KI2,FALSE
+X77000020,Mitra Transaksi Indonesia,KI2,FALSE
+X77000021,Prismalink Internasional,KI2,FALSE
+X77000022,TRAVELOKA INDONESIA,KI2,FALSE
+X77000023,Dompet Elektronik Indonesia,KI2,FALSE
+X77000024,MobivisionTeknologi Inno,KI2,FALSE
+X77000025,Wahana Pembayaran Digital,KI2,FALSE
+X77000026,TUAS MAS MANDIRI DIGITAL PAYMENT,KI2,FALSE
+X77000027,STRIPE PAYMENTS INDONESIA,KI2,FALSE
+X77000028,Reksa Transaksi Sukses Makmur,KI2,FALSE
+777111112,Omni Pay Transfer Dana,KI3,FALSE
+777111113,Tranglo Indonesia,KI3,FALSE
+777230002,Koperasi Simpan Pinjam (KOSPIN) JASA,KI3,FALSE
+777248185,Citra Niaga Remittance,KI3,FALSE
+777248248,Eden Liz Infinity,KI3,FALSE
+777248329,Hosana Remittance,KI3,FALSE
+777248387,Katomas Prima,KI3,FALSE
+777248433,Lumbung Berkah,KI3,FALSE
+777248481,Moneywell Batam Valasindo,KI3,FALSE
+777248559,Point Plus,KI3,FALSE
+777248591,Putra Jaya Valasindo,KI3,FALSE
+777248625,Rudo Indovalas Dunia,KI3,FALSE
+777248655,Segitiga Upayamas,KI3,FALSE
+777248729,Surya Batam Valasindo,KI3,FALSE
+777248741,Tang Makmur,KI3,FALSE
+777248801,Valas Duta Nusa,KI3,FALSE
+777248877,Top Exchange,KI3,FALSE
+777248889,Gunung Abadi Jaya,KI3,FALSE
+777248903,Indra Putra Kencana,KI3,FALSE
+777248909,Andalusia Antar Benua,KI3,FALSE
+777248911,Immer,KI3,FALSE
+777248928,Sinar Rezekindo,KI3,FALSE
+777248951,Darussalam Valindo,KI3,FALSE
+777248955,Asia Benua Sukses,KI3,FALSE
+777249101,Kristal Multi Remitter,KI3,FALSE
+777249151,Global Transfer Dana,KI3,FALSE
+777249191,Asia Jaya Remindo,KI3,FALSE
+777249192,Mulia Multi Remitter,KI3,FALSE
+777249193,Wijaya Welson Fernando,KI3,FALSE
+777249232,Willim Mandiri Sejahtera,KI3,FALSE
+777249235,Homasindo Sukses Abadi d/h Batam Ekspres Utama,KI3,FALSE
+777249397,Buru Jaya Remitansi,KI3,FALSE
+777249398,Nusa Jaya Mandiri Remittance,KI3,FALSE
+777249409,Internasional Sukses Remiten,KI3,FALSE
+777249428,Anugerah Karunia Remit,KI3,FALSE
+777249429,Citra Prima Remitansi,KI3,FALSE
+777249464,Permata Artha Yudha,KI3,FALSE
+777249485,Aneka Express Remittance,KI3,FALSE
+777249517,JARINGAN TRANSFER NUSANTARA,KI3,FALSE
+777917471,Sorik Marapi Geothermal Power,KI3,FALSE
+777930014,Nusa Satu Inti Artha,KI3,FALSE
+777930015,Fliptech Lentera Inspirasi Pertiwi (FLIP),KI3,FALSE
+777930016,VIT Remittance,KI3,FALSE
+777930018,Madame Ekspress Remitindo,KI3,FALSE
+777930019,Banda Internasional Remittance,KI3,FALSE
+777930020,Surya Indojaya Gemilang,KI3,FALSE
+777930021,Atlantik Jaya Remitansi,KI3,FALSE
+777930022,Anugrah Multi Remittance,KI3,FALSE
+777930023,Antolys Cahaya Eksekutif,KI3,FALSE
+777930024,MITRA TRANS OIMAL,KI3,FALSE
+777930025,Teleanjar Indonesia,KI3,FALSE
+777930026,EMQ Indonesia Asia,KI3,FALSE
+777930027,Sydeco,KI3,FALSE
+777930028,Nusa Ekspresstama Remittance,KI3,FALSE
+777930029,Inti Dunia Sukses,KI3,FALSE
+777930030,KSP Sahabat Mitra Sejati,KI3,FALSE
+777930031,Remitindo Dolarasia Sejahtera,KI3,FALSE
+777930033,Axa Jaya Remitten,KI3,FALSE
+777930034,Hartono Sukses Sejahtera,KI3,FALSE
+777930035,Citra Agung Pratama Remitansi,KI3,FALSE
+777930036,Frengky Jaya Remitansi,KI3,FALSE
+777930037,Mitra Transdana Nusantara,KI3,FALSE
+777930038,Kharisma Catur Mandala,KI3,FALSE
+777930039,JAWA PAKET EXPRESS,KI3,FALSE
+777930041,Cahaya Asia Remit,KI3,FALSE
+777930042,Marvindo Sukses Cemerlang,KI3,FALSE
+777930043,SAN INDONESIA REMIT,KI3,FALSE
+777930044,Wallex Teknologi Berkat,KI3,FALSE
+777930046,Semesta Ekspres Remitten,KI3,FALSE
+777930047,Kawan Hai Hai Remitance,KI3,FALSE
+777930048,ZND Asia Utama,KI3,FALSE
+777930049,Hokindo Sukses Bersama,KI3,FALSE
+777930050,Kredigram Pembayaran Elektronis,KI3,FALSE
+777930051,Midi Utama Indonesia,KI3,FALSE
+777930052,Pelangi Indo Data,KI3,FALSE
+777930053,Index Internasional Remit,KI3,FALSE
+777930055,Tri Usaha Berkat,KI3,FALSE
+777930056,Inklusi Keuangan Nusantara,KI3,FALSE
+777930057,Sukses Remitindo Bersama,KI3,FALSE
+777930058,Sinar Universal Remitan,KI3,FALSE
+777930059,Lima Triniti Remiten,KI3,FALSE
+777930060,Mitra Indo Remitansi,KI3,FALSE
+777930061,TRANSWAP DUNAMIS INDONESIA,KI3,FALSE
+777930062,Lintas Asia Mandiri,KI3,FALSE
+777930063,Anugrah Prospek Remitansi,KI3,FALSE
+777930064,Dompet Harapan Bangsa,KI3,FALSE
+777930065,Instarem Mitra Indonesia,KI3,FALSE
+777930066,Aladin Valasindo Remindo,KI3,FALSE
+777930067,Swandson Semesta Remitan,KI3,FALSE
+777930068,Indoraya Sehati Remittance,KI3,FALSE
+777930069,Zen ETransfer Nusantara,KI3,FALSE
+777930070,Surya Citra Remitan,KI3,FALSE
+777930071,Fasa Centra Artajaya,KI3,FALSE
+777930072,Mitra Cahaya Sampoerna,KI3,FALSE
+777930073,Amanah Antar Arta,KI3,FALSE
+777930074,Geren Batam Remitan,KI3,FALSE
+777930075,KSP Indosurya Cia,KI3,FALSE
+777930076,Sunrate Commercial Services,KI3,FALSE
+777930077,Asia Pelangi Remiten,KI3,FALSE
+777930078,Pelita Transfer Nusantara,KI3,FALSE
+777930079,Indogo Express Remitance,KI3,FALSE
+777930080,UCE Global Utama,KI3,FALSE
+777930081,Asia Fintek Teknologi,KI3,FALSE
+777930082,Indo Mandiri Remitten,KI3,FALSE
+777930083,Benua Asia Abadi,KI3,FALSE
+777930084,Harga Kurs Remit,KI3,FALSE
+777930085,Sen Remit Indo,KI3,FALSE
+777930086,Sugeh Arto Remitan,KI3,FALSE
+777930087,HSS Sumber Remitan,KI3,FALSE
+777930088,Mitradana Sejahtera Remitan,KI3,FALSE
+777930089,Dhanapatra Loka Abadi,KI3,FALSE
+777930090,Sugeh Makmur Remitan,KI3,FALSE
+777930091,Pasifik Mitra Utama Remittance,KI3,FALSE
+777930092,Remit Ekspres Indonesia,KI3,FALSE
+777930093,Global Sukses Transferdana,KI3,FALSE
+777930094,Inti Pratama Internasional,KI3,FALSE
+777930095,Sukses Bersama Permata,KI3,FALSE
+777930096,Wise Payments Indonesia,KI3,FALSE
+777930097,Moneta Pembayaran Teknologi,KI3,FALSE
+777930098,Kirim Uang Indonesia,KI3,FALSE
+777930099,Digital Solusi Pratama,KI3,FALSE
+777930100,Giat Bangun Indonesia,KI3,FALSE
+777930101,Bintang Utara Nusantara,KI3,FALSE
+777930102,Top Dolar Remitan,KI3,FALSE
+777930103,Silot Technology Indonesia,KI3,FALSE
+777930104,Paramas Murni Jaya,KI3,FALSE
+777930105,Achilles Financial Systems,KI3,FALSE
+777930106,Kreigan Digital Wesel,KI3,FALSE
+777930107,Nandy Dana Ekspres,KI3,FALSE
+777930108,Pundimas Sentral Dana,KI3,FALSE
+777930109,Berkah Digital Pembayaran,KI3,FALSE
+777930110,Sahabat Kirim Digital,KI3,FALSE
+777930111,DIGITAL TRANSFER INDONESIA,KI3,FALSE
+777930112,Durian Pay Indonesia,KI3,FALSE
+777930114,INDO BEST UTAMA REMITTANCE,KI3,FALSE
+777930115,Brankas Teknologi Indonesia,KI3,FALSE
+777951448,Dewataagung Wibawa,KI3,FALSE
+777951823,Sumber Alfaria Trijaya,KI3,FALSE
+777952161,Nagase Import,KI3,FALSE
+777952197,Telekomunikasi Indonesia,KI3,FALSE
+777952522,Pegadaian (Persero) ,KI3,FALSE
+777953362,Pos Indonesia,KI3,FALSE
+777953739,VIP Remittance,KI3,FALSE
+777957573,EKAMAS SARIJAYA,KI3,FALSE
+777957798,Mobile Coin Asia,KI3,FALSE
+777958110,Syaftraco (d/h CV. Syaftraco),KI3,FALSE
+777958111,Agung Remittance Global,KI3,FALSE
+777958112,Able Remittance,KI3,FALSE
+777958113,Tiki Jalur Nugraha Ekakurir,KI3,FALSE
+777958114,PACTO,KI3,FALSE
+777958115,EKA BAKTI AMERTA YOGA SEJAHTERA,KI3,FALSE
+777958116,Indomarco Prismatama,KI3,FALSE
+777958117,Dhasatra Moneytransfer,KI3,FALSE
+777958118,Priority Valasindo Remittance (d/h Sdr. Suwandi),KI3,FALSE
+777958119,Artha Semesta Utama,KI3,FALSE
+777958120,Sarana Reswara Abadi (d/h Sarana Remittance Abadi),KI3,FALSE
+777958121,Berkat Gerizim,KI3,FALSE
+777958122,Adisena Mitra Usaha,KI3,FALSE
+777958123,Kangaroo Ausindo,KI3,FALSE
+777958124,Wintrust Indonesia,KI3,FALSE
+777958125,MM Indonesia,KI3,FALSE
+777958126,Warindo,KI3,FALSE
+777958127,Prima Express Remit,KI3,FALSE
+777958128,Artha Kharisma Utama,KI3,FALSE
+777958129,Aryadana (d/h CV. Aryadana),KI3,FALSE
+777958130,Uang Kita,KI3,FALSE
+777958131,Indo Koala Remittance,KI3,FALSE
+777958132,GPL Remittance Indonesia,KI3,FALSE
+777958134,Tiki Suprao,KI3,FALSE
+777958135,Mulya Raya,KI3,FALSE
+777958136,Crewmen Services Indonesia,KI3,FALSE
+777958138,First Money,KI3,FALSE
+777958139,Vicvaluta Tansferindo Pratama,KI3,FALSE
+777958140,Mahkota Cahaya Mulia Abadi (d/h CV. Cahaya Mulia Abadi),KI3,FALSE
+777958141,Dana Sukses Abadi (d/h CV. Toyo Remittance Co),KI3,FALSE
+777958142,Mandiri Express Remittance,KI3,FALSE
+777958143,Top Remit,KI3,FALSE
+777958144,ID Remit,KI3,FALSE
+777958145,Global Remit,KI3,FALSE
+777958146,Global Remittance Services,KI3,FALSE
+777958147,Rafana Remitindo (d/h CV. Rafana),KI3,FALSE
+777958148,Remiten Indonesia,KI3,FALSE
+777958149,Gemilang Cia Pratama Express,KI3,FALSE
+777958150,Worldwide Express Remittance,KI3,FALSE
+777958151,Maysindo Remit,KI3,FALSE
+777958152,Niaga Lestari Remittance,KI3,FALSE
+777958153,Prima Global Remittance,KI3,FALSE
+777958154,Eastern Transglobal Remittance (d/h CV. Global Remittance Xpress),KI3,FALSE
+777958155,Satria Nusa Persada (d/h CV. Satria Nusa Persada),KI3,FALSE
+777958156,Harsya Remitindo (d/h Sdri. Cucu Juniati),KI3,FALSE
+777958157,Indo Express Remittance,KI3,FALSE
+777958158,Indotransf Artha Mandiri,KI3,FALSE
+777958159,Koperasi BMT El-Amanah 225 Tukdana,KI3,FALSE
+777958160,Anugrah Danamas Remit,KI3,FALSE
+777958161,Amanda Karya Nusa (d/h CV. Amanda),KI3,FALSE
+777958162,Abbasy Trans Indonesia (d/h CV. Abdul Aziz Sayar),KI3,FALSE
+777958163,Tuaian Berkat Melimpah (d/h CV. Tuaian Berkat Melimpah),KI3,FALSE
+777958164,Eastern Global Remittance,KI3,FALSE
+777958165,Golden Remittance,KI3,FALSE
+777958166,Bina Putra Sadaya,KI3,FALSE
+777958167,APIKKO,KI3,FALSE
+777958168,Fusindo Soka,KI3,FALSE
+777958169,Maha Surya Melimpah,KI3,FALSE
+777958170,Mega Xpress Remittance,KI3,FALSE
+777958171,Song Peng Valasindo,KI3,FALSE
+777958172,LB Mandiri,KI3,FALSE
+777958173,Merpati Lintas Cakrawala,KI3,FALSE
+777958174,Brunsia Samudra,KI3,FALSE
+777958675,Intrajasa Teknosolusi,KI3,FALSE
+777958791,Joyan Mandiri Sukses,KI3,FALSE
+777958792,Sumber Rejeki Daya Utama,KI3,FALSE
+777958793,Haji La Tunrung AMC,KI3,FALSE
+777958794,Kru Service Indonesia,KI3,FALSE
+777958795,Dana Mitra Abadi,KI3,FALSE
+777958796,Solusi Multi Artha,KI3,FALSE
+777958797,Akez Remitta,KI3,FALSE
+777958798,Western Union Indonesia,KI3,FALSE
+777958799,Money Gram Payment Systems Indonesia,KI3,FALSE
+777958898,PAS,KI3,FALSE
+777959090,Jasa Kembar Kilat,KI3,FALSE
+777959154,Cia Hemat Sukses,KI3,FALSE
+777959200,Reyhan Putra Mandiri,KI3,FALSE
+777959205,Cahaya Mas Valasindo,KI3,FALSE
+777959212,Mitra Valasindo,KI3,FALSE
+777959218,Remittindo Asia Mandiri,KI3,FALSE
+777959219,Zona Transindo Remittance,KI3,FALSE
+777959222,Sinar Ekspresindo Internasional,KI3,FALSE
+777959223,Eli Globalindo Ekspress,KI3,FALSE
+777959227,Segitiga Jaya Remittance,KI3,FALSE
+777959228,VDN Trust Remitter,KI3,FALSE
+777959229,Mega Tren Moneyindo,KI3,FALSE
+777959240,Fajar Sukses Batam,KI3,FALSE
+777959269,Afex Indonesia,KI3,FALSE
+777959292,Ultra Niaga Sejahtera Remittance,KI3,FALSE
+777959293,Wira Sindo Trijaya Remittance,KI3,FALSE
+777959294,Karimun Jaya Remittance,KI3,FALSE
+777959295,Adrian Artha Abadi Remittance,KI3,FALSE
+777959296,Kurnia Maju Sejati Remittance,KI3,FALSE
+777959297,Berkah Sinar Abadi,KI3,FALSE
+777959303,Makmur Gemilang Sejati,KI3,FALSE
+777959304,Lintas Rakyat Remittance,KI3,FALSE
+777959364,Peniti Money Remittance,KI3,FALSE
+777959365,Alfa Gemilang Remittance,KI3,FALSE
+777959366,Jaya Valasindo Remittance,KI3,FALSE
+777959414,Lumbung Berkah Abadi,KI3,FALSE
+777959434,Dana Buana Indonesia,KI3,FALSE
+777959544,Dahlia Artha Niaga,KI3,FALSE
+777959545,Kolibri Multi Jasa,KI3,FALSE
+777959665,Chugai Ro Indonesia,KI3,FALSE
+777959743,Bintang Inti Karya,KI3,FALSE
+777959747,Arysta LifeScience Tirta,KI3,FALSE
+777959764,Oerlikon Balzers Artoda Indonesia,KI3,FALSE
+777959827,Oil Shipping Trans Indonesia,KI3,FALSE
+777959853,Uda Metro Remittance,KI3,FALSE
+777959876,Yushin Precision Equipment Indonesia,KI3,FALSE
+777959877,Java Taiko Drum Industries,KI3,FALSE
+777960607,Petro Jordan Abadi,KI3,FALSE
+777960626,Duit Sono Sini Remittance,KI3,FALSE
+777960639,Espay Debit Indonesia Koe,KI3,FALSE
+777962249,Netzme Kreasi Indonesia,KI3,FALSE
+777962491,Mareco Prima Mandiri,KI3,FALSE
+777962497,Ionpay Networks,KI3,FALSE
+777962572,Midazpay Digital Indonesia,KI3,FALSE
+777962666,Payquest Network Indonesia,KI3,FALSE
+X77100002,Alfa Gemilang Valasindo,KI3,FALSE
+X77100004,Antara Valutama Perdana,KI3,FALSE
+X77100005,Anugrah Cahaya Valasindo,KI3,FALSE
+X77100006,Artamas Citra Setia,KI3,FALSE
+X77100007,Berkah Langgeng Abadi,KI3,FALSE
+X77100008,Citra van Titipan Kilat,KI3,FALSE
+X77100009,Dana Mitra Abadi Pekalongan,KI3,FALSE
+X77100015,Kemuda Jaya,KI3,FALSE
+X77100023,Posindo Dana Nusantara,KI3,FALSE
+X77100026,Remid Karya Indonesia,KI3,FALSE
+X77100028,Shimacazh Exchange,KI3,FALSE
+X77100029,Agung Makmur Valasindo,KI3,FALSE
+X77100030,DIGITAL KREASI PEMBAYARAN,KI3,FALSE
+X77100031,SINAR MERAK SANTOSO SYARIAH,KI3,FALSE
+777930000,ARTAJASA PEMBAYARAN,PIP,FALSE
+777930001,RINTIS SEJAHTERA,PIP,FALSE
+777930002,Daya Network Lestari,PIP,FALSE
+777930009,MASTERCARD INDONESIA,PIP,TRUE
+777930010,VISA WORLDWIDE INDONESIA,PIP,TRUE
+777930011,JCB INTERNATIONAL INDONESIA,PIP,TRUE
+777930013,UNION PAY INDONESIA,PIP,TRUE
+777958951,AMERICAN EXPRESS INDONESIA,PIP,TRUE
+777959428,Alto Network,PIP,FALSE
+777960104,Jalin Pembayaran Nusantara,PIP,FALSE</textarea>
+                        </div>
+                        <div class="container visually-hidden">
+                            <div class="col-12">
+                              <label for="exampleFormControlTextarea1" class="form-label">Array</label>
+                              <textarea class="form-control" id="csvDaftarPJPPIP_result" style="height: 200px">
+                              </textarea>
+                            </div>
+                        </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="loadSumberData()">Refresh Daftar PJP/PIP</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="panduanModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Juknis Penggunaan Form Perhitungan KPSP</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="container">
+                <div class="col-12">
+                    <object data="assets/doc/Panduan_Pengisian_Web_Form_Ongoing_Capital_v1.0.0.pdf" class="w-100" style="height: calc( 100vh - 230px );" type="application/pdf"> 
+                      <p>It appears you don't have a PDF plugin for this browser. You can <a href="resume.pdf">click here to download the PDF file.</a></p>
+                    </object>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="AsumsiPerhitunganModal" tabindex="-1" aria-labelledby="AsumsiPerhitunganModal" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Asumsi Perhitungan Permodalan</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-2">
+                    </div>
+                    <div class="col-8">
+                                <table class="table table-striped table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col">No</th>
+                                      <th scope="col">Kategori Izin</th>
+                                      <th scope="col">Aktivitas</th>
+                                      <th scope="col" class="text-end"><i>Minimum Initial Capital</i></th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row">1</th>
+                                      <td>PIP</td>
+                                      <td>PIP</td>
+                                      <td class="text-end" id="par_initCapital_PIP">100000000000</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row">2</th>
+                                      <td>KI1</td>
+                                      <td>AIS</td>
+                                      <td class="text-end" id="par_initCapital_AIS">15000000000</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row">3</th>
+                                      <td>KI2</td>
+                                      <td>PIAS</td>
+                                      <td class="text-end" id="par_initCapital_PIAS">5000000000</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row">4</th>
+                                      <td>KI3</td>
+                                      <td>REM1</td>
+                                      <td class="text-end" id="par_initCapital_REM1">1000000000</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row">5</th>
+                                      <td>KI3</td>
+                                      <td>REM2</td>
+                                      <td class="text-end" id="par_initCapital_REM2">500000000</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                    </div>
+                    <div class="col-2">
+                    </div>
+                </div>
+                <div class="row border-top mt-3 pt-3">
+                    <div class="col-2">
+                    </div>
+                    <div class="col-8">
+                                <table class="table table-striped table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col">Klasifikasi PJP/PIP</th>
+                                      <th scope="col" class="text-end">KPSP Dasar</th>
+                                      <th scope="col" class="text-end"><i>Surcharge</i></th>
+                                      <th scope="col" class="text-end">KPSP</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th>PIP PSPS</th>
+                                      <td class="text-end" id="par_PIPPSPS_KPSPdasar">0.10</td>
+                                      <td class="text-end" id="par_PIPPSPS_surcharge">0.050</td>
+                                      <td class="text-end" id="par_PIPPSPS_KPSP">0.15</td>
+                                    </tr>
+                                    <tr>
+                                      <th>PSPS</th>
+                                      <td class="text-end" id="par_PSPS_KPSPdasar">0.10</td>
+                                      <td class="text-end" id="par_PSPS_surcharge">0.025</td>
+                                      <td class="text-end" id="par_PSPS_KPSP">0.13</td>
+                                    </tr>
+                                    <tr>
+                                      <th>PSPK</th>
+                                      <td class="text-end" id="par_PSPK_KPSPdasar">0.10</td>
+                                      <td class="text-end" id="par_PSPK_surcharge">0.015</td>
+                                      <td class="text-end" id="par_PSPK_KPSP">0.12</td>
+                                    </tr>
+                                    <tr>
+                                      <th>PSPU</th>
+                                      <td class="text-end" id="par_PSPU_KPSPdasar">0.10</td>
+                                      <td class="text-end" id="par_PSPU_surcharge">0.000</td>
+                                      <td class="text-end" id="par_PSPU_KPSP">0.10</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                    </div>
+                    <div class="col-2">
+                    </div>
+                </div>
+                <div class="row border-top mt-3 pt-3">
+                    <div class="col-4">
+                    </div>
+                    <div class="col-4">
+                                <table class="table table-striped table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col" class="text-end"><i>Rate</i></th>
+                                      <th scope="col" class="text-end"><i>Band in </i>Rp</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td class="text-end" id="par_rate_4perc">0.040</td>
+                                      <td class="text-end" id="par_rateband_4perc">100000000000</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="text-end" id="par_rate_1perc">0.010</td>
+                                      <td class="text-end" id="par_rateband_1perc">900000000000</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="text-end" id="par_rate_01perc">0.001</td>
+                                      <td class="text-end" id="par_rateband_01perc">1000000000000</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="fw-bold"><i>Rate</i> KI3</td>
+                                      <td class="text-end" id="par_rateKI3">0.001</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="fw-bold">Beban Dana <i>Float</i></td>
+                                      <td class="text-end" id="par_bebanDanaFloat">0.050</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="fw-bold">Konstanta TTMR</td>
+                                      <td class="text-end" id="par_konstantaTTMR">10</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="fw-bold">TTMR PTD (PJP KI3)</td>
+                                      <td class="text-end" id="par_konstantaTTMR_KI3">10</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                    </div>
+                    <div class="col-4">
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Send message</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModal" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Preview CSV</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="container">
+                        <div class="col-12">
+                            <label for="previewCSVexport" class="form-label"></label>
+                            <textarea class="form-control" id="previewCSVexport" style="height: 200px; white-space: pre; overflow-wrap: normal; overflow-x: scroll;"></textarea>
+                        </div>
+                    </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/color-modes.js"></script>
+    <script src="assets/js/select2.full.min.js"></script>
+    <script src="assets/js/jquery-ui.min.js"></script>
+    <script src="assets/js/sweetalert2.all.min.js"></script>
+    <script src="assets/js/jquery.csv.js"></script>
+    <script src="assets/js/jquery.maskMoney.js"></script>
+    <script src="assets/js/core.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            loadSumberData();
+            loadMaskMoney();
+            loadDatePicker();
+            $('.select2').select2({theme:'bootstrap-5', width: '100%'});
+
+            // Automatically set "Kategori Izin" to "KI3" and disable it
+            $('#klp_kategoriIzin').val('KI3').trigger('change');
+
+            // Event listener for the new Submit button
+            $('#btn_submitData').on('click', function() {
+                submitKPSPForm();
+            });
+        });
+
+        // Function to collect form data and send it
+        function submitKPSPForm() {
+            // Collect all form data
+            const formData = new FormData();
+
+            // Section 1: Header Information
+            formData.append('klp_periode', $('#klp_periode').val());
+            formData.append('klp_kategoriIzin', $('#klp_kategoriIzin').val());
+            formData.append('klp_namaPelapor', $('#klp_namaPelapor').val());
+            formData.append('klp_klasifikasiPJPPIP', $('#klp_klasifikasiPJPPIP').val());
+
+            // Collect selected activities (checkboxes)
+            const selectedActivities = [];
+            $('input[name="klp_aktivitasEach"]:checked').each(function() {
+                selectedActivities.push($(this).val());
+            });
+            // Append individual activity checkboxes if needed, or a single string/array representation
+            // For simplicity, we'll append a comma-separated string for now.
+            // You might need to adjust this based on how your backend expects array data.
+            formData.append('klp_aktivitas', selectedActivities.join(','));
+            
+            // Append other individual activity checkboxes if they are not part of klp_aktivitasEach
+            if ($('#klp_aktivitasPIP').is(':checked')) formData.append('klp_aktivitasPIP', 'PIP');
+            if ($('#klp_aktivitasAIS').is(':checked')) formData.append('klp_aktivitasAIS', 'AIS');
+            if ($('#klp_aktivitasPIAS').is(':checked')) formData.append('klp_aktivitasPIAS', 'PIAS');
+            if ($('#klp_aktivitasREM1').is(':checked')) formData.append('klp_aktivitasREM1', 'REM1');
+            if ($('#klp_aktivitasREM2').is(':checked')) formData.append('klp_aktivitasREM2', 'REM2');
+
+
+            // Section 2: Pemenuhan Initial Capital
+            formData.append('1_jumlahModalDisetor', $('#1_jumlahModalDisetor').maskMoney('unmasked')[0]);
+            formData.append('1_kewajibanInitCapital', $('#1_kewajibanInitCapital').maskMoney('unmasked')[0]);
+            formData.append('1_statusPemenuhan_initialCapital', $('#1_statusPemenuhan_initialCapital').val());
+            formData.append('1_tambahanInitCapital', $('#1_tambahanInitCapital').maskMoney('unmasked')[0]);
+            formData.append('flagGL_PIPasing', $('#flagGL_PIPasing').is(':checked'));
+
+            // Section 3: Perhitungan Ongoing Capital - TTMR
+            formData.append('2_jumlahBulanTrx', $('#2_jumlahBulanTrx').val());
+            formData.append('2_totalTrx_ATMDebet', $('#2_totalTrx_ATMDebet').maskMoney('unmasked')[0]);
+            formData.append('2_totalTrx_ATMDebet_rata', $('#2_totalTrx_ATMDebet_rata').maskMoney('unmasked')[0]);
+            formData.append('2_totalTrx_KK', $('#2_totalTrx_KK').maskMoney('unmasked')[0]);
+            formData.append('2_totalTrx_KK_rata', $('#2_totalTrx_KK_rata').maskMoney('unmasked')[0]);
+            formData.append('2_trxDompel', $('#2_trxDompel').maskMoney('unmasked')[0]);
+            formData.append('2_trxDompel_rata', $('#2_trxDompel_rata').maskMoney('unmasked')[0]);
+            formData.append('2_trxTrfDanaLN_inc', $('#2_trxTrfDanaLN_inc').maskMoney('unmasked')[0]);
+            formData.append('2_trxTrfDanaLN_inc_rata', $('#2_trxTrfDanaLN_inc_rata').maskMoney('unmasked')[0]);
+            formData.append('2_trxTrfDanaLN_out', $('#2_trxTrfDanaLN_out').maskMoney('unmasked')[0]);
+            formData.append('2_trxTrfDanaLN_out_rata', $('#2_trxTrfDanaLN_out_rata').maskMoney('unmasked')[0]);
+            formData.append('2_trxTrfDana_dom', $('#2_trxTrfDana_dom').maskMoney('unmasked')[0]);
+            formData.append('2_trxTrfDana_dom_rata', $('#2_trxTrfDana_dom_rata').maskMoney('unmasked')[0]);
+            formData.append('2_trxUE', $('#2_trxUE').maskMoney('unmasked')[0]);
+            formData.append('2_trxUE_rata', $('#2_trxUE_rata').maskMoney('unmasked')[0]);
+            formData.append('2_trxPIAS_fasil', $('#2_trxPIAS_fasil').maskMoney('unmasked')[0]);
+            formData.append('2_trxPIAS_fasil_rata', $('#2_trxPIAS_fasil_rata').maskMoney('unmasked')[0]);
+            formData.append('2_trxPIAS_merchAgg', $('#2_trxPIAS_merchAgg').maskMoney('unmasked')[0]);
+            formData.append('2_trxPIAS_merchAgg_rata', $('#2_trxPIAS_merchAgg_rata').maskMoney('unmasked')[0]);
+            formData.append('2_trxLainnya', $('#2_trxLainnya').maskMoney('unmasked')[0]);
+            formData.append('2_trxLainnya_rata', $('#2_trxLainnya_rata').maskMoney('unmasked')[0]);
+            formData.append('2_totalNilaiTrx', $('#2_totalNilaiTrx').maskMoney('unmasked')[0]);
+            formData.append('2_totalNilaiTrx_rata', $('#2_totalNilaiTrx_rata').maskMoney('unmasked')[0]);
+            formData.append('2_bebanTrx', $('#2_bebanTrx').maskMoney('unmasked')[0]);
+            formData.append('2_danaFloat', $('#2_danaFloat').maskMoney('unmasked')[0]);
+            formData.append('2_danaFloat_rata', $('#2_danaFloat_rata').maskMoney('unmasked')[0]);
+            formData.append('2_percBebanTrxDanaFloat', $('#2_percBebanTrxDanaFloat').val());
+            formData.append('2_bebanTrxDanaFloat', $('#2_bebanTrxDanaFloat').maskMoney('unmasked')[0]);
+            formData.append('2_totalBeban', $('#2_totalBeban').maskMoney('unmasked')[0]);
+            formData.append('2_konstantaTTMR', $('#2_konstantaTTMR').val());
+            formData.append('2_TTMR', $('#2_TTMR').maskMoney('unmasked')[0]);
+
+            // Section 4: Komponen Perhitungan Ongoing Capital
+            formData.append('3_modalSaham', $('#3_modalSaham').maskMoney('unmasked')[0]);
+            formData.append('3_uangMukaSetoranModal', $('#3_uangMukaSetoranModal').maskMoney('unmasked')[0]);
+            formData.append('3_agioDisagioSaham', $('#3_agioDisagioSaham').maskMoney('unmasked')[0]);
+            formData.append('3_saldoLRberjalan', $('#3_saldoLRberjalan').maskMoney('unmasked')[0]);
+            formData.append('3_saldoPenghasilanKompr', $('#3_saldoPenghasilanKompr').maskMoney('unmasked')[0]);
+            formData.append('3_modalIntiUtama', $('#3_modalIntiUtama').maskMoney('unmasked')[0]);
+            formData.append('3_asetPajakTangguhan', $('#3_asetPajakTangguhan').maskMoney('unmasked')[0]);
+            formData.append('3_goodWill', $('#3_goodWill').maskMoney('unmasked')[0]);
+            formData.append('3_asetTidakBerwujud', $('#3_asetTidakBerwujud').maskMoney('unmasked')[0]);
+            formData.append('3_seluruhPenyertaan', $('#3_seluruhPenyertaan').maskMoney('unmasked')[0]);
+            formData.append('3_pembelianKembaliInstModal', $('#3_pembelianKembaliInstModal').maskMoney('unmasked')[0]);
+            formData.append('3_penempatanDanaInstUtang', $('#3_penempatanDanaInstUtang').maskMoney('unmasked')[0]);
+            formData.append('3_faktorPengurangModalInti', $('#3_faktorPengurangModalInti').maskMoney('unmasked')[0]);
+            formData.append('3_modalIntiUtama_setelahFPR', $('#3_modalIntiUtama_setelahFPR').maskMoney('unmasked')[0]);
+            formData.append('3_instrumenUtang', $('#3_instrumenUtang').maskMoney('unmasked')[0]);
+            formData.append('3_instrumenHybrid', $('#3_instrumenHybrid').maskMoney('unmasked')[0]);
+            formData.append('3_sahamPreferenNonKumulatif', $('#3_sahamPreferenNonKumulatif').maskMoney('unmasked')[0]);
+            formData.append('3_premiumDiskonto', $('#3_premiumDiskonto').maskMoney('unmasked')[0]);
+            formData.append('3_modalIntiTambahan', $('#3_modalIntiTambahan').maskMoney('unmasked')[0]);
+            formData.append('3_instrumenModalIntiTambahan', $('#3_instrumenModalIntiTambahan').maskMoney('unmasked')[0]);
+            formData.append('3_kepemilikanModalIntiTambahan', $('#3_kepemilikanModalIntiTambahan').maskMoney('unmasked')[0]);
+            formData.append('3_faktorPengurangModalIntiTambahan', $('#3_faktorPengurangModalIntiTambahan').maskMoney('unmasked')[0]);
+            formData.append('3_modalIntiTambahan_setelahFPR', $('#3_modalIntiTambahan_setelahFPR').maskMoney('unmasked')[0]);
+            formData.append('3_modalIntiTambahan_ongoingCapital', $('#3_modalIntiTambahan_ongoingCapital').maskMoney('unmasked')[0]);
+            formData.append('3_instrumenUtangJangkaPjg', $('#3_instrumenUtangJangkaPjg').maskMoney('unmasked')[0]);
+            formData.append('3_premiumDiskontoModalPelengkap', $('#3_premiumDiskontoModalPelengkap').maskMoney('unmasked')[0]);
+            formData.append('3_modalPelengkap', $('#3_modalPelengkap').maskMoney('unmasked')[0]);
+            formData.append('3_instrumenModalPelengkap', $('#3_instrumenModalPelengkap').maskMoney('unmasked')[0]);
+            formData.append('3_kepemilikanModalPelengkap', $('#3_kepemilikanModalPelengkap').maskMoney('unmasked')[0]);
+            formData.append('3_faktorPengurangModalPelengkap', $('#3_faktorPengurangModalPelengkap').maskMoney('unmasked')[0]);
+            formData.append('3_modalPelengkap_setelahFPR', $('#3_modalPelengkap_setelahFPR').maskMoney('unmasked')[0]);
+            formData.append('3_modalPelengkap_ongoingCapital', $('#3_modalPelengkap_ongoingCapital').maskMoney('unmasked')[0]);
+            formData.append('3_totalOngoingCapital', $('#3_totalOngoingCapital').maskMoney('unmasked')[0]);
+            formData.append('3_rasioKPSP', $('#3_rasioKPSP').val());
+
+            // Section 5: Kewajiban Ongoing Capital
+            formData.append('4_KPSPdasar', $('#4_KPSPdasar').val());
+            formData.append('4_surcharge', $('#4_surcharge').val());
+            formData.append('4_totalKPSP', $('#4_totalKPSP').val());
+            formData.append('4_jumlahKewajibanOngoingCapital', $('#4_jumlahKewajibanOngoingCapital').maskMoney('unmasked')[0]);
+            formData.append('4_statusPemenuhanOngoingCapital', $('#4_statusPemenuhanOngoingCapital').val());
+            formData.append('4_totalKebutuhanTambahanOngoingCapital', $('#4_totalKebutuhanTambahanOngoingCapital').maskMoney('unmasked')[0]);
+
+            // You can add a hidden input for the date if needed, or get it dynamically
+            // For example, if 'klp_periode' is a date field, you might use its value.
+            // For this example, I'll add a dummy 'tanggal_surat' for the payload.
+            formData.append('tanggal_surat', new Date().toISOString().slice(0, 10)); // YYYY-MM-DD format
+
+            // Send data to the backend
+            // Using fetch API for modern approach
+            fetch('/submit/laporan-kpsp', {
+                method: 'POST',
+                body: formData // FormData will automatically set Content-Type: multipart/form-data
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Sukses!', data.message, 'success');
+                } else {
+                    Swal.fire('Error!', data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error!', 'Terjadi kesalahan saat mengirim data.', 'error');
+            });
+        }
+    </script>
+{% endblock %}
