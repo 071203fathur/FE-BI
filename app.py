@@ -109,7 +109,8 @@ def before_request():
     # Memperbarui agar juga mengizinkan akses ke static_url_path yang baru
     if request.endpoint == 'login' or \
        request.path.startswith('/static/') or \
-       request.path.startswith('/form/assets/'): # Tambahkan ini untuk aset
+       request.path.startswith('/form/assets/') or \
+       request.path.startswith('/api/laporan/all-status'): # Izinkan akses ke endpoint status laporan
         session.permanent = True # Pastikan sesi login juga diperbarui
         return
 
@@ -516,6 +517,66 @@ def send_report_to_backend(endpoint_path, method="POST", form_data=None, file_ob
     except json.JSONDecodeError:
         print(f"DEBUG: Respon API bukan JSON yang valid atau kosong.")
         return False, "Respon API bukan JSON yang valid atau kosong.", 500
+
+# --- Endpoint Proxy Baru untuk Status Seluruh Laporan ---
+@app.route('/api/laporan/all-status', methods=['GET'])
+def get_all_report_status():
+    """
+    Endpoint proxy untuk mengambil status keberadaan laporan dari backend.
+    """
+    if "username" not in session:
+        return jsonify({"success": False, "message": "Sesi tidak valid, silakan login kembali."}), 401
+
+    access_token = session.get('access_token')
+    if not access_token:
+        return jsonify({"success": False, "message": "Autentikasi gagal, tidak ada token akses."}), 401
+
+    headers = {"Authorization": f"Bearer {access_token}"}
+    api_url = f"{API_BASE_URL}laporan/all-status"
+
+    print(f"\n--- DEBUG: Mengambil status laporan dari API Backend via proxy ---")
+    print(f"URL: {api_url}")
+    print(f"Method: GET")
+
+    try:
+        response = requests.get(api_url, headers=headers, timeout=30)
+        response_data = response.json()
+
+        print(f"--- DEBUG: Respons dari API Backend (status laporan) ---")
+        print(f"Status Code: {response.status_code}")
+        print(f"Response JSON: {json.dumps(response_data, indent=2)}")
+
+        # Jika API backend mengembalikan 401, coba refresh token
+        if response.status_code == 401:
+            print("DEBUG: Menerima 401 dari backend saat mengambil status laporan. Mencoba refresh token.")
+            if refresh_access_token():
+                # Jika refresh berhasil, coba lagi permintaan asli
+                new_access_token = session.get('access_token')
+                headers["Authorization"] = f"Bearer {new_access_token}"
+                response = requests.get(api_url, headers=headers, timeout=30)
+                response_data = response.json()
+                print(f"DEBUG: Percobaan ulang status laporan. Status Code: {response.status_code}")
+                print(f"DEBUG: Percobaan ulang status laporan. Response JSON: {json.dumps(response_data, indent=2)}")
+            else:
+                print("DEBUG: Gagal refresh token saat mengambil status laporan. Memaksa logout.")
+                session.clear()
+                return jsonify({"success": False, "message": "Sesi kedaluwarsa atau tidak valid. Silakan login kembali."}), 401
+        
+        # Mengembalikan respons dari backend langsung ke frontend
+        return jsonify(response_data), response.status_code
+
+    except requests.exceptions.ConnectionError as e:
+        print(f"DEBUG: Kesalahan Koneksi saat mengambil status laporan: {e}")
+        return jsonify({"success": False, "message": f"Gagal terhubung ke server API (koneksi ditolak atau server tidak tersedia): {e}"}), 500
+    except requests.exceptions.Timeout as e:
+        print(f"DEBUG: Permintaan status laporan ke API Backend timeout: {e}")
+        return jsonify({"success": False, "message": f"Permintaan ke server API melebihi batas waktu (Time Out): {e}"}), 504
+    except requests.exceptions.RequestException as e:
+        print(f"DEBUG: Terjadi kesalahan saat mengirim permintaan status laporan ke server API: {e}")
+        return jsonify({"success": False, "message": f"Terjadi kesalahan saat mengirim permintaan status laporan ke server API: {e}"}), 500
+    except json.JSONDecodeError:
+        print(f"DEBUG: Respon API status laporan bukan JSON yang valid atau kosong.")
+        return jsonify({"success": False, "message": "Respon API status laporan bukan JSON yang valid atau kosong."}), 500
 
 
 # --- Rute Pengiriman Laporan ---
