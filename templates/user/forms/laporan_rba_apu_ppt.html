@@ -33,60 +33,60 @@
     .section-group {
         background-color: #ffffff;
         border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 10px; /* Reduced from 12px */
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04); /* Softer shadow */
         padding: 0;
-        margin-bottom: 1rem; /* Reduced margin */
+        margin-bottom: 0.8rem; /* Reduced margin */
         /* Perubahan: Mengomentari properti overflow: hidden; */
         /* overflow: hidden; */
     }
 
     .section-group .section-header {
-        font-size: 1.15rem; /* Smaller header */
+        font-size: 1.05rem; /* Smaller header */
         font-weight: 700;
         color: #1f2937;
         background-color: #eef2f6;
-        padding: 0.8rem 1.5rem; /* Reduced padding */
-        margin: 0 -1px 0.8rem -1px; /* Reduced margin */
+        padding: 0.7rem 1.2rem; /* Reduced padding */
+        margin: 0 -1px 0.6rem -1px; /* Adjusted margin */
         border-bottom: 1px solid #e0e7eb;
-        border-top-left-radius: 11px;
-        border-top-right-radius: 11px;
+        border-top-left-radius: 9px; /* Adjusted radius */
+        border-top-right-radius: 9px; /* Adjusted radius */
     }
 
     .section-group .section-content {
-        padding: 1.2rem; /* Reduced padding */
+        padding: 1rem; /* Reduced padding */
         padding-top: 0;
     }
 
     /* Form elements - compact */
     .form-label {
-        font-size: 0.95rem; /* Smaller labels */
+        font-size: 0.85rem; /* Smaller labels */
         font-weight: 600;
         color: #374151;
-        margin-bottom: 0.3rem; /* Reduced margin */
+        margin-bottom: 0.2rem; /* Reduced margin */
         display: flex; /* Make label a flex container */
         align-items: center; /* Align items vertically */
     }
 
     .form-input {
-        font-size: 0.9rem; /* Smaller font */
-        padding: 0.7rem 1rem; /* Reduced padding */
+        font-size: 0.85rem; /* Smaller font */
+        padding: 0.6rem 0.9rem; /* Reduced padding */
         width: 100%;
         border: 1px solid #d1d5db;
-        border-radius: 8px; /* Slightly rounder corners */
+        border-radius: 6px; /* Smaller rounded corners */
         color: #4b5563;
         transition: all 0.2s ease;
-        min-height: 40px; /* Reduced minimum height */
+        min-height: 36px; /* Reduced minimum height */
         box-sizing: border-box;
     }
 
     /* Select dropdowns */
     select.form-input {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); /* Smaller SVG */
         background-repeat: no-repeat;
-        background-position: right 0.8rem center;
-        background-size: 14px 10px;
-        padding-right: 2.2rem;
+        background-position: right 0.6rem center; /* Adjusted position */
+        background-size: 12px 8px; /* Smaller size */
+        padding-right: 2rem; /* Adjusted padding */
         -webkit-appearance: none; /* Remove default arrow for Chrome/Safari */
         -moz-appearance: none; /* Remove default arrow for Firefox */
         appearance: none; /* Remove default arrow */
@@ -94,46 +94,47 @@
 
     /* File input */
     .file-input-container {
-        margin-top: 0.3rem;
+        margin-top: 0.2rem; /* Reduced margin */
     }
     
     .file-input-container input[type="file"] {
-        font-size: 0.9rem;
-        padding: 0.7rem 1rem;
+        font-size: 0.85rem; /* Smaller font */
+        padding: 0.6rem 0.9rem; /* Reduced padding */
     }
 
     /* Nested sections for better organization */
     .nested-section-group {
         border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        padding: 1rem; /* Reduced padding */
-        margin-bottom: 1rem; /* Reduced margin */
+        border-radius: 8px; /* Reduced */
+        padding: 0.8rem; /* Reduced padding */
+        margin-bottom: 0.8rem; /* Reduced margin */
         background-color: #f9fafb;
     }
 
     .nested-section-group h4 {
-        font-size: 1rem; /* Smaller font size */
+        font-size: 0.95rem; /* Smaller font size */
         font-weight: 600;
         color: #1f2937;
-        margin-bottom: 0.8rem; /* Reduced margin */
-        padding-bottom: 0.4rem; /* Reduced padding */
+        margin-bottom: 0.6rem; /* Reduced margin */
+        padding-bottom: 0.3rem; /* Reduced padding */
         border-bottom: 1px solid #e5e7eb;
     }
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .form-input {
-            padding: 0.9rem;
-            min-height: 45px;
+            padding: 0.7rem 0.9rem;
+            min-height: 38px;
+            font-size: 0.8rem;
         }
         
         .section-group .section-header {
-            font-size: 1.15rem;
-            padding: 0.9rem 1rem;
+            font-size: 1rem;
+            padding: 0.7rem 1rem;
         }
         
         .nested-section-group {
-            padding: 1rem;
+            padding: 0.8rem;
         }
     }
 
@@ -178,38 +179,38 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        padding: 1.5rem 2rem;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        z-index: 1001; /* Above the backdrop */
-        display: none; /* Hidden by default */
-        font-size: 1.1rem;
+        padding: 1.2rem 1.5rem; /* Reduced */
+        border-radius: 10px; /* Reduced */
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Reduced */
+        z-index: 1001;
+        display: none;
+        font-size: 1rem; /* Reduced */
         font-weight: 600;
         text-align: center;
-        max-width: 400px; /* Limit width */
-        width: 90%; /* Responsive width */
+        max-width: 350px; /* Reduced */
+        width: 90%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem; /* Space between elements */
+        gap: 0.8rem; /* Reduced */
     }
 
     #dynamicMessageBox.success {
-        background-color: #d4edda; /* Light green */
-        color: #155724; /* Dark green text */
+        background-color: #d4edda;
+        color: #155724;
         border: 1px solid #c3e6cb;
     }
 
     #dynamicMessageBox.error {
-        background-color: #f8d7da; /* Light red */
-        color: #721c24; /* Dark red text */
+        background-color: #f8d7da;
+        color: #721c24;
         border: 1px solid #f5c6cb;
     }
 
     #dynamicMessageBox .icon-container {
-        font-size: 3rem; /* Large icon size */
+        font-size: 2.5rem; /* Reduced */
         line-height: 1;
-        animation: fade-in-scale 0.5s ease-out forwards; /* Animation for icon */
+        animation: fade-in-scale 0.5s ease-out forwards;
     }
 
     @keyframes fade-in-scale {
@@ -224,13 +225,13 @@
     }
 
     #dynamicMessageBox .ok-button {
-        background-color: #4CAF50; /* Green */
+        background-color: #4CAF50;
         color: white;
-        padding: 0.75rem 1.5rem;
+        padding: 0.6rem 1.2rem; /* Reduced */
         border: none;
-        border-radius: 8px;
+        border-radius: 6px; /* Reduced */
         cursor: pointer;
-        font-size: 1rem;
+        font-size: 0.9rem; /* Reduced */
         font-weight: 700;
         transition: background-color 0.3s ease;
     }
@@ -313,16 +314,16 @@
     .radio-group-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.75rem; /* Reduced space between radio options */
+        gap: 0.6rem; /* Reduced space between radio options */
     }
 
     .radio-option {
         display: flex;
         align-items: center;
         cursor: pointer;
-        padding: 0.4rem 0.8rem; /* Reduced padding */
+        padding: 0.3rem 0.6rem; /* Reduced padding */
         border: 1px solid #d1d5db;
-        border-radius: 6px; /* Slightly smaller radius */
+        border-radius: 5px; /* Slightly smaller radius */
         transition: all 0.2s ease;
     }
 
@@ -332,14 +333,14 @@
     }
 
     .radio-option input[type="radio"] {
-        margin-right: 0.4rem; /* Reduced margin */
+        margin-right: 0.3rem; /* Reduced margin */
         accent-color: #2563eb; /* Blue color for checked radio */
-        width: 1rem; /* Reduced size */
-        height: 1rem; /* Reduced size */
+        width: 0.9rem; /* Reduced size */
+        height: 0.9rem; /* Reduced size */
     }
 
     .radio-option label {
-        font-size: 0.9rem; /* Smaller font size */
+        font-size: 0.8rem; /* Smaller font size */
         font-weight: 500;
         color: #374151;
         cursor: pointer;
@@ -352,25 +353,31 @@
     
     /* Checkbox styling - compact */
     .tw-form-checkbox {
-        height: 1rem; /* Reduced size */
-        width: 1rem; /* Reduced size */
+        height: 0.9rem; /* Reduced size */
+        width: 0.9rem; /* Reduced size */
+    }
+    .tw-ml-2 {
+        margin-left: 0.3rem; /* Reduced margin */
+    }
+    .tw-text-sm {
+        font-size: 0.8rem; /* Reduced font size */
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-4">
-    <h2 class="tw-text-2xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-3 tw-mb-4">
+    <h2 class="tw-text-xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-2.5 tw-mb-3"> {# Reduced text size, padding, margin #}
         Formulir Laporan RBA APU PPT
     </h2>
-    <p class="tw-text-gray-600 tw-text-center tw-mb-4 tw-text-sm">Penyampaian Data RBA APU PPT Penyelenggara KUPVA BB dan PJP LR</p>
+    <p class="tw-text-gray-600 tw-text-center tw-mb-3 tw-text-sm">Penyampaian Data RBA APU PPT Penyelenggara KUPVA BB dan PJP LR</p> {# Reduced margin and text size #}
 
-    <form id="rbaApuPptForm" action="{{ url_for('submit_laporan_rba_apu_ppt') }}" method="POST" enctype="multipart/form-data" class="tw-space-y-4">
+    <form id="rbaApuPptForm" action="{{ url_for('submit_laporan_rba_apu_ppt') }}" method="POST" enctype="multipart/form-data" class="tw-space-y-3"> {# Reduced space-y #}
         <!-- Informasi Umum Penginput -->
         <div class="section-group">
             <h3 class="section-header">Informasi Penginput</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                     <div class="tw-space-y-1">
                         <label for="tahun_laporan" class="form-label">
                             Tahun Laporan <span class="tw-text-red-500">*</span>
@@ -411,7 +418,7 @@
                         </label>
                         <input type="email" id="email_perusahaan" name="email_perusahaan" class="form-input" placeholder="Contoh: info@namaperusahaan.com" required>
                     </div>
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="nomor_hp_penginput" class="form-label">
                             Nomor HP Penginput Data dan Informasi <span class="tw-text-red-500">*</span>
                             <span class="tooltip-container">
@@ -429,7 +436,7 @@
         <div class="section-group">
             <h3 class="section-header">Data Frekuensi Transaksi (Periode Laporan)</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-4 tw-gap-y-2">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                     <div class="tw-space-y-1">
                         <label for="frekuensi_incoming" class="form-label">
                             Frekuensi Transaksi Incoming <span class="tw-text-red-500">*</span>
@@ -468,7 +475,7 @@
         <div class="section-group">
             <h3 class="section-header">Data Nilai/Nominal Transaksi (Periode Laporan)</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-4 tw-gap-y-2">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                     <div class="tw-space-y-1">
                         <label for="nilai_incoming_cash_to_account" class="form-label">
                             Incoming Cash to Account <span class="tw-text-red-500">*</span>
@@ -603,7 +610,7 @@
                 </span>
             </h3>
             <div class="section-content">
-                <p class="tw-text-gray-600 tw-mb-3 tw-text-sm">Isi "0" jika tidak ada transaksi.</p>
+                <p class="tw-text-gray-600 tw-mb-2.5 tw-text-sm">Isi "0" jika tidak ada transaksi.</p> {# Reduced margin #}
                 {% set high_risk_countries = [
                     "KOREA UTARA", "IRAN", "SURIAH", "MYANMAR", "AFGHANISTAN", "SUDAN", "KUBA",
                     "BRITISH VIRGIN ISLAND", "CAYMAN ISLAND", "NIGERIA", "MALAYSIA", "JEPANG",
@@ -639,12 +646,12 @@
         <div class="section-group">
             <h3 class="section-header">Jumlah Nasabah Berdasarkan Profesi (Periode Laporan)</h3>
             <div class="section-content">
-                <p class="tw-text-gray-600 tw-mb-3 tw-text-sm">Masukkan jumlah nasabah (tidak dihitung frekuensi datang).</p>
+                <p class="tw-text-gray-600 tw-mb-2.5 tw-text-sm">Masukkan jumlah nasabah (tidak dihitung frekuensi datang).</p> {# Reduced margin #}
                 {% set professions = [
                     "Pegawai BUMN/Politik", "Pegawai Swasta", "Pengusaha/Wiraswasta",
                     "Ibu Rumah Tangga", "Profesional", "Konsultan", "Profil/Pekerjaan Lainnya"
                 ] %}
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                     {% for profession in professions %}
                     <div class="tw-space-y-1">
                         <label for="nasabah_profesi_{{ profession.replace('/', '_').replace(' ', '_').lower() }}" class="form-label">
@@ -675,7 +682,7 @@
         <div class="section-group">
             <h3 class="section-header">Jumlah Nasabah Berdasarkan Status WNA/WNI (per 31 Desember Tahun Laporan)</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                     <div class="tw-space-y-1">
                         <label for="nasabah_wni" class="form-label">
                             Jumlah Nasabah berstatus WNI <span class="tw-text-red-500">*</span>
@@ -722,7 +729,7 @@
         <div class="section-group">
             <h3 class="section-header">Data Perusahaan (per 31 Desember Tahun Laporan)</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                     <div class="tw-space-y-1">
                         <label for="lokasi_kantor_pusat" class="form-label">
                             Lokasi Kotamadya Kantor Pusat <span class="tw-text-red-500">*</span>
@@ -776,7 +783,7 @@
                         <h4>Jumlah Titik Layanan</h4>
                         <div id="titik_layanan_container">
                             <!-- Initial entry for Titik Layanan -->
-                            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2 tw-mb-2 titik-layanan-entry">
+                            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2 tw-mb-2 titik-layanan-entry"> {# Adjusted gaps and margin #}
                                 <div class="tw-space-y-1">
                                     <label for="jumlah_titik_layanan_1" class="form-label">Jumlah Titik <span class="tw-text-red-500">*</span></label>
                                     <input type="number" id="jumlah_titik_layanan_1" name="titik_layanan_1_jumlah" class="form-input" placeholder="Contoh: 100" min="0" required>
@@ -827,7 +834,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" onclick="addTitikLayananEntry()" class="tw-mt-2 tw-px-3 tw-py-2 tw-bg-green-600 tw-text-white tw-rounded-md hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 focus:tw-ring-offset-2 tw-transition tw-duration-150 tw-ease-in-out tw-text-sm">Tambah Titik Layanan</button>
+                        <button type="button" onclick="addTitikLayananEntry()" class="tw-mt-1.5 tw-px-3 tw-py-1.5 tw-bg-green-600 tw-text-white tw-rounded-md hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 focus:tw-ring-offset-2 tw-transition tw-duration-150 tw-ease-in-out tw-text-sm">Tambah Titik Layanan</button> {# Adjusted padding, margin-top #}
                     </div>
 
                     <!-- Jumlah Mitra Kerjasama (One-to-Many) -->
@@ -835,7 +842,7 @@
                         <h4>Jumlah Mitra Kerjasama</h4>
                         <div id="mitra_kerjasama_container">
                             <!-- Initial entry for Mitra Kerjasama -->
-                            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2 tw-mb-2 mitra-kerjasama-entry">
+                            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2 tw-mb-2 mitra-kerjasama-entry"> {# Adjusted gaps and margin #}
                                 <div class="tw-space-y-1">
                                     <label for="jumlah_mitra_kerjasama_1" class="form-label">Jumlah Mitra <span class="tw-text-red-500">*</span></label>
                                     <input type="number" id="jumlah_mitra_kerjasama_1" name="mitra_kerjasama_1_jumlah" class="form-input" placeholder="Contoh: 10" min="0" required>
@@ -850,7 +857,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" onclick="addMitraKerjasamaEntry()" class="tw-mt-2 tw-px-3 tw-py-2 tw-bg-green-600 tw-text-white tw-rounded-md hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 focus:tw-ring-offset-2 tw-transition tw-duration-150 tw-ease-in-out tw-text-sm">Tambah Mitra Kerjasama</button>
+                        <button type="button" onclick="addMitraKerjasamaEntry()" class="tw-mt-1.5 tw-px-3 tw-py-1.5 tw-bg-green-600 tw-text-white tw-rounded-md hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 focus:tw-ring-offset-2 tw-transition tw-duration-150 tw-ease-in-out tw-text-sm">Tambah Mitra Kerjasama</button> {# Adjusted padding, margin-top #}
                     </div>
 
                     <div class="tw-space-y-1">
@@ -869,18 +876,18 @@
                     </div>
                     <div id="system_details_section" class="hidden tw-col-span-full">
                         <label class="form-label">Jenis sistem yang dapat digunakan Pengguna Jasa</label>
-                        <div class="tw-flex tw-flex-wrap tw-gap-3 tw-mb-2">
+                        <div class="tw-flex tw-flex-wrap tw-gap-2.5 tw-mb-2"> {# Adjusted gap and margin #}
                             <div class="tw-flex tw-items-center">
-                                <input type="checkbox" id="jenis_aplikasi" name="jenis_sistem" value="Aplikasi" class="tw-h-4 tw-w-4 tw-text-blue-600 tw-border-gray-300 tw-rounded">
-                                <label for="jenis_aplikasi" class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900">Aplikasi</label>
+                                <input type="checkbox" id="jenis_aplikasi" name="jenis_sistem" value="Aplikasi" class="tw-h-3.5 tw-w-3.5 tw-text-blue-600 tw-border-gray-300 tw-rounded"> {# Reduced size #}
+                                <label for="jenis_aplikasi" class="tw-ml-1.5 tw-block tw-text-xs tw-text-gray-900">Aplikasi</label> {# Reduced text size and margin #}
                             </div>
                             <div class="tw-flex tw-items-center">
-                                <input type="checkbox" id="jenis_website" name="jenis_sistem" value="Website" class="tw-h-4 tw-w-4 tw-text-blue-600 tw-border-gray-300 tw-rounded">
-                                <label for="jenis_website" class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900">Website</label>
+                                <input type="checkbox" id="jenis_website" name="jenis_sistem" value="Website" class="tw-h-3.5 tw-w-3.5 tw-text-blue-600 tw-border-gray-300 tw-rounded"> {# Reduced size #}
+                                <label for="jenis_website" class="tw-ml-1.5 tw-block tw-text-xs tw-text-gray-900">Website</label> {# Reduced text size and margin #}
                             </div>
                             <div class="tw-flex tw-items-center">
-                                <input type="checkbox" id="jenis_api" name="jenis_sistem" value="API" class="tw-h-4 tw-w-4 tw-text-blue-600 tw-border-gray-300 tw-rounded">
-                                <label for="jenis_api" class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900">API</label>
+                                <input type="checkbox" id="jenis_api" name="jenis_sistem" value="API" class="tw-h-3.5 tw-w-3.5 tw-text-blue-600 tw-border-gray-300 tw-rounded"> {# Reduced size #}
+                                <label for="jenis_api" class="tw-ml-1.5 tw-block tw-text-xs tw-text-gray-900">API</label> {# Reduced text size and margin #}
                             </div>
                         </div>
                         <label for="nama_brand_layanan" class="form-label">
@@ -900,13 +907,13 @@
         <div class="section-group">
             <h3 class="section-header">Persentase Pemegang Saham (per 31 Desember Tahun Laporan)</h3>
             <div class="section-content">
-                <p class="tw-text-gray-600 tw-mb-3 tw-text-sm">JANGAN GUNAKAN TITIK ATAUPUN KOMA PADA NAMA, NOMINAL, LBR SAHAM DAN PERSENTASE.</p>
+                <p class="tw-text-gray-600 tw-mb-2.5 tw-text-sm">JANGAN GUNAKAN TITIK ATAUPUN KOMA PADA NAMA, NOMINAL, LBR SAHAM DAN PERSENTASE.</p> {# Reduced margin #}
                 {% set shareholder_types = ["Berbadan Hukum", "Perseorangan", "Domestik", "Asing"] %}
                 {% for type in shareholder_types %}
                 <div class="nested-section-group">
                     <h4>Pemegang Saham {{ type }}</h4>
                     <div id="shareholder_section_{{ type.replace(' ', '_').lower() }}">
-                        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-4 tw-gap-y-2 tw-mb-2 shareholder-entry">
+                        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-x-6 tw-gap-y-2 tw-mb-2 shareholder-entry"> {# Adjusted gaps and margin #}
                             <div class="tw-space-y-1">
                                 <label for="nama_pemegang_saham_{{ type.replace(' ', '_').lower() }}_1" class="form-label">
                                     Nama <span class="tw-text-red-500">*</span>
@@ -949,7 +956,7 @@
                             </div>
                         </div>
                         {% set type_id = type.replace(' ', '_').lower() %}
-                        <button type="button" onclick="addShareholderEntry('{{ type_id }}')" class="tw-mt-2 tw-px-3 tw-py-2 tw-bg-green-600 tw-text-white tw-rounded-md hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 focus:tw-ring-offset-2 tw-transition tw-duration-150 tw-ease-in-out tw-text-sm">Tambah Data</button>
+                        <button type="button" onclick="addShareholderEntry('{{ type_id }}')" class="tw-mt-1.5 tw-px-3 tw-py-1.5 tw-bg-green-600 tw-text-white tw-rounded-md hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 focus:tw-ring-offset-2 tw-transition tw-duration-150 tw-ease-in-out tw-text-sm">Tambah Data</button> {# Adjusted padding, margin-top #}
                     </div>
                 </div>
                 {% endfor %}
@@ -960,7 +967,7 @@
         <div class="section-group">
             <h3 class="section-header">Data Keuangan Perusahaan (per 31 Desember Tahun Laporan)</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                     <div class="tw-space-y-1">
                         <label for="total_aset" class="form-label">
                             Total Aset <span class="tw-text-red-500">*</span>
@@ -1002,7 +1009,7 @@
                         <input type="number" id="total_laba_bersih_setelah_pajak" name="total_laba_bersih_setelah_pajak" class="form-input" placeholder="Contoh: 250000000" required>
                     </div>
                 </div>
-                <div class="tw-mt-3 tw-space-y-1">
+                <div class="tw-mt-2.5 tw-space-y-1"> {# Adjusted margin-top #}
                     <label for="jenis_bisnis_lainnya" class="form-label">
                         Jenis Bisnis Lainnya (Menyelenggarakan lebih dari satu jenis kegiatan di bidang SP (selain Transfer Dana))
                         <span class="tooltip-container">
@@ -1010,7 +1017,7 @@
                             <span class="tooltip-text"></span>
                         </span>
                     </label>
-                    <textarea id="jenis_bisnis_lainnya" name="jenis_bisnis_lainnya" rows="3" class="form-input" placeholder="Contoh: Nihil, atau 1. Pengiriman Barang&#10;2. Consumer Goods"></textarea>
+                    <textarea id="jenis_bisnis_lainnya" name="jenis_bisnis_lainnya" rows="2" class="form-input" placeholder="Contoh: Nihil, atau 1. Pengiriman Barang&#10;2. Consumer Goods"></textarea> {# Reduced rows #}
                 </div>
             </div>
         </div>
@@ -1019,9 +1026,9 @@
         <div class="section-group">
             <h3 class="section-header">Self-Assessment Penerapan APU PPT (Nilai 1-5)</h3>
             <div class="section-content">
-                <p class="tw-text-gray-600 tw-mb-3 tw-text-sm">Penyelenggara wajib mengisi jawaban di Kolom Nilai (1-5).</p>
-                <div class="tw-mb-3">
-                    <p class="tw-font-medium tw-text-gray-700 tw-text-sm">Skala Penilaian:</p>
+                <p class="tw-text-gray-600 tw-mb-2.5 tw-text-sm">Penyelenggara wajib mengisi jawaban di Kolom Nilai (1-5).</p> {# Reduced margin #}
+                <div class="tw-mb-2.5"> {# Reduced margin #}
+                    <p class="tw-font-medium tw-text-gray-700 tw-text-xs">Skala Penilaian:</p> {# Reduced text size #}
                     <ul class="tw-list-disc tw-list-inside tw-text-xs tw-text-gray-600">
                         <li><span class="tw-font-semibold">Skala 1:</span> Penyelenggara Sepenuhnya Melaksanakan Kegiatan tersebut sesuai ketentuan yang berlaku.</li>
                         <li><span class="tw-font-semibold">Skala 2:</span> Penyelenggara melaksanakan sebagian besar kegiatan tersebut sesuai ketentuan yang berlaku.</li>
@@ -1069,15 +1076,15 @@
                 {% for section_title, questions in sections.items() %}
                 <div class="nested-section-group">
                     <h4>{{ section_title }}</h4>
-                    <div class="tw-space-y-3">
+                    <div class="tw-space-y-2"> {# Reduced space-y #}
                         {% for item in questions %}
-                        <div class="tw-border tw-border-gray-200 tw-p-3 tw-rounded-md">
-                            <p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mb-2">{{ loop.index }}. {{ item.question }}</p>
+                        <div class="tw-border tw-border-gray-200 tw-p-2.5 tw-rounded-md"> {# Reduced padding #}
+                            <p class="tw-text-xs tw-font-medium tw-text-gray-800 tw-mb-1.5">{{ loop.index }}. {{ item.question }}</p> {# Reduced text size and margin #}
                             <div class="radio-group-container">
                                 {% for i in range(1, 6) %}
                                 <label for="{{ item.name }}_skala_{{ i }}" class="radio-option">
-                                    <input type="radio" id="{{ item.name }}_skala_{{ i }}" name="{{ item.name }}" value="{{ i }}" class="tw-h-4 tw-w-4 tw-text-blue-600 tw-border-gray-300 tw-rounded" required>
-                                    <label for="{{ item.name }}_skala_{{ i }}" class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900">Skala {{ i }}</label>
+                                    <input type="radio" id="{{ item.name }}_skala_{{ i }}" name="{{ item.name }}" value="{{ i }}" class="tw-h-3.5 tw-w-3.5 tw-text-blue-600 tw-border-gray-300 tw-rounded" required> {# Reduced size #}
+                                    <label for="{{ item.name }}_skala_{{ i }}" class="tw-ml-1.5 tw-block tw-text-xs tw-text-gray-900">Skala {{ i }}</label> {# Reduced text size and margin #}
                                 </label>
                                 {% endfor %}
                             </div>
@@ -1093,8 +1100,8 @@
         <div class="section-group">
             <h3 class="section-header">Upload Dokumen</h3>
             <div class="section-content">
-                <p class="tw-text-gray-600 tw-mb-3 tw-text-sm">Saudara diminta untuk upload dokumen berikut:</p>
-                <div class="tw-space-y-3">
+                <p class="tw-text-gray-600 tw-mb-2.5 tw-text-sm">Saudara diminta untuk upload dokumen berikut:</p> {# Reduced margin #}
+                <div class="tw-space-y-2"> {# Reduced space-y #}
                     <div class="tw-space-y-1">
                         <label for="dokumen_form_risiko" class="form-label">
                             1. Dokumen Form Risiko (Format penamaan file: Nama PT Form Risiko) <span class="tw-text-red-500">*</span>
@@ -1104,7 +1111,7 @@
                             </span>
                         </label>
                         <div class="file-input-container">
-                            <input type="file" id="dokumen_form_risiko" name="dokumen_form_risiko" accept=".pdf" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-3 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" required>
+                            <input type="file" id="dokumen_form_risiko" name="dokumen_form_risiko" accept=".pdf" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-3 file:tw-py-1.5 file:tw-px-2.5 file:tw-rounded-md file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" required> {# Adjusted file input styles #}
                         </div>
                     </div>
                     <div class="tw-space-y-1">
@@ -1116,7 +1123,7 @@
                             </span>
                         </label>
                         <div class="file-input-container">
-                            <input type="file" id="dokumen_kertas_kerja_self_assesment" name="dokumen_kertas_kerja_self_assesment" accept=".pdf" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-3 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" required>
+                            <input type="file" id="dokumen_kertas_kerja_self_assesment" name="dokumen_kertas_kerja_self_assesment" accept=".pdf" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-3 file:tw-py-1.5 file:tw-px-2.5 file:tw-rounded-md file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" required> {# Adjusted file input styles #}
                         </div>
                     </div>
                     <div class="tw-space-y-1">
@@ -1128,7 +1135,7 @@
                             </span>
                         </label>
                         <div class="file-input-container">
-                            <input type="file" id="dokumen_surat_pernyataan_keabsahan" name="dokumen_surat_pernyataan_keabsahan" accept=".pdf" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-3 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" required>
+                            <input type="file" id="dokumen_surat_pernyataan_keabsahan" name="dokumen_surat_pernyataan_keabsahan" accept=".pdf" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-3 file:tw-py-1.5 file:tw-px-2.5 file:tw-rounded-md file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" required> {# Adjusted file input styles #}
                         </div>
                     </div>
                 </div>
@@ -1139,21 +1146,21 @@
         <div class="section-group">
             <h3 class="section-header">Pernyataan Penyampaian Data dan Informasi</h3>
             <div class="section-content">
-                <p class="tw-text-gray-800 tw-mb-3 tw-text-sm">Sehubungan dengan permintaan data dan informasi atau data Form Risiko APU PPT dan Kertas Kerja Self Assesment penerapan APU PPT, dengan ini saya mewakili Perusahaan menyatakan data dan informasi pada isian tersebut dengan lengkap dan benar. Dalam hal terdapat perubahan, maka saya, mewakili perusahaan akan melakukan update data dan informasi tersebut.</p>
+                <p class="tw-text-gray-800 tw-mb-2.5 tw-text-sm">Sehubungan dengan permintaan data dan informasi atau data Form Risiko APU PPT dan Kertas Kerja Self Assesment penerapan APU PPT, dengan ini saya mewakili Perusahaan menyatakan data dan informasi pada isian tersebut dengan lengkap dan benar. Dalam hal terdapat perubahan, maka saya, mewakili perusahaan akan melakukan update data dan informasi tersebut.</p> {# Reduced margin and text size #}
                 <div class="tw-flex tw-items-center">
-                    <input type="checkbox" id="pernyataan_setuju" name="pernyataan_setuju" class="tw-h-4 tw-w-4 tw-text-blue-600 tw-border-gray-300 tw-rounded" required>
-                    <label for="pernyataan_setuju" class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900">Ya, pernyataan tersebut telah saya baca dan setujui.</label>
+                    <input type="checkbox" id="pernyataan_setuju" name="pernyataan_setuju" class="tw-h-3.5 tw-w-3.5 tw-text-blue-600 tw-border-gray-300 tw-rounded" required> {# Reduced size #}
+                    <label for="pernyataan_setuju" class="tw-ml-1.5 tw-block tw-text-xs tw-text-gray-900">Ya, pernyataan tersebut telah saya baca dan setujui.</label> {# Reduced text size and margin #}
                 </div>
             </div>
         </div>
 
-        <div class="tw-flex tw-justify-end tw-gap-3 tw-pt-4">
-            <button type="button" onclick="window.history.back()" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105">
+        <div class="tw-flex tw-justify-end tw-gap-2.5 tw-pt-3"> {# Reduced gap and padding #}
+            <button type="button" onclick="window.history.back()" class="tw-inline-flex tw-items-center tw-px-5 tw-py-2 tw-border tw-border-gray-300 tw-text-sm tw-font-bold tw-rounded-lg tw-shadow-md tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105"> {# Reduced padding, text size, rounded #}
                 Batal
             </button>
-            <button type="submit" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-5 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-bold tw-rounded-lg tw-shadow-md tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton"> {# Reduced padding, text size, rounded #}
                 <span class="submit-text">Kirim Laporan</span>
-                <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
+                <span class="spinner-border tw-w-4 tw-h-4 tw-ml-1.5 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span> {# Reduced spinner size #}
             </button>
         </div>
     </form>
@@ -1249,7 +1256,8 @@
             const container = document.getElementById(`shareholder_section_${type}`);
             const entryCount = container.querySelectorAll('.shareholder-entry').length + 1;
             const newEntry = document.createElement('div');
-            newEntry.classList.add('tw-grid', 'tw-grid-cols-1', 'md:tw-grid-cols-2', 'lg:tw-grid-cols-4', 'tw-gap-4', 'tw-gap-y-2', 'tw-mb-2', 'shareholder-entry');
+            newEntry.classList.add('tw-grid', 'tw-grid-cols-1', 'md:tw-grid-cols-2', 'lg:tw-grid-cols-4', 'tw-gap-x-6', 'tw-gap-y-2', 'tw-mb-2', 'shareholder-entry');
+            // Adjusted gaps and margin
             newEntry.innerHTML = `
                 <div class="tw-space-y-1">
                     <label for="nama_pemegang_saham_${type}_${entryCount}" class="form-label">Nama <span class="tw-text-red-500">*</span></label>
@@ -1276,7 +1284,7 @@
             const container = document.getElementById('titik_layanan_container');
             const entryCount = container.querySelectorAll('.titik-layanan-entry').length + 1;
             const newEntry = document.createElement('div');
-            newEntry.classList.add('tw-grid', 'tw-grid-cols-1', 'md:tw-grid-cols-2', 'tw-gap-4', 'tw-gap-y-2', 'tw-mb-2', 'titik-layanan-entry');
+            newEntry.classList.add('tw-grid', 'tw-grid-cols-1', 'md:tw-grid-cols-2', 'tw-gap-x-6', 'tw-gap-y-2', 'tw-mb-2', 'titik-layanan-entry');
             newEntry.innerHTML = `
                 <div class="tw-space-y-1">
                     <label for="jumlah_titik_layanan_${entryCount}" class="form-label">Jumlah Titik <span class="tw-text-red-500">*</span></label>
@@ -1335,7 +1343,7 @@
             const container = document.getElementById('mitra_kerjasama_container');
             const entryCount = container.querySelectorAll('.mitra-kerjasama-entry').length + 1;
             const newEntry = document.createElement('div');
-            newEntry.classList.add('tw-grid', 'tw-grid-cols-1', 'md:tw-grid-cols-2', 'tw-gap-4', 'tw-gap-y-2', 'tw-mb-2', 'mitra-kerjasama-entry');
+            newEntry.classList.add('tw-grid', 'tw-grid-cols-1', 'md:tw-grid-cols-2', 'tw-gap-x-6', 'tw-gap-y-2', 'tw-mb-2', 'mitra-kerjasama-entry'); 
             newEntry.innerHTML = `
                 <div class="tw-space-y-1">
                     <label for="jumlah_mitra_kerjasama_${entryCount}" class="form-label">Jumlah Mitra <span class="tw-text-red-500">*</span></label>

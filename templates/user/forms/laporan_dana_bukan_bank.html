@@ -30,52 +30,60 @@
         .section-group {
             background-color: #ffffff; /* Override tw-bg-gray-50 */
             border: 1px solid #e5e7eb; /* Override tw-border-gray-200 */
-            border-radius: 12px; /* Consistent with main container's tw-rounded-2xl, or tw-rounded-xl (1rem) for sub-sections */
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Override tw-shadow-inner, add a softer shadow */
+            border-radius: 10px; /* Reduced from 12px */
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04); /* Softer shadow */
             padding: 0; /* Remove padding from this wrapper for h3 to expand */
-            margin-bottom: 1.5rem; /* Space below each section group */
+            margin-bottom: 0.8rem; /* Reduced margin */
             overflow: hidden; /* Important for border-radius on h3 */
         }
 
         .section-group .section-header {
             /* Styles for h3 elements acting as section headers */
-            font-size: 1.15rem; /* Precise font size */
+            font-size: 1.05rem; /* Smaller header */
             font-weight: 700; /* Bold */
             color: #1f2937; /* Dark gray text */
             background-color: #eef2f6; /* Light gray background, matches fraud form */
-            padding: 0.8rem 1.5rem; /* Padding inside the header */
+            padding: 0.7rem 1.2rem; /* Reduced padding */
             margin-top: 0; /* Remove default top margin */
             /* Negative margins to pull h3 to the edge of the parent section-group */
             margin-left: -1px; /* Compensate for the parent's border */
             margin-right: -1px; /* Compensate for the parent's border */
-            margin-bottom: 1rem; /* Space between header and form fields below */
+            margin-bottom: 0.6rem; /* Space between header and form fields below */
             border-bottom: 1px solid #e0e7eb; /* Bottom border for separation */
             /* Border radius for top corners, matching parent section-group */
-            border-top-left-radius: 11px; /* slightly less than parent's 12px */
-            border-top-right-radius: 11px; /* slightly less than parent's 12px */
+            border-top-left-radius: 9px; /* Adjusted radius */
+            border-top-right-radius: 9px; /* Adjusted radius */
         }
         .section-group .section-content {
             /* Padding for the content within the section-group after the header */
-            padding: 1.5rem; /* Matches the original tw-p-6 padding */
+            padding: 1rem; /* Reduced padding */
             padding-top: 0; /* No top padding, as it's covered by header's margin-bottom */
         }
 
         /* Adjust font size for labels and inputs for precision */
         .form-label {
-            font-size: 0.95rem; /* Slightly larger than text-sm */
+            font-size: 0.85rem; /* Smaller labels */
             font-weight: 600; /* Semibold */
             color: #374151; /* Darker gray text */
+            margin-bottom: 0.2rem; /* Reduced margin */
         }
         .form-input {
-            font-size: 0.9rem; /* Slightly larger than text-sm for inputs */
-            padding: 0.7rem 1rem; /* Adjusted padding for inputs */
+            font-size: 0.85rem; /* Smaller font */
+            padding: 0.6rem 0.9rem; /* Reduced padding */
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 6px; /* Smaller rounded corners */
+            color: #4b5563;
+            transition: all 0.2s ease;
+            min-height: 36px; /* Reduced minimum height */
+            box-sizing: border-box;
         }
 
         /* Specific styles for LTDBB */
         .detail-transaction-group {
             border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 1.5rem; /* Increased padding for better spacing */
-            margin-bottom: 1.5rem; /* Increased margin for better spacing */
+            padding-bottom: 1rem; /* Reduced padding for better spacing */
+            margin-bottom: 1rem; /* Reduced margin for better spacing */
         }
         .detail-transaction-group:last-of-type {
             border-bottom: none;
@@ -83,26 +91,96 @@
             padding-bottom: 0;
         }
 
-        /* Styles for the loading overlay */
+        /* File input */
+        .file-input-container {
+            margin-top: 0.2rem; /* Reduced margin */
+        }
+        
+        .file-input-container input[type="file"] {
+            font-size: 0.85rem; /* Smaller font */
+            padding: 0.6rem 0.9rem; /* Reduced padding */
+        }
+
+        /* Textarea styling - compact */
+        textarea.form-input {
+            min-height: 70px; /* Shorter textareas */
+            resize: vertical;
+        }
+
+        /* Helper text - compact */
+        .tw-text-xs {
+            font-size: 0.75rem; /* Smaller font size */
+        }
+        .tw-mt-1 {
+            margin-top: 0.1rem; /* Reduced margin */
+        }
+
+        /* Styles for buttons - compact */
+        .btn {
+            font-size: 0.85rem; /* Smaller font */
+            padding: 0.7rem 1.1rem; /* Reduced padding */
+            border-radius: 6px; /* Smaller rounded corners */
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        /* Adjust gap for grid layouts */
+        .tw-gap-x-6 {
+            column-gap: 1.2rem; /* Reduced column gap */
+        }
+        .tw-gap-y-4 {
+            row-gap: 0.8rem; /* Reduced row gap */
+        }
+        .tw-gap-y-2 {
+            row-gap: 0.4rem; /* Reduced row gap */
+        }
+
+        /* Main container padding */
+        .tw-max-w-4xl {
+            max-width: 900px; /* Adjusted max width for the main form container */
+        }
+        .tw-p-6 {
+            padding: 1.5rem; /* Reduced padding for the main form container */
+        }
+        .tw-my-8 {
+            margin-top: 1.5rem; /* Reduced margin */
+            margin-bottom: 1.5rem; /* Reduced margin */
+        }
+        .tw-space-y-6 > :not([hidden]) ~ :not([hidden]) {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(1.2rem * calc(1 - var(--tw-space-y-reverse))); /* Reduced space-y */
+            margin-bottom: calc(1.2rem * var(--tw-space-y-reverse));
+        }
+        .tw-space-y-1 > :not([hidden]) ~ :not([hidden]) {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.2rem * calc(1 - var(--tw-space-y-reverse))); /* Reduced space-y */
+            margin-bottom: calc(0.2rem * var(--tw-space-y-reverse));
+        }
+        .tw-my-2 {
+            margin-top: 0.4rem; /* Reduced margin */
+            margin-bottom: 0.4rem; /* Reduced margin */
+        }
+
+        /* Styles for the loading overlay (kept consistent) */
         #loadingOverlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+            background-color: rgba(0, 0, 0, 0.5);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000; /* Ensure it's on top of everything */
-            backdrop-filter: blur(3px); /* Optional: blur background */
+            z-index: 1000;
+            backdrop-filter: blur(3px);
         }
 
         #loadingOverlay .spinner-border {
-            width: 3rem; /* Larger spinner for the overlay */
+            width: 3rem;
             height: 3rem;
-            border-width: 0.35em; /* Thicker border */
-            color: #ffffff; /* White spinner */
+            border-width: 0.35em;
+            color: #ffffff;
         }
 
         /* Styles for the message box backdrop */
@@ -112,10 +190,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); /* Darker semi-transparent black */
-            backdrop-filter: blur(5px); /* Stronger blur for pop-up background */
-            z-index: 1000; /* Below the message box, above other content */
-            display: none; /* Hidden by default */
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
         }
 
         /* Styles for the message box pop-up */
@@ -124,38 +202,38 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 1.5rem 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            z-index: 1001; /* Above the backdrop */
-            display: none; /* Hidden by default */
-            font-size: 1.1rem;
+            padding: 1.2rem 1.5rem; /* Reduced */
+            border-radius: 10px; /* Reduced */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Reduced */
+            z-index: 1001;
+            display: none;
+            font-size: 1rem; /* Reduced */
             font-weight: 600;
             text-align: center;
-            max-width: 400px; /* Limit width */
-            width: 90%; /* Responsive width */
+            max-width: 350px; /* Reduced */
+            width: 90%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem; /* Space between elements */
+            gap: 0.8rem; /* Reduced */
         }
 
         #dynamicMessageBox.success {
-            background-color: #d4edda; /* Light green */
-            color: #155724; /* Dark green text */
+            background-color: #d4edda;
+            color: #155724;
             border: 1px solid #c3e6cb;
         }
 
         #dynamicMessageBox.error {
-            background-color: #f8d7da; /* Light red */
-            color: #721c24; /* Dark red text */
+            background-color: #f8d7da;
+            color: #721c24;
             border: 1px solid #f5c6cb;
         }
 
         #dynamicMessageBox .icon-container {
-            font-size: 3rem; /* Large icon size */
+            font-size: 2.5rem; /* Reduced */
             line-height: 1;
-            animation: fade-in-scale 0.5s ease-out forwards; /* Animation for icon */
+            animation: fade-in-scale 0.5s ease-out forwards;
         }
 
         @keyframes fade-in-scale {
@@ -170,13 +248,13 @@
         }
 
         #dynamicMessageBox .ok-button {
-            background-color: #4CAF50; /* Green */
+            background-color: #4CAF50;
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 0.6rem 1.2rem; /* Reduced */
             border: none;
-            border-radius: 8px;
+            border-radius: 6px; /* Reduced */
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem; /* Reduced */
             font-weight: 700;
             transition: background-color 0.3s ease;
         }
@@ -189,16 +267,18 @@
 
 {% block content %}
 <div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-6 tw-font-sans">
-    <h2 class="tw-text-3xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-4 tw-mb-6">Laporan Transaksi Dana Bukan Bank (LTDBB)</h2>
-    <p class="tw-text-center tw-text-sm tw-font-medium tw-text-red-700 tw-bg-red-50 tw-p-2 tw-rounded-lg tw-border tw-border-red-200">
+    <h2 class="tw-text-xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-2.5 tw-mb-3"> {# Reduced text size, padding, margin #}
+        Laporan Transaksi Dana Bukan Bank (LTDBB)
+    </h2>
+    <p class="tw-text-center tw-text-xs tw-font-medium tw-text-red-700 tw-bg-red-50 tw-p-2 tw-rounded-lg tw-border tw-border-red-200"> {# Reduced text size, padding #}
         Penyampaian data laporan ini tidak menggugurkan kewajiban pelaporan ke LKKPBU
     </p>
 
-    <form method="POST" action="{{ url_for('submit_laporan_dana_bukan_bank') }}" enctype="multipart/form-data" id="ltdbbForm" class="tw-space-y-6">
+    <form method="POST" action="{{ url_for('submit_laporan_dana_bukan_bank') }}" enctype="multipart/form-data" id="ltdbbForm" class="tw-space-y-5"> {# Reduced space-y #}
         <div class="section-group">
             <h3 class="section-header">Informasi Pelapor</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                     <div class="tw-space-y-1">
                         <label for="tahun_laporan" class="tw-block form-label">Tahun Laporan <span class="tw-text-red-500">*</span></label>
                         <select class="tw-mt-1 tw-block tw-w-full form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out" id="tahun_laporan" name="tahun_laporan" required>
@@ -237,8 +317,8 @@
             <h3 class="section-header">Detail Transaksi</h3>
             <div class="section-content">
                 <div class="detail-transaction-group">
-                    <h4 class="tw-font-semibold tw-text-gray-700 tw-mb-3">G0001-Transfer Dana dari Dalam ke Luar Negeri (Outgoing)</h4>
-                    <div class="tw-flex tw-w-full tw-my-2">
+                    <h4 class="tw-font-semibold tw-text-gray-700 tw-mb-2">G0001-Transfer Dana dari Dalam ke Luar Negeri (Outgoing)</h4> {# Reduced margin #}
+                    <div class="tw-flex tw-w-full tw-my-1.5"> {# Reduced margin #}
                         <div class="tw-flex tw-flex-col tw-w-1/2 tw-pr-2 ">
                             <label for="number_outgoing_transactions" class="tw-block form-label">Jumlah Transaksi <span class="tw-text-red-500">*</span></label>
                             <input type="number" id="number_outgoing_transactions" name="number_outgoing_transactions" min="0" required
@@ -257,8 +337,8 @@
                 </div>
 
                 <div class="detail-transaction-group">
-                    <h4 class="tw-font-semibold tw-text-gray-700 tw-mb-3">G0002 - Transfer Dana dari Luar ke Dalam Negeri (Incoming)</h4>
-                    <div class="tw-flex tw-w-full tw-my-2">
+                    <h4 class="tw-font-semibold tw-text-gray-700 tw-mb-2">G0002 - Transfer Dana dari Luar ke Dalam Negeri (Incoming)</h4> {# Reduced margin #}
+                    <div class="tw-flex tw-w-full tw-my-1.5"> {# Reduced margin #}
                         <div class="tw-flex tw-flex-col tw-w-1/2 tw-pr-2 ">
                             <label for="number_incoming_transactions" class="tw-block form-label">Jumlah Transaksi <span class="tw-text-red-500">*</span></label>
                             <input type="number" id="number_incoming_transactions" name="number_incoming_transactions" min="0" required
@@ -277,8 +357,8 @@
                 </div>
 
                 <div class="detail-transaction-group">
-                    <h4 class="tw-font-semibold tw-text-gray-700 tw-mb-3">G0003 - Transfer Dana Dalam Negeri</h4>
-                    <div class="tw-flex tw-w-full tw-my-2">
+                    <h4 class="tw-font-semibold tw-text-gray-700 tw-mb-2">G0003 - Transfer Dana Dalam Negeri</h4> {# Reduced margin #}
+                    <div class="tw-flex tw-w-full tw-my-1.5"> {# Reduced margin #}
                         <div class="tw-flex tw-flex-col tw-w-1/2 tw-pr-2 ">
                             <label for="number_domestic_transactions" class="tw-block form-label">Jumlah Transaksi <span class="tw-text-red-500">*</span></label>
                             <input type="number" id="number_domestic_transactions" name="number_domestic_transactions" min="0" required
@@ -303,25 +383,27 @@
             <div class="section-content">
                 <div class="tw-space-y-1">
                     <label for="file" class="tw-block form-label">Bukti Penyampaian LTDBB melalui LKPBU <span class="tw-text-red-500">*</span></label>
-                    <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-4 file:tw-rounded-full file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="file" name="file" accept=".pdf,.xls,.xlsx" required>
+                    <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-3 file:tw-py-1.5 file:tw-px-2.5 file:tw-rounded-md file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer tw-transition tw-duration-150 tw-ease-in-out" id="file" name="file" accept=".pdf,.xls,.xlsx" required> {# Adjusted file input styles #}
                     <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF, XLS, XLSX (Maks. 5MB)</p>
                 </div>
                 
-                <div class="tw-flex tw-flex-col md:tw-col-span-2 tw-my-2">
+                <div class="tw-flex tw-flex-col md:tw-col-span-2 tw-my-1.5"> {# Adjusted margin #}
                     <label for="keterangan" class="tw-block form-label">Keterangan</label>
-                    <textarea id="keterangan" name="keterangan" rows="3"
+                    <textarea id="keterangan" name="keterangan" rows="2" {# Reduced rows #}
                         placeholder="Jelaskan keterangan tambahan"
                         class="tw-mt-1 form-input tw-bg-white tw-border tw-border-gray-300 tw-rounded-lg tw-shadow-sm focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-indigo-500 focus:tw-border-indigo-500 tw-transition tw-duration-150 tw-ease-in-out">{{ request.form.keterangan if request.form }}</textarea>
                 </div>
             </div>
         </div>
         
-        <div class="tw-flex tw-justify-end tw-gap-4 tw-pt-6">
-            <button type="submit" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+        <div class="tw-flex tw-justify-end tw-gap-2.5 tw-pt-3"> {# Reduced gap and padding #}
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-5 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-bold tw-rounded-lg tw-shadow-md tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton"> {# Reduced padding, text size, rounded #}
                 <span class="submit-text">Kirim Laporan</span>
-                <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
+                <span class="spinner-border tw-w-4 tw-h-4 tw-ml-1.5 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span> {# Reduced spinner size #}
             </button>
-            <button type="button" class="tw-inline-flex tw-items-center tw-px-8 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">Batal</button>
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-5 tw-py-2 tw-border tw-border-gray-300 tw-text-sm tw-font-bold tw-rounded-lg tw-shadow-md tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()"> {# Reduced padding, text size, rounded #}
+                Batal
+            </button>
         </div>
     </form>
 </div>
@@ -504,4 +586,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
-

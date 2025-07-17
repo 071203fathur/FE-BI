@@ -31,19 +31,24 @@
             font-family: "Inter", sans-serif;
             background-color: #f8fafc; /* Light background for the whole page */
             color: #334155; /* Default text color */
+            /* Removed overflow-y: hidden; to allow scrolling */
         }
 
         /* Hero Section Styling */
         .hero-section {
             background: linear-gradient(135deg, var(--color-bi-blue-dark) 0%, var(--color-bi-blue-medium) 100%);
             color: white;
-            padding: 2.5rem 1rem; /* Reduced padding */
-            border-radius: 0.75rem; /* Slightly smaller rounded corners */
+            padding: 2rem 0.75rem; /* Further reduced padding */
+            border-radius: 0.6rem; /* Smaller rounded corners */
             text-align: center;
-            margin-bottom: 1.5rem; /* Reduced margin */
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Slightly softer shadow */
+            margin-bottom: 1rem; /* Reduced margin */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Slightly softer shadow */
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .hero-section::before {
             content: '';
@@ -53,188 +58,206 @@
             right: 0;
             bottom: 0;
             background-size: cover;
-            opacity: 0.08; /* Very subtle overlay */
+            opacity: 0.08;
             z-index: 0;
         }
         .hero-content {
             position: relative;
             z-index: 1;
+            width: 100%;
         }
         .hero-clock {
-            font-size: 2.5rem; /* Reduced font size */
-            font-weight: 700; /* font-bold */
-            letter-spacing: 0.05em; /* tracking-wide */
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.4); /* Softer shadow */
-            margin-bottom: 1rem; /* Reduced margin */
-            color: var(--color-bi-gold); /* Gold clock */
+            font-size: 2rem; /* Further reduced font size */
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+            margin-bottom: 0.4rem; /* Reduced margin */
+            color: var(--color-bi-gold);
+            line-height: 1.2;
+        }
+        .hero-date {
+            font-size: 1rem; /* Smaller font size for date */
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.8rem; /* Reduced space below date */
         }
         .hero-title {
-            font-size: 2rem; /* Reduced font size */
-            font-weight: 800; /* font-extrabold */
-            margin-bottom: 0.75rem; /* Reduced margin */
+            font-size: 1.75rem; /* Further reduced font size */
+            font-weight: 800;
+            margin-bottom: 0.6rem; /* Reduced margin */
             line-height: 1.2;
         }
         .hero-subtitle {
-            font-size: 1rem; /* Reduced font size */
+            font-size: 0.9rem; /* Further reduced font size */
             opacity: 0.95;
-            max-width: 500px; /* Reduced max-width */
-            margin: 0 auto 1.5rem; /* Reduced margin */
+            max-width: 450px; /* Reduced max-width */
+            margin: 0 auto 1.2rem; /* Reduced margin */
         }
         .hero-info-bar {
-            background-color: rgba(255, 255, 255, 0.2); /* More transparent white */
-            backdrop-filter: blur(6px); /* Slightly less blur */
-            border-radius: 0.5rem; /* Slightly smaller rounded corners */
-            padding: 0.75rem 1rem; /* Reduced padding */
-            margin-top: 2rem; /* Reduced margin */
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px); /* Slightly less blur */
+            border-radius: 0.4rem; /* Smaller rounded corners */
+            padding: 0.6rem 0.8rem; /* Reduced padding */
+            margin-top: 1.5rem; /* Reduced margin */
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
-            gap: 1rem; /* Reduced space */
-            border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
+            gap: 0.8rem; /* Reduced gap */
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         .hero-info-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             color: white;
-            font-size: 0.85rem; /* Reduced font size */
+            font-size: 0.8rem; /* Reduced font size */
             font-weight: 500;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
         .hero-info-item .icon {
-            margin-bottom: 0.4rem; /* Reduced margin */
+            margin-bottom: 0.3rem; /* Reduced margin */
             color: var(--color-bi-gold);
-            width: 1.5rem; /* Reduced size */
-            height: 1.5rem; /* Reduced size */
+            width: 1.3rem; /* Reduced size */
+            height: 1.3rem; /* Reduced size */
         }
         .hero-info-item .value {
-            font-weight: 700; /* font-bold */
-            font-size: 1rem; /* Reduced font size */
+            font-weight: 700;
+            font-size: 0.9rem; /* Reduced font size */
         }
         .hero-info-item .label {
-            font-size: 0.75rem; /* Reduced font size */
+            font-size: 0.7rem; /* Reduced font size */
             opacity: 0.85;
         }
 
         /* Main Content Wrapper */
         .main-content-wrapper {
-            padding: 1rem; /* Reduced padding */
-            max-width: 1100px; /* Reduced max width */
-            margin: 0 auto; /* Center the content */
+            padding: 0.75rem; /* Reduced padding */
+            max-width: 1000px; /* Reduced max width */
+            margin: 0 auto;
         }
 
         /* Dashboard Content Card */
         .dashboard-content-card {
             background-color: #ffffff;
-            border-radius: 0.75rem; /* Slightly smaller rounded corners */
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Softer shadow */
-            padding: 1.5rem; /* Reduced padding */
-            margin-bottom: 1.5rem; /* Reduced margin */
-            border: 1px solid #e2e8f0; /* subtle border */
+            border-radius: 0.6rem; /* Smaller rounded corners */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07); /* Softer shadow */
+            padding: 1.2rem; /* Reduced padding */
+            margin-bottom: 1.2rem; /* Reduced margin */
+            border: 1px solid #e2e8f0;
+            display: block;
         }
 
         /* Section Group (for each report category) */
         .section-group {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 0.75rem; /* Slightly smaller rounded corners */
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05); /* Softer shadow */
+            border-radius: 0.6rem; /* Smaller rounded corners */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); /* Softer shadow */
             padding: 0;
-            margin-bottom: 1.5rem; /* Reduced space between sections */
+            margin-bottom: 1.2rem; /* Reduced space between sections */
             overflow: hidden;
         }
         .section-group .section-header {
-            font-size: 1.15rem; /* Reduced font size */
-            font-weight: 700; /* font-bold */
+            font-size: 1.05rem; /* Further reduced font size */
+            font-weight: 700;
             color: var(--color-bi-blue-dark);
-            background-color: #eef2f6; /* Light blue-gray header */
-            padding: 0.8rem 1.5rem; /* Reduced padding */
+            background-color: #eef2f6;
+            padding: 0.7rem 1.2rem; /* Reduced padding */
             margin-top: 0;
             margin-left: -1px;
             margin-right: -1px;
-            margin-bottom: 1rem; /* Reduced margin */
+            margin-bottom: 0.8rem; /* Reduced margin */
             border-bottom: 1px solid #d1d5db;
-            border-top-left-radius: 0.65rem; /* Adjusted for consistency */
-            border-top-right-radius: 0.65rem; /* Adjusted for consistency */
+            border-top-left-radius: 0.55rem; /* Adjusted for consistency */
+            border-top-right-radius: 0.55rem; /* Adjusted for consistency */
             display: flex;
             align-items: center;
-            gap: 0.6rem; /* Reduced gap */
+            gap: 0.5rem; /* Reduced gap */
         }
         .section-group .section-header .icon {
             color: var(--color-bi-blue-medium);
-            width: 1.5rem; /* Reduced size */
-            height: 1.5rem; /* Reduced size */
+            width: 1.3rem; /* Reduced size */
+            height: 1.3rem; /* Reduced size */
         }
         .section-group .section-content {
-            padding: 1rem 1.5rem; /* Reduced padding */
+            padding: 0.8rem 1.2rem; /* Reduced padding */
             padding-top: 0;
         }
 
         /* Deadline Item Card */
         .deadline-item {
             background-color: #ffffff;
-            border: 1px solid #cbd5e1; /* slate-300 */
-            border-radius: 0.6rem; /* Slightly smaller rounded corners */
-            padding: 1rem; /* Reduced padding */
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem; /* Further reduced rounded corners */
+            padding: 0.8rem; /* Further reduced padding */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: auto; /* Allow height to adjust */
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04); /* Softer shadow */
+            height: auto;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03); /* Softer shadow */
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            position: relative; /* For status icon positioning */
+            position: relative;
         }
         .deadline-item:hover {
-            transform: translateY(-3px); /* Reduced hover effect */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08); /* Softer hover shadow */
+            transform: translateY(-2px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
         }
         .deadline-item.uploaded {
-            background-color: #f0fdf4; /* Light green background */
-            border-color: #86efac; /* Green border */
+            background-color: #f0fdf4;
+            border-color: #86efac;
         }
         .deadline-item.pending {
-            background-color: #fffbeb; /* Light amber background */
-            border-color: #fcd34d; /* Amber border */
+            background-color: #fffbeb;
+            border-color: #fcd34d;
         }
         .deadline-item.overdue {
-            background-color: #fef2f2; /* Light red background */
-            border-color: #fca5a5; /* Red border */
+            background-color: #fef2f2;
+            border-color: #fca5a5;
         }
 
         .deadline-name {
-            font-weight: 600; /* font-semibold */
+            font-weight: 600;
             color: #1f2937;
-            margin-bottom: 0.4rem; /* Reduced margin */
-            font-size: 1rem; /* Reduced font size */
+            margin-bottom: 0.3rem; /* Reduced margin */
+            font-size: 0.9rem; /* Further reduced font size */
         }
         .deadline-date {
-            font-size: 0.85rem; /* Reduced font size */
+            font-size: 0.8rem; /* Further reduced font size */
             color: #6b7280;
-            margin-bottom: 0.6rem; /* Reduced margin */
+            margin-bottom: 0.5rem; /* Reduced margin */
         }
         .days-left {
-            font-weight: 700; /* font-bold */
-            font-size: 0.9rem; /* Reduced font size */
-            margin-top: auto; /* Push to bottom */
-            padding-top: 0.4rem; /* Reduced padding */
+            font-weight: 700;
+            font-size: 0.85rem; /* Further reduced font size */
+            margin-top: auto;
+            padding-top: 0.3rem; /* Reduced padding */
             border-top: 1px dashed #e5e7eb;
             color: #334155;
         }
         .days-left.urgent {
-            color: var(--color-bi-red); /* red-500 */
+            color: var(--color-bi-red);
         }
         .days-left.warning {
-            color: var(--color-bi-amber); /* amber-500 */
+            color: var(--color-bi-amber);
         }
         .days-left.safe {
-            color: var(--color-bi-green); /* green-500 */
+            color: var(--color-bi-green);
         }
+        /* Specific style for incidental reports without deadline info */
+        .deadline-item.insidental .days-left {
+            border-top: none;
+            padding-top: 0;
+            font-weight: 500;
+            font-size: 0.85rem; /* Consistent font size */
+            color: #4a5568;
+        }
+
 
         .status-indicator {
             position: absolute;
-            top: 0.75rem; /* Adjusted position */
-            right: 0.75rem; /* Adjusted position */
-            font-size: 1.3rem; /* Reduced size */
+            top: 0.6rem; /* Adjusted position */
+            right: 0.6rem; /* Adjusted position */
+            font-size: 1.1rem; /* Further reduced size */
             line-height: 1;
         }
         .status-indicator.uploaded .lucide {
@@ -249,28 +272,28 @@
 
         /* KIP Summary Card */
         .kip-summary-card {
-            background-color: #e0f2fe; /* Light blue background */
-            border: 1px solid #90cdf4; /* Blue border */
-            border-radius: 0.6rem; /* Slightly smaller rounded corners */
-            padding: 1.25rem 1.5rem; /* Reduced padding */
-            margin-bottom: 1.25rem; /* Reduced margin */
+            background-color: #e0f2fe;
+            border: 1px solid #90cdf4;
+            border-radius: 0.5rem; /* Smaller rounded corners */
+            padding: 1rem 1.2rem; /* Reduced padding */
+            margin-bottom: 1rem; /* Reduced margin */
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.06); /* Softer inner shadow */
-            color: #1a365d; /* Darker blue text */
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); /* Softer inner shadow */
+            color: #1a365d;
         }
         .kip-summary-card .kip-title {
-            font-size: 1.1rem; /* Reduced font size */
-            font-weight: 700; /* font-bold */
+            font-size: 1rem; /* Reduced font size */
+            font-weight: 700;
             color: var(--color-bi-blue-dark);
-            margin-bottom: 0.8rem; /* Reduced margin */
+            margin-bottom: 0.7rem; /* Reduced margin */
         }
         .kip-metrics {
             display: flex;
             justify-content: center;
-            gap: 1.5rem; /* Reduced space between metrics */
+            gap: 1.2rem; /* Reduced space between metrics */
             flex-wrap: wrap;
         }
         .kip-metric-item {
@@ -279,15 +302,15 @@
             align-items: center;
         }
         .kip-metric-item .value {
-            font-size: 2rem; /* Reduced font size */
-            font-weight: 800; /* font-extrabold */
+            font-size: 1.75rem; /* Reduced font size */
+            font-weight: 800;
             line-height: 1;
             color: var(--color-bi-blue-medium);
         }
         .kip-metric-item .label {
-            font-size: 0.8rem; /* Reduced font size */
+            font-size: 0.75rem; /* Reduced font size */
             color: #4a5568;
-            margin-top: 0.2rem; /* Reduced margin */
+            margin-top: 0.15rem; /* Reduced margin */
         }
         .kip-metric-item .value.urgent-count {
             color: var(--color-bi-red);
@@ -302,60 +325,61 @@
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .hero-clock {
-                font-size: 2rem;
+                font-size: 1.75rem;
+            }
+            .hero-date {
+                font-size: 0.9rem;
             }
             .hero-title {
-                font-size: 1.75rem;
+                font-size: 1.5rem;
             }
             .hero-subtitle {
-                font-size: 0.9rem;
-            }
-            .hero-info-bar {
-                flex-direction: column;
-                align-items: center;
-                padding: 0.5rem 0.75rem;
-                gap: 0.75rem;
-            }
-            .hero-info-item .icon {
-                width: 1.25rem;
-                height: 1.25rem;
-            }
-            .hero-info-item .value {
-                font-size: 0.9rem;
-            }
-            .hero-info-item .label {
-                font-size: 0.7rem;
-            }
-            .section-group .section-header {
-                font-size: 1rem;
-                padding: 0.7rem 1rem;
-            }
-            .section-group .section-content {
-                padding: 0.8rem 1rem;
-            }
-            .dashboard-content-card {
-                padding: 1rem;
-            }
-            .kip-summary-card {
-                padding: 0.8rem 1rem;
-            }
-            .kip-metric-item .value {
-                font-size: 1.75rem;
-            }
-            .kip-metric-item .label {
-                font-size: 0.75rem;
-            }
-            .deadline-name {
-                font-size: 0.9rem;
-            }
-            .deadline-date {
                 font-size: 0.8rem;
             }
-            .days-left {
+            .hero-info-bar {
+                padding: 0.4rem 0.6rem;
+                gap: 0.6rem;
+            }
+            .hero-info-item .icon {
+                width: 1.1rem;
+                height: 1.1rem;
+            }
+            .hero-info-item .value {
+                font-size: 0.8rem;
+            }
+            .hero-info-item .label {
+                font-size: 0.65rem;
+            }
+            .section-group .section-header {
+                font-size: 0.95rem;
+                padding: 0.6rem 1rem;
+            }
+            .section-group .section-content {
+                padding: 0.7rem 1rem;
+            }
+            .dashboard-content-card {
+                padding: 0.8rem;
+            }
+            .kip-summary-card {
+                padding: 0.6rem 0.8rem;
+            }
+            .kip-metric-item .value {
+                font-size: 1.4rem;
+            }
+            .kip-metric-item .label {
+                font-size: 0.65rem;
+            }
+            .deadline-name {
                 font-size: 0.85rem;
             }
+            .deadline-date {
+                font-size: 0.7rem;
+            }
+            .days-left {
+                font-size: 0.75rem;
+            }
             .status-indicator {
-                font-size: 1.1rem;
+                font-size: 0.9rem;
             }
         }
 
@@ -381,34 +405,34 @@
         }
         .modal-content {
             background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 1.5rem; /* Reduced modal padding */
+            border-radius: 0.6rem; /* Reduced modal border-radius */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Softer shadow */
             text-align: center;
-            max-width: 400px;
+            max-width: 350px; /* Reduced max-width */
             width: 90%;
-            transform: translateY(-20px);
+            transform: translateY(-15px); /* Reduced transform */
             transition: transform 0.3s ease;
         }
         .modal-overlay.show .modal-content {
             transform: translateY(0);
         }
         .modal-content h3 {
-            font-size: 1.5rem;
+            font-size: 1.3rem; /* Reduced font size */
             font-weight: 700;
             color: var(--color-bi-red);
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem; /* Reduced margin */
         }
         .modal-content p {
-            font-size: 1rem;
+            font-size: 0.9rem; /* Reduced font size */
             color: #4a5568;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem; /* Reduced margin */
         }
         .modal-content button {
             background-color: var(--color-bi-blue-dark);
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
+            padding: 0.6rem 1.2rem; /* Reduced padding */
+            border-radius: 0.4rem; /* Reduced border-radius */
             font-weight: 600;
             transition: background-color 0.2s ease;
         }
@@ -428,7 +452,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1001; /* Higher than modal */
+            z-index: 1001;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -438,17 +462,17 @@
             visibility: visible;
         }
         .spinner {
-            border: 8px solid #f3f3f3; /* Light grey */
-            border-top: 8px solid var(--color-bi-blue-dark); /* Blue */
+            border: 6px solid #f3f3f3; /* Reduced border thickness */
+            border-top: 6px solid var(--color-bi-blue-dark);
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            width: 50px; /* Reduced size */
+            height: 50px; /* Reduced size */
             animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem; /* Reduced margin */
         }
         .loading-text {
             color: var(--color-bi-blue-dark);
-            font-size: 1.1rem;
+            font-size: 1rem; /* Reduced font size */
             font-weight: 600;
         }
         @keyframes spin {
@@ -467,11 +491,13 @@
             <h1 class="hero-title">Selamat Datang di Dashboard Pelaporan</h1>
             <p class="hero-subtitle">Pantau semua deadline laporan Anda dengan mudah dan pastikan tidak ada yang terlewat.</p>
             <div class="hero-clock" id="clock"></div>
+            <div class="hero-date" id="current-date"></div> {# Added div for date #}
 
-            <a href="#" class="tw-inline-block tw-mt-6 tw-px-6 tw-py-2.5 tw-bg-biGold tw-text-biBlueDark tw-font-bold tw-rounded-full tw-shadow-lg hover:tw-bg-yellow-400 tw-transition-all tw-duration-300 tw-transform hover:tw-scale-105">
+            <!-- <a href="#" class="tw-inline-block tw-mt-5 tw-px-5 tw-py-2 tw-bg-biGold tw-text-biBlueDark tw-font-bold tw-rounded-full tw-shadow-lg hover:tw-bg-yellow-400 tw-transition-all tw-duration-300 tw-transform hover:tw-scale-105">
                 Mulai Pelaporan Sekarang
-            </a>
+            </a> -->
 
+            <!-- Re-added Hero Info Bar -->
             <div class="hero-info-bar">
                 <div class="hero-info-item">
                     <i data-lucide="map-pin" class="icon"></i>
@@ -494,14 +520,14 @@
 
     <!-- Main Dashboard Content Card -->
     <div class="dashboard-content-card">
-        <p class="tw-text-lg tw-font-semibold tw-text-gray-800 tw-text-center tw-mb-6">
+        <p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-text-center tw-mb-5">
             Ringkasan Status Laporan & Deadline Mendatang
         </p>
 
         <!-- Tombol Reload Data -->
-        <div class="tw-text-center tw-mb-6">
-            <button id="reloadReportData" class="tw-bg-biBlueDark tw-text-white tw-px-5 tw-py-2.5 tw-rounded-lg tw-font-semibold tw-shadow-md hover:tw-bg-biBlueMedium tw-transition-colors tw-duration-300">
-                <i data-lucide="rotate-cw" class="tw-inline-block tw-align-middle tw-mr-2"></i>
+        <div class="tw-text-center tw-mb-5">
+            <button id="reloadReportData" class="tw-bg-biBlueDark tw-text-white tw-px-4 tw-py-2 tw-rounded-lg tw-font-semibold tw-shadow-md hover:tw-bg-biBlueMedium tw-transition-colors tw-duration-300">
+                <i data-lucide="rotate-cw" class="tw-inline-block tw-align-middle tw-mr-1.5"></i>
                 Perbarui Data Laporan
             </button>
         </div>
@@ -534,7 +560,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4" id="bulanan-reports">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-3" id="bulanan-reports">
                     <!-- Data laporan bulanan akan diisi di sini oleh JavaScript -->
                 </div>
             </div>
@@ -568,7 +594,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4" id="triwulanan-reports">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-3" id="triwulanan-reports">
                     <!-- Data laporan triwulanan akan diisi di sini oleh JavaScript -->
                 </div>
             </div>
@@ -602,7 +628,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4" id="tahunan-reports">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-3" id="tahunan-reports">
                     <!-- Data laporan tahunan akan diisi di sini oleh JavaScript -->
                 </div>
             </div>
@@ -630,13 +656,10 @@
                             <span class="value pending-count" id="insidental-pending-count">0</span>
                             <span class="label">Belum Diunggah</span>
                         </div>
-                        <div class="kip-metric-item">
-                            <span class="value urgent-count" id="insidental-urgent-count">0</span>
-                            <span class="label">Mendesak</span>
-                        </div>
+                        <!-- Removed Urgent count for incidental reports -->
                     </div>
                 </div>
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4" id="insidental-reports">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-3" id="insidental-reports">
                     <!-- Data laporan insidental akan diisi di sini oleh JavaScript -->
                 </div>
             </div>
@@ -669,8 +692,7 @@
     lucide.createIcons();
 
     // Base URL for API
-    // This should point to your Flask app's root if the proxy endpoint is at /api/laporan/all-status
-    const API_BASE_URL = ""; // Keep empty as Flask handles relative paths for /api/laporan/all-status
+    const API_BASE_URL = ""; 
 
     // Store report status data globally after fetching
     let reportStatusData = null;
@@ -704,17 +726,35 @@
     }
 
     /**
-     * Updates the digital clock display every second.
+     * Updates the digital clock and date display every second.
      */
     function updateClock() {
         const now = new Date();
+        
         // Format time as HH:MM:SS
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         const seconds = String(now.getSeconds()).padStart(2, '0');
+        const timeString = `${hours}:${minutes}:${seconds}`;
+
+        // Format date in Indonesian WIB
+        const options = { 
+            weekday: 'long', 
+            day: 'numeric', 
+            month: 'long', 
+            year: 'numeric',
+            timeZone: 'Asia/Jakarta' // Set timezone to WIB
+        };
+        const dateString = now.toLocaleDateString('id-ID', options);
+
         const clockElement = document.getElementById('clock');
+        const dateElement = document.getElementById('current-date');
+
         if (clockElement) {
-            clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+            clockElement.textContent = timeString;
+        }
+        if (dateElement) {
+            dateElement.textContent = dateString;
         }
     }
 
@@ -785,6 +825,7 @@
             hideLoadingOverlay(); // Hide loading overlay regardless of success or failure
             lucide.createIcons(); // Re-create Lucide icons after updating innerHTML for status indicators
         }
+        
     }
 
 
@@ -802,9 +843,6 @@
         const deadlineDate = new Date(deadlineDateStr);
         deadlineDate.setHours(0, 0, 0, 0);
 
-        const diffTime = deadlineDate.getTime() - today.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
         let statusClass = '';
         let statusText = '';
         let statusIcon = '';
@@ -814,29 +852,47 @@
         if (isUploaded) {
             statusClass = 'uploaded';
             statusIcon = '<i data-lucide="check-circle"></i>';
-            daysLeftText = 'Sudah Diunggah';
+            statusText = 'Sudah Diunggah'; // For incidental reports
             daysLeftClass = 'safe';
         } else {
             statusClass = 'pending';
             statusIcon = '<i data-lucide="clock"></i>';
+            statusText = 'Belum Diunggah'; // For incidental reports
+        }
 
-            if (diffDays < 0) {
-                statusClass = 'overdue';
-                statusIcon = '<i data-lucide="alert-circle"></i>';
-                daysLeftText = `Terlambat ${Math.abs(diffDays)} hari`;
-                daysLeftClass = 'urgent';
-            } else if (diffDays === 0) {
-                daysLeftText = 'Deadline Hari Ini!';
-                daysLeftClass = 'urgent';
-            } else if (diffDays <= 7) {
-                daysLeftText = `${diffDays} hari lagi`;
-                daysLeftClass = 'urgent';
-            } else if (diffDays <= 30) {
-                daysLeftText = `${diffDays} hari lagi`;
-                daysLeftClass = 'warning';
-            } else {
-                daysLeftText = `${diffDays} hari lagi`;
+        if (category === 'insidental') {
+            // For incidental reports, only show uploaded/pending status, no deadline info
+            daysLeftText = `Status: ${statusText}`;
+            daysLeftClass = ''; // Clear deadline-specific classes
+            // Add a specific class to the item for incidental styling
+            statusClass += ' insidental';
+        } else {
+            // Original deadline logic for other categories
+            const diffTime = deadlineDate.getTime() - today.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (isUploaded) {
+                daysLeftText = 'Sudah Diunggah';
                 daysLeftClass = 'safe';
+            } else {
+                if (diffDays < 0) {
+                    statusClass = 'overdue';
+                    statusIcon = '<i data-lucide="alert-circle"></i>';
+                    daysLeftText = `Terlambat ${Math.abs(diffDays)} hari`;
+                    daysLeftClass = 'urgent';
+                } else if (diffDays === 0) {
+                    daysLeftText = 'Deadline Hari Ini!';
+                    daysLeftClass = 'urgent';
+                } else if (diffDays <= 7) {
+                    daysLeftText = `${diffDays} hari lagi`;
+                    daysLeftClass = 'urgent';
+                } else if (diffDays <= 30) {
+                    daysLeftText = `${diffDays} hari lagi`;
+                    daysLeftClass = 'warning';
+                } else {
+                    daysLeftText = `${diffDays} hari lagi`;
+                    daysLeftClass = 'safe';
+                }
             }
         }
 
@@ -844,12 +900,15 @@
         const options = { day: 'numeric', month: 'long', year: 'numeric' };
         const displayDeadlineDate = deadlineDate.toLocaleDateString('id-ID', options);
 
+        // Conditionally render deadline date for non-incidental reports
+        const deadlineDateDisplay = (category === 'insidental') ? '' : `<div class="deadline-date">Deadline: ${displayDeadlineDate}</div>`;
+
         return `
             <div class="deadline-item ${statusClass}" data-category="${category}" data-uploaded="${isUploaded}">
                 <div class="status-indicator ${statusClass}">${statusIcon}</div>
                 <div class="deadline-content">
                     <div class="deadline-name">${name}</div>
-                    <div class="deadline-date">Deadline: ${displayDeadlineDate}</div>
+                    ${deadlineDateDisplay}
                 </div>
                 <div class="days-left ${daysLeftClass}" data-deadline="${deadlineDateStr}">${daysLeftText}</div>
             </div>
@@ -894,7 +953,7 @@
             { name: 'Laporan RBA APU PPT', api_key: 'laporan_rba_apu_ppt', category: 'tahunan', deadline: '2025-06-30' },
             { name: 'Laporan Perhitungan KPSP', api_key: 'laporan_perhitungan_kpsp', category: 'tahunan', deadline: '2025-06-30' },
             // Laporan Insidental (assuming these are not in the /all-status API for now, or always 'false' if not explicitly true)
-            { name: 'Laporan Gangguan IT', api_key: 'laporan_gangguan_it', category: 'insidental', deadline: '2025-04-30' },
+            { name: 'Laporan Gangguan IT', api_key: 'laporan_gangguan_it', category: 'insidental', deadline: '2025-04-30' }, // Deadline here is just a placeholder, not used for urgency
         ];
 
         // Clear existing report lists
@@ -905,7 +964,6 @@
 
 
         allReports.forEach(report => {
-            // Check if report.api_key exists in reportStatus and its value is true
             const isUploaded = reportStatus.hasOwnProperty(report.api_key) && reportStatus[report.api_key] === true;
             const itemHtml = renderDeadlineItem(report.name, report.deadline, report.category, isUploaded);
             document.getElementById(`${report.category}-reports`).insertAdjacentHTML('beforeend', itemHtml);
@@ -916,14 +974,18 @@
                 categoryCounts[report.category].uploaded++;
             } else {
                 categoryCounts[report.category].pending++;
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                const deadlineDate = new Date(report.deadline);
-                deadlineDate.setHours(0, 0, 0, 0);
-                const diffTime = deadlineDate.getTime() - today.getTime();
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                if (diffDays <= 7) { // Urgent if less than or equal to 7 days left, or overdue
-                    categoryCounts[report.category].urgent++;
+                
+                // Only count as urgent if it's NOT an incidental report and has a close deadline
+                if (report.category !== 'insidental') {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const deadlineDate = new Date(report.deadline);
+                    deadlineDate.setHours(0, 0, 0, 0);
+                    const diffTime = deadlineDate.getTime() - today.getTime();
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    if (diffDays <= 7) { // Urgent if less than or equal to 7 days left, or overdue
+                        categoryCounts[report.category].urgent++;
+                    }
                 }
             }
         });
@@ -944,8 +1006,12 @@
             if (pendingCountElement) {
                 pendingCountElement.textContent = categoryCounts[cat].pending;
             }
-            if (urgentCountElement) {
+            // Only update urgent count if it's not an incidental report, or if the element exists (for older HTML structure)
+            if (urgentCountElement && cat !== 'insidental') {
                 urgentCountElement.textContent = categoryCounts[cat].urgent;
+            } else if (urgentCountElement && cat === 'insidental') {
+                // For incidental, clear or set to 0 as it doesn't have deadline urgency
+                urgentCountElement.textContent = 'N/A'; // Or 0, based on preference
             }
         });
 

@@ -33,123 +33,125 @@
     .section-group {
         background-color: #ffffff;
         border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 10px; /* Reduced from 12px */
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04); /* Softer shadow */
         padding: 0;
         /* Perubahan: Mengomentari properti overflow: hidden; */
         /* overflow: hidden; */
+        margin-bottom: 0.8rem; /* Reduced margin */
     }
 
     .section-group .section-header {
-        font-size: 1.15rem; /* Smaller header */
+        font-size: 1.05rem; /* Smaller header */
         font-weight: 700;
         color: #1f2937;
         background-color: #eef2f6;
-        padding: 0.8rem 1.5rem; /* Reduced padding */
-        margin: 0 -1px 0.8rem -1px; /* Reduced margin */
+        padding: 0.7rem 1.2rem; /* Reduced padding */
+        margin: 0 -1px 0.6rem -1px; /* Adjusted margin */
         border-bottom: 1px solid #e0e7eb;
-        border-top-left-radius: 11px;
-        border-top-right-radius: 11px;
+        border-top-left-radius: 9px; /* Adjusted radius */
+        border-top-right-radius: 9px; /* Adjusted radius */
     }
 
     .section-group .section-content {
-        padding: 1.2rem; /* Reduced padding */
+        padding: 1rem; /* Reduced padding */
         padding-top: 0;
     }
 
     /* Form elements - compact */
     .form-label {
-        font-size: 0.95rem; /* Smaller labels */
+        font-size: 0.85rem; /* Smaller labels */
         font-weight: 600;
         color: #374151;
-        margin-bottom: 0.3rem; /* Reduced margin */
+        margin-bottom: 0.2rem; /* Reduced margin */
         display: flex; /* Make label a flex container */
         align-items: center; /* Align items vertically */
     }
 
     .form-input {
-        font-size: 0.9rem; /* Smaller font */
-        padding: 0.7rem 1rem; /* Reduced padding */
+        font-size: 0.85rem; /* Smaller font */
+        padding: 0.6rem 0.9rem; /* Reduced padding */
         width: 100%;
         border: 1px solid #d1d5db;
-        border-radius: 8px; /* Slightly rounder corners */
+        border-radius: 6px; /* Smaller rounded corners */
         color: #4b5563;
         transition: all 0.2s ease;
-        min-height: 40px; /* Reduced minimum height */
+        min-height: 36px; /* Reduced minimum height */
         box-sizing: border-box;
     }
 
     /* Date inputs */
     input[type="date"].form-input {
-        font-size: 0.9rem;
-        padding: 0.7rem 1rem;
-        min-height: 40px;
+        font-size: 0.85rem;
+        padding: 0.6rem 0.9rem;
+        min-height: 36px;
         appearance: none;
         background-color: white;
     }
 
     /* Select dropdowns */
     select.form-input {
-        font-size: 0.9rem;
-        padding: 0.7rem 1rem;
-        min-height: 40px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        font-size: 0.85rem;
+        padding: 0.6rem 0.9rem;
+        min-height: 36px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%23374151' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); /* Smaller SVG */
         background-repeat: no-repeat;
-        background-position: right 0.8rem center; /* Adjusted position */
-        background-size: 14px 10px; /* Adjusted size */
-        padding-right: 2.2rem; /* Adjusted padding */
+        background-position: right 0.6rem center; /* Adjusted position */
+        background-size: 12px 8px; /* Smaller size */
+        padding-right: 2rem; /* Adjusted padding */
     }
 
     /* File input */
     .file-input-container {
-        margin-top: 0.3rem;
+        margin-top: 0.2rem; /* Reduced margin */
     }
     
     .file-input-container input[type="file"] {
-        font-size: 0.9rem;
-        padding: 0.7rem 1rem;
+        font-size: 0.85rem; /* Smaller font */
+        padding: 0.6rem 0.9rem; /* Reduced padding */
     }
 
     /* Nested sections - compact */
     .nested-section-group {
         border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        padding: 1rem; /* Reduced padding */
-        margin-bottom: 1rem; /* Reduced margin */
+        border-radius: 8px; /* Reduced */
+        padding: 0.8rem; /* Reduced padding */
+        margin-bottom: 0.8rem; /* Reduced margin */
         background-color: #f9fafb;
     }
 
     .nested-section-group h4 {
-        font-size: 1rem; /* Smaller font size */
+        font-size: 0.95rem; /* Smaller font size */
         font-weight: 600;
         color: #1f2937;
-        margin-bottom: 0.8rem; /* Reduced margin */
-        padding-bottom: 0.4rem; /* Reduced padding */
+        margin-bottom: 0.6rem; /* Reduced margin */
+        padding-bottom: 0.3rem; /* Reduced padding */
         border-bottom: 1px solid #e5e7eb;
     }
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .form-input {
-            padding: 0.9rem;
-            min-height: 45px;
+            padding: 0.7rem 0.9rem;
+            min-height: 38px;
+            font-size: 0.8rem;
         }
         
         .section-group .section-header {
-            font-size: 1.15rem;
-            padding: 0.9rem 1rem;
+            font-size: 1rem;
+            padding: 0.7rem 1rem;
         }
         
         .nested-section-group {
-            padding: 1rem;
+            padding: 0.8rem;
         }
     }
 
     /* Styles for buttons - compact */
     .btn {
-        font-size: 0.95rem;
-        padding: 0.8rem 1.2rem; /* Reduced padding */
-        border-radius: 8px;
+        font-size: 0.85rem; /* Smaller font */
+        padding: 0.7rem 1.1rem; /* Reduced padding */
+        border-radius: 6px; /* Smaller rounded corners */
         font-weight: 600;
         transition: all 0.2s ease;
     }
@@ -167,13 +169,35 @@
 
     /* Adjust gap for grid layouts */
     .tw-gap-4 {
-        gap: 0.75rem; /* Reduced gap */
+        gap: 0.6rem; /* Reduced gap */
     }
     .tw-gap-x-6 {
-        column-gap: 1.5rem; /* Reduced column gap */
+        column-gap: 1.2rem; /* Reduced column gap */
     }
     .tw-gap-y-2 {
-        row-gap: 0.5rem; /* Reduced row gap */
+        row-gap: 0.4rem; /* Reduced row gap */
+    }
+
+    /* Main container padding */
+    .tw-max-w-4xl {
+        max-width: 900px; /* Adjusted max width for the main form container */
+    }
+    .tw-p-6 {
+        padding: 1.5rem; /* Reduced padding for the main form container */
+    }
+    .tw-my-8 {
+        margin-top: 1.5rem; /* Reduced margin */
+        margin-bottom: 1.5rem; /* Reduced margin */
+    }
+    .tw-space-y-4 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-y-reverse: 0;
+        margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse))); /* Reduced space-y */
+        margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+    }
+    .tw-space-y-1 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-y-reverse: 0;
+        margin-top: calc(0.2rem * calc(1 - var(--tw-space-y-reverse))); /* Reduced space-y */
+        margin-bottom: calc(0.2rem * var(--tw-space-y-reverse));
     }
 
     /* Styles for the loading overlay (kept consistent) */
@@ -217,20 +241,20 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        padding: 1.5rem 2rem;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        z-index: 1001; /* Above the backdrop */
-        display: none; /* Hidden by default */
-        font-size: 1.1rem;
+        padding: 1.2rem 1.5rem; /* Reduced */
+        border-radius: 10px; /* Reduced */
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Reduced */
+        z-index: 1001;
+        display: none;
+        font-size: 1rem; /* Reduced */
         font-weight: 600;
         text-align: center;
-        max-width: 400px; /* Limit width */
-        width: 90%; /* Responsive width */
+        max-width: 350px; /* Reduced */
+        width: 90%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem; /* Space between elements */
+        gap: 0.8rem; /* Reduced */
     }
 
     #dynamicMessageBox.success {
@@ -246,9 +270,9 @@
     }
 
     #dynamicMessageBox .icon-container {
-        font-size: 3rem; /* Large icon size */
+        font-size: 2.5rem; /* Reduced */
         line-height: 1;
-        animation: fade-in-scale 0.5s ease-out forwards; /* Animation for icon */
+        animation: fade-in-scale 0.5s ease-out forwards;
     }
 
     @keyframes fade-in-scale {
@@ -263,13 +287,13 @@
     }
 
     #dynamicMessageBox .ok-button {
-        background-color: #4CAF50; /* Green */
+        background-color: #4CAF50;
         color: white;
-        padding: 0.75rem 1.5rem;
+        padding: 0.6rem 1.2rem; /* Reduced */
         border: none;
-        border-radius: 8px;
+        border-radius: 6px; /* Reduced */
         cursor: pointer;
-        font-size: 1rem;
+        font-size: 0.9rem; /* Reduced */
         font-weight: 700;
         transition: background-color 0.3s ease;
     }
@@ -352,17 +376,17 @@
 
 {% block content %}
 <div class="tw-max-w-4xl tw-mx-auto tw-my-8 tw-p-6 tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-space-y-4">
-    <h2 class="tw-text-2xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-3 tw-mb-4">
+    <h2 class="tw-text-xl tw-font-extrabold tw-text-gray-900 tw-text-center tw-border-b-4 tw-border-indigo-600 tw-pb-2.5 tw-mb-3"> {# Reduced text size, padding, margin #}
         Laporan Keuangan Tahunan
     </h2>
 
-    <form id="tahunanForm" action="{{ url_for('submit_laporan_keuangan_tahunan') }}" method="POST" enctype="multipart/form-data" class="tw-space-y-4">
+    <form id="tahunanForm" action="{{ url_for('submit_laporan_keuangan_tahunan') }}" method="POST" enctype="multipart/form-data" class="tw-space-y-3"> {# Reduced space-y #}
         
         <!-- Informasi Umum Laporan Section -->
         <div class="section-group">
             <h3 class="section-header">Informasi Umum Laporan</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                     <div class="tw-space-y-1">
                         <label for="tahun_laporan" class="form-label">
                             Tahun Laporan <span class="tw-text-red-500">*</span>
@@ -379,7 +403,7 @@
                         </select>
                     </div>
                     
-                    <div>
+                    <div class="tw-space-y-1">
                         <label for="nomor_surat" class="form-label">
                             Nomor Surat <span class="tw-text-red-500">*</span>
                             <span class="tooltip-container">
@@ -390,7 +414,7 @@
                         <input type="text" class="form-input" id="nomor_surat" name="nomor_surat" required>
                     </div>
                     
-                    <div class="tw-space-y-1">
+                    <div class="md:tw-col-span-2 tw-space-y-1">
                         <label for="tanggal_surat" class="form-label">
                             Tanggal Surat <span class="tw-text-red-500">*</span>
                             <span class="tooltip-container">
@@ -410,8 +434,8 @@
                             </span>
                         </label>
                         <div class="file-input-container">
-                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-4 file:tw-py-2 file:tw-px-3 file:tw-rounded-lg file:tw-border-0 file:tw-text-base file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
-                                        id="file" name="file" accept=".pdf" required>
+                            <input type="file" class="tw-block tw-w-full tw-text-sm tw-text-gray-500 file:tw-mr-3 file:tw-py-1.5 file:tw-px-2.5 file:tw-rounded-md file:tw-border-0 file:tw-text-sm file:tw-font-semibold file:tw-bg-indigo-50 file:tw-text-indigo-700 hover:file:tw-bg-indigo-100 tw-cursor-pointer" 
+                                        id="file" name="file" accept=".pdf" required> {# Adjusted file input styles #}
                         </div>
                         <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Format: PDF (Maks. 5MB)</p>
                     </div>
@@ -423,7 +447,7 @@
         <div class="section-group">
             <h3 class="section-header">Informasi Auditor</h3>
             <div class="section-content">
-                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                     <div class="tw-space-y-1">
                         <label for="modal_disetor" class="form-label">
                             Modal Disetor (Rp) <span class="tw-text-red-500">*</span>
@@ -451,7 +475,7 @@
                     </div>
                     
                     <!-- Auditor fields, visibility controlled by JS -->
-                    <div id="auditorFields" class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2 md:tw-col-span-2" style="display: none;">
+                    <div id="auditorFields" class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2 md:tw-col-span-2" style="display: none;"> {# Adjusted gaps #}
                         <div class="tw-space-y-1">
                             <label for="nama_kap" class="form-label">
                                 Nama Kantor Akuntan Publik (KAP) <span class="tw-text-red-500">*</span>
@@ -480,7 +504,7 @@
                                     <span class="tooltip-text"></span>
                                 </span>
                             </label>
-                            <textarea class="form-input" id="opini_auditor" name="opini_auditor" rows="3" required></textarea>
+                            <textarea class="form-input" id="opini_auditor" name="opini_auditor" rows="2" required></textarea> {# Reduced rows #}
                         </div>
                     </div>
                 </div>
@@ -495,7 +519,7 @@
                 <!-- Aset -->
                 <div class="nested-section-group">
                     <h4>Aset</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                         <div class="tw-space-y-1">
                             <label for="aset_lancar" class="form-label">
                                 Aset Lancar (Rp) <span class="tw-text-red-500">*</span>
@@ -545,7 +569,7 @@
                 <!-- Hutang -->
                 <div class="nested-section-group">
                     <h4>Hutang</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                         <div class="tw-space-y-1">
                             <label for="hutang_jangka_pendek" class="form-label">
                                 Hutang Jangka Pendek (Rp) <span class="tw-text-red-500">*</span>
@@ -584,7 +608,7 @@
                 <!-- Modal & Ekuitas -->
                 <div class="nested-section-group">
                     <h4>Modal & Ekuitas</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                         <div class="tw-space-y-1">
                             <label for="modal_dasar" class="form-label">
                                 Modal Dasar (Rp) <span class="tw-text-red-500">*</span>
@@ -612,7 +636,7 @@
                 <!-- Pendapatan & Beban -->
                 <div class="nested-section-group">
                     <h4>Pendapatan & Beban</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                         <div class="tw-space-y-1">
                             <label for="total_pendapatan" class="form-label">
                                 Total Pendapatan (Rp) <span class="tw-text-red-500">*</span>
@@ -662,7 +686,7 @@
                 <!-- Laba/Rugi -->
                 <div class="nested-section-group">
                     <h4>Laba / Rugi Bersih</h4>
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-gap-y-2">
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-6 tw-gap-y-2"> {# Adjusted gaps #}
                         <div class="tw-space-y-1">
                             <label for="laba" class="form-label">
                                 Laba (Rp) <span class="tw-text-red-500">*</span>
@@ -690,13 +714,13 @@
         </div>
 
         <!-- Form Actions -->
-        <div class="tw-flex tw-justify-end tw-gap-3 tw-pt-4">
-            <button type="submit" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton">
+        <div class="tw-flex tw-justify-end tw-gap-2.5 tw-pt-3"> {# Reduced gap and padding #}
+            <button type="submit" class="tw-inline-flex tw-items-center tw-px-5 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-bold tw-rounded-lg tw-shadow-md tw-text-white tw-bg-green-600 hover:tw-bg-green-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-green-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" id="submitButton"> {# Reduced padding, text size, rounded #}
                 <span class="submit-text">Kirim Laporan</span>
-                <span class="spinner-border tw-w-5 tw-h-5 tw-ml-2 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span>
+                <span class="spinner-border tw-w-4 tw-h-4 tw-ml-1.5 tw-border-2 tw-border-white tw-border-r-transparent tw-rounded-full tw-animate-spin d-none" role="status" aria-hidden="true"></span> {# Reduced spinner size #}
             </button>
             
-            <button type="button" class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 tw-text-base tw-font-bold tw-rounded-xl tw-shadow-lg tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()">
+            <button type="button" class="tw-inline-flex tw-items-center tw-px-5 tw-py-2 tw-border tw-border-gray-300 tw-text-sm tw-font-bold tw-rounded-lg tw-shadow-md tw-text-gray-700 tw-bg-white hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500 tw-transition tw-duration-300 tw-transform hover:tw-scale-105" onclick="window.history.back()"> {# Reduced padding, text size, rounded #}
                 Batal
             </button>
         </div>
