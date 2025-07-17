@@ -217,8 +217,9 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Base URL for your API
-        const API_BASE_URL = "https://silap-backend.my.id/api/"; // Sesuaikan dengan URL API Anda
+        // Base URL for your Flask app's API endpoints
+        // This should point to your Flask server, not the external backend API directly
+        const FLASK_API_BASE_URL = "/api/user/profile"; 
 
         // Initial profile data (will be fetched from backend)
         let profileData = {
@@ -326,25 +327,26 @@
             cancelEditBtn.classList.toggle('tw-hidden', !isEditing);
         }
 
-        // Function to fetch profile data from the backend
+        // Function to fetch profile data from the backend (Flask API)
         async function fetchProfile() {
             showSpinner(); // Show spinner before fetching
             try {
-                const response = await fetch(`${API_BASE_URL}auth/profile/`, {
+                // Call your Flask API endpoint
+                const response = await fetch(FLASK_API_BASE_URL, {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer {{ session.get('access_token') }}`, // Assuming Flask session manages token
                         'Content-Type': 'application/json'
                     }
                 });
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to fetch profile data');
+                    throw new Error(errorData.message || 'Failed to fetch profile data from Flask API');
                 }
 
                 const data = await response.json();
-                profileData = data; // Update the global profileData
+                // Assuming the Flask API returns the profile data directly, not nested under 'data'
+                profileData.data = data.data; // Update the global profileData with the actual profile data
                 populateProfile(); // Populate the fetched data
                 showMessage('Data profil berhasil dimuat.', 'success');
             } catch (error) {
@@ -356,7 +358,7 @@
             }
         }
 
-        // Function to save changes to the backend
+        // Function to save changes to the backend (Flask API)
         async function saveProfile(event) {
             event.preventDefault(); // Prevent default form submission
             showSpinner(); // Show spinner before saving
@@ -370,10 +372,10 @@
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}auth/profile/update/`, {
+                // Call your Flask API endpoint for updating
+                const response = await fetch(`${FLASK_API_BASE_URL}/update`, {
                     method: 'PUT',
                     headers: {
-                        'Authorization': `Bearer {{ session.get('access_token') }}`, // Assuming Flask session manages token
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(updatedData)
@@ -381,7 +383,7 @@
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to update profile data');
+                    throw new Error(errorData.message || 'Failed to update profile data via Flask API');
                 }
 
                 const data = await response.json();
