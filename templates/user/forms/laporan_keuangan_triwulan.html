@@ -36,7 +36,6 @@
         border-radius: 12px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         padding: 0;
-        margin-bottom: 1rem; /* Reduced margin */
         /* Removed overflow: hidden; to allow tooltips to break out */
         /* overflow: hidden; */ 
     }
@@ -175,10 +174,10 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.6); /* Darker semi-transparent black */
-        backdrop-filter: blur(5px); /* Stronger blur for pop-up background */
-        z-index: 1000; /* Below the message box, above other content */
-        display: none; /* Hidden by default */
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        display: none;
     }
 
     /* Styles for the message box pop-up */
@@ -190,35 +189,35 @@
         padding: 1.5rem 2rem;
         border-radius: 12px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        z-index: 1001; /* Above the backdrop */
-        display: none; /* Hidden by default */
+        z-index: 1001;
+        display: none;
         font-size: 1.1rem;
         font-weight: 600;
         text-align: center;
-        max-width: 400px; /* Limit width */
-        width: 90%; /* Responsive width */
+        max-width: 400px;
+        width: 90%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem; /* Space between elements */
+        gap: 1rem;
     }
 
     #dynamicMessageBox.success {
-        background-color: #d4edda; /* Light green */
-        color: #155724; /* Dark green text */
+        background-color: #d4edda;
+        color: #155724;
         border: 1px solid #c3e6cb;
     }
 
     #dynamicMessageBox.error {
-        background-color: #f8d7da; /* Light red */
-        color: #721c24; /* Dark red text */
+        background-color: #f8d7da;
+        color: #721c24;
         border: 1px solid #f5c6cb;
     }
 
     #dynamicMessageBox .icon-container {
-        font-size: 3rem; /* Large icon size */
+        font-size: 3rem;
         line-height: 1;
-        animation: fade-in-scale 0.5s ease-out forwards; /* Animation for icon */
+        animation: fade-in-scale 0.5s ease-out forwards;
     }
 
     @keyframes fade-in-scale {
@@ -233,7 +232,7 @@
     }
 
     #dynamicMessageBox .ok-button {
-        background-color: #4CAF50; /* Green */
+        background-color: #4CAF50;
         color: white;
         padding: 0.75rem 1.5rem;
         border: none;
@@ -690,7 +689,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (type === 'error') {
             dynamicMessageBox.classList.add('error');
             messageBoxIcon.innerHTML = '&#x2716;'; // Ikon silang
-            messageBoxOkButton.classList.remove('d-none'); // Tampilkan tombol OK untuk error (pengguna menutup secara manual)
+            messageBoxOkButton.classList.add('d-none'); // Sembunyikan tombol OK secara default
             // Untuk error, akan otomatis sembunyi setelah 5 detik jika tombol OK tidak diklik
             setTimeout(() => {
                 if (!dynamicMessageBox.classList.contains('d-none')) { // Hanya sembunyikan jika belum disembunyikan secara manual
@@ -789,26 +788,59 @@ document.addEventListener('DOMContentLoaded', function() {
             body: formData,
             headers: { 'Accept': 'application/json' }
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    throw new Error(errorData.message || JSON.stringify(errorData) || 'Gagal mengirim laporan (status non-2xx)');
-                }).catch(jsonError => {
-                    console.error("Error parsing JSON from non-OK response:", jsonError);
-                    return response.text().then(text => {
-                        throw new new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
-                    });
-                });
+        .then(async response => { // Menggunakan async/await untuk penanganan respons yang lebih baik
+            // Sembunyikan spinner dan overlay setelah respons diterima
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            loadingOverlay.classList.add('d-none');
+
+            let responseData;
+            let displayMessage = 'Terjadi kesalahan tidak dikenal.';
+            let messageType = 'error'; // Default to error
+
+            try {
+                // Coba parse respons sebagai JSON terlebih dahulu
+                responseData = await response.json();
+            } catch (jsonError) {
+                // Jika parsing JSON gagal, coba dapatkan teks mentah
+                try {
+                    displayMessage = await response.text();
+                    // Potong pesan jika terlalu panjang
+                    displayMessage = displayMessage.substring(0, 200) + (displayMessage.length > 200 ? '...' : '');
+                } catch (textError) {
+                    displayMessage = 'Gagal membaca respons server.';
+                }
+                responseData = { message: displayMessage, success: false }; // Fallback structure
             }
-            return response.json();
-        })
-        .then(data => {
-            // Access data.message.message if the backend wraps the message in a 'message' key
-            if (data.success) {
-                showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
-                form.reset();
+
+            // Periksa apakah respons HTTP OK (status 2xx)
+            if (response.ok) {
+                if (responseData.message && typeof responseData.message === 'object' && responseData.message.message) {
+                    displayMessage = responseData.message.message;
+                } else if (responseData.message && typeof responseData.message === 'string') {
+                    displayMessage = responseData.message;
+                } else {
+                    displayMessage = 'Laporan berhasil dikirim!';
+                }
+                messageType = 'success';
             } else {
-                showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
+                if (responseData.message && typeof responseData.message === 'string') {
+                    displayMessage = responseData.message;
+                } else if (responseData.message && typeof responseData.message === 'object') {
+                    displayMessage = JSON.stringify(responseData.message);
+                    displayMessage = displayMessage.substring(0, 200) + (displayMessage.length > 200 ? '...' : '');
+                } else {
+                    displayMessage = JSON.stringify(responseData) || 'Gagal mengirim laporan (status non-2xx).';
+                    displayMessage = displayMessage.substring(0, 200) + (displayMessage.length > 200 ? '...' : '');
+                }
+                messageType = 'error';
+            }
+
+            showMessageBox(displayMessage, messageType);
+
+            if (messageType === 'success') {
+                form.reset();
             }
         })
         .catch(error => {

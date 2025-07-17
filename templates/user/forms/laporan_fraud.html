@@ -445,31 +445,54 @@
                     'Accept': 'application/json'
                 }
             })
-            .then(response => {
+            .then(async response => { // Menggunakan async/await untuk penanganan respons yang lebih baik
                 submitButton.disabled = false;
                 submitText.textContent = 'Kirim Laporan';
                 submitSpinner.classList.add('d-none');
                 loadingOverlay.classList.add('d-none');
 
-                if (!response.ok) {
-                    return response.json().then(errorData => {
-                        throw new Error(errorData.message || JSON.stringify(errorData) || 'Gagal mengirim laporan (status non-2xx)');
-                    }).catch(jsonError => {
-                        console.error("Error parsing JSON from non-OK response:", jsonError);
-                        return response.text().then(text => {
-                            throw new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
-                        });
-                    });
+                let responseData;
+                let displayMessage = 'Terjadi kesalahan tidak dikenal.';
+                let messageType = 'error'; // Default to error
+
+                try {
+                    responseData = await response.json();
+                } catch (jsonError) {
+                    try {
+                        displayMessage = await response.text();
+                        displayMessage = displayMessage.substring(0, 200) + (displayMessage.length > 200 ? '...' : '');
+                    } catch (textError) {
+                        displayMessage = 'Gagal membaca respons server.';
+                    }
+                    responseData = { message: displayMessage, success: false };
                 }
-                return response.json();
-            })
-            .then(data => {
-                // Access data.message.message if the backend wraps the message in a 'message' key
-                if (data.success) {
-                    showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
-                    form.reset();
+
+                if (response.ok) {
+                    if (responseData.message && typeof responseData.message === 'object' && responseData.message.message) {
+                        displayMessage = responseData.message.message;
+                    } else if (responseData.message && typeof responseData.message === 'string') {
+                        displayMessage = responseData.message;
+                    } else {
+                        displayMessage = 'Laporan berhasil dikirim!';
+                    }
+                    messageType = 'success';
                 } else {
-                    showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
+                    if (responseData.message && typeof responseData.message === 'string') {
+                        displayMessage = responseData.message;
+                    } else if (responseData.message && typeof responseData.message === 'object') {
+                        displayMessage = JSON.stringify(responseData.message);
+                        displayMessage = displayMessage.substring(0, 200) + (displayMessage.length > 200 ? '...' : '');
+                    } else {
+                        displayMessage = JSON.stringify(responseData) || 'Gagal mengirim laporan (status non-2xx).';
+                        displayMessage = displayMessage.substring(0, 200) + (displayMessage.length > 200 ? '...' : '');
+                    }
+                    messageType = 'error';
+                }
+
+                showMessageBox(displayMessage, messageType);
+
+                if (messageType === 'success') {
+                    form.reset();
                 }
             })
             .catch(error => {
@@ -484,3 +507,4 @@
     });
 </script>
 {% endblock %}
+

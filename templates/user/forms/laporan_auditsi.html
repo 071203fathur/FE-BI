@@ -641,30 +641,67 @@ document.addEventListener('DOMContentLoaded', function() {
             body: formData,
             headers: { 'Accept': 'application/json' }
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    throw new Error(errorData.message || JSON.stringify(errorData) || 'Gagal mengirim laporan (status non-2xx)');
-                }).catch(jsonError => {
-                    console.error("Error parsing JSON from non-OK response:", jsonError);
-                    return response.text().then(text => {
-                        throw new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
-                    });
-                });
+        .then(async response => { // Menggunakan async/await untuk penanganan respons yang lebih baik
+            // Sembunyikan spinner dan overlay setelah respons diterima
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            loadingOverlay.classList.add('d-none');
+
+            let responseData;
+            let displayMessage = 'Terjadi kesalahan tidak dikenal.';
+            let messageType = 'error'; // Default to error
+
+            try {
+                // Coba parse respons sebagai JSON terlebih dahulu
+                responseData = await response.json();
+            } catch (jsonError) {
+                // Jika parsing JSON gagal, coba dapatkan teks mentah
+                try {
+                    displayMessage = await response.text();
+                    // Potong pesan jika terlalu panjang
+                    displayMessage = displayMessage.substring(0, 200) + (displayMessage.length > 200 ? '...' : '');
+                } catch (textError) {
+                    displayMessage = 'Gagal membaca respons server.';
+                }
+                responseData = { message: displayMessage, success: false }; // Fallback structure
             }
-            return response.json();
-        })
-        .then(data => {
-            // Access data.message.message if the backend wraps the message in a 'message' key
-            if (data.success) {
-                showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
-                form.reset(); // Reset all form fields
+
+            // Periksa apakah respons HTTP OK (status 2xx)
+            if (response.ok) {
+                if (responseData.message && typeof responseData.message === 'object' && responseData.message.message) {
+                    displayMessage = responseData.message.message;
+                } else if (responseData.message && typeof responseData.message === 'string') {
+                    displayMessage = responseData.message;
+                } else {
+                    displayMessage = 'Laporan berhasil dikirim!';
+                }
+                messageType = 'success';
             } else {
-                showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
+                if (responseData.message && typeof responseData.message === 'string') {
+                    displayMessage = responseData.message;
+                } else if (responseData.message && typeof responseData.message === 'object') {
+                    displayMessage = JSON.stringify(responseData.message);
+                    displayMessage = displayMessage.substring(0, 200) + (displayMessage.length > 200 ? '...' : '');
+                } else {
+                    displayMessage = JSON.stringify(responseData) || 'Gagal mengirim laporan (status non-2xx).';
+                    displayMessage = displayMessage.substring(0, 200) + (displayMessage.length > 200 ? '...' : '');
+                }
+                messageType = 'error';
+            }
+
+            showMessageBox(displayMessage, messageType);
+
+            if (messageType === 'success') {
+                form.reset(); // Reset all form fields
             }
         })
         .catch(error => {
             console.error('Error:', error);
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            loadingOverlay.classList.add('d-none');
             showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server.', 'error');
         })
         .finally(() => {
@@ -687,3 +724,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
+

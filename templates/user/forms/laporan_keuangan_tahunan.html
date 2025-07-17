@@ -102,11 +102,11 @@
 
     /* File input */
     .file-input-container {
-        margin-top: 0.3rem; /* Reduced margin */
+        margin-top: 0.3rem;
     }
     
     .file-input-container input[type="file"] {
-        font-size: 0.9rem; /* Smaller font */
+        font-size: 0.9rem;
         padding: 0.7rem 1rem;
     }
 
@@ -317,7 +317,7 @@
         border-radius: 6px;
         padding: 8px; /* Reduced padding */
         position: absolute;
-        z-index: 1;
+        z-index: 100; /* Perubahan: Meningkatkan z-index */
         bottom: 120%; /* Position above the icon */
         left: 50%;
         /* Perubahan: Mengubah margin-left menjadi 0 dan menambahkan transform */
@@ -932,28 +932,61 @@ document.addEventListener('DOMContentLoaded', function() {
             body: formData,
             headers: { 'Accept': 'application/json' }
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    throw new Error(errorData.message || JSON.stringify(errorData) || 'Gagal mengirim laporan (status non-2xx)');
-                }).catch(jsonError => {
-                    console.error("Error parsing JSON from non-OK response:", jsonError);
-                    return response.text().then(text => {
-                        throw new new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
-                    });
-                });
+        .then(async response => { // Menggunakan async/await untuk penanganan respons yang lebih baik
+            // Sembunyikan spinner dan overlay setelah respons diterima
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            loadingOverlay.classList.add('d-none');
+
+            let responseData;
+            let displayMessage = 'Terjadi kesalahan tidak dikenal.';
+            let messageType = 'error'; // Default to error
+
+            try {
+                // Coba parse respons sebagai JSON terlebih dahulu
+                responseData = await response.json();
+            } catch (jsonError) {
+                // Jika parsing JSON gagal, coba dapatkan teks mentah
+                try {
+                    displayMessage = await response.text();
+                    // Potong pesan jika terlalu panjang
+                    displayMessage = displayMessage.substring(0, 200) + (displayMessage.length > 200 ? '...' : '');
+                } catch (textError) {
+                    displayMessage = 'Gagal membaca respons server.';
+                }
+                responseData = { message: displayMessage, success: false }; // Fallback structure
             }
-            return response.json();
-        })
-        .then(data => {
-            // Access data.message.message if the backend wraps the message in a 'message' key
-            if (data.success) {
-                showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
+
+            // Periksa apakah respons HTTP OK (status 2xx)
+            if (response.ok) {
+                if (responseData.message && typeof responseData.message === 'object' && responseData.message.message) {
+                    displayMessage = responseData.message.message;
+                } else if (responseData.message && typeof responseData.message === 'string') {
+                    displayMessage = responseData.message;
+                } else {
+                    displayMessage = 'Laporan berhasil dikirim!';
+                }
+                messageType = 'success';
+            } else {
+                if (responseData.message && typeof responseData.message === 'string') {
+                    displayMessage = responseData.message;
+                } else if (responseData.message && typeof responseData.message === 'object') {
+                    displayMessage = JSON.stringify(responseData.message);
+                    displayMessage = displayMessage.substring(0, 200) + (displayMessage.length > 200 ? '...' : '');
+                } else {
+                    displayMessage = JSON.stringify(responseData) || 'Gagal mengirim laporan (status non-2xx).';
+                    displayMessage = displayMessage.substring(0, 200) + (displayMessage.length > 200 ? '...' : '');
+                }
+                messageType = 'error';
+            }
+
+            showMessageBox(displayMessage, messageType);
+
+            if (messageType === 'success') {
                 form.reset();
                 // Reset visibilitas field auditor setelah form direset
                 toggleAuditorFields();
-            } else {
-                showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
             }
         })
         .catch(error => {
@@ -961,7 +994,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server.', 'error');
         })
         .finally(() => {
-            // Pastikan status loading selalu direset
+            // Always reset loading state
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
@@ -984,4 +1017,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
+
+
 {% endblock %}

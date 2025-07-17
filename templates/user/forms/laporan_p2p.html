@@ -1002,31 +1002,69 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Accept': 'application/json' // Expect JSON response
             }
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    throw new Error(errorData.message || JSON.stringify(errorData) || 'Gagal mengirim laporan (status non-2xx)');
-                }).catch(jsonError => {
-                    console.error("Error parsing JSON from non-OK response:", jsonError);
-                    return response.text().then(text => {
-                        throw new new Error(`Gagal mengirim laporan. Server response: ${text.substring(0, 100)}...`);
-                    });
-                });
+        .then(async response => { // Menggunakan async/await untuk penanganan respons yang lebih baik
+            // Sembunyikan spinner dan overlay setelah respons diterima
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            loadingOverlay.classList.add('d-none');
+            isSubmitting = false; // Reset flag
+
+            let responseData;
+            let errorMessage = 'Terjadi kesalahan tidak dikenal.';
+
+            try {
+                // Coba parse respons sebagai JSON terlebih dahulu
+                responseData = await response.json();
+            } catch (jsonError) {
+                // Jika parsing JSON gagal, coba dapatkan teks mentah
+                try {
+                    errorMessage = await response.text();
+                    // Potong pesan jika terlalu panjang
+                    errorMessage = errorMessage.substring(0, 200) + (errorMessage.length > 200 ? '...' : '');
+                } catch (textError) {
+                    errorMessage = 'Gagal membaca respons server.';
+                }
+                // Lempar Error baru agar ditangkap oleh blok .catch() di luar
+                throw new Error(errorMessage);
             }
-            return response.json();
+
+            // Jika respons tidak OK (misalnya, status 4xx atau 5xx)
+            if (!response.ok) {
+                // Gunakan pesan dari data JSON yang sudah di-parse, atau pesan generik
+                errorMessage = responseData.message || JSON.stringify(responseData) || 'Gagal mengirim laporan (status non-2xx).';
+                // Jika backend membungkus pesan dalam kunci 'message' bersarang (seperti data.message.message)
+                if (responseData.message && typeof responseData.message === 'object' && responseData.message.message) {
+                    errorMessage = responseData.message.message;
+                }
+                throw new Error(errorMessage);
+            }
+
+            // Jika respons OK (status 2xx)
+            return responseData;
         })
         .then(data => {
-            // Access data.message.message if the backend wraps the message in a 'message' key
-            if (data.success) {
-                showMessageBox(data.message.message || 'Laporan Kerjasama P2P berhasil dikirim!', 'success');
+            // Blok ini hanya tercapai jika response.ok adalah true dan JSON berhasil di-parse
+            // Akses data.message jika backend membungkus pesan dalam kunci 'message'
+            let messageToDisplay = 'Laporan Kerjasama P2P berhasil dikirim!';
+            if (data.message) {
+                if (typeof data.message === 'object' && data.message.message) {
+                    messageToDisplay = data.message.message;
+                } else if (typeof data.message === 'string') {
+                    messageToDisplay = data.message;
+                }
+            }
+
+            if (data.status >= 200 && data.status < 300) { // Periksa status 2xx dari respons JSON
+                showMessageBox(messageToDisplay, 'success');
                 form.reset();
-                // Reset company list back to one default item
+                // Reset daftar perusahaan kembali ke satu item default
                 companyListContainer.innerHTML = '';
                 companyListContainer.appendChild(createCompanyItem(0));
                 updateCompanyNumbersAndRemoveButtons();
             } else {
-                // If backend indicates failure, show error message
-                throw new Error(data.message.message || 'Gagal mengirim laporan.');
+                // Jika backend menunjukkan kegagalan, tampilkan pesan error
+                showMessageBox(messageToDisplay || 'Gagal mengirim laporan.', 'error');
             }
         })
         .catch(error => {
@@ -1034,16 +1072,16 @@ document.addEventListener('DOMContentLoaded', function() {
             showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server.', 'error');
         })
         .finally(() => {
-            // Ensure loading state is always reset
+            // Pastikan status loading selalu direset
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
             loadingOverlay.classList.add('d-none');
-            isSubmitting = false; // Reset flag when submission finishes
+            isSubmitting = false; // Reset flag ketika pengiriman selesai
         });
     });
 
-    // Form reset logic: reverts company list to one default item
+    // Logika reset formulir: mengembalikan daftar perusahaan ke satu item default
     form.addEventListener('reset', function() {
         while (companyListContainer.children.length > 1) {
             companyListContainer.lastElementChild.remove();
@@ -1062,14 +1100,14 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCompanyNumbersAndRemoveButtons();
     });
 
-    // Initialization: If initial company count is > 1, add corresponding items
+    // Inisialisasi: Jika jumlah perusahaan awal > 1, tambahkan item yang sesuai
     if (parseInt(jumlahPerusahaanInput.value) > 1 && companyListContainer.children.length === 1) {
         const initialCount = parseInt(jumlahPerusahaanInput.value);
         for (let i = 1; i < initialCount; i++) {
             companyListContainer.appendChild(createCompanyItem(i));
         }
     }
-    // Ensure numbering and remove buttons are updated on page load
+    // Pastikan penomoran dan tombol hapus diperbarui saat halaman dimuat
     updateCompanyNumbersAndRemoveButtons();
 });
 </script>

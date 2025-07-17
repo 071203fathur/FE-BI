@@ -539,19 +539,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const messageBoxIcon = document.getElementById('messageBoxIcon');
     const messageBoxOkButton = document.getElementById('messageBoxOkButton');
 
-    // Flag to prevent double submission
+    // Flag untuk mencegah pengiriman ganda
     let isSubmitting = false;
 
-    // Event listener for the "Oke" button to close the message box
+    // Event listener untuk tombol "Oke" untuk menutup kotak pesan
     messageBoxOkButton.addEventListener('click', () => {
         dynamicMessageBox.classList.add('d-none');
         messageBoxBackdrop.classList.add('d-none');
     });
 
     /**
-     * Show custom message box with message and type (success/error)
-     * @param {string} message - Message to display
-     * @param {'success'|'error'} type - Message type ('success' or 'error')
+     * Menampilkan kotak pesan kustom dengan pesan dan tipe (sukses/error)
+     * @param {string} message - Pesan yang akan ditampilkan
+     * @param {'success'|'error'} type - Tipe pesan ('success' atau 'error')
      */
     function showMessageBox(message, type) {
         messageBoxContent.textContent = message;
@@ -562,30 +562,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (type === 'success') {
             dynamicMessageBox.classList.add('success');
-            messageBoxIcon.innerHTML = '&#10003;';
+            messageBoxIcon.innerHTML = '&#10003;'; // Ikon centang
             messageBoxOkButton.classList.remove('d-none');
         } else if (type === 'error') {
             dynamicMessageBox.classList.add('error');
-            messageBoxIcon.innerHTML = '&#x2716;';
-            messageBoxOkButton.classList.remove('d-none');
+            messageBoxIcon.innerHTML = '&#x2716;'; // Ikon silang
+            messageBoxOkButton.classList.remove('d-none'); // Tampilkan tombol OK untuk error juga
+            // Auto-hide setelah 5 detik jika tidak diklik
             setTimeout(() => {
                 if (!dynamicMessageBox.classList.contains('d-none')) {
                     dynamicMessageBox.classList.add('d-none');
                     messageBoxBackdrop.classList.add('d-none');
                 }
-            }, 5000);
+            }, 5000); // Sembunyikan setelah 5 detik
         }
         dynamicMessageBox.classList.remove('d-none');
     }
 
-    // Date validation
+    // Validasi tanggal
     const tanggalSuratInput = document.getElementById('tanggal_surat');
     if(tanggalSuratInput){
         const today = new Date().toISOString().split('T')[0];
         tanggalSuratInput.max = today;
     }
 
-    // --- JavaScript for Management Members ---
+    // --- JavaScript untuk Anggota Manajemen ---
     const managementMembersContainer = document.getElementById('management-members-container');
     let memberCounter = 0;
 
@@ -644,12 +645,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('add-management-member').addEventListener('click', function() {
         addManagementMember();
     });
-    // --- End JavaScript for Management Members ---
+    // --- End JavaScript untuk Anggota Manajemen ---
 
-    // --- JavaScript for Executive Summary Table ---
+    // --- JavaScript untuk Tabel Ringkasan Eksekutif ---
     const executiveSummaryTableBody = document.getElementById('executive-summary-table-body');
     
-    // Define the structure for each summary point with their full descriptions
+    // Definisikan struktur untuk setiap poin ringkasan dengan deskripsi lengkapnya
     const summaryPoints = [
         { name: "Penilaian Dewan Komisaris terhadap kondisi perekonomian terkini & perkembangan industri SP", id: "penilaian_perkembangan_industri_sp" },
         { name: "Hasil Pengawasan Dewan Komisaris terhadap perkembangan bisnis PJP kinerja PJP, termasuk langkah strategis yang telah dilakukan antara lain terkait permodalan pengembangan infrastruktur sistem informasi SDM", id: "pengawasan_perkembangan_bisnis_pjp" },
@@ -674,7 +675,7 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     function populateExecutiveSummaryTable() {
-        executiveSummaryTableBody.innerHTML = ''; // Clear existing rows
+        executiveSummaryTableBody.innerHTML = ''; // Hapus baris yang ada
         summaryPoints.forEach((point, index) => {
             const rowNumber = index + 1;
             const newRow = document.createElement('tr');
@@ -703,21 +704,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const detailTextarea = newRow.querySelector(`textarea[name="${point.id}_detail"]`);
             const wordCountInfo = newRow.querySelector('.word-count-info');
 
-            // Add event listener to toggle textarea enabled/disabled and required
+            // Tambahkan event listener untuk mengaktifkan/menonaktifkan textarea dan required
             statusCheckbox.addEventListener('change', function() {
                 detailTextarea.disabled = !this.checked;
                 detailTextarea.required = this.checked;
                 if (!this.checked) {
-                    detailTextarea.value = ''; // Clear content if unchecked
-                    detailTextarea.classList.remove('tw-border-red-500'); // Remove error styling
-                    wordCountInfo.textContent = ''; // Clear word count info
+                    detailTextarea.value = ''; // Kosongkan konten jika tidak dicentang
+                    detailTextarea.classList.remove('tw-border-red-500'); // Hapus gaya error
+                    wordCountInfo.textContent = ''; // Kosongkan info jumlah kata
                 } else {
-                    // Trigger initial word count check if re-enabled and has content
+                    // Picu pemeriksaan jumlah kata awal jika diaktifkan kembali dan memiliki konten
                     detailTextarea.dispatchEvent(new Event('input'));
                 }
             });
 
-            // Add word count validation for textarea
+            // Tambahkan validasi jumlah kata untuk textarea
             detailTextarea.addEventListener('input', function() {
                 const words = this.value.match(/\S+/g) || [];
                 const wordCount = words.length;
@@ -736,30 +737,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Always populate the executive summary table
+    // Selalu isi tabel ringkasan eksekutif
     populateExecutiveSummaryTable(); 
-    // --- End JavaScript for Executive Summary Table ---
+    // --- End JavaScript untuk Tabel Ringkasan Eksekutif ---
 
-    // Form submission handler
+    // Handler pengiriman formulir
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Prevent double submission
+        // Mencegah pengiriman ganda
         if (isSubmitting) {
-            console.log("Form submission already in progress. Ignoring.");
+            console.log("Pengiriman formulir sudah berjalan. Mengabaikan.");
             return;
         }
 
         let formIsValid = true;
         
-        // Validate file size
+        // Validasi ukuran file
         const fileLaporanInput = document.getElementById('file_laporan');
         if (fileLaporanInput.files[0] && fileLaporanInput.files[0].size > 10 * 1024 * 1024) { // 10MB
             showMessageBox('Ukuran file laporan melebihi 10MB.', 'error');
             formIsValid = false;
         }
 
-        // Validate total percentage of ownership
+        // Validasi total persentase kepemilikan
         const kepemilikanDomestik = parseFloat(document.getElementById('kepemilikan_domestik').value) || 0;
         const kepemilikanAsing = parseFloat(document.getElementById('kepemilikan_asing').value) || 0;
         if (Math.round((kepemilikanDomestik + kepemilikanAsing) * 100) / 100 !== 100) {
@@ -767,7 +768,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formIsValid = false;
         }
 
-        // Validate management members
+        // Validasi anggota manajemen
         const managementMembers = managementMembersContainer.querySelectorAll('.management-member-item');
         if (managementMembers.length === 0) {
             showMessageBox('Harap tambahkan setidaknya satu Anggota Manajemen (Komisaris atau Direksi).', 'error');
@@ -785,7 +786,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Validate executive summary textareas based on their status checkbox
+        // Validasi textarea ringkasan eksekutif berdasarkan kotak centang statusnya
         executiveSummaryTableBody.querySelectorAll('.summary-status-checkbox').forEach(checkbox => {
             const detailTextarea = checkbox.closest('tr').querySelector('.executive-summary-text');
             if (checkbox.checked) {
@@ -794,14 +795,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const minWords = 10;
                 const maxWords = 100;
                 if (wordCount < minWords || wordCount > maxWords) {
-                    detailTextarea.classList.add('tw-border-red-500'); // Add error class
+                    detailTextarea.classList.add('tw-border-red-500'); // Tambahkan kelas error
                     formIsValid = false;
                     showMessageBox(`Pastikan semua ringkasan eksekutif yang dicentang memiliki antara ${minWords} dan ${maxWords} kata.`, 'error');
                 } else {
-                    detailTextarea.classList.remove('tw-border-red-500'); // Remove error class
+                    detailTextarea.classList.remove('tw-border-red-500'); // Hapus kelas error
                 }
             } else {
-                // If checkbox is not checked, ensure textarea is empty
+                // Jika kotak centang tidak dicentang, pastikan textarea kosong
                 if (detailTextarea.value.trim() !== '') {
                     showMessageBox('Ringkasan eksekutif harus kosong jika statusnya tidak dicentang.', 'error');
                     formIsValid = false;
@@ -811,7 +812,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!formIsValid) {
             console.log("Form tidak valid, pengiriman dibatalkan.");
-            // Reset loading state if client-side validation fails
+            // Pastikan status loading direset jika validasi sisi klien gagal
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
             submitSpinner.classList.add('d-none');
@@ -820,7 +821,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Show loading state
+        // Tampilkan status loading
         isSubmitting = true;
         submitButton.disabled = true;
         submitText.textContent = 'Mengirim...';
@@ -829,7 +830,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const formData = new FormData(this);
 
-        // Manually collect dynamic management members data
+        // Kumpulkan data anggota manajemen dinamis secara manual
         const membersData = [];
         managementMembersContainer.querySelectorAll('.management-member-item').forEach((item, index) => {
             const name = item.querySelector(`input[name="member_name_${index + 1}"]`).value;
@@ -843,12 +844,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         formData.append('management_members_json', JSON.stringify(membersData));
 
-        // Collect executive summary data as JSON string
+        // Kumpulkan data ringkasan eksekutif sebagai string JSON
         const executiveSummaries = [];
         executiveSummaryTableBody.querySelectorAll('tr').forEach(row => {
             const statusCheckbox = row.querySelector('.summary-status-checkbox');
             const detailTextarea = row.querySelector('.executive-summary-text');
-            const keterangan = row.querySelector('td:nth-child(2) div').textContent; // Get static text
+            const keterangan = row.querySelector('td:nth-child(2) div').textContent; // Dapatkan teks statis
 
             executiveSummaries.push({
                 keterangan: keterangan,
@@ -863,30 +864,69 @@ document.addEventListener('DOMContentLoaded', function() {
             body: formData,
             headers: { 'Accept': 'application/json' }
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    throw new Error(errorData.message || JSON.stringify(errorData) || 'Gagal mengirim laporan (status non-2xx)');
-                }).catch(jsonError => {
-                    console.error("Error parsing JSON from non-OK response:", jsonError);
-                    return response.text().then(text => {
-                        throw new Error(`Gagal mengirim laporan. Respons server: ${text.substring(0, 100)}...`);
-                    });
-                });
+        .then(async response => { // Menggunakan async/await untuk penanganan respons yang lebih baik
+            // Sembunyikan spinner dan overlay setelah respons diterima
+            submitButton.disabled = false;
+            submitText.textContent = 'Kirim Laporan';
+            submitSpinner.classList.add('d-none');
+            loadingOverlay.classList.add('d-none');
+            isSubmitting = false; // Reset flag
+
+            let responseData;
+            let errorMessage = 'Terjadi kesalahan tidak dikenal.';
+
+            try {
+                // Coba parse respons sebagai JSON terlebih dahulu
+                responseData = await response.json();
+            } catch (jsonError) {
+                // Jika parsing JSON gagal, coba dapatkan teks mentah
+                try {
+                    errorMessage = await response.text();
+                    // Potong pesan jika terlalu panjang
+                    errorMessage = errorMessage.substring(0, 200) + (errorMessage.length > 200 ? '...' : '');
+                } catch (textError) {
+                    errorMessage = 'Gagal membaca respons server.';
+                }
+                // Lempar Error baru agar ditangkap oleh blok .catch() di luar
+                throw new Error(errorMessage);
             }
-            return response.json();
+
+            // Jika respons tidak OK (misalnya, status 4xx atau 5xx)
+            if (!response.ok) {
+                // Gunakan pesan dari data JSON yang sudah di-parse, atau pesan generik
+                errorMessage = responseData.message || JSON.stringify(responseData) || 'Gagal mengirim laporan (status non-2xx).';
+                // Jika backend membungkus pesan dalam kunci 'message' bersarang (seperti data.message.message)
+                if (responseData.message && typeof responseData.message === 'object' && responseData.message.message) {
+                    errorMessage = responseData.message.message;
+                }
+                throw new Error(errorMessage);
+            }
+
+            // Jika respons OK (status 2xx)
+            return responseData;
         })
         .then(data => {
-            // Access data.message.message if the backend wraps the message in a 'message' key
-            if (data.success) {
-                showMessageBox(data.message.message || 'Laporan berhasil dikirim!', 'success');
+            // Blok ini hanya tercapai jika response.ok adalah true dan JSON berhasil di-parse
+            // Akses data.message jika backend membungkus pesan dalam kunci 'message'
+            let messageToDisplay = 'Laporan berhasil dikirim!';
+            if (data.message) {
+                if (typeof data.message === 'object' && data.message.message) {
+                    messageToDisplay = data.message.message;
+                } else if (typeof data.message === 'string') {
+                    messageToDisplay = data.message;
+                }
+            }
+
+            if (data.status >= 200 && data.status < 300) { // Periksa status 2xx dari respons JSON
+                showMessageBox(messageToDisplay, 'success');
                 form.reset();
-                // Reset dynamic fields after successful submission
-                managementMembersContainer.innerHTML = ''; // Clear all dynamic members
+                // Reset bidang dinamis setelah pengiriman berhasil
+                managementMembersContainer.innerHTML = ''; // Hapus semua anggota dinamis
                 memberCounter = 0; // Reset counter
-                populateExecutiveSummaryTable(); // Re-populate table to initial state
+                populateExecutiveSummaryTable(); // Isi ulang tabel ke keadaan awal
             } else {
-                showMessageBox(data.message.message || 'Gagal mengirim laporan.', 'error');
+                // Fallback jika 'success' tidak ada atau false dalam respons 200 OK
+                showMessageBox(messageToDisplay || 'Gagal mengirim laporan.', 'error');
             }
         })
         .catch(error => {
@@ -894,7 +934,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showMessageBox(error.message || 'Terjadi kesalahan jaringan atau server.', 'error');
         })
         .finally(() => {
-            // Always reset loading state
+            // Selalu reset status loading
             isSubmitting = false;
             submitButton.disabled = false;
             submitText.textContent = 'Kirim Laporan';
@@ -903,16 +943,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle form reset to ensure correct initial state for dynamic fields
+    // Tangani reset formulir untuk memastikan status awal yang benar untuk bidang dinamis
     form.addEventListener('reset', function() {
         setTimeout(() => {
-            managementMembersContainer.innerHTML = ''; // Clear dynamic members
+            managementMembersContainer.innerHTML = ''; // Hapus anggota dinamis
             memberCounter = 0; // Reset counter
-            populateExecutiveSummaryTable(); // Re-populate table to initial state
+            populateExecutiveSummaryTable(); // Isi ulang tabel ke keadaan awal
         }, 0);
     });
 
-    // Add initial management member when page loads
+    // Tambahkan anggota manajemen awal saat halaman dimuat
     addManagementMember();
 });
 </script>

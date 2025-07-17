@@ -26,7 +26,7 @@ app.secret_key = "supersecretkey" # Kunci rahasia untuk pengelolaan sesi
 app.permanent_session_lifetime = timedelta(minutes=30) # Sesuaikan waktu sesuai kebutuhan Anda
 
 # URL dasar untuk API backend Anda
-API_BASE_URL = "http://20.205.26.22:8000/api/"
+API_BASE_URL = "https://silap-backend.my.id/api/"
 
 # Konfigurasi upload folder
 UPLOAD_FOLDER = 'uploads'
