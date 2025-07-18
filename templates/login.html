@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="icon" href="https://images.seeklogo.com/logo-png/62/2/bank-indonesia-logo-png_seeklogo-622136.png" type="image/png">
+
     <style>
         /* Custom Tailwind Colors */
         :root {
@@ -74,9 +76,9 @@
             background-color: white;
             border-radius: 1.5rem; /* rounded-3xl */
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25); /* Stronger, more elegant shadow */
-            padding: 2.5rem;
+            padding: 2rem; /* Reduced padding */
             width: 100%;
-            max-width: 450px; /* Slightly wider card */
+            max-width: 380px; /* Significantly reduced max-width */
             text-align: center;
             position: relative; /* For z-index */
             z-index: 1; /* Above background */
@@ -92,38 +94,38 @@
         }
 
         .login-logo {
-            width: 250px; /* Adjusted size for better fit */
+            width: 200px; /* Adjusted size for better fit with smaller card */
             height: auto;
             margin-bottom: 1.5rem;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); /* Subtle shadow for logo */
         }
 
         .login-title {
-            font-size: 2rem; /* text-3xl */
+            font-size: 1.75rem; /* text-2xl, slightly smaller */
             font-weight: 800; /* font-extrabold */
             color: var(--color-bi-blue-dark);
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem; /* Reduced margin */
         }
 
         /* Input field styling */
         .input-group {
             position: relative;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem; /* Slightly reduced margin */
         }
         .input-label {
             display: block;
             text-align: left;
             font-weight: 600; /* font-semibold */
             color: #475569; /* slate-600 */
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
+            margin-bottom: 0.4rem; /* Slightly reduced margin */
+            font-size: 0.9rem; /* Slightly smaller font */
         }
         .input-field {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.65rem 1rem; /* Slightly reduced padding */
             border: 1px solid #cbd5e1; /* slate-300 */
             border-radius: 0.75rem; /* rounded-lg */
-            font-size: 1rem;
+            font-size: 0.95rem; /* Slightly smaller font */
             color: #334155;
             transition: all 0.3s ease;
             outline: none;
@@ -141,7 +143,7 @@
             position: absolute;
             right: 1rem;
             top: 50%;
-            transform: translateY(calc(-50% + 0.25rem)); /* Adjust for label height */
+            transform: translateY(calc(-50% + 0.2rem)); /* Adjusted for smaller label height */
             cursor: pointer;
             color: #64748b; /* slate-500 */
             transition: color 0.2s ease;
@@ -153,7 +155,7 @@
         /* Login Button Styling */
         .login-button {
             width: 100%;
-            padding: 1rem 1.5rem;
+            padding: 0.9rem 1.25rem; /* Slightly reduced padding */
             background: linear-gradient(135deg, var(--color-bi-blue-dark) 0%, var(--color-bi-blue-medium) 100%);
             color: white;
             font-weight: 700; /* font-bold */
@@ -162,7 +164,7 @@
             transition: all 0.3s ease;
             cursor: pointer;
             border: none;
-            font-size: 1.1rem;
+            font-size: 1rem; /* Slightly smaller font */
             letter-spacing: 0.025em;
         }
         .login-button:hover {
@@ -188,8 +190,8 @@
             border: 1px solid #fca5a5; /* red-300 */
             border-radius: 0.5rem; /* rounded-md */
             padding: 0.75rem 1rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
+            margin-bottom: 1.25rem; /* Adjusted margin */
+            font-size: 0.85rem; /* Slightly smaller font */
             text-align: left;
             animation: slideIn 0.3s ease-out;
         }
@@ -204,13 +206,25 @@
             .login-card {
                 padding: 1.5rem;
                 margin: 1rem; /* Add some margin on small screens */
+                max-width: 320px; /* Even smaller on very small screens */
             }
             .login-title {
-                font-size: 1.75rem;
-                margin-bottom: 1.5rem;
+                font-size: 1.5rem; /* Further reduced on small screens */
+                margin-bottom: 1rem;
             }
             .login-logo {
-                width: 200px;
+                width: 180px; /* Further reduced on small screens */
+            }
+            .input-label {
+                font-size: 0.85rem;
+            }
+            .input-field {
+                font-size: 0.9rem;
+                padding: 0.6rem 0.9rem;
+            }
+            .login-button {
+                font-size: 0.95rem;
+                padding: 0.8rem 1rem;
             }
         }
     </style>
@@ -298,11 +312,6 @@
                 lucide.createIcons(); // Re-render Lucide icon
             });
         }
-
-        // --- IMPORTANT: Removed client-side login simulation ---
-        // The form will now directly submit to the Flask backend.
-        // You can add client-side validation here if needed, but the actual
-        // login logic should remain on the server.
 
         // Handle button loading state during submission
         if (loginForm && loginButton) {
